@@ -1,0 +1,299 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Collections;
+using System.IO;
+using System.Drawing;
+
+namespace Maze.Classes
+{
+    public struct GridMap
+    {
+        public int ID;
+        //public int PictureID;
+        public GPS Location;
+        public int Type;
+        public int Attribute;
+        public int AttributeValue;
+        public int ND3;
+        public int ND4;
+
+        public void Initialize()
+        {
+            ID = -1;
+            Type = 16;
+            Location.X = 0;
+            Location.Y = 0;
+            Location.Z = 0;
+            Location.Map = 0;
+            Attribute = 0;
+            AttributeValue = 0;
+            ND3 = 0;
+            ND4 = 0;
+        }
+    };
+
+    public struct GPS
+    {
+        public int X;
+        public int Y;
+        public int Z;
+        public int Map;
+    };
+
+    public struct GridGPS
+    {
+        public GPS Location;
+        public int X;
+        public int Y;
+        public int BlockID;
+    };
+
+    // Not yet implemented
+    public struct Picture
+    {
+        public int Type;
+        public Image PictureImage;
+    };
+
+    public struct GridMapGraph
+    {
+        public Graphics Graphic;
+        public GridMap Block;
+    }
+
+    public class Map
+    {
+        private ArrayList MapBlocks;
+        private string[] MapNameList;
+        private Image[] Pictures;
+        public Image StartImage;
+        public Image FinishImage;
+        private GPS StartPoint;
+        private int CellsCount;
+        private int BlocksCount;
+        private string CurrentMapName;
+        private bool GridMapChanged;
+
+        private string MapDirectoryPath = GlobalConstants.MAPS_PATH;
+        private string ImageDirectoryPath = GlobalConstants.IMAGES_PATH;
+
+        public Map()
+        {
+            CellsCount = BlocksCount = 0;
+            LoadMapNameList();
+            LoadImages();
+            GridMapChanged = false;
+        }
+
+        ~Map()
+        {
+            if (GridMapChanged)
+                SaveToFile();
+        }
+
+        private void LoadMapNameList()
+        {
+            DirectoryInfo MapDirectory = new DirectoryInfo(MapDirectoryPath);
+            FileInfo[] MapFiles = MapDirectory.GetFiles();
+            MapNameList = new string[MapFiles.Count()];
+
+            for (int i = 0; i < MapFiles.Count(); ++i)
+            {
+                string[] MapName = new string[2];
+                MapName = MapFiles[i].Name.Split('.');
+                if (MapName[1].Equals("map"))
+                    MapNameList[i] = MapName[0];
+            }
+
+        }
+
+        private void LoadImages()
+        {
+            StreamReader CellsStream = File.OpenText(ImageDirectoryPath + "Cells.dat");
+            CellsCount = Convert.ToInt32(CellsStream.ReadLine());
+            CellsStream.Close();
+
+            Pictures = new Image[CellsCount];
+            for (int i = 0; i < CellsCount; ++i)
+                Pictures[i] = Image.FromFile(ImageDirectoryPath + "Cell" + i.ToString() + ".bmp");
+
+            FinishImage = Image.FromFile(ImageDirectoryPath + "Finish.bmp");
+            StartImage = Image.FromFile(ImageDirectoryPath + "Start.bmp");
+        }
+
+        public void CloseCurrentMap()
+        {
+            if (GridMapChanged)
+                SaveToFile();
+        }
+
+        public void LoadMap(int MapIndex)
+        {
+            LoadFromFile(MapNameList[MapIndex] + ".map");
+        }
+
+        public bool CreateMap(string MapName)
+        {
+            if (IsMapExist(MapName))
+                return false;
+            MapName = MapName + ".map";
+            File.Create(MapDirectoryPath + MapName).Close();
+            LoadFromFile(MapName);
+
+            return true;
+        }
+
+        private void LoadFromFile(string MapFileName)
+        {
+            MapBlocks = new ArrayList();
+            CurrentMapName = MapFileName.Split('.')[0];
+
+            StreamReader GridMapStream = File.OpenText(MapDirectoryPath + MapFileName);
+            string CurrentString;
+            while ((CurrentString = GridMapStream.ReadLine()) != null)
+            {
+                string[] StringStruct = new string[10];
+                StringStruct = CurrentString.Split(' ');
+                // Processing
+
+                GridMap GridMapStruct;
+
+                GridMapStruct.ID = Convert.ToInt32(StringStruct[0]);
+                GridMapStruct.Location.X = Convert.ToInt32(StringStruct[1]);
+                GridMapStruct.Location.Y = Convert.ToInt32(StringStruct[2]);
+                GridMapStruct.Location.Z = Convert.ToInt32(StringStruct[3]);
+                GridMapStruct.Location.Map = Convert.ToInt32(StringStruct[4]);
+                GridMapStruct.Type = Convert.ToInt32(StringStruct[5]);
+                GridMapStruct.Attribute = Convert.ToInt32(StringStruct[6]);
+                GridMapStruct.AttributeValue = Convert.ToInt32(StringStruct[7]);
+                GridMapStruct.ND3 = Convert.ToInt32(StringStruct[8]);
+                GridMapStruct.ND4 = Convert.ToInt32(StringStruct[9]);
+
+                AddGridMap(GridMapStruct);
+
+                if (GridMapStruct.Attribute == 1)
+                    StartPoint = GridMapStruct.Location;
+            }
+            GridMapStream.Close();
+        }
+
+        private void SaveToFile()
+        {
+            StreamWriter GridMapStream = new StreamWriter(MapDirectoryPath + CurrentMapName + ".map", false);
+            string GridMapString;
+            GridMap Block;
+
+            for (int i = 0; i < BlocksCount; ++i)
+            {
+                Block = GetGridMapByID(i);
+                GridMapString = Block.ID.ToString() + " "
+                    + Block.Location.X.ToString() + " "
+                    + Block.Location.Y.ToString() + " "
+                    + Block.Location.Z.ToString() + " "
+                    + Block.Location.Map.ToString() + " "
+                    + Block.Type.ToString() + " "
+                    + Block.Attribute.ToString() + " "
+                    + Block.AttributeValue.ToString() + " "
+                    + Block.ND3.ToString() + " "
+                    + Block.ND4.ToString();
+                GridMapStream.WriteLine(GridMapString);
+            }
+            GridMapStream.Close();
+        }
+
+        public GridMap GetGridMapByID(int BlockID)
+        {
+            GridMap MapBlock = new GridMap();
+            MapBlock.Initialize();
+
+            for (int i = 0; i < BlocksCount; ++i)
+                if (((GridMap)MapBlocks[i]).ID == BlockID)
+                    return (GridMap)MapBlocks[i];
+
+            return MapBlock;
+        }
+        public GridMap GetGridMapByGPS(GPS BlockLocation)
+        {
+            GridMap MapBlock = new GridMap();
+            MapBlock.Initialize();// Initialize(MapBlock);
+
+            for (int i = 0; i < MapBlocks.Count; ++i)
+                if (((GridMap)MapBlocks[i]).Location.Equals(BlockLocation))
+                    return (GridMap)MapBlocks[i];
+
+            return MapBlock;
+        }
+
+        public Image GetPictureByType(int Type)
+        {
+            return Pictures[Type];
+        }
+
+        public int GetBlocksCount()
+        {
+            return BlocksCount;
+        }
+
+        public bool AddGridMap(GridMap NewGridMap)
+        {
+            if (GetGridMapByID(NewGridMap.ID).ID != -1)
+            {
+                ReplaceGridMap(NewGridMap);
+                return false;
+            }
+
+            MapBlocks.Add(NewGridMap);
+            ++BlocksCount;
+            GridMapChanged = true;
+            return true;
+        }
+
+        private bool RemoveGridMap(GridMap RemovedGridMap)
+        {
+            MapBlocks.Remove(RemovedGridMap);
+            --BlocksCount;
+            return true;
+        }
+        private bool ReplaceGridMap(GridMap ChangedGridMap)
+        {
+            RemoveGridMap(GetGridMapByID(ChangedGridMap.ID));
+            AddGridMap(ChangedGridMap);
+            return true;
+        }
+
+        public string[] GetMapNamesList()
+        {
+            return MapNameList;
+        }
+
+        public GPS GetStartPoint()
+        {
+            return StartPoint;
+        }
+
+        private void Initialize(GridMap NewGridMap)
+        {
+            NewGridMap.ID = -1;
+            NewGridMap.Type = 16;
+            NewGridMap.Location.X = 0;
+            NewGridMap.Location.Y = 0;
+            NewGridMap.Location.Z = 0;
+            NewGridMap.Location.Map = 0;
+            NewGridMap.Attribute = 0;
+            NewGridMap.AttributeValue = 0;
+            NewGridMap.ND3 = 0;
+            NewGridMap.ND4 = 0;
+        }
+
+        private bool IsMapExist(string MapName)
+        {
+            for (int i = 0; i < MapNameList.Count(); ++i)
+                if (MapNameList[i].Equals(MapName))
+                    return true;
+
+            return false;
+        }
+    }
+}

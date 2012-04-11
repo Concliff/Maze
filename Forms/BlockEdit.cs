@@ -1,0 +1,83 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Windows.Forms;
+using Maze.Classes;
+
+namespace Maze.Forms
+{
+    public partial class BlockEdit : MazeForm
+    {
+        private GridMap Block;
+        private bool IsAdding;
+
+        public BlockEdit(GridMap Block)
+        {
+            this.Block = Block;
+            InitializeComponent();
+            CustomInitialize();
+            FillComponents();
+            IsAdding = false;
+        }
+
+        private void FillComponents()
+        {
+            BlockIDTextBox.Text = Block.ID.ToString(); ;
+
+            if (Block.ID == -1)
+            {
+                BlockIDTextBox.Text = (GetWorldMap().GetBlocksCount()).ToString();
+                ConfirmButton.Text = "Add";
+                IsAdding = true;
+            }
+
+            LocationXTextBox.Text = Block.Location.X.ToString();
+            LocationYTextBox.Text = Block.Location.Y.ToString();
+            LocationZTextBox.Text = Block.Location.Z.ToString();
+            LocationMapTextBox.Text = Block.Location.Map.ToString();
+
+            // Movement
+            UpCheckBox.Checked = HasBit(Block.Type, (byte)Directions.Up);
+            LeftCheckBox.Checked = HasBit(Block.Type, (byte)Directions.Left);
+            DownCheckBox.Checked = HasBit(Block.Type, (byte)Directions.Down);
+            RightCheckBox.Checked = HasBit(Block.Type, (byte)Directions.Right);
+
+            if (Block.Attribute == 1)
+                StartCheckBox.Checked = true;
+            else if (Block.Attribute == 2)
+                FinishCheckBox.Checked = true;
+        }
+         
+        void AcceptButtonClick(object sender, System.EventArgs e)
+        {
+            GridMap NewBlock = new GridMap();
+            NewBlock.Initialize();
+
+            NewBlock.ID = Convert.ToInt32(BlockIDTextBox.Text);
+            NewBlock.Location.X = Convert.ToInt32(LocationXTextBox.Text);
+            NewBlock.Location.Y = Convert.ToInt32(LocationYTextBox.Text);
+            NewBlock.Location.Z = Convert.ToInt32(LocationZTextBox.Text);
+            NewBlock.Location.Map = Convert.ToInt32(LocationMapTextBox.Text);
+
+            NewBlock.Type = 0;
+            if (UpCheckBox.Checked) SetBit(ref NewBlock.Type, (byte)Directions.Up);
+            if (LeftCheckBox.Checked) SetBit(ref NewBlock.Type, (byte)Directions.Left);
+            if (DownCheckBox.Checked) SetBit(ref NewBlock.Type, (byte)Directions.Down);
+            if (RightCheckBox.Checked) SetBit(ref NewBlock.Type, (byte)Directions.Right);
+
+            NewBlock.Attribute = StartCheckBox.Checked ? 1 : FinishCheckBox.Checked ? 2 : 0;
+            GetWorldMap().AddGridMap(NewBlock);
+            World.GetMapEditorForm().RebuildFormMap();
+            this.Close();
+        }
+
+        void CancelButtonClick(object sender, System.EventArgs e)
+        {
+            this.Close();
+        }
+    }
+}
