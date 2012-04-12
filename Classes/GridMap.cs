@@ -15,8 +15,8 @@ namespace Maze.Classes
         public GPS Location;
         public int Type;
         public int Attribute;
-        public int AttributeValue;
-        public int ND3;
+        public int Option;
+        public int OptionValue;
         public int ND4;
 
         public void Initialize()
@@ -28,8 +28,8 @@ namespace Maze.Classes
             Location.Z = 0;
             Location.Map = 0;
             Attribute = 0;
-            AttributeValue = 0;
-            ND3 = 0;
+            Option = 0;
+            OptionValue = 0;
             ND4 = 0;
         }
     };
@@ -167,8 +167,8 @@ namespace Maze.Classes
                 GridMapStruct.Location.Map = Convert.ToInt32(StringStruct[4]);
                 GridMapStruct.Type = Convert.ToInt32(StringStruct[5]);
                 GridMapStruct.Attribute = Convert.ToInt32(StringStruct[6]);
-                GridMapStruct.AttributeValue = Convert.ToInt32(StringStruct[7]);
-                GridMapStruct.ND3 = Convert.ToInt32(StringStruct[8]);
+                GridMapStruct.Option = Convert.ToInt32(StringStruct[7]);
+                GridMapStruct.OptionValue = Convert.ToInt32(StringStruct[8]);
                 GridMapStruct.ND4 = Convert.ToInt32(StringStruct[9]);
 
                 AddGridMap(GridMapStruct);
@@ -195,8 +195,8 @@ namespace Maze.Classes
                     + Block.Location.Map.ToString() + " "
                     + Block.Type.ToString() + " "
                     + Block.Attribute.ToString() + " "
-                    + Block.AttributeValue.ToString() + " "
-                    + Block.ND3.ToString() + " "
+                    + Block.Option.ToString() + " "
+                    + Block.OptionValue.ToString() + " "
                     + Block.ND4.ToString();
                 GridMapStream.WriteLine(GridMapString);
             }
@@ -282,8 +282,8 @@ namespace Maze.Classes
             NewGridMap.Location.Z = 0;
             NewGridMap.Location.Map = 0;
             NewGridMap.Attribute = 0;
-            NewGridMap.AttributeValue = 0;
-            NewGridMap.ND3 = 0;
+            NewGridMap.Option = 0;
+            NewGridMap.OptionValue = 0;
             NewGridMap.ND4 = 0;
         }
 
