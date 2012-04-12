@@ -64,6 +64,8 @@ namespace Maze.Forms
         void RightPanelPBPaint(object sender, PaintEventArgs e)
         {
             e.Graphics.DrawString("Time: " + (ProgramTime.Seconds + ProgramTime.Minutes*60).ToString(), new Font("Arial", 14), new SolidBrush(Color.White), 50, 30);
+            e.Graphics.DrawString("Coins x " + (GetWorldMap().GetCoinsCount() - GetWorldMap().GetCollectedCoinsCount()).ToString(), 
+                new Font("Arial", 14), new SolidBrush(Color.White), 50, 50);
         }
 
         public void SystemTimerTick(object sender, EventArgs e)
@@ -180,6 +182,16 @@ namespace Maze.Forms
                         g.DrawImage(GetWorldMap().FinishImage, x + 5, y + 5, 40, 40);
                         g.Dispose();
                     }
+                    // Draw Coin if not collected
+                    if (HasBit(Block.Attribute, (byte) Attributes.HasCoin) &&
+                        !GetWorldMap().IsCoinCollected(Block))
+                    {
+                        Graphics g = Graphics.FromImage(GetWorldMap().CoinImage);
+                        g = this.CreateGraphics();
+                        g.DrawImage(GetWorldMap().CoinImage, x + 15, y + 10, 20, 30);
+                        g.Dispose();
+                    }
+
                 }
             this.ResumeLayout();
         }

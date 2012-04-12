@@ -57,6 +57,12 @@ namespace Maze.Classes
         public Image PictureImage;
     };
 
+    public struct Coin
+    {
+        public int ID;              // Block ID
+        public bool Collected;      // Is Coin Collected (Do not show it on map)
+    };
+
     public struct GridMapGraph
     {
         public Graphics Graphic;
@@ -66,10 +72,12 @@ namespace Maze.Classes
     public class Map
     {
         private ArrayList MapBlocks;
+        private ArrayList Coins;
         private string[] MapNameList;
         private Image[] Pictures;
         public Image StartImage;
         public Image FinishImage;
+        public Image CoinImage;
         private GPS StartPoint;
         private int CellsCount;
         private int BlocksCount;
@@ -121,6 +129,7 @@ namespace Maze.Classes
 
             FinishImage = Image.FromFile(ImageDirectoryPath + "Finish.bmp");
             StartImage = Image.FromFile(ImageDirectoryPath + "Start.bmp");
+            CoinImage = Image.FromFile(ImageDirectoryPath + "coin 1.bmp");
         }
 
         public void CloseCurrentMap()
@@ -148,6 +157,7 @@ namespace Maze.Classes
         private void LoadFromFile(string MapFileName)
         {
             MapBlocks = new ArrayList();
+            Coins = new ArrayList();
             CurrentMapName = MapFileName.Split('.')[0];
 
             StreamReader GridMapStream = File.OpenText(MapDirectoryPath + MapFileName);
@@ -173,8 +183,16 @@ namespace Maze.Classes
 
                 AddGridMap(GridMapStruct);
 
-                if (GridMapStruct.Attribute == 1)
+                if (BinaryOperations.IsBit(GridMapStruct.Attribute, (byte)Attributes.IsStart))
                     StartPoint = GridMapStruct.Location;
+                if (BinaryOperations.IsBit(GridMapStruct.Attribute, (byte)Attributes.HasCoin))
+                {
+                    Coin NewCoin;
+                    NewCoin.ID = GridMapStruct.ID;
+                    NewCoin.Collected = false;
+                    Coins.Add(NewCoin);
+                }
+
             }
             GridMapStream.Close();
         }
@@ -293,6 +311,40 @@ namespace Maze.Classes
                 if (MapNameList[i].Equals(MapName))
                     return true;
 
+            return false;
+        }
+
+        public int GetCoinsCount() { return Coins.Count; }
+
+        public int GetCollectedCoinsCount()
+        {
+            int CollectedCoinsCount = 0;
+            for (int i = 0; i < Coins.Count; ++i)
+                if (((Coin)Coins[i]).Collected)
+                    ++CollectedCoinsCount;
+
+            return CollectedCoinsCount;
+        }
+
+        public void CollectCoin(GridMap Block)
+        {
+            for (int i = 0; i < Coins.Count; ++i)
+                if (((Coin)Coins[i]).ID == Block.ID)
+                {
+                    Coin NewCoin;
+                    NewCoin.ID = Block.ID;
+                    NewCoin.Collected = true;
+                    Coins.Remove(Coins[i]);
+                    Coins.Add(NewCoin);
+                    return;
+                }
+        }
+
+        public bool IsCoinCollected(GridMap Block)
+        {
+            for (int i = 0; i < Coins.Count; ++i)
+                if (((Coin)Coins[i]).ID == Block.ID)
+                    return ((Coin)Coins[i]).Collected;
             return false;
         }
     }

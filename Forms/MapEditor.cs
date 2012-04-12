@@ -96,6 +96,11 @@ namespace Maze.Forms
                     // Draw Finish Block
                     if (BinaryOperations.IsBit(Block.Attribute, (byte)Attributes.IsFinish))
                         FinishPB.Location = new Point(x + 5, y + 5);
+                    // Draw Coin
+                    if (HasBit(Block.Attribute, (byte) Attributes.HasCoin))
+                    {
+                        CoinPB.Location = new Point(x + 15, y + 10);
+                    }
                 }
         }
 

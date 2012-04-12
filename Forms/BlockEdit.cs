@@ -46,10 +46,9 @@ namespace Maze.Forms
             DownCheckBox.Checked = HasBit(Block.Type, (byte)Directions.Down);
             RightCheckBox.Checked = HasBit(Block.Type, (byte)Directions.Right);
 
-            if (Block.Attribute == 1)
-                StartCheckBox.Checked = true;
-            else if (Block.Attribute == 2)
-                FinishCheckBox.Checked = true;
+            StartCheckBox.Checked = HasBit(Block.Attribute,(byte)Attributes.IsStart);
+            FinishCheckBox.Checked = HasBit(Block.Attribute,(byte)Attributes.IsFinish);
+            CoinCheckBox.Checked = HasBit(Block.Attribute,(byte)Attributes.HasCoin);
         }
          
         void AcceptButtonClick(object sender, System.EventArgs e)
@@ -69,7 +68,11 @@ namespace Maze.Forms
             if (DownCheckBox.Checked) SetBit(ref NewBlock.Type, (byte)Directions.Down);
             if (RightCheckBox.Checked) SetBit(ref NewBlock.Type, (byte)Directions.Right);
 
-            NewBlock.Attribute = StartCheckBox.Checked ? 1 : FinishCheckBox.Checked ? 2 : 0;
+            NewBlock.Attribute = 0;
+            if (StartCheckBox.Checked) SetBit(ref NewBlock.Attribute, (byte)Attributes.IsStart);
+            if (FinishCheckBox.Checked) SetBit(ref NewBlock.Attribute, (byte)Attributes.IsFinish);
+            if (CoinCheckBox.Checked) SetBit(ref NewBlock.Attribute, (byte)Attributes.HasCoin);
+
             GetWorldMap().AddGridMap(NewBlock);
             World.GetMapEditorForm().RebuildFormMap();
             this.Close();

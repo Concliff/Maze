@@ -64,6 +64,7 @@
             this.RightCheckBox = new System.Windows.Forms.CheckBox();
             this.StartCheckBox = new System.Windows.Forms.CheckBox();
             this.FinishCheckBox = new System.Windows.Forms.CheckBox();
+            this.CoinCheckBox = new System.Windows.Forms.CheckBox();
 
             this.CancelButton = new System.Windows.Forms.Button();
             this.ConfirmButton = new System.Windows.Forms.Button();
@@ -107,6 +108,7 @@
             RightCheckBox.Location = new System.Drawing.Point(120, 210);
             StartCheckBox.Location = new System.Drawing.Point(200, 190);
             FinishCheckBox.Location = new System.Drawing.Point(200, 220);
+            CoinCheckBox.Location = new System.Drawing.Point(200, 250);
 
             ConfirmButton.Location = new System.Drawing.Point(50, 300);
             CancelButton.Location = new System.Drawing.Point(150, 300);
@@ -137,6 +139,7 @@
             RightCheckBox.Text = "Right";
             StartCheckBox.Text = "Start";
             FinishCheckBox.Text = "Finish";
+            CoinCheckBox.Text = "Coin";
             ConfirmButton.Text = "Replace";
             CancelButton.Text = "Cancel";
 
@@ -160,6 +163,7 @@
             this.Controls.Add(this.RightCheckBox);
             this.Controls.Add(this.StartCheckBox);
             this.Controls.Add(this.FinishCheckBox);
+            this.Controls.Add(this.CoinCheckBox);
 
             this.Controls.Add(this.ConfirmButton);
             this.Controls.Add(this.CancelButton);
@@ -187,6 +191,7 @@
         private System.Windows.Forms.Button ConfirmButton;
         private System.Windows.Forms.CheckBox StartCheckBox;
         private System.Windows.Forms.CheckBox FinishCheckBox;
+        private System.Windows.Forms.CheckBox CoinCheckBox;
 
     }
 }

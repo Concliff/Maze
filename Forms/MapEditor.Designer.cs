@@ -78,6 +78,12 @@ namespace Maze.Forms
             this.StartPB.Image = GetWorldMap().StartImage;
             this.StartPB.Location = new System.Drawing.Point(-100, -100);
             this.Controls.Add(this.StartPB);
+
+            this.CoinPB = new PictureBox();
+            this.CoinPB.Size = new System.Drawing.Size(20, 30);
+            this.CoinPB.Image = GetWorldMap().CoinImage;
+            this.CoinPB.Location = new System.Drawing.Point(-100, -100);
+            this.Controls.Add(this.CoinPB);
             
             this.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.KeyMgr.EventKeyPress);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.KeyMgr.EventKeyDown);
@@ -112,6 +118,7 @@ namespace Maze.Forms
         private System.Windows.Forms.PictureBox PlayerPB;
         private System.Windows.Forms.PictureBox FinishPB;
         private System.Windows.Forms.PictureBox StartPB;
+        private System.Windows.Forms.PictureBox CoinPB;
 
     }
 }

@@ -18,7 +18,7 @@ namespace Maze.Classes
     {
         IsStart = 1,
         IsFinish = 2,
-        IsTeleport = 3,
+        HasCoin = 3,
         Attribute4,
         Attribute5,
         Attribute6,
