@@ -26,7 +26,21 @@ namespace Maze.Classes
         Attribute8,
         Attribute9,
         Attribute10,
-    }
+    };
+
+    public enum GridMapOptions : byte
+    {
+        Portal = 1,
+        Option2,
+        Option3,
+        Option4,
+        Option5,
+        Option6,
+        Option7,
+        Option8,
+        Option9,
+        Option10,
+    };
 
     public enum WorldNextAction
     {
