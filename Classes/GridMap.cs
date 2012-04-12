@@ -130,6 +130,15 @@ namespace Maze.Classes
             FinishImage = Image.FromFile(ImageDirectoryPath + "Finish.bmp");
             StartImage = Image.FromFile(ImageDirectoryPath + "Start.bmp");
             CoinImage = Image.FromFile(ImageDirectoryPath + "coin 1.bmp");
+
+            ///////////////////
+            //Make background transparent
+            Bitmap bmp = new Bitmap(CoinImage);
+            bmp.MakeTransparent(Color.FromArgb(255, 255, 255));
+            bmp.Save(ImageDirectoryPath + "Coin.bmp", System.Drawing.Imaging.ImageFormat.Png);
+
+            CoinImage = Image.FromFile(ImageDirectoryPath + "Coin.bmp");
+            ///////////////////
         }
 
         public void CloseCurrentMap()
