@@ -13,17 +13,20 @@ namespace Maze.Forms
     public partial class Play : MazeForm
     {
         Player oPlayer;
-        //int GridMapWidth = GlobalConstants.GRIDMAP_WIDTH;
-        //int GridMapHeight = GlobalConstants.GRIDMAP_HEIGHT;
         int tempCount;
+
+        DateTime ProgramStartDateTime;
+        TimeSpan ProgramTime;
+
         TimeControl SysTimer;
-        BlockEdit newForm;
+        Graphics TimeGraph;
         //public Map FormMap;
 
         public Play()
         {
             //FormMap = new Map();
             tempCount = 0;
+            ProgramStartDateTime = DateTime.Now;
             InitializeComponent();
             CustomInitialize();
             AddControlsOrder();
@@ -31,6 +34,7 @@ namespace Maze.Forms
             SystemTimer.Interval = GlobalConstants.TIMER_TICK_IN_MS; // 50 ms
             SystemTimer.Start();
             label1.Text = "0";
+            TimeGraph = this.RightPanelPB.CreateGraphics();
             
             // Visual is 11x7
             // Player grid is 7,5 (central)
@@ -38,9 +42,7 @@ namespace Maze.Forms
             oPlayer = new Player();
             SysTimer = new TimeControl(this);
 
-            //RebuildFormMap();
             RebuildGraphMap();
-
         }
 
         ~Play()
@@ -59,8 +61,20 @@ namespace Maze.Forms
             RebuildGraphMap();
         }
 
+        void RightPanelPBPaint(object sender, PaintEventArgs e)
+        {
+            e.Graphics.DrawString("Time: " + (ProgramTime.Seconds + ProgramTime.Minutes*60).ToString(), new Font("Arial", 14), new SolidBrush(Color.White), 50, 30);
+        }
+
         public void SystemTimerTick(object sender, EventArgs e)
         {
+            if (oPlayer.IsFinished())
+                return;
+
+            ProgramTime = DateTime.Now.Subtract
+                (ProgramStartDateTime);
+            this.RightPanelPB.Invalidate();
+
             //this.SuspendLayout();
             // |------------------------>
             // |                        X
@@ -81,8 +95,8 @@ namespace Maze.Forms
                     case Keys.S: SetBit(ref MoveType, (byte)Directions.Down); break;
                     case Keys.D: SetBit(ref MoveType, (byte)Directions.Right); break;
                 }
-            if (!oPlayer.IsFinished())
-                MovementAction(MoveType);
+
+            MovementAction(MoveType);
 
             switch (KeyMgr.ExtractKeyPressed())
             {
@@ -118,48 +132,10 @@ namespace Maze.Forms
                 return;
             //World.GetPlayForm().label1.Text = oPlayer.Position.Location.X.ToString() + "\n" + oPlayer.Position.Location.Y.ToString() +
             //    "\n" + oPlayer.Position.X.ToString() + "\n" + oPlayer.Position.Y.ToString();// "move";
-            //RebuildFormMap();
             RebuildGraphMap();
 
             if (oPlayer.IsFinished())
                 MessageBox.Show("FINISH");
-        }
-
-        private void RebuildFormMap()
-        {
-            GPS PBLocation = new GPS();
-            GridMap Block = new GridMap();
-            // GridMap
-            for (int i = 0; i < GlobalConstants.GRIDMAP_WIDTH; ++i)
-                for (int j = 0; j < GlobalConstants.GRIDMAP_HEIGHT; ++j)
-                {
-                    int x, y;
-                    x = GridMapPB.Location.X + (i - 1) * GlobalConstants.GRIDMAP_BLOCK_WIDTH - (oPlayer.Position.X - 25);
-                    y = GridMapPB.Location.Y + (j - 1) * GlobalConstants.GRIDMAP_BLOCK_HEIGHT - (oPlayer.Position.Y - 25);
-                    PBLocation.X = oPlayer.Position.Location.X + i - GlobalConstants.GRIDMAP_WIDTH / 2;
-                    PBLocation.Y = oPlayer.Position.Location.Y + j - GlobalConstants.GRIDMAP_HEIGHT / 2;
-                    PBLocation.Z = 0;
-                    PBLocation.Map = 0;
-                    Block = GetWorldMap().GetGridMapByGPS(PBLocation);
-
-                    this.GridMapArray[i, j].Tag = Block;
-                    this.GridMapArray[i, j].Image = GetWorldMap().GetPictureByType(Block.Type);
-                    this.GridMapArray[i, j].Location = new System.Drawing.Point(x, y);
-                    
-                    // Draw Start Block
-                    if (BinaryOperations.IsBit(Block.Attribute, (byte)Attributes.IsStart))
-                    {
-                        StartPB.Location = new Point(x + 5, y + 5);
-                        //Graphics g = Graphics.FromImage(GetWorldMap().StartImage);
-                        //g = this.CreateGraphics();
-                        //g.DrawImage(GetWorldMap().StartImage, x + 5, y + 5, 40, 40);
-                        //g.Dispose();
-                    }
-                    // Draw Finish Block
-                    if (BinaryOperations.IsBit(Block.Attribute, (byte)Attributes.IsFinish))
-                        FinishPB.Location = new Point(x + 5, y + 5);
-
-                }
         }
 
         private void RebuildGraphMap()
