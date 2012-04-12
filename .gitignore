@@ -1,0 +1,9 @@
+#
+# Ignore next files
+#
+
+# Object Resources
+obj/*
+
+# Executable and Debug files
+bin/Release/*.*
