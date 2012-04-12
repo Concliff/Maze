@@ -7,3 +7,6 @@ obj/*
 
 # Executable and Debug files
 bin/Release/*.*
+
+# Users Project Parameters
+*.suo
