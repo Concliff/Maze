@@ -22,8 +22,8 @@ namespace Maze.Classes
         public static string IMAGES_PATH = "Data\\Images\\";
 
         // Player
-        public static int PLAYER_SIZE_WIDTH = 12;
-        public static int PLAYER_SIZE_HEIGHT = 16;
+        public static int PLAYER_SIZE_WIDTH = 30; //12
+        public static int PLAYER_SIZE_HEIGHT = 40; //16
 
     }
 }

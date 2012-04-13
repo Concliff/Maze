@@ -128,6 +128,10 @@ namespace Maze.Forms
 
         #endregion
 
+        //////////////
+        private string ImageDirectoryPath = GlobalConstants.IMAGES_PATH;
+        //////////////
+
         private void CustomInitialize()
         {
             this.KeyMgr = new KeyManager();
@@ -139,8 +143,11 @@ namespace Maze.Forms
             // 
             // PlayerPB
             // 
+            //////////////////
+            this.PlayerPB.Image = Image.FromFile(ImageDirectoryPath + "Man2.bmp");
+            //////////////////
             this.PlayerPB.Size = new System.Drawing.Size(GlobalConstants.PLAYER_SIZE_WIDTH, GlobalConstants.PLAYER_SIZE_HEIGHT);
-            this.PlayerPB.BackColor = System.Drawing.Color.Red;
+            this.PlayerPB.BackColor = System.Drawing.Color.Transparent;//.Red;
             this.PlayerPB.Location = new System.Drawing.Point
                 (this.GridMapPB.Location.X + (this.GridMapPB.Size.Width - this.PlayerPB.Size.Width) / 2, this.GridMapPB.Location.Y + (this.GridMapPB.Size.Height - this.PlayerPB.Size.Height) / 2);
             this.PlayerPB.Name = "PlayerPB";
