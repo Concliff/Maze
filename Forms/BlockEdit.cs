@@ -74,7 +74,7 @@ namespace Maze.Forms
             if (CoinCheckBox.Checked) SetBit(ref NewBlock.Attribute, (byte)Attributes.HasCoin);
 
             GetWorldMap().AddGridMap(NewBlock);
-            World.GetMapEditorForm().RebuildFormMap();
+            World.GetMapEditorForm().RebuildGraphMap();
             this.Close();
         }
 

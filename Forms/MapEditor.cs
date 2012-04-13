@@ -29,7 +29,7 @@ namespace Maze.Forms
 
             VirtualPlayer = new Player();
 
-            RebuildFormMap();
+            RebuildGraphMap();
         }
 
         public void SystemTimerTick(object sender, EventArgs e)
@@ -48,7 +48,7 @@ namespace Maze.Forms
 
             switch (KeyMgr.ExtractKeyPressed())
             {
-                case Keys.Space: RebuildFormMap(); break;
+                case Keys.Space: RebuildGraphMap(); break;
             }
         }
         private void MovementAction(byte MoveType)
@@ -65,43 +65,62 @@ namespace Maze.Forms
 
             if (OldPosition.Equals(VirtualPlayer.Position))
                 return;
-            RebuildFormMap();
+            RebuildGraphMap();
         }
 
-        public void RebuildFormMap()
+        public void RebuildGraphMap()
         {
+            this.SuspendLayout();
             GPS PBLocation = new GPS();
             GridMap Block = new GridMap();
-            // GridMap
+            // GridMapGraph
             for (int i = 0; i < GlobalConstants.GRIDMAP_WIDTH; ++i)
                 for (int j = 0; j < GlobalConstants.GRIDMAP_HEIGHT; ++j)
                 {
                     int x, y;
-                    x = i + (i - 1) * GlobalConstants.GRIDMAP_BLOCK_WIDTH - (VirtualPlayer.Position.X - GlobalConstants.GRIDMAP_BLOCK_WIDTH / 2);
-                    y = j + (j - 1) * GlobalConstants.GRIDMAP_BLOCK_HEIGHT - (VirtualPlayer.Position.Y - GlobalConstants.GRIDMAP_BLOCK_HEIGHT / 2);
+                    x = (i - 1) * GlobalConstants.GRIDMAP_BLOCK_WIDTH - (VirtualPlayer.Position.X - GlobalConstants.GRIDMAP_BLOCK_WIDTH / 2);
+                    y = (j - 1) * GlobalConstants.GRIDMAP_BLOCK_HEIGHT - (VirtualPlayer.Position.Y - GlobalConstants.GRIDMAP_BLOCK_HEIGHT / 2);
                     PBLocation.X = VirtualPlayer.Position.Location.X + i - GlobalConstants.GRIDMAP_WIDTH / 2;
                     PBLocation.Y = VirtualPlayer.Position.Location.Y + j - GlobalConstants.GRIDMAP_HEIGHT / 2;
                     PBLocation.Z = 0;
                     PBLocation.Map = 0;
                     Block = GetWorldMap().GetGridMapByGPS(PBLocation);
-                    Block.Location = PBLocation;
 
-                    this.GridMapArray[i, j].Tag = Block;
-                    this.GridMapArray[i, j].Image = GetWorldMap().GetPictureByType(Block.Type);
-                    this.GridMapArray[i, j].Location = new System.Drawing.Point(x, y);
-                    
+                    this.GridMapGraphic[i, j].Block = Block;
+                    this.GridMapGraphic[i, j].Graphic = Graphics.FromImage(GetWorldMap().GetPictureByType(Block.Type));
+                    this.GridMapGraphic[i, j].Graphic.Dispose();
+                    this.GridMapGraphic[i, j].Graphic = this.CreateGraphics();
+
+                    this.GridMapGraphic[i, j].Graphic.DrawImage(GetWorldMap().GetPictureByType(Block.Type), x, y, GlobalConstants.GRIDMAP_BLOCK_WIDTH, GlobalConstants.GRIDMAP_BLOCK_HEIGHT);
                     // Draw Start Block
-                    if (BinaryOperations.IsBit(Block.Attribute, (byte)Attributes.IsStart))
-                        StartPB.Location = new Point(x + 5, y + 5);
-                    // Draw Finish Block
-                    if (BinaryOperations.IsBit(Block.Attribute, (byte)Attributes.IsFinish))
-                        FinishPB.Location = new Point(x + 5, y + 5);
-                    // Draw Coin
-                    if (HasBit(Block.Attribute, (byte) Attributes.HasCoin))
+                    if (HasBit(Block.Attribute, (byte)Attributes.IsStart))
                     {
-                        CoinPB.Location = new Point(x + 15, y + 10);
+                        //StartPB.Location = new Point(x + 5, y + 5);
+                        Graphics g = Graphics.FromImage(GetWorldMap().StartImage);
+                        g = this.CreateGraphics();
+                        g.DrawImage(GetWorldMap().StartImage, x + 5, y + 5, 40, 40);
+                        g.Dispose();
                     }
+                    // Draw Finish Block
+                    if (HasBit(Block.Attribute, (byte)Attributes.IsFinish))
+                    {
+                        //FinishPB.Location = new Point(x + 5, y + 5);
+                        Graphics g = Graphics.FromImage(GetWorldMap().FinishImage);// Non indexed image
+                        g = this.CreateGraphics();
+                        g.DrawImage(GetWorldMap().FinishImage, x + 5, y + 5, 40, 40);
+                        g.Dispose();
+                    }
+                    // Draw Coin
+                    if (HasBit(Block.Attribute, (byte)Attributes.HasCoin))
+                    {
+                        Graphics g = Graphics.FromImage(GetWorldMap().CoinImage);
+                        g = this.CreateGraphics();
+                        g.DrawImage(GetWorldMap().CoinImage, x + 15, y + 10, 20, 30);
+                        g.Dispose();
+                    }
+
                 }
+            this.ResumeLayout();
         }
 
         void BlockClick(object sender, System.EventArgs e)
