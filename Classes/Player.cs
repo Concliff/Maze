@@ -119,10 +119,10 @@ namespace Maze.Classes
             Position = NewPosition;
             CurrentGridMap = World.GetWorldMap().GetGridMapByGPS(Position.Location);
 
-            if ((Position.X <= GlobalConstants.GRIDMAP_BLOCK_WIDTH - GlobalConstants.GRIDMAP_BORDER_PX - GlobalConstants.PLAYER_SIZE_WIDTH / 2) &&
-                (Position.X >= GlobalConstants.GRIDMAP_BORDER_PX + GlobalConstants.PLAYER_SIZE_WIDTH / 2) &&
-                (Position.Y <= GlobalConstants.GRIDMAP_BLOCK_HEIGHT - GlobalConstants.GRIDMAP_BORDER_PX - GlobalConstants.PLAYER_SIZE_HEIGHT / 2) &&
-                (Position.Y >= GlobalConstants.GRIDMAP_BORDER_PX + GlobalConstants.PLAYER_SIZE_HEIGHT / 2))
+            if ((Position.X <= GlobalConstants.GRIDMAP_BLOCK_WIDTH - GlobalConstants.GRIDMAP_BORDER_PX) &&
+                (Position.X >= GlobalConstants.GRIDMAP_BORDER_PX) &&
+                (Position.Y <= GlobalConstants.GRIDMAP_BLOCK_HEIGHT - GlobalConstants.GRIDMAP_BORDER_PX) &&
+                (Position.Y >= GlobalConstants.GRIDMAP_BORDER_PX))
                 ReachedGridMap(World.GetWorldMap().GetGridMapByGPS(Position.Location));
             return Position;
         }
