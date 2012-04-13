@@ -245,6 +245,7 @@ namespace Maze.Classes
         {
             GridMap MapBlock = new GridMap();
             MapBlock.Initialize();// Initialize(MapBlock);
+            MapBlock.Location = BlockLocation;
 
             for (int i = 0; i < MapBlocks.Count; ++i)
                 if (((GridMap)MapBlocks[i]).Location.Equals(BlockLocation))
