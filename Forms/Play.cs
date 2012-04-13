@@ -111,7 +111,9 @@ namespace Maze.Forms
                     break;
             }
 
-            label1.Text = tempCount.ToString();
+            World.GetPlayForm().label1.Text = oPlayer.Position.Location.X.ToString() + "\n" + oPlayer.Position.Location.Y.ToString() +
+    "\n" + oPlayer.Position.X.ToString() + "\n" + oPlayer.Position.Y.ToString();// "move";
+            //label1.Text = tempCount.ToString();
         }
 
         private void Play_Paint(object sender, PaintEventArgs e)
@@ -125,15 +127,9 @@ namespace Maze.Forms
             if (!HasBit(MoveType, (byte)Directions.Up) && !HasBit(MoveType, (byte)Directions.Down) &&
                 !HasBit(MoveType, (byte)Directions.Right) && !HasBit(MoveType, (byte)Directions.Left))
                 return;
-            
-            GridGPS OldPosition = new GridGPS();
-            OldPosition = oPlayer.CopyGridGPS();
+
             oPlayer.MovementAction(MoveType);
-            
-            if (OldPosition.Equals(oPlayer.Position))
-                return;
-            //World.GetPlayForm().label1.Text = oPlayer.Position.Location.X.ToString() + "\n" + oPlayer.Position.Location.Y.ToString() +
-            //    "\n" + oPlayer.Position.X.ToString() + "\n" + oPlayer.Position.Y.ToString();// "move";
+
             RebuildGraphMap();
 
             if (oPlayer.IsFinished())

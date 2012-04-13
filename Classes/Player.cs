@@ -52,72 +52,80 @@ namespace Maze.Classes
 
         public GridGPS MovementAction(byte MoveType)
         {
-            GridGPS NewPosition = new GridGPS();
-            NewPosition = Position;
+            int NewX, NewY;
 
-            NewPosition.X = NewPosition.X
+            NewX = Position.X
                 + (BinaryOperations.GetBit(MoveType, (byte)Directions.Right) -  BinaryOperations.GetBit(MoveType, (byte)Directions.Left))
                 * GlobalConstants.MOVEMENT_STEP_PX;
 
-            if (NewPosition.X > (GlobalConstants.GRIDMAP_BLOCK_WIDTH - GlobalConstants.GRIDMAP_BORDER_PX - GlobalConstants.PLAYER_SIZE_WIDTH /2))
+            if (NewX > (GlobalConstants.GRIDMAP_BLOCK_WIDTH - GlobalConstants.GRIDMAP_BORDER_PX - GlobalConstants.PLAYER_SIZE_WIDTH / 2))
             {
                 if (BinaryOperations.IsBit(CurrentGridMap.Type, (byte)Directions.Right))
                 {
-                    if (NewPosition.X > GlobalConstants.GRIDMAP_BLOCK_WIDTH)
+                    if (NewX > GlobalConstants.GRIDMAP_BLOCK_WIDTH)
                     {
-                        NewPosition.X = NewPosition.X - GlobalConstants.GRIDMAP_BLOCK_WIDTH;
-                        ++NewPosition.Location.X;
+                        Position.X = NewX - GlobalConstants.GRIDMAP_BLOCK_WIDTH;
+                        ChangeGPSDueDirection(1, Directions.Right);
                     }
+                    else
+                        Position.X = NewX;
                 }
                 else
-                    NewPosition.X = GlobalConstants.GRIDMAP_BLOCK_WIDTH - GlobalConstants.GRIDMAP_BORDER_PX - GlobalConstants.PLAYER_SIZE_WIDTH / 2;
+                    Position.X = GlobalConstants.GRIDMAP_BLOCK_WIDTH - GlobalConstants.GRIDMAP_BORDER_PX - GlobalConstants.PLAYER_SIZE_WIDTH / 2;
             }
-            else if (NewPosition.X < (GlobalConstants.GRIDMAP_BORDER_PX + GlobalConstants.PLAYER_SIZE_WIDTH / 2))
+            else if (NewX < (GlobalConstants.GRIDMAP_BORDER_PX + GlobalConstants.PLAYER_SIZE_WIDTH / 2))
             {
                 if (BinaryOperations.IsBit(CurrentGridMap.Type, (byte)Directions.Left))
                 {
-                    if (NewPosition.X < 0)
+                    if (NewX < 0)
                     {
-                        NewPosition.X = GlobalConstants.GRIDMAP_BLOCK_WIDTH + NewPosition.X;
-                        --NewPosition.Location.X;
+                        Position.X = GlobalConstants.GRIDMAP_BLOCK_WIDTH + NewX;
+                        ChangeGPSDueDirection(1, Directions.Left);
                     }
+                    else
+                        Position.X = NewX;
                 }
                 else
-                    NewPosition.X = GlobalConstants.GRIDMAP_BORDER_PX + GlobalConstants.PLAYER_SIZE_WIDTH / 2;
+                    Position.X = GlobalConstants.GRIDMAP_BORDER_PX + GlobalConstants.PLAYER_SIZE_WIDTH / 2;
             }
+            else
+                Position.X = NewX;
 
-            NewPosition.Y = NewPosition.Y
+            NewY = Position.Y
                 + (BinaryOperations.GetBit(MoveType, (byte)Directions.Down) - BinaryOperations.GetBit(MoveType, (byte)Directions.Up))
                 * GlobalConstants.MOVEMENT_STEP_PX;
-            if (NewPosition.Y > (GlobalConstants.GRIDMAP_BLOCK_HEIGHT - GlobalConstants.GRIDMAP_BORDER_PX - GlobalConstants.PLAYER_SIZE_HEIGHT / 2))
+            if (NewY > (GlobalConstants.GRIDMAP_BLOCK_HEIGHT - GlobalConstants.GRIDMAP_BORDER_PX - GlobalConstants.PLAYER_SIZE_HEIGHT / 2))
             {
                 if (BinaryOperations.IsBit(CurrentGridMap.Type, (byte)Directions.Down))
                 {
-                    if (NewPosition.Y > GlobalConstants.GRIDMAP_BLOCK_HEIGHT)
+                    if (NewY > GlobalConstants.GRIDMAP_BLOCK_HEIGHT)
                     {
-                        NewPosition.Y = NewPosition.Y - GlobalConstants.GRIDMAP_BLOCK_HEIGHT;
-                        ++NewPosition.Location.Y;
+                        Position.Y = NewY - GlobalConstants.GRIDMAP_BLOCK_HEIGHT;
+                        ChangeGPSDueDirection(1, Directions.Down);
                     }
+                    else
+                        Position.Y = NewY;
                 }
                 else
-                    NewPosition.Y = GlobalConstants.GRIDMAP_BLOCK_HEIGHT - GlobalConstants.GRIDMAP_BORDER_PX - GlobalConstants.PLAYER_SIZE_HEIGHT / 2;
+                    Position.Y = GlobalConstants.GRIDMAP_BLOCK_HEIGHT - GlobalConstants.GRIDMAP_BORDER_PX - GlobalConstants.PLAYER_SIZE_HEIGHT / 2;
             }
-            else if (NewPosition.Y < (GlobalConstants.GRIDMAP_BORDER_PX + GlobalConstants.PLAYER_SIZE_HEIGHT / 2))
+            else if (NewY < (GlobalConstants.GRIDMAP_BORDER_PX + GlobalConstants.PLAYER_SIZE_HEIGHT / 2))
             {
                 if (BinaryOperations.IsBit(CurrentGridMap.Type, (byte)Directions.Up))
                 {
-                    if (NewPosition.Y < 0)
+                    if (NewY < 0)
                     {
-                        NewPosition.Y = GlobalConstants.GRIDMAP_BLOCK_HEIGHT + NewPosition.Y;
-                        --NewPosition.Location.Y;
+                        Position.Y = GlobalConstants.GRIDMAP_BLOCK_HEIGHT + NewY;
+                        ChangeGPSDueDirection(1, Directions.Up);
                     }
+                    else
+                        Position.Y = NewY;
                 }
                 else
-                    NewPosition.Y = GlobalConstants.GRIDMAP_BORDER_PX + GlobalConstants.PLAYER_SIZE_HEIGHT / 2;
+                    Position.Y = GlobalConstants.GRIDMAP_BORDER_PX + GlobalConstants.PLAYER_SIZE_HEIGHT / 2;
             }
-
-            Position = NewPosition;
-            CurrentGridMap = World.GetWorldMap().GetGridMapByGPS(Position.Location);
+            else
+                Position.Y = NewY;
 
             if ((Position.X <= GlobalConstants.GRIDMAP_BLOCK_WIDTH - GlobalConstants.GRIDMAP_BORDER_PX) &&
                 (Position.X >= GlobalConstants.GRIDMAP_BORDER_PX) &&
@@ -137,6 +145,19 @@ namespace Maze.Classes
             if (BinaryOperations.IsBit(Block.Attribute, (byte)Attributes.HasCoin) &&
                 !World.GetWorldMap().IsCoinCollected(CurrentGridMap))
                 World.GetWorldMap().CollectCoin(CurrentGridMap);
+        }
+
+        private void ChangeGPSDueDirection(int BlockPassCount, Directions Direction)
+        {
+            switch (Direction)
+            {
+                case Directions.Up: Position.Location.Y -= BlockPassCount; break;
+                case Directions.Down: Position.Location.Y += BlockPassCount; break;
+                case Directions.Left: Position.Location.X -= BlockPassCount; break;
+                case Directions.Right: Position.Location.X += BlockPassCount; break;
+            }
+
+            CurrentGridMap = World.GetWorldMap().GetGridMapByGPS(Position.Location);
         }
 
         public bool IsFinished() { return FinishReached; }
