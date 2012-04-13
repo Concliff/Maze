@@ -46,25 +46,42 @@ namespace Maze.Forms
                 }
             MovementAction(MoveType);
 
-            switch (KeyMgr.ExtractKeyPressed())
-            {
-                case Keys.Space: RebuildGraphMap(); break;
-            }
         }
         private void MovementAction(byte MoveType)
         {
+            if (HasBit(MoveType, (byte)Directions.Right))
+                VirtualPlayer.Position.X += GlobalConstants.MOVEMENT_STEP_PX * 2;
+            if (HasBit(MoveType, (byte)Directions.Left))
+                VirtualPlayer.Position.X -= GlobalConstants.MOVEMENT_STEP_PX * 2;
+            if (HasBit(MoveType, (byte)Directions.Up))
+                VirtualPlayer.Position.Y -= GlobalConstants.MOVEMENT_STEP_PX * 2;
+            if (HasBit(MoveType, (byte)Directions.Down))
+                VirtualPlayer.Position.Y += GlobalConstants.MOVEMENT_STEP_PX * 2;
 
-            if (!HasBit(MoveType, (byte)Directions.Up) && !HasBit(MoveType, (byte)Directions.Down) &&
-                !HasBit(MoveType, (byte)Directions.Right) && !HasBit(MoveType, (byte)Directions.Left))
-                return;
+            if (VirtualPlayer.Position.X > GlobalConstants.GRIDMAP_BLOCK_WIDTH)
+            {
+                ++VirtualPlayer.Position.Location.X;
+                VirtualPlayer.Position.X -= GlobalConstants.GRIDMAP_BLOCK_WIDTH;
+            }
 
+            if (VirtualPlayer.Position.X < 0)
+            {
+                --VirtualPlayer.Position.Location.X;
+                VirtualPlayer.Position.X = GlobalConstants.GRIDMAP_BLOCK_WIDTH + VirtualPlayer.Position.X;
+            }
 
-            GridGPS OldPosition = new GridGPS();
-            OldPosition = VirtualPlayer.CopyGridGPS();
-            VirtualPlayer.MovementAction(MoveType);
+            if (VirtualPlayer.Position.Y > GlobalConstants.GRIDMAP_BLOCK_HEIGHT)
+            {
+                ++VirtualPlayer.Position.Location.Y;
+                VirtualPlayer.Position.Y -= GlobalConstants.GRIDMAP_BLOCK_HEIGHT;
+            }
 
-            if (OldPosition.Equals(VirtualPlayer.Position))
-                return;
+            if (VirtualPlayer.Position.Y < 0)
+            {
+                --VirtualPlayer.Position.Location.Y;
+                VirtualPlayer.Position.Y = GlobalConstants.GRIDMAP_BLOCK_HEIGHT + VirtualPlayer.Position.Y;
+            }
+
             RebuildGraphMap();
         }
 
