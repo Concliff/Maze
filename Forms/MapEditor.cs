@@ -142,8 +142,19 @@ namespace Maze.Forms
 
         void BlockClick(object sender, System.EventArgs e)
         {
-            //this.BackColor = Color.Red;
-            GridMap Block = (GridMap)((PictureBox)sender).Tag;
+            GPS CursorGPS = VirtualPlayer.Position.Location;
+
+            // Calculate GPS of mouse click location by distance beetween player postion, 
+            // form center point and MouseClick point
+            CursorGPS.X += (int)Math.Floor((VirtualPlayer.Position.X + (Cursor.Position.X - this.Location.X -
+                (this.PlayerPB.Location.X + this.PlayerPB.Size.Width / 2 + FormBorderBarSize))) /
+                (double)GlobalConstants.GRIDMAP_BLOCK_WIDTH);
+
+            CursorGPS.Y += (int)Math.Floor((VirtualPlayer.Position.Y + (Cursor.Position.Y - this.Location.Y -
+                (this.PlayerPB.Location.Y + this.PlayerPB.Size.Height / 2 + FormTitleBarSize))) /
+                (double)GlobalConstants.GRIDMAP_BLOCK_HEIGHT);
+
+            GridMap Block = GetWorldMap().GetGridMapByGPS(CursorGPS);
 
             if (BlockEditForm == null)
                 BlockEditForm = new BlockEdit(Block);

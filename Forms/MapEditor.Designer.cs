@@ -51,9 +51,10 @@ namespace Maze.Forms
         private void CustomInitialize()
         {
             this.Size = new System.Drawing.Size
-                ((GlobalConstants.GRIDMAP_BLOCK_WIDTH + 1) * (GlobalConstants.GRIDMAP_WIDTH - 1),
-                (GlobalConstants.GRIDMAP_BLOCK_HEIGHT + 1) * (GlobalConstants.GRIDMAP_HEIGHT - 1));
+                ((GlobalConstants.GRIDMAP_BLOCK_WIDTH) * (GlobalConstants.GRIDMAP_WIDTH - 2),
+                (GlobalConstants.GRIDMAP_BLOCK_HEIGHT) * (GlobalConstants.GRIDMAP_HEIGHT - 2));
             this.FormClosing += new FormClosingEventHandler(MapEditorFormClosing);
+            this.MouseClick +=new MouseEventHandler(BlockClick);
 
             this.KeyMgr = new KeyManager();
             this.PlayerPB = new PictureBox();
@@ -61,7 +62,7 @@ namespace Maze.Forms
             this.PlayerPB.Size = new System.Drawing.Size(10, 10);
             PlayerPB.BackColor = System.Drawing.Color.Red;
             this.PlayerPB.Location = new System.Drawing.Point
-                ((this.Size.Width - this.PlayerPB.Size.Width) / 2 - 25, (this.Size.Height - this.PlayerPB.Size.Height) / 2 -25);
+                ((this.Size.Width - this.PlayerPB.Size.Width) / 2, (this.Size.Height - this.PlayerPB.Size.Height) / 2);
             this.PlayerPB.Name = "PlayerPB";
             this.PlayerPB.TabIndex = 1;
             this.PlayerPB.TabStop = false;

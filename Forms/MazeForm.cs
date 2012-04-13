@@ -8,6 +8,8 @@ namespace Maze.Forms
 {
     public partial class MazeForm : System.Windows.Forms.Form
     {
+        public static int FormTitleBarSize = 28;
+        public static int FormBorderBarSize = 7;
 
         protected Map GetWorldMap()
         {
