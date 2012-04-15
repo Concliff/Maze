@@ -29,12 +29,15 @@ namespace Maze.Classes
             IsShiftDown = false;
         }
 
+        /// <summary>
+        /// Occurs when a key is pressed
+        /// </summary>
         public void EventKeyDown(object sender, KeyEventArgs e)
         {
+            // If key is pressed already
             if (KeysDownList.Contains(e.KeyCode))
                 return;
 
-            //LastArg = e;
             KeyPressed = e.KeyCode;
             IsShiftDown = e.Shift;
             IsAltDown = e.Alt;
@@ -44,19 +47,27 @@ namespace Maze.Classes
             
         }
 
+        /// <summary>
+        /// Occurs when a key is released
+        /// </summary>
         public void EventKeyUp(object sender, KeyEventArgs e)
         {
             KeysDownList.Remove(e.KeyCode);
             --KeysDownCount;
         }
 
+        /// <summary>
+        /// Occurs when a key is pressed
+        /// </summary>
         public void EventKeyPress(object sender, KeyPressEventArgs e)
         {
             // TO DO
         }
 
         public Keys KeyDown(int Number) { return (Keys)KeysDownList[Number]; }
-
+        /// <summary>
+        /// Receive last pressed key, clear the record about lass key pressed
+        /// </summary>
         public Keys ExtractKeyPressed()
         {
             Keys KeyToReturn;

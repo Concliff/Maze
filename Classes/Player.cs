@@ -50,14 +50,20 @@ namespace Maze.Classes
             return Copy;
         }
 
+        /// <summary>
+        /// Player Moving Handler
+        /// </summary>
+        /// <param name="MoveType">Flags of direction</param>
         public GridGPS MovementAction(byte MoveType)
         {
+            // New position coords
             int NewX, NewY;
-
             NewX = Position.X
                 + (BinaryOperations.GetBit(MoveType, (byte)Directions.Right) -  BinaryOperations.GetBit(MoveType, (byte)Directions.Left))
                 * GlobalConstants.MOVEMENT_STEP_PX;
 
+            // New position X and Y should be within allowed range
+            // If not - prevent movement or change location
             if (NewX > (GlobalConstants.GRIDMAP_BLOCK_WIDTH - GlobalConstants.GRIDMAP_BORDER_PX - GlobalConstants.PLAYER_SIZE_WIDTH / 2))
             {
                 if (BinaryOperations.IsBit(CurrentGridMap.Type, (byte)Directions.Right))
@@ -127,6 +133,7 @@ namespace Maze.Classes
             else
                 Position.Y = NewY;
 
+            // Check whether player moved into block (account block border)
             if ((Position.X <= GlobalConstants.GRIDMAP_BLOCK_WIDTH - GlobalConstants.GRIDMAP_BORDER_PX) &&
                 (Position.X >= GlobalConstants.GRIDMAP_BORDER_PX) &&
                 (Position.Y <= GlobalConstants.GRIDMAP_BLOCK_HEIGHT - GlobalConstants.GRIDMAP_BORDER_PX) &&
@@ -134,9 +141,13 @@ namespace Maze.Classes
                 ReachedGridMap(World.GetWorldMap().GetGridMapByGPS(Position.Location));
             return Position;
         }
+
         public void TeleportTo() { }
 
-        private void ReachedGridMap(GridMap Block)
+        /// <summary>
+        /// Called when player moved to the next block
+        /// </summary>
+         private void ReachedGridMap(GridMap Block)
         {
             if (BinaryOperations.IsBit(Block.Attribute, (byte)Attributes.IsFinish) &&
                 World.GetWorldMap().GetCoinsCount() == World.GetWorldMap().GetCollectedCoinsCount())
@@ -146,7 +157,9 @@ namespace Maze.Classes
                 !World.GetWorldMap().IsCoinCollected(CurrentGridMap))
                 World.GetWorldMap().CollectCoin(CurrentGridMap);
         }
-
+        /// <summary>
+         /// Change Player's location by given block count in a given direction
+        /// </summary>
         private void ChangeGPSDueDirection(int BlockPassCount, Directions Direction)
         {
             switch (Direction)

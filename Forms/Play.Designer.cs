@@ -188,6 +188,7 @@ namespace Maze.Forms
 
         private void AddControlsOrder()
         {
+            // Add every control in the specific order
             this.Controls.Add(this.label1);
             this.Controls.Add(this.PlayerPB);
             this.Controls.Add(this.pictureBox2);
