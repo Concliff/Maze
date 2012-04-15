@@ -19,6 +19,7 @@ namespace Maze.Classes
         public int OptionValue;
         public int ND4;
 
+        // Define members by specific default vaules
         public void Initialize()
         {
             ID = -1;
@@ -71,10 +72,10 @@ namespace Maze.Classes
 
     public class Map
     {
-        private ArrayList MapBlocks;
-        private ArrayList Coins;
-        private string[] MapNameList;
-        private Image[] Pictures;
+        private ArrayList MapBlocks;        // Array of GridMap block of current map
+        private ArrayList Coins;            // Array of Coins on map
+        private string[] MapNameList;       // Names of All downloaded maps
+        private Image[] Pictures;           // Blocks Images
         public Image StartImage;
         public Image FinishImage;
         public Image CoinImage;
@@ -82,7 +83,7 @@ namespace Maze.Classes
         private int CellsCount;
         private int BlocksCount;
         private string CurrentMapName;
-        private bool GridMapChanged;
+        private bool GridMapChanged;        // If map changed, it should be rewrited into mapFile
 
         private string MapDirectoryPath = GlobalConstants.MAPS_PATH;
         private string ImageDirectoryPath = GlobalConstants.IMAGES_PATH;
@@ -292,6 +293,7 @@ namespace Maze.Classes
             return StartPoint;
         }
 
+        // Outdated method
         private void Initialize(GridMap NewGridMap)
         {
             NewGridMap.ID = -1;

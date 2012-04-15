@@ -15,8 +15,8 @@ namespace Maze.Forms
         Player oPlayer;
         int tempCount;
 
-        DateTime ProgramStartDateTime;
-        TimeSpan ProgramTime;
+        DateTime ProgramStartDateTime;  // Contains Time when game was started
+        TimeSpan ProgramTime;           // Contains game run-time
 
         TimeControl SysTimer;
         Graphics TimeGraph;
@@ -70,11 +70,14 @@ namespace Maze.Forms
 
         public void SystemTimerTick(object sender, EventArgs e)
         {
+            // return if a player reached finish block
             if (oPlayer.IsFinished())
                 return;
 
-            ProgramTime = DateTime.Now.Subtract
-                (ProgramStartDateTime);
+            // Refresh game run-time
+            ProgramTime = DateTime.Now.Subtract(ProgramStartDateTime);
+
+            // Repaint Game stats panel
             this.RightPanelPB.Invalidate();
 
             //this.SuspendLayout();
@@ -89,9 +92,12 @@ namespace Maze.Forms
             // Moving
             byte MoveType = 0;
             SetBit(ref MoveType, (byte)Directions.None);
+
+            // Review all the keys are currently down
             for (int counter = 0; counter < KeyMgr.KeysDownCount; ++counter)
                 switch (KeyMgr.KeyDown(counter))
                 {
+                    // Catch moving keys
                     case Keys.W: SetBit(ref MoveType, (byte)Directions.Up); break;
                     case Keys.A: SetBit(ref MoveType, (byte)Directions.Left); break;
                     case Keys.S: SetBit(ref MoveType, (byte)Directions.Down); break;
@@ -100,6 +106,7 @@ namespace Maze.Forms
 
             MovementAction(MoveType);
 
+            // Get last pressed Key
             switch (KeyMgr.ExtractKeyPressed())
             {
                 case Keys.M:
@@ -111,8 +118,8 @@ namespace Maze.Forms
                     break;
             }
 
-            World.GetPlayForm().label1.Text = oPlayer.Position.Location.X.ToString() + "\n" + oPlayer.Position.Location.Y.ToString() +
-    "\n" + oPlayer.Position.X.ToString() + "\n" + oPlayer.Position.Y.ToString();// "move";
+            //World.GetPlayForm().label1.Text = oPlayer.Position.Location.X.ToString() + "\n" + oPlayer.Position.Location.Y.ToString() +
+            //    "\n" + oPlayer.Position.X.ToString() + "\n" + oPlayer.Position.Y.ToString();// "move";
             //label1.Text = tempCount.ToString();
         }
 
@@ -122,8 +129,13 @@ namespace Maze.Forms
             ++tempCount;
         }
 
+        /// <summary>
+        /// PlayForm Moving Handler
+        /// </summary>
+        /// <param name="MoveType">Flags of direction</param>
         private void MovementAction(byte MoveType)
         {
+            // Check if moving occurs
             if (!HasBit(MoveType, (byte)Directions.Up) && !HasBit(MoveType, (byte)Directions.Down) &&
                 !HasBit(MoveType, (byte)Directions.Right) && !HasBit(MoveType, (byte)Directions.Left))
                 return;
@@ -135,7 +147,10 @@ namespace Maze.Forms
             if (oPlayer.IsFinished())
                 MessageBox.Show("FINISH");
         }
-
+        /// <summary>
+        /// RePaint PlayForm map pictures.
+        /// Include images of the player, blocks and objects on a block
+        /// </summary>
         private void RebuildGraphMap()
         {
             this.SuspendLayout();
@@ -145,6 +160,7 @@ namespace Maze.Forms
             for (int i = 0; i < GlobalConstants.GRIDMAP_WIDTH; ++i)
                 for (int j = 0; j < GlobalConstants.GRIDMAP_HEIGHT; ++j)
                 {
+                    // Calculated location point for every block
                     int x, y;
                     x = GridMapPB.Location.X + (i - 1) * GlobalConstants.GRIDMAP_BLOCK_WIDTH - (oPlayer.Position.X - 25);
                     y = GridMapPB.Location.Y + (j - 1) * GlobalConstants.GRIDMAP_BLOCK_HEIGHT - (oPlayer.Position.Y - 25);

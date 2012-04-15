@@ -28,6 +28,7 @@ namespace Maze.Forms
         {
             BlockIDTextBox.Text = Block.ID.ToString(); ;
 
+            // Add new or chage exsist MapBlock
             if (Block.ID == -1)
             {
                 BlockIDTextBox.Text = (GetWorldMap().GetBlocksCount()).ToString();
@@ -46,6 +47,7 @@ namespace Maze.Forms
             DownCheckBox.Checked = HasBit(Block.Type, (byte)Directions.Down);
             RightCheckBox.Checked = HasBit(Block.Type, (byte)Directions.Right);
 
+            // Attributes
             StartCheckBox.Checked = HasBit(Block.Attribute,(byte)Attributes.IsStart);
             FinishCheckBox.Checked = HasBit(Block.Attribute,(byte)Attributes.IsFinish);
             CoinCheckBox.Checked = HasBit(Block.Attribute,(byte)Attributes.HasCoin);
