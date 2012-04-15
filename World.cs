@@ -14,9 +14,11 @@ namespace Maze
         private static Play PlayForm;
         private static MapEditor MapEditorForm;
         private GameForm StartGameForm;
+        private static UnitContainer unitContainer;
         
         public World()
         {
+            unitContainer = new UnitContainer();
             NextAction = WorldNextAction.StartGame;
             WorldMap = new Map();
             //PlayForm = new Play();
@@ -47,6 +49,11 @@ namespace Maze
                         return;
                 }
             }
+        }
+
+        public static UnitContainer GetUnitContainer()
+        {
+            return unitContainer;
         }
 
         public static Map GetWorldMap()

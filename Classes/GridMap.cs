@@ -43,6 +43,7 @@ namespace Maze.Classes
         public int Map;
     };
 
+    // Location on current Block
     public struct GridGPS
     {
         public GPS Location;

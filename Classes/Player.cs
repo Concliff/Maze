@@ -6,11 +6,9 @@ using Maze.Forms;
 
 namespace Maze.Classes
 {
-    public class Player
+    public class Player : Unit
     {
         private String Name;
-        public GridGPS Position;    // Location on current Block
-        private GridMap CurrentGridMap;
         private bool FinishReached;
 
         public Player()
@@ -30,7 +28,11 @@ namespace Maze.Classes
         public Player(String name) : this()
         {
             Name = name;
+        }
 
+        private Map GetWorldMap()
+        {
+            return World.GetWorldMap();
         }
 
         public String GetName() { return Name; }
@@ -138,7 +140,7 @@ namespace Maze.Classes
                 (Position.X >= GlobalConstants.GRIDMAP_BORDER_PX) &&
                 (Position.Y <= GlobalConstants.GRIDMAP_BLOCK_HEIGHT - GlobalConstants.GRIDMAP_BORDER_PX) &&
                 (Position.Y >= GlobalConstants.GRIDMAP_BORDER_PX))
-                ReachedGridMap(World.GetWorldMap().GetGridMapByGPS(Position.Location));
+                ReachedGridMap(GetWorldMap().GetGridMapByGPS(Position.Location));
             return Position;
         }
 
@@ -150,12 +152,12 @@ namespace Maze.Classes
          private void ReachedGridMap(GridMap Block)
         {
             if (BinaryOperations.IsBit(Block.Attribute, (byte)Attributes.IsFinish) &&
-                World.GetWorldMap().GetCoinsCount() == World.GetWorldMap().GetCollectedCoinsCount())
+                GetWorldMap().GetCoinsCount() == GetWorldMap().GetCollectedCoinsCount())
                 FinishReached = true;
 
             if (BinaryOperations.IsBit(Block.Attribute, (byte)Attributes.HasCoin) &&
-                !World.GetWorldMap().IsCoinCollected(CurrentGridMap))
-                World.GetWorldMap().CollectCoin(CurrentGridMap);
+                !GetWorldMap().IsCoinCollected(CurrentGridMap))
+                GetWorldMap().CollectCoin(CurrentGridMap);
         }
         /// <summary>
          /// Change Player's location by given block count in a given direction
@@ -170,7 +172,7 @@ namespace Maze.Classes
                 case Directions.Right: Position.Location.X += BlockPassCount; break;
             }
 
-            CurrentGridMap = World.GetWorldMap().GetGridMapByGPS(Position.Location);
+            CurrentGridMap = GetWorldMap().GetGridMapByGPS(Position.Location);
         }
 
         public bool IsFinished() { return FinishReached; }
