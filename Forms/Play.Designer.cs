@@ -169,7 +169,7 @@ namespace Maze.Forms
             //
             this.MonsterPB.Image = Image.FromFile(ImageDirectoryPath + "Monster0.png");
             this.MonsterPB.BackColor = System.Drawing.Color.Transparent;
-            this.MonsterPB.Size = new System.Drawing.Size(30,29);
+            this.MonsterPB.Size = new System.Drawing.Size(this.MonsterPB.Image.Width, this.MonsterPB.Image.Height);
             this.MonsterPB.Location = new System.Drawing.Point(505, 80);
             this.MonsterPB.Name = "MonsterPB";
             this.MonsterPB.TabIndex = 0;

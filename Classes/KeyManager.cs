@@ -66,7 +66,7 @@ namespace Maze.Classes
 
         public Keys KeyDown(int Number) { return (Keys)KeysDownList[Number]; }
         /// <summary>
-        /// Receive last pressed key, clear the record about lass key pressed
+        /// Receive last pressed key, clear the record about last key pressed
         /// </summary>
         public Keys ExtractKeyPressed()
         {

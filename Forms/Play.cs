@@ -43,6 +43,12 @@ namespace Maze.Forms
             SysTimer = new TimeControl(this);
 
             RebuildGraphMap();
+            Player PlayerA = new Player();
+            Player PlayerB = new Player();
+            Player PlayerC = new Player();
+            Player PlayerD = new Player();
+            Player PlayerE = new Player();
+            MessageBox.Show(PlayerA.GetGUID().ToString());
         }
 
         ~Play()
