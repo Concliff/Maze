@@ -79,6 +79,7 @@ namespace Maze.Classes
         private Image[] Pictures;           // Blocks Images
         public Image StartImage;
         public Image FinishImage;
+        public Image DeimosImage;
         public Image CoinImage;
         private GPS StartPoint;
         private GPS FinishPoint;
@@ -133,6 +134,7 @@ namespace Maze.Classes
             FinishImage = Image.FromFile(ImageDirectoryPath + "Finish.bmp");
             StartImage = Image.FromFile(ImageDirectoryPath + "Start.bmp");
             CoinImage = Image.FromFile(ImageDirectoryPath + "Coin.bmp");
+            DeimosImage = Image.FromFile(ImageDirectoryPath + "Monster0.png");
         }
 
         public void CloseCurrentMap()
