@@ -13,6 +13,7 @@ namespace Maze.Forms
     public partial class Play : MazeForm
     {
         Player oPlayer;
+        Deimos oDeimos;
         int tempCount;
 
         DateTime ProgramStartDateTime;  // Contains Time when game was started
@@ -40,6 +41,8 @@ namespace Maze.Forms
             // Player grid is 7,5 (central)
 
             oPlayer = new Player();
+            oDeimos = new Deimos();
+            oDeimos.StartMotion();
             SysTimer = new TimeControl(this);
 
             RebuildGraphMap();
@@ -73,6 +76,8 @@ namespace Maze.Forms
             // return if a player reached finish block
             if (oPlayer.IsFinished())
                 return;
+
+            oDeimos.MovementAction();
 
             // Refresh game run-time
             ProgramTime = DateTime.Now.Subtract(ProgramStartDateTime);
@@ -203,7 +208,17 @@ namespace Maze.Forms
                         g.DrawImage(GetWorldMap().CoinImage, x + 15, y + 10, 20, 30);
                         g.Dispose();
                     }
-
+                    // Draw Deimos
+                    if (oDeimos.Position.Location.Equals(Block.Location))
+                    {
+                        Graphics g = Graphics.FromImage(GetWorldMap().DeimosImage);
+                        g = this.CreateGraphics();
+                        g.DrawImage(GetWorldMap().DeimosImage,
+                            x + oDeimos.Position.X - GetWorldMap().DeimosImage.Size.Width /2,
+                            y + oDeimos.Position.Y - GetWorldMap().DeimosImage.Size.Height /2,
+                            GetWorldMap().DeimosImage.Size.Width, GetWorldMap().DeimosImage.Size.Height);
+                        g.Dispose();
+                    }
                 }
             this.ResumeLayout();
         }

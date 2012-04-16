@@ -14,7 +14,7 @@ namespace Maze.Classes
         public Player()
         {
             Name = "Noname";
-
+            UnitType = UnitTypes.Player;
             Position.Location = World.GetWorldMap().GetStartPoint();
             Position.X = 25;
             Position.Y = 25;
@@ -28,11 +28,6 @@ namespace Maze.Classes
         public Player(String name) : this()
         {
             Name = name;
-        }
-
-        private Map GetWorldMap()
-        {
-            return World.GetWorldMap();
         }
 
         public String GetName() { return Name; }
@@ -140,7 +135,7 @@ namespace Maze.Classes
                 (Position.X >= GlobalConstants.GRIDMAP_BORDER_PX) &&
                 (Position.Y <= GlobalConstants.GRIDMAP_BLOCK_HEIGHT - GlobalConstants.GRIDMAP_BORDER_PX) &&
                 (Position.Y >= GlobalConstants.GRIDMAP_BORDER_PX))
-                ReachedGridMap(GetWorldMap().GetGridMapByGPS(Position.Location));
+                ReachedGridMap();
             return Position;
         }
 
@@ -149,30 +144,15 @@ namespace Maze.Classes
         /// <summary>
         /// Called when player moved to the next block
         /// </summary>
-         private void ReachedGridMap(GridMap Block)
+        private void ReachedGridMap()
         {
-            if (BinaryOperations.IsBit(Block.Attribute, (byte)Attributes.IsFinish) &&
+            if (BinaryOperations.IsBit(CurrentGridMap.Attribute, (byte)Attributes.IsFinish) &&
                 GetWorldMap().GetCoinsCount() == GetWorldMap().GetCollectedCoinsCount())
                 FinishReached = true;
 
-            if (BinaryOperations.IsBit(Block.Attribute, (byte)Attributes.HasCoin) &&
+            if (BinaryOperations.IsBit(CurrentGridMap.Attribute, (byte)Attributes.HasCoin) &&
                 !GetWorldMap().IsCoinCollected(CurrentGridMap))
                 GetWorldMap().CollectCoin(CurrentGridMap);
-        }
-        /// <summary>
-         /// Change Player's location by given block count in a given direction
-        /// </summary>
-        private void ChangeGPSDueDirection(int BlockPassCount, Directions Direction)
-        {
-            switch (Direction)
-            {
-                case Directions.Up: Position.Location.Y -= BlockPassCount; break;
-                case Directions.Down: Position.Location.Y += BlockPassCount; break;
-                case Directions.Left: Position.Location.X -= BlockPassCount; break;
-                case Directions.Right: Position.Location.X += BlockPassCount; break;
-            }
-
-            CurrentGridMap = GetWorldMap().GetGridMapByGPS(Position.Location);
         }
 
         public bool IsFinished() { return FinishReached; }

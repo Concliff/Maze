@@ -6,6 +6,14 @@ using System.Text;
 
 namespace Maze.Classes
 {
+
+    public enum UnitTypes
+    {
+        None = 0,
+        Player = 1,
+        Deimos = 2,
+    };
+
     public class UnitContainer
     {
         private int UnitCounts;
@@ -35,28 +43,43 @@ namespace Maze.Classes
         }
     }
 
-    public enum UnitType
-    {
-        None = 0,
-        Player = 2,
-        Deimos = 3,
-    };  
-
     public class Unit
     {
         public GridGPS Position;
 
-        protected UnitType unitType;
+        protected UnitTypes UnitType;
         protected int GUID;
         protected GridMap CurrentGridMap;
 
         public Unit()
         {
+            UnitType = UnitTypes.None;
             GUID = World.GetUnitContainer().CreateUnit(this);
         }
 
-        public UnitType GetUnitType() { return unitType; }
+        public UnitTypes GetUnitType() { return UnitType; }
 
         public int GetGUID() { return GUID; }
+
+        /// <summary>
+        /// Change Unit's location by given block count in a given direction
+        /// </summary>
+        protected void ChangeGPSDueDirection(int BlockPassCount, Directions Direction)
+        {
+            switch (Direction)
+            {
+                case Directions.Up: Position.Location.Y -= BlockPassCount; break;
+                case Directions.Down: Position.Location.Y += BlockPassCount; break;
+                case Directions.Left: Position.Location.X -= BlockPassCount; break;
+                case Directions.Right: Position.Location.X += BlockPassCount; break;
+            }
+
+            CurrentGridMap = GetWorldMap().GetGridMapByGPS(Position.Location);
+        }
+
+        protected Map GetWorldMap()
+        {
+            return World.GetWorldMap();
+        }
     }
 }
