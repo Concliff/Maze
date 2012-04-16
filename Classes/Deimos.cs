@@ -91,10 +91,10 @@ namespace Maze.Classes
                         break;
                     }
             }
-            if ((Position.X <= GlobalConstants.GRIDMAP_BLOCK_WIDTH - GlobalConstants.GRIDMAP_BORDER_PX) &&
-                (Position.X >= GlobalConstants.GRIDMAP_BORDER_PX) &&
-                (Position.Y <= GlobalConstants.GRIDMAP_BLOCK_HEIGHT - GlobalConstants.GRIDMAP_BORDER_PX) &&
-                (Position.Y >= GlobalConstants.GRIDMAP_BORDER_PX))
+            if ((Position.X <= GlobalConstants.GRIDMAP_BLOCK_WIDTH / 2 + movementStep / 2) &&
+                (Position.X >= GlobalConstants.GRIDMAP_BLOCK_WIDTH / 2 - movementStep / 2) &&
+                (Position.Y <= GlobalConstants.GRIDMAP_BLOCK_HEIGHT / 2 + movementStep / 2) &&
+                (Position.Y >= GlobalConstants.GRIDMAP_BLOCK_HEIGHT / 2 - movementStep / 2))
                 ReachedGridMap();
         }
 
@@ -108,16 +108,45 @@ namespace Maze.Classes
 
         private void SelectNewDirection()
         {
-            if (BinaryOperations.IsBit(CurrentGridMap.Type, (byte)Directions.Left))
-                CurrentDirection = Directions.Left;
-            else if (BinaryOperations.IsBit(CurrentGridMap.Type, (byte)Directions.Right))
-                CurrentDirection = Directions.Right;
-            else if (BinaryOperations.IsBit(CurrentGridMap.Type, (byte)Directions.Up))
-                CurrentDirection = Directions.Up;
-            else if (BinaryOperations.IsBit(CurrentGridMap.Type, (byte)Directions.Down))
-                CurrentDirection = Directions.Down;
+            Directions NewDirection = Directions.None;
+
+            int MaxIterations = 10;
+            Random RandomInt = new Random();
+
+            for (int i = 0; i < MaxIterations; ++i)
+            {
+                switch (RandomInt.Next(4)+1)
+                {
+                    case 1: NewDirection = Directions.Right; break;
+                    case 2: NewDirection = Directions.Down; break;
+                    case 3: NewDirection = Directions.Left; break;
+                    case 4: NewDirection = Directions.Up; break;
+                }
+
+                if (BinaryOperations.IsBit(CurrentGridMap.Type, (byte)NewDirection) &&
+                    NewDirection != GetOppositeDirection(CurrentDirection))
+                {
+                    CurrentDirection = NewDirection;
+                    return;
+                }
+            }
+
+            if (BinaryOperations.IsBit(CurrentGridMap.Type, (byte)GetOppositeDirection(CurrentDirection)))
+                CurrentDirection = GetOppositeDirection(CurrentDirection);
             else
-                IsInMotion = false;
+                CurrentDirection = Directions.None;
+        }
+
+        private Directions GetOppositeDirection(Directions Direction)
+        {
+            switch (Direction)
+            {
+                case Directions.Left: return Directions.Right;
+                case Directions.Right: return Directions.Left;
+                case Directions.Down: return Directions.Up;
+                case Directions.Up: return Directions.Down;
+                default: return Directions.None;
+            }
         }
 
 
