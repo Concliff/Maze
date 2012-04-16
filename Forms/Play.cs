@@ -123,6 +123,8 @@ namespace Maze.Forms
                     break;
             }
 
+            RebuildGraphMap();
+
             //World.GetPlayForm().label1.Text = oPlayer.Position.Location.X.ToString() + "\n" + oPlayer.Position.Location.Y.ToString() +
             //    "\n" + oPlayer.Position.X.ToString() + "\n" + oPlayer.Position.Y.ToString();// "move";
             //label1.Text = tempCount.ToString();
@@ -146,8 +148,6 @@ namespace Maze.Forms
                 return;
 
             oPlayer.MovementAction(MoveType);
-
-            RebuildGraphMap();
 
             if (oPlayer.IsFinished())
                 MessageBox.Show("FINISH");
