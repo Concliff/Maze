@@ -69,6 +69,7 @@
     <Compile Include="Classes\GlobalConstants.cs" />
     <Compile Include="Classes\GridMap.cs" />
     <Compile Include="Classes\KeyManager.cs" />
+    <Compile Include="Classes\PictureManager.cs" />
     <Compile Include="Classes\Player.cs" />
     <Compile Include="Classes\TimeControl.cs" />
     <Compile Include="Classes\Unit.cs" />

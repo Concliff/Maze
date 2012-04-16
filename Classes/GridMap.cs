@@ -76,26 +76,18 @@ namespace Maze.Classes
         private ArrayList MapBlocks;        // Array of GridMap block of current map
         private ArrayList Coins;            // Array of Coins on map
         private string[] MapNameList;       // Names of All downloaded maps
-        private Image[] Pictures;           // Blocks Images
-        public Image StartImage;
-        public Image FinishImage;
-        public Image DeimosImage;
-        public Image CoinImage;
         private GPS StartPoint;
         private GPS FinishPoint;
-        private int CellsCount;
         private int BlocksCount;
         private string CurrentMapName;
         private bool GridMapChanged;        // If map changed, it should be rewrited into mapFile
 
         private string MapDirectoryPath = GlobalConstants.MAPS_PATH;
-        private string ImageDirectoryPath = GlobalConstants.IMAGES_PATH;
 
         public Map()
         {
-            CellsCount = BlocksCount = 0;
+            BlocksCount = 0;
             LoadMapNameList();
-            LoadImages();
             GridMapChanged = false;
         }
 
@@ -119,22 +111,6 @@ namespace Maze.Classes
                     MapNameList[i] = MapName[0];
             }
 
-        }
-
-        private void LoadImages()
-        {
-            StreamReader CellsStream = File.OpenText(ImageDirectoryPath + "Cells.dat");
-            CellsCount = Convert.ToInt32(CellsStream.ReadLine());
-            CellsStream.Close();
-
-            Pictures = new Image[CellsCount];
-            for (int i = 0; i < CellsCount; ++i)
-                Pictures[i] = Image.FromFile(ImageDirectoryPath + "Cell" + i.ToString() + ".bmp");
-
-            FinishImage = Image.FromFile(ImageDirectoryPath + "Finish.bmp");
-            StartImage = Image.FromFile(ImageDirectoryPath + "Start.bmp");
-            CoinImage = Image.FromFile(ImageDirectoryPath + "Coin.bmp");
-            DeimosImage = Image.FromFile(ImageDirectoryPath + "Monster0.png");
         }
 
         public void CloseCurrentMap()
@@ -250,11 +226,6 @@ namespace Maze.Classes
                     return (GridMap)MapBlocks[i];
 
             return MapBlock;
-        }
-
-        public Image GetPictureByType(int Type)
-        {
-            return Pictures[Type];
         }
 
         public int GetBlocksCount()

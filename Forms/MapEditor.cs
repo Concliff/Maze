@@ -17,8 +17,12 @@ namespace Maze.Forms
         private Timer SystemTimer;
         private BlockEdit BlockEditForm;
 
+        private PictureManager PictureMgr;
+
         public MapEditor()
         {
+            PictureMgr = new PictureManager();
+
             InitializeComponent();
             CustomInitialize();
 
@@ -104,35 +108,35 @@ namespace Maze.Forms
                     Block = GetWorldMap().GetGridMapByGPS(PBLocation);
 
                     this.GridMapGraphic[i, j].Block = Block;
-                    this.GridMapGraphic[i, j].Graphic = Graphics.FromImage(GetWorldMap().GetPictureByType(Block.Type));
+                    this.GridMapGraphic[i, j].Graphic = Graphics.FromImage(PictureMgr.GetPictureByType(Block.Type));
                     this.GridMapGraphic[i, j].Graphic.Dispose();
                     this.GridMapGraphic[i, j].Graphic = this.CreateGraphics();
 
-                    this.GridMapGraphic[i, j].Graphic.DrawImage(GetWorldMap().GetPictureByType(Block.Type), x, y, GlobalConstants.GRIDMAP_BLOCK_WIDTH, GlobalConstants.GRIDMAP_BLOCK_HEIGHT);
+                    this.GridMapGraphic[i, j].Graphic.DrawImage(PictureMgr.GetPictureByType(Block.Type), x, y, GlobalConstants.GRIDMAP_BLOCK_WIDTH, GlobalConstants.GRIDMAP_BLOCK_HEIGHT);
                     // Draw Start Block
                     if (HasBit(Block.Attribute, (byte)Attributes.IsStart))
                     {
                         //StartPB.Location = new Point(x + 5, y + 5);
-                        Graphics g = Graphics.FromImage(GetWorldMap().StartImage);
+                        Graphics g = Graphics.FromImage(PictureMgr.StartImage);
                         g = this.CreateGraphics();
-                        g.DrawImage(GetWorldMap().StartImage, x + 5, y + 5, 40, 40);
+                        g.DrawImage(PictureMgr.StartImage, x + 5, y + 5, 40, 40);
                         g.Dispose();
                     }
                     // Draw Finish Block
                     if (HasBit(Block.Attribute, (byte)Attributes.IsFinish))
                     {
                         //FinishPB.Location = new Point(x + 5, y + 5);
-                        Graphics g = Graphics.FromImage(GetWorldMap().FinishImage);// Non indexed image
+                        Graphics g = Graphics.FromImage(PictureMgr.FinishImage);// Non indexed image
                         g = this.CreateGraphics();
-                        g.DrawImage(GetWorldMap().FinishImage, x + 5, y + 5, 40, 40);
+                        g.DrawImage(PictureMgr.FinishImage, x + 5, y + 5, 40, 40);
                         g.Dispose();
                     }
                     // Draw Coin
                     if (HasBit(Block.Attribute, (byte)Attributes.HasCoin))
                     {
-                        Graphics g = Graphics.FromImage(GetWorldMap().CoinImage);
+                        Graphics g = Graphics.FromImage(PictureMgr.CoinImage);
                         g = this.CreateGraphics();
-                        g.DrawImage(GetWorldMap().CoinImage, x + 15, y + 10, 20, 30);
+                        g.DrawImage(PictureMgr.CoinImage, x + 15, y + 10, 20, 30);
                         g.Dispose();
                     }
 

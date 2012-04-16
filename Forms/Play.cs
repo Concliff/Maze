@@ -21,6 +21,8 @@ namespace Maze.Forms
 
         TimeControl SysTimer;
         Graphics TimeGraph;
+
+        PictureManager PictureMgr;
         //public Map FormMap;
 
         public Play()
@@ -28,6 +30,8 @@ namespace Maze.Forms
             //FormMap = new Map();
             tempCount = 0;
             ProgramStartDateTime = DateTime.Now;
+            PictureMgr = new PictureManager();
+
             InitializeComponent();
             CustomInitialize();
             AddControlsOrder();
@@ -176,47 +180,47 @@ namespace Maze.Forms
                     Block = GetWorldMap().GetGridMapByGPS(PBLocation);
 
                     this.GridMapGraphic[i, j].Block = Block;
-                    this.GridMapGraphic[i, j].Graphic = Graphics.FromImage(GetWorldMap().GetPictureByType(Block.Type));
+                    this.GridMapGraphic[i, j].Graphic = Graphics.FromImage(PictureMgr.GetPictureByType(Block.Type));
                     this.GridMapGraphic[i, j].Graphic.Dispose();
                     this.GridMapGraphic[i, j].Graphic = this.CreateGraphics();
                     
-                    this.GridMapGraphic[i, j].Graphic.DrawImage(GetWorldMap().GetPictureByType(Block.Type), x, y, GlobalConstants.GRIDMAP_BLOCK_WIDTH, GlobalConstants.GRIDMAP_BLOCK_HEIGHT);
+                    this.GridMapGraphic[i, j].Graphic.DrawImage(PictureMgr.GetPictureByType(Block.Type), x, y, GlobalConstants.GRIDMAP_BLOCK_WIDTH, GlobalConstants.GRIDMAP_BLOCK_HEIGHT);
                     // Draw Start Block
                     if (HasBit(Block.Attribute, (byte)Attributes.IsStart))
                     {
                         //StartPB.Location = new Point(x + 5, y + 5);
-                        Graphics g = Graphics.FromImage(GetWorldMap().StartImage);
+                        Graphics g = Graphics.FromImage(PictureMgr.StartImage);
                         g = this.CreateGraphics();
-                        g.DrawImage(GetWorldMap().StartImage, x + 5, y + 5, 40, 40);
+                        g.DrawImage(PictureMgr.StartImage, x + 5, y + 5, 40, 40);
                         g.Dispose();
                     }
                     // Draw Finish Block
                     if (HasBit(Block.Attribute, (byte)Attributes.IsFinish))
                     {
                         //FinishPB.Location = new Point(x + 5, y + 5);
-                        Graphics g = Graphics.FromImage(GetWorldMap().FinishImage);// Non indexed image
+                        Graphics g = Graphics.FromImage(PictureMgr.FinishImage);// Non indexed image
                         g = this.CreateGraphics();
-                        g.DrawImage(GetWorldMap().FinishImage, x + 5, y + 5, 40, 40);
+                        g.DrawImage(PictureMgr.FinishImage, x + 5, y + 5, 40, 40);
                         g.Dispose();
                     }
                     // Draw Coin if not collected
                     if (HasBit(Block.Attribute, (byte) Attributes.HasCoin) &&
                         !GetWorldMap().IsCoinCollected(Block))
                     {
-                        Graphics g = Graphics.FromImage(GetWorldMap().CoinImage);
+                        Graphics g = Graphics.FromImage(PictureMgr.CoinImage);
                         g = this.CreateGraphics();
-                        g.DrawImage(GetWorldMap().CoinImage, x + 15, y + 10, 20, 30);
+                        g.DrawImage(PictureMgr.CoinImage, x + 15, y + 10, 20, 30);
                         g.Dispose();
                     }
                     // Draw Deimos
                     if (oDeimos.Position.Location.Equals(Block.Location))
                     {
-                        Graphics g = Graphics.FromImage(GetWorldMap().DeimosImage);
+                        Graphics g = Graphics.FromImage(PictureMgr.DeimosImage);
                         g = this.CreateGraphics();
-                        g.DrawImage(GetWorldMap().DeimosImage,
-                            x + oDeimos.Position.X - GetWorldMap().DeimosImage.Size.Width /2,
-                            y + oDeimos.Position.Y - GetWorldMap().DeimosImage.Size.Height /2,
-                            GetWorldMap().DeimosImage.Size.Width, GetWorldMap().DeimosImage.Size.Height);
+                        g.DrawImage(PictureMgr.DeimosImage,
+                            x + oDeimos.Position.X - PictureMgr.DeimosImage.Size.Width / 2,
+                            y + oDeimos.Position.Y - PictureMgr.DeimosImage.Size.Height / 2,
+                            PictureMgr.DeimosImage.Size.Width, PictureMgr.DeimosImage.Size.Height);
                         g.Dispose();
                     }
                 }
