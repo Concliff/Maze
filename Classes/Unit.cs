@@ -12,6 +12,7 @@ namespace Maze.Classes
         None = 0,
         Player = 1,
         Deimos = 2,
+        Phobos = 3,
     };
 
     public class UnitContainer
