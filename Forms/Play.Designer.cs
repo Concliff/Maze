@@ -35,7 +35,6 @@ namespace Maze.Forms
             this.components = new System.ComponentModel.Container();
             this.GridMapPB = new System.Windows.Forms.PictureBox();
             this.PlayerPB = new System.Windows.Forms.PictureBox();
-            this.MonsterPB = new System.Windows.Forms.PictureBox();
             this.SystemTimer = new System.Windows.Forms.Timer(this.components);
             this.label1 = new System.Windows.Forms.Label();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
@@ -44,7 +43,6 @@ namespace Maze.Forms
             this.RightPanelPB = new System.Windows.Forms.PictureBox();
             ((System.ComponentModel.ISupportInitialize)(this.GridMapPB)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.PlayerPB)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.MonsterPB)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
@@ -67,14 +65,6 @@ namespace Maze.Forms
             this.PlayerPB.Size = new System.Drawing.Size(100, 50);
             this.PlayerPB.TabIndex = 0;
             this.PlayerPB.TabStop = false;
-            //
-            // MonsterPB
-            //
-            this.MonsterPB.Location = new System.Drawing.Point(505, 80);
-            this.MonsterPB.Size = new System.Drawing.Size(30, 29);
-            this.MonsterPB.Name = "MonsterPB";
-            this.MonsterPB.TabIndex = 0;
-            this.MonsterPB.TabStop = false;
             // 
             // SystemTimer
             // 
@@ -128,7 +118,6 @@ namespace Maze.Forms
             this.Paint += new System.Windows.Forms.PaintEventHandler(this.Play_Paint);
             ((System.ComponentModel.ISupportInitialize)(this.GridMapPB)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.PlayerPB)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.MonsterPB)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).EndInit();
@@ -165,16 +154,6 @@ namespace Maze.Forms
             this.PlayerPB.TabIndex = 1;
             this.PlayerPB.TabStop = false;
             //
-            // MonsterPB
-            //
-            this.MonsterPB.Image = Image.FromFile(ImageDirectoryPath + "Monster0.png");
-            this.MonsterPB.BackColor = System.Drawing.Color.Transparent;
-            this.MonsterPB.Size = new System.Drawing.Size(this.MonsterPB.Image.Width, this.MonsterPB.Image.Height);
-            this.MonsterPB.Location = new System.Drawing.Point(505, 80);
-            this.MonsterPB.Name = "MonsterPB";
-            this.MonsterPB.TabIndex = 0;
-            this.MonsterPB.TabStop = false;
-            //
             // RightPanelPB
             //
             this.RightPanelPB.Location = new System.Drawing.Point(700, 0);
@@ -184,18 +163,6 @@ namespace Maze.Forms
             this.RightPanelPB.TabIndex = 7;
             this.RightPanelPB.TabStop = false;
             this.RightPanelPB.Paint += new PaintEventHandler(RightPanelPBPaint);
-
-            //
-            // Start && Finish
-            //
-            this.FinishPB = new PictureBox();
-            this.StartPB = new PictureBox();
-            this.FinishPB.Size = new Size(40, 40);
-            this.FinishPB.Image = GetWorldMap().FinishImage;
-            this.FinishPB.Location = new Point(-100, -100);
-            this.StartPB.Size = new Size(40, 40);
-            this.StartPB.Image = GetWorldMap().StartImage;
-            this.StartPB.Location = new Point(-100, -100);
 
             GridMapGraphic = new GridMapGraph[GlobalConstants.GRIDMAP_WIDTH, GlobalConstants.GRIDMAP_HEIGHT];
             for (int i = 0; i < GlobalConstants.GRIDMAP_WIDTH; ++i)
@@ -211,13 +178,10 @@ namespace Maze.Forms
             // Add every control in the specific order
             this.Controls.Add(this.label1);
             this.Controls.Add(this.PlayerPB);
-            this.Controls.Add(this.MonsterPB);
             this.Controls.Add(this.pictureBox2);
             this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.RightPanelPB);
             this.Controls.Add(this.pictureBox3);
-            this.Controls.Add(this.FinishPB);
-            this.Controls.Add(this.StartPB);
             this.Controls.Add(this.GridMapPB);
         }
 
@@ -226,7 +190,6 @@ namespace Maze.Forms
 
         private KeyManager KeyMgr;
         private System.Windows.Forms.PictureBox PlayerPB;
-        private System.Windows.Forms.PictureBox MonsterPB;
         private System.Windows.Forms.PictureBox GridMapPB;
         private System.Windows.Forms.Timer SystemTimer;
         public  System.Windows.Forms.Label label1;
@@ -234,8 +197,6 @@ namespace Maze.Forms
         private PictureBox pictureBox2;
         private PictureBox pictureBox3;
         private PictureBox RightPanelPB;
-        private PictureBox FinishPB;
-        private PictureBox StartPB;
 
         private GridMapGraph[,] GridMapGraphic;
     }
