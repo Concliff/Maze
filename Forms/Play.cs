@@ -14,6 +14,7 @@ namespace Maze.Forms
     {
         Player oPlayer;
         Deimos oDeimos;
+        Phobos oPhobos;
         int tempCount;
 
         DateTime ProgramStartDateTime;  // Contains Time when game was started
@@ -46,6 +47,7 @@ namespace Maze.Forms
 
             oPlayer = new Player();
             oDeimos = new Deimos();
+            oPhobos = new Phobos();
             oDeimos.StartMotion();
             SysTimer = new TimeControl(this);
 
@@ -221,6 +223,17 @@ namespace Maze.Forms
                             x + oDeimos.Position.X - PictureMgr.DeimosImage.Size.Width / 2,
                             y + oDeimos.Position.Y - PictureMgr.DeimosImage.Size.Height / 2,
                             PictureMgr.DeimosImage.Size.Width, PictureMgr.DeimosImage.Size.Height);
+                        g.Dispose();
+                    }
+                    //Draw Phobos
+                    if (oPhobos.Position.Location.Equals(Block.Location))
+                    {
+                        Graphics g = Graphics.FromImage(PictureMgr.PhobosImage);
+                        g = this.CreateGraphics();
+                        g.DrawImage(PictureMgr.PhobosImage,
+                            x + oPhobos.Position.X - PictureMgr.PhobosImage.Size.Width,
+                            y + oPhobos.Position.Y - PictureMgr.PhobosImage.Size.Height,
+                            PictureMgr.PhobosImage.Size.Width, PictureMgr.PhobosImage.Size.Height);
                         g.Dispose();
                     }
                 }

@@ -13,6 +13,7 @@ namespace Maze.Classes
         public Image StartImage;
         public Image FinishImage;
         public Image DeimosImage;
+        public Image PhobosImage;
         public Image CoinImage;
 
         private int CellsCount;
@@ -38,7 +39,8 @@ namespace Maze.Classes
             FinishImage = Image.FromFile(ImageDirectoryPath + "Finish.bmp");
             StartImage = Image.FromFile(ImageDirectoryPath + "Start.bmp");
             CoinImage = Image.FromFile(ImageDirectoryPath + "Coin.bmp");
-            DeimosImage = Image.FromFile(ImageDirectoryPath + "Monster0.png");
+            DeimosImage = Image.FromFile(ImageDirectoryPath + "Deimos.png");
+            PhobosImage = Image.FromFile(ImageDirectoryPath + "Phobos.png");
         }
 
         public Image GetPictureByType(int Type)
