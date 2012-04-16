@@ -51,11 +51,13 @@ namespace Maze.Classes
         protected UnitTypes UnitType;
         protected int GUID;
         protected GridMap CurrentGridMap;
+        protected double SpeedRate;
 
         public Unit()
         {
             UnitType = UnitTypes.None;
             GUID = World.GetUnitContainer().CreateUnit(this);
+            SpeedRate = 1.0d;
         }
 
         public UnitTypes GetUnitType() { return UnitType; }
@@ -82,5 +84,8 @@ namespace Maze.Classes
         {
             return World.GetWorldMap();
         }
+
+        protected double GetSpeedRate() { return SpeedRate; }
+        protected void SetSpeedRate(double SpeedRate) { this.SpeedRate = SpeedRate; }
     }
 }
