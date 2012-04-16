@@ -41,7 +41,7 @@ namespace Maze.Classes
             if (CurrentDirection == Directions.None)
                 return;
 
-            int movementStep = (int)(GlobalConstants.MOVEMENT_STEP_PX * 1.0);
+            int movementStep = (int)(GlobalConstants.MOVEMENT_STEP_PX * SpeedRate);
 
             switch (CurrentDirection)
             {
@@ -100,6 +100,10 @@ namespace Maze.Classes
 
         private void ReachedGridMap()
         {
+            Random RandomInt = new Random();
+            if (RandomInt.Next(100) <= 20) // 20% chance to change direction
+                SelectNewDirection();
+
             if (BinaryOperations.IsBit(CurrentGridMap.Type, (byte)CurrentDirection))
                 return;
             else
@@ -115,7 +119,7 @@ namespace Maze.Classes
 
             for (int i = 0; i < MaxIterations; ++i)
             {
-                switch (RandomInt.Next(4)+1)
+                switch (RandomInt.Next(4) + 1)
                 {
                     case 1: NewDirection = Directions.Right; break;
                     case 2: NewDirection = Directions.Down; break;
@@ -123,6 +127,7 @@ namespace Maze.Classes
                     case 4: NewDirection = Directions.Up; break;
                 }
 
+                // Ignore Opposite Direction if there is another one
                 if (BinaryOperations.IsBit(CurrentGridMap.Type, (byte)NewDirection) &&
                     NewDirection != GetOppositeDirection(CurrentDirection))
                 {
@@ -131,6 +136,7 @@ namespace Maze.Classes
                 }
             }
 
+            // Go opposite Direction if no choice to go
             if (BinaryOperations.IsBit(CurrentGridMap.Type, (byte)GetOppositeDirection(CurrentDirection)))
                 CurrentDirection = GetOppositeDirection(CurrentDirection);
             else
