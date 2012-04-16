@@ -81,6 +81,7 @@ namespace Maze.Classes
         public Image FinishImage;
         public Image CoinImage;
         private GPS StartPoint;
+        private GPS FinishPoint;
         private int CellsCount;
         private int BlocksCount;
         private string CurrentMapName;
@@ -187,6 +188,8 @@ namespace Maze.Classes
 
                 if (BinaryOperations.IsBit(GridMapStruct.Attribute, (byte)Attributes.IsStart))
                     StartPoint = GridMapStruct.Location;
+                if (BinaryOperations.IsBit(GridMapStruct.Attribute, (byte)Attributes.IsFinish))
+                    FinishPoint = GridMapStruct.Location;
                 if (BinaryOperations.IsBit(GridMapStruct.Attribute, (byte)Attributes.HasCoin))
                 {
                     Coin NewCoin;
@@ -289,10 +292,8 @@ namespace Maze.Classes
             return MapNameList;
         }
 
-        public GPS GetStartPoint()
-        {
-            return StartPoint;
-        }
+        public GPS GetStartPoint() { return StartPoint; }
+        public GPS GetFinishPoint() { return FinishPoint; }
 
         // Outdated method
         private void Initialize(GridMap NewGridMap)
