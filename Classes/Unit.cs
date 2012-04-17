@@ -45,11 +45,11 @@ namespace Maze.Classes
             return Units.FindAll(p => p.Position.Location.Equals(iGPS));
         }
 
-        public void Update()
+        public void UpdateState()
         {
             foreach (Unit unit in Units)
             {
-                unit.Update();
+                unit.UpdateState();
             }
         }
 
