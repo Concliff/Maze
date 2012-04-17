@@ -21,6 +21,11 @@ namespace Maze.Forms
             World.SetNextAction(NextAction);
         }
 
+        protected UnitContainer GetUnitContainer()
+        {
+            return World.GetUnitContainer();
+        }
+
         protected void SetBit(ref int Number, byte Bit)
         {
             BinaryOperations.SetBit(ref Number, Bit);
