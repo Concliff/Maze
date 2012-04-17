@@ -23,7 +23,13 @@ namespace Maze.Classes
             CurrentGridMap = World.GetWorldMap().GetGridMapByGPS(Position.Location);
         }
 
-        public void StartMotion()
+        public override void UpdateState()
+        {
+            if (IsInMotion)
+                MovementAction();
+        }
+
+        public override void StartMotion()
         { 
             IsInMotion = true; 
             
@@ -36,8 +42,6 @@ namespace Maze.Classes
 
         public void MovementAction()
         {
-            if (!IsInMotion)
-                return;
             if (CurrentDirection == Directions.None)
                 return;
 
