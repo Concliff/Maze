@@ -17,30 +17,48 @@ namespace Maze.Classes
 
     public class UnitContainer
     {
-        private int UnitCounts;
-        private ArrayList Units;
+        private List<Unit> Units;
 
         public UnitContainer()
         {
-            UnitCounts = 0;
-            Units = new ArrayList();
+            Units = new List<Unit>();
         }
 
-        public int GetNextGuid() { return UnitCounts + 1; }
+        public int GetNextGuid() { return Units.Count; }
 
         public int CreateUnit(Unit NewUnit)
         {
-            ++UnitCounts;
             Units.Add(NewUnit);
-            return UnitCounts - 1;
+            return Units.Count;
         }
 
         public Unit GetUnitByGUID(int GUID)
         {
-            for (int i = 0; i < UnitCounts; ++i)
-                if (((Unit)Units[i]).GetGUID() == GUID)
-                    return (Unit)Units[i];
+            for (int i = 0; i < Units.Count; ++i)
+                if (Units[i].GetGUID() == GUID)
+                    return Units[i];
             return null;
+        }
+
+        public List<Unit> GetAllUnitsByGPS(GPS iGPS)
+        {
+            return Units.FindAll(p => p.Position.Location.Equals(iGPS));
+        }
+
+        public void Update()
+        {
+            foreach (Unit unit in Units)
+            {
+                unit.Update();
+            }
+        }
+
+        public void StartMotion()
+        {
+            foreach (Unit unit in Units)
+            {
+                unit.StartMotion();
+            }
         }
     }
 
