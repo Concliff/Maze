@@ -103,7 +103,10 @@ namespace Maze.Classes
             return World.GetWorldMap();
         }
 
-        protected double GetSpeedRate() { return SpeedRate; }
-        protected void SetSpeedRate(double SpeedRate) { this.SpeedRate = SpeedRate; }
+        public double GetSpeedRate() { return SpeedRate; }
+        public void SetSpeedRate(double SpeedRate) { this.SpeedRate = SpeedRate; }
+
+        virtual public void UpdateState() { }
+        virtual public void StartMotion() { }
     }
 }
