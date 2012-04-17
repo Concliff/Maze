@@ -46,9 +46,13 @@ namespace Maze.Forms
             // Player grid is 7,5 (central)
 
             oPlayer = new Player();
-            oDeimos = new Deimos();
-            oPhobos = new Phobos();
-            oDeimos.StartMotion();
+
+            // Test-created monsters
+            new Deimos();
+            new Phobos();
+
+            GetUnitContainer().StartMotion();
+
             SysTimer = new TimeControl(this);
 
             RebuildGraphMap();
@@ -83,7 +87,8 @@ namespace Maze.Forms
             if (oPlayer.IsFinished())
                 return;
 
-            oDeimos.MovementAction();
+            // Call for Update every Unit
+            GetUnitContainer().UpdateState();
 
             // Refresh game run-time
             ProgramTime = DateTime.Now.Subtract(ProgramStartDateTime);
@@ -214,26 +219,27 @@ namespace Maze.Forms
                         g.DrawImage(PictureMgr.CoinImage, x + 15, y + 10, 20, 30);
                         g.Dispose();
                     }
-                    // Draw Deimos
-                    if (oDeimos.Position.Location.Equals(Block.Location))
+
+                    List<Unit> Units = GetUnitContainer().GetAllUnitsByGPS(Block.Location);
+                    for (int d = 0; d < Units.Count; ++d)
                     {
-                        Graphics g = Graphics.FromImage(PictureMgr.DeimosImage);
+                        if (Units[d].GetUnitType() == UnitTypes.Player)
+                            continue;
+
+                        Image UnitImage;
+                        switch (Units[d].GetUnitType())
+                        {
+                            case UnitTypes.Deimos: UnitImage = PictureMgr.DeimosImage; break;
+                            case UnitTypes.Phobos: UnitImage = PictureMgr.PhobosImage; break;
+                            default: UnitImage = PictureMgr.DeimosImage; break;
+                        }
+
+                        Graphics g = Graphics.FromImage(UnitImage);
                         g = this.CreateGraphics();
-                        g.DrawImage(PictureMgr.DeimosImage,
-                            x + oDeimos.Position.X - PictureMgr.DeimosImage.Size.Width / 2,
-                            y + oDeimos.Position.Y - PictureMgr.DeimosImage.Size.Height / 2,
-                            PictureMgr.DeimosImage.Size.Width, PictureMgr.DeimosImage.Size.Height);
-                        g.Dispose();
-                    }
-                    //Draw Phobos
-                    if (oPhobos.Position.Location.Equals(Block.Location))
-                    {
-                        Graphics g = Graphics.FromImage(PictureMgr.PhobosImage);
-                        g = this.CreateGraphics();
-                        g.DrawImage(PictureMgr.PhobosImage,
-                            x + oPhobos.Position.X - PictureMgr.PhobosImage.Size.Width,
-                            y + oPhobos.Position.Y - PictureMgr.PhobosImage.Size.Height,
-                            PictureMgr.PhobosImage.Size.Width, PictureMgr.PhobosImage.Size.Height);
+                        g.DrawImage(UnitImage,
+                            x + Units[d].Position.X - PictureMgr.DeimosImage.Size.Width / 2,
+                            y + Units[d].Position.Y - PictureMgr.DeimosImage.Size.Height / 2,
+                            UnitImage.Size.Width, UnitImage.Size.Height);
                         g.Dispose();
                     }
                 }
