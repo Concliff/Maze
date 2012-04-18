@@ -42,9 +42,9 @@ namespace Maze.Classes
 
        public CWayMap()
        {
-           m_Grid = new CMapChunk [GlobalConstants.GRIDMAP_BLOCK_WIDTH * GlobalConstants.GRIDMAP_BLOCK_HEIGHT];
+           m_Grid = new CMapChunk [GlobalConstants.GRIDMAP_WIDTH * GlobalConstants.GRIDMAP_HEIGHT];
            
-           for(int x = 0; x < GlobalConstants.GRIDMAP_BLOCK_WIDTH * GlobalConstants.GRIDMAP_BLOCK_HEIGHT; ++x)
+           for(int x = 0; x < GlobalConstants.GRIDMAP_WIDTH * GlobalConstants.GRIDMAP_HEIGHT; ++x)
            {
                m_Grid[x].Passability = NO_INIT;
            }
@@ -57,7 +57,7 @@ namespace Maze.Classes
        // Division the cells with a certain type of passableness into zones
        private void SplitZones(int iPassabilityType)
        {
-           for(int x = 0; x < GlobalConstants.GRIDMAP_BLOCK_WIDTH * GlobalConstants.GRIDMAP_BLOCK_HEIGHT; ++x)
+           for(int x = 0; x < GlobalConstants.GRIDMAP_WIDTH * GlobalConstants.GRIDMAP_HEIGHT; ++x)
            {
                if (m_Grid[x].Passability == iPassabilityType)
                {
@@ -80,8 +80,8 @@ namespace Maze.Classes
 
            while (aListForCheck.Count != 0)
            {
-               int iChunkX = aListForCheck[0] % GlobalConstants.GRIDMAP_BLOCK_WIDTH;
-               int iChunkZ = aListForCheck[0] / GlobalConstants.GRIDMAP_BLOCK_WIDTH;
+               int iChunkX = aListForCheck[0] % GlobalConstants.GRIDMAP_WIDTH;
+               int iChunkZ = aListForCheck[0] / GlobalConstants.GRIDMAP_WIDTH;
                
                for (int i = -1; i <= 1; i++)
                {
@@ -141,7 +141,7 @@ namespace Maze.Classes
 
        public bool CheckRange(int iChunkX, int iChunkZ)
        {
-           if (iChunkX < 0 || iChunkZ < 0 || iChunkX > GlobalConstants.GRIDMAP_BLOCK_WIDTH - 1 || iChunkZ > GlobalConstants.GRIDMAP_BLOCK_HEIGHT - 1)
+           if (iChunkX < 0 || iChunkZ < 0 || iChunkX > GlobalConstants.GRIDMAP_WIDTH - 1 || iChunkZ > GlobalConstants.GRIDMAP_HEIGHT - 1)
                return false;
            return true;
        }
@@ -207,7 +207,7 @@ namespace Maze.Classes
                  {
                     if (iChangePassability == NO_INIT)
                     {
-                       for (int xx = 0; xx < (GlobalConstants.GRIDMAP_BLOCK_WIDTH * GlobalConstants.GRIDMAP_BLOCK_HEIGHT); xx++)
+                       for (int xx = 0; xx < (GlobalConstants.GRIDMAP_WIDTH * GlobalConstants.GRIDMAP_HEIGHT); xx++)
                        {
                           for (int ii = 0; ii < aZoneForSplit.Count; ii++ )
                           {
@@ -229,7 +229,7 @@ namespace Maze.Classes
        
        public int GetIDByPos(int iChunkX, int iChunkZ)
        {
-           return iChunkZ * GlobalConstants.GRIDMAP_BLOCK_WIDTH + iChunkX;
+           return iChunkZ * GlobalConstants.GRIDMAP_WIDTH + iChunkX;
        }
 
        public bool CheckPassability(int iChunkX, int iChunkZ)
@@ -256,7 +256,7 @@ namespace Maze.Classes
            return true;
        }
 
-      public int GetGridWidth() { return GlobalConstants.GRIDMAP_BLOCK_WIDTH; } 
+      public int GetGridWidth() { return GlobalConstants.GRIDMAP_WIDTH; } 
 
       public int GetChunkSize() { return GlobalConstants.GRIDMAP_BLOCK_HEIGHT; }
     }
