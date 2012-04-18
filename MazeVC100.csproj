@@ -69,6 +69,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Classes\BinaryOperations.cs" />
+    <Compile Include="Classes\CPathFinding.cs" />
+    <Compile Include="Classes\CWayMap.cs" />
     <Compile Include="Classes\Defines.cs" />
     <Compile Include="Classes\Deimos.cs" />
     <Compile Include="Classes\GlobalConstants.cs" />
