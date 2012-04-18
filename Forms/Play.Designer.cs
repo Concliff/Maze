@@ -49,15 +49,6 @@ namespace Maze.Forms
             ((System.ComponentModel.ISupportInitialize)(this.RightPanelPB)).BeginInit();
             this.SuspendLayout();
             // 
-            // GridMapPB
-            // 
-            this.GridMapPB.Location = new System.Drawing.Point(150, 60);
-            this.GridMapPB.Name = "GridMapPB";
-            this.GridMapPB.Size = new System.Drawing.Size(550, 350);
-            this.GridMapPB.TabIndex = 0;
-            this.GridMapPB.TabStop = false;
-            this.GridMapPB.Visible = false;
-            // 
             // PlayerPB
             // 
             this.PlayerPB.Location = new System.Drawing.Point(0, 0);
@@ -140,6 +131,18 @@ namespace Maze.Forms
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.KeyMgr.EventKeyDown);
             this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.KeyMgr.EventKeyUp);
             this.Shown += new System.EventHandler(Play_Shown);
+            this.VisibleChanged += new System.EventHandler(Play_VisibleChanged);
+
+
+            //
+            // GridMapPB
+            //
+            this.GridMapPB.Location = new System.Drawing.Point(150, 60);
+            this.GridMapPB.Name = "GridMapPB";
+            this.GridMapPB.Size = new System.Drawing.Size(550, 350);
+            this.GridMapPB.Visible = true;
+            this.GridMapPB.Paint += new PaintEventHandler(GridMapPB_Paint);
+
             // 
             // PlayerPB
             // 
@@ -171,6 +174,92 @@ namespace Maze.Forms
                     GridMapGraphic[i, j] = new GridMapGraph();
                     //GridMapGraphic[i, j].Graphic = Graphics.FromHwnd(this.GridMapPB.Handle);
                 }
+
+            ////
+            // Menu object PictureBoxes
+            ////
+            PausePB = new PictureBox();
+
+            MenuNewGamePB = new PictureBox();
+            MenuContinueGamePB = new PictureBox();
+            MenuQuitPB = new PictureBox();
+            PauseResumePB = new PictureBox();
+            PauseMainMenuPB = new PictureBox();
+
+            MenuNewGamePB.Name = "New Game";
+            MenuContinueGamePB.Name = "Continue";
+            MenuQuitPB.Name = "Quit";
+            PauseResumePB.Name = "Resume";
+            PauseMainMenuPB.Name = "Main Menu";
+
+            PausePB.Hide();
+            PausePB.BackColor = MenuNewGamePB.BackColor = MenuContinueGamePB.BackColor =
+                MenuQuitPB.BackColor = PauseResumePB.BackColor = PauseMainMenuPB.BackColor = Color.Gray;
+            // Hide All Menu (Show only ones that needed)
+            MenuNewGamePB.Hide();
+            PausePB.Hide();
+            MenuContinueGamePB.Hide();
+            MenuQuitPB.Hide();
+            PauseResumePB.Hide();
+            PauseMainMenuPB.Hide();
+
+            MenuNewGamePB.MouseEnter += new System.EventHandler(MenuItemMouseEnter);
+            MenuContinueGamePB.MouseEnter += new System.EventHandler(MenuItemMouseEnter);
+            MenuQuitPB.MouseEnter += new System.EventHandler(MenuItemMouseEnter);
+            PauseResumePB.MouseEnter += new System.EventHandler(MenuItemMouseEnter);
+            PauseMainMenuPB.MouseEnter += new System.EventHandler(MenuItemMouseEnter);
+
+            MenuNewGamePB.MouseLeave += new System.EventHandler(MenuItemMouseLeave);
+            MenuContinueGamePB.MouseLeave += new System.EventHandler(MenuItemMouseLeave);
+            MenuQuitPB.MouseLeave += new System.EventHandler(MenuItemMouseLeave);
+            PauseResumePB.MouseLeave += new System.EventHandler(MenuItemMouseLeave);
+            PauseMainMenuPB.MouseLeave += new System.EventHandler(MenuItemMouseLeave);
+
+            MenuNewGamePB.Click += new System.EventHandler(MenuItemClick);
+            MenuContinueGamePB.Click += new System.EventHandler(MenuItemClick);
+            MenuQuitPB.Click += new System.EventHandler(MenuItemClick);
+            PauseResumePB.Click += new System.EventHandler(MenuItemClick);
+            PauseMainMenuPB.Click += new System.EventHandler(MenuItemClick);
+
+            MenuNewGamePB.Paint += new PaintEventHandler(MenuItemPaint);
+            MenuContinueGamePB.Paint += new PaintEventHandler(MenuItemPaint);
+            MenuQuitPB.Paint += new PaintEventHandler(MenuItemPaint);
+            PauseResumePB.Paint += new PaintEventHandler(MenuItemPaint);
+            PauseMainMenuPB.Paint += new PaintEventHandler(MenuItemPaint);
+
+            // Size
+            MenuNewGamePB.Size = MenuContinueGamePB.Size = MenuQuitPB.Size =
+                PauseResumePB.Size = PauseMainMenuPB.Size = new Size(150, 20);
+            PausePB.Size = new Size(200, 200);
+
+            PausePB.Location = new Point(GridMapPB.Location.X + GridMapPB.Size.Width / 2 - PausePB.Size.Width / 2,
+                GridMapPB.Location.Y + GridMapPB.Size.Height / 2 - PausePB.Size.Height / 2);
+
+            // Pause Menu Location
+            PauseResumePB.Location =
+                new Point(GridMapPB.Location.X + GridMapPB.Size.Width / 2 - PauseResumePB.Size.Width / 2, GridMapPB.Location.Y + GridMapPB.Size.Height / 2 - 20);
+
+            PauseMainMenuPB.Location =
+                new Point(GridMapPB.Location.X + GridMapPB.Size.Width / 2 - PauseMainMenuPB.Size.Width / 2, GridMapPB.Location.Y + GridMapPB.Size.Height / 2);
+
+            byte MenuItemIterator;
+            // Main menu Location
+            MenuItemIterator = 1;
+            MenuNewGamePB.Location =
+                new Point(GridMapPB.Location.X + GridMapPB.Size.Width / 2 - MenuNewGamePB.Size.Width / 2, GridMapPB.Location.Y + 40 * MenuItemIterator);
+
+            MenuItemIterator = 2;
+            MenuContinueGamePB.Location =
+                new Point(GridMapPB.Location.X + GridMapPB.Size.Width / 2 - MenuContinueGamePB.Size.Width / 2, GridMapPB.Location.Y + 40 * MenuItemIterator);
+
+            MenuItemIterator = 3;
+            MenuQuitPB.Location =
+                new Point(GridMapPB.Location.X + GridMapPB.Size.Width / 2 - MenuQuitPB.Size.Width / 2, GridMapPB.Location.Y + 40 * MenuItemIterator);
+
+            MenuFont = new Font("Arial", 16);
+            MenuUnselectedBrush = new SolidBrush(Color.White);
+            MenuSelectedBrush = new SolidBrush(Color.Red);
+
         }
 
         private void AddControlsOrder()
@@ -182,11 +271,20 @@ namespace Maze.Forms
             this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.RightPanelPB);
             this.Controls.Add(this.pictureBox3);
+
+            //Menu
+            this.Controls.Add(this.MenuNewGamePB);
+            this.Controls.Add(this.MenuContinueGamePB);
+            this.Controls.Add(this.MenuQuitPB);
+            this.Controls.Add(this.PauseResumePB);
+            this.Controls.Add(this.PauseMainMenuPB);
+
+            // need rework layot reapointing for PausePB
+            //this.Controls.Add(this.PausePB);
             this.Controls.Add(this.GridMapPB);
+
+
         }
-
-
-
 
         private KeyManager KeyMgr;
         private System.Windows.Forms.PictureBox PlayerPB;
@@ -199,5 +297,16 @@ namespace Maze.Forms
         private PictureBox RightPanelPB;
 
         private GridMapGraph[,] GridMapGraphic;
+
+        // Menu objects
+        private PictureBox MenuNewGamePB;
+        private PictureBox MenuContinueGamePB;
+        private PictureBox MenuQuitPB;
+        private PictureBox PausePB;
+        private PictureBox PauseResumePB;
+        private PictureBox PauseMainMenuPB;
+        private Font MenuFont;
+        private Brush MenuUnselectedBrush;
+        private Brush MenuSelectedBrush;
     }
 }

@@ -29,6 +29,10 @@ namespace Maze
 
         private void Program()
         {
+            WorldMap.LoadMap(0);
+            CreatePlayForm();
+            Application.Run(PlayForm);
+            /*
             while(true)
             {
                 switch (NextAction)
@@ -49,6 +53,7 @@ namespace Maze
                         return;
                 }
             }
+             * */
         }
 
         public static UnitContainer GetUnitContainer()

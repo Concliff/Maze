@@ -12,9 +12,18 @@ namespace Maze.Forms
 {
     public partial class Play : MazeForm
     {
+        private enum FormInterface
+        {
+            MainMenu,
+            NewGame,
+            Play,
+            Pause,
+            Quit,
+        };
+
+        bool GamePaused;
+        bool PlayStarted;
         Player oPlayer;
-        Deimos oDeimos;
-        Phobos oPhobos;
         int tempCount;
 
         DateTime ProgramStartDateTime;  // Contains Time when game was started
@@ -24,6 +33,7 @@ namespace Maze.Forms
         Graphics TimeGraph;
 
         PictureManager PictureMgr;
+        FormInterface CurrentInterface;
         //public Map FormMap;
 
         public Play()
@@ -33,12 +43,16 @@ namespace Maze.Forms
             ProgramStartDateTime = DateTime.Now;
             PictureMgr = new PictureManager();
 
+            GamePaused = false;
+            PlayStarted = false;
+
             InitializeComponent();
             CustomInitialize();
             AddControlsOrder();
             GridMapPB.BackColor = Color.Gray;
             SystemTimer.Interval = GlobalConstants.TIMER_TICK_IN_MS; // 50 ms
             SystemTimer.Start();
+            //
             label1.Text = "0";
             TimeGraph = this.RightPanelPB.CreateGraphics();
             
@@ -46,16 +60,21 @@ namespace Maze.Forms
             // Player grid is 7,5 (central)
 
             oPlayer = new Player();
+            PlayerPB.Hide();
+            label1.Hide();
 
             // Test-created monsters
             new Deimos();
             new Phobos();
 
-            GetUnitContainer().StartMotion();
+            //
 
             SysTimer = new TimeControl(this);
 
-            RebuildGraphMap();
+            //RebuildGraphMap();
+            //SetInterface(FormInterface.Play);
+            CurrentInterface = FormInterface.MainMenu;
+            SetInterface(FormInterface.MainMenu);
         }
 
         ~Play()
@@ -63,26 +82,204 @@ namespace Maze.Forms
             SystemTimer.Stop();
         }
 
+        #region Play Form Events
+
         private void Play_Load(object sender, EventArgs e)
         {
             SetNextAction(WorldNextAction.ApplicationQuit);
-            RebuildGraphMap();
+            //RebuildGraphMap();
         }
 
-        void Play_Shown(object sender, System.EventArgs e)
+        private void Play_Shown(object sender, System.EventArgs e)
         {
-            RebuildGraphMap();
+            this.Invalidate();
+            //RebuildGraphMap();
+        }
+
+        void GridMapPB_Paint(object sender, PaintEventArgs e)
+        {
+
+            //SetInterface(CurrentInterface);
+            //ChangeInterface(CurrentInterface, true);
+        }
+
+        private void Play_Paint(object sender, PaintEventArgs e)
+        {
+            //RebuildGraphMap();
+            ++tempCount;
+        }
+
+        void Play_VisibleChanged(object sender, System.EventArgs e)
+        {
+            SetInterface(FormInterface.MainMenu);
         }
 
         void RightPanelPBPaint(object sender, PaintEventArgs e)
         {
+            if (!PlayStarted)
+                return;
+
             e.Graphics.DrawString("Time: " + (ProgramTime.Seconds + ProgramTime.Minutes*60).ToString(), new Font("Arial", 14), new SolidBrush(Color.White), 50, 30);
             e.Graphics.DrawString("Coins x " + (GetWorldMap().GetCoinsCount() - GetWorldMap().GetCollectedCoinsCount()).ToString(), 
                 new Font("Arial", 14), new SolidBrush(Color.White), 50, 50);
         }
 
+        #endregion
+
+        #region Menu / Interface Actions
+
+        void MenuItemClick(object sender, System.EventArgs e)
+        {
+            //PictureBox SenderPB = (PictureBox)sender;
+            if (sender == MenuNewGamePB || sender == PauseResumePB || sender == MenuContinueGamePB)
+                SetInterface(FormInterface.Play);
+        }
+
+
+        private void SetInterface(FormInterface NewInterface)
+        {
+            ChangeInterface(CurrentInterface, false);
+            ChangeInterface(NewInterface, true);
+            CurrentInterface = NewInterface;
+        }
+
+        private void ChangeInterface(FormInterface Interface, bool Show)
+        {
+            switch (Interface)
+            {
+                case FormInterface.MainMenu:
+                    {
+                        if (Show)
+                        {
+                            MenuNewGamePB.Show();
+                            MenuContinueGamePB.Show();
+                            MenuQuitPB.Show();
+                            Graphics g;
+                            /*g = this.MenuNewGamePB.CreateGraphics();
+                            g.DrawString("New Game", MenuFont, MenuUnselectedBrush, 0, 0);
+
+                            g = this.MenuContinueGamePB.CreateGraphics();
+                            g.DrawString("Continue", MenuFont, MenuUnselectedBrush, 0, 0);
+
+                            g = this.MenuQuitPB.CreateGraphics();
+                            g.DrawString("Quit", MenuFont, MenuUnselectedBrush, 0, 0);
+                             * */
+                        }
+                        else
+                        {
+                            MenuNewGamePB.Visible = false;
+                            MenuContinueGamePB.Hide();
+                            MenuQuitPB.Hide();
+                        }
+                        break;
+                    }
+                case FormInterface.NewGame:
+                    {
+                        if (Show)
+                        {
+                            SetInterface(FormInterface.Play);
+                        }
+
+                        break;
+                    }
+                case FormInterface.Play:
+                    {
+                        if (!Show)
+                            break;
+
+                        if (!PlayStarted)               // Start New Game
+                        {
+                            //ChangeInterface(FormInterface.MainMenu, false);
+                            PlayStarted = true;
+                            SystemTimer.Start();
+                            GetUnitContainer().StartMotion();
+                        }
+                        if (PlayStarted && GamePaused)  //Continue Game
+                        {
+                            // Implemented in FormInterface.Pause !show
+                            //GamePaused = false;
+                        }
+
+                        PlayerPB.Show();
+                        break;
+                    }
+                case FormInterface.Pause:
+                    {
+                        if (Show)
+                        {
+                            PlayerPB.Hide();
+                            GamePaused = true;
+                            PausePB.Show();
+                            PauseResumePB.Show();
+                            PauseMainMenuPB.Show();
+
+                            Graphics g;
+                            g = this.PauseResumePB.CreateGraphics();
+                            g.DrawString("Resume", MenuFont, MenuUnselectedBrush, 0, 0);
+
+                            g = this.PauseMainMenuPB.CreateGraphics();
+                            g.DrawString("Main Menu", MenuFont, MenuUnselectedBrush, 0, 0);
+                        }
+                        else
+                        {
+                            GamePaused = false;
+                            PausePB.Hide();
+                            PauseResumePB.Hide();
+                            PauseMainMenuPB.Hide();
+                        }
+                        break;
+                    }
+            }
+            MenuContinueGamePB.Invalidate();
+        }
+
+        void MenuItemMouseEnter(object sender, System.EventArgs e)
+        {
+            PictureBox SenderPB = (PictureBox)sender;
+            Graphics g;
+            g = SenderPB.CreateGraphics();
+            g.DrawString(SenderPB.Name, MenuFont, MenuSelectedBrush, 0, 0);
+        }
+
+        void MenuItemMouseLeave(object sender, System.EventArgs e)
+        {
+            PictureBox SenderPB = (PictureBox)sender;
+            Graphics g;
+            g = SenderPB.CreateGraphics();
+            g.DrawString(SenderPB.Name, MenuFont, MenuUnselectedBrush, 0, 0);
+        }
+
+        void MenuItemPaint(object sender, PaintEventArgs e)
+        {
+            PictureBox senderPB = (PictureBox)sender;
+            e.Graphics.DrawString(senderPB.Name, MenuFont, MenuUnselectedBrush, 0, 0);
+        }
+
+        #endregion
+
         public void SystemTimerTick(object sender, EventArgs e)
         {
+            if (!PlayStarted)
+                return;
+
+            // Get last pressed Key
+            switch (KeyMgr.ExtractKeyPressed())
+            {
+                case Keys.M:
+                    if (KeyMgr.Control())
+                    {
+                        SetNextAction(WorldNextAction.MapEdit);
+                        this.Close();
+                    }
+                    break;
+                case Keys.Escape:
+                    SetInterface(FormInterface.Pause);
+                    break;
+            }
+
+            if (GamePaused)
+                return;
+
             // return if a player reached finish block
             if (oPlayer.IsFinished())
                 return;
@@ -122,17 +319,7 @@ namespace Maze.Forms
 
             MovementAction(MoveType);
 
-            // Get last pressed Key
-            switch (KeyMgr.ExtractKeyPressed())
-            {
-                case Keys.M:
-                    if (KeyMgr.Control())
-                    {
-                        SetNextAction(WorldNextAction.MapEdit);
-                        this.Close();
-                    }
-                    break;
-            }
+
 
             RebuildGraphMap();
 
@@ -141,11 +328,6 @@ namespace Maze.Forms
             //label1.Text = tempCount.ToString();
         }
 
-        private void Play_Paint(object sender, PaintEventArgs e)
-        {
-            RebuildGraphMap();
-            ++tempCount;
-        }
 
         /// <summary>
         /// PlayForm Moving Handler
@@ -178,8 +360,8 @@ namespace Maze.Forms
                 {
                     // Calculated location point for every block
                     int x, y;
-                    x = GridMapPB.Location.X + (i - 1) * GlobalConstants.GRIDMAP_BLOCK_WIDTH - (oPlayer.Position.X - 25);
-                    y = GridMapPB.Location.Y + (j - 1) * GlobalConstants.GRIDMAP_BLOCK_HEIGHT - (oPlayer.Position.Y - 25);
+                    x = /*GridMapPB.Location.X*/ + (i - 1) * GlobalConstants.GRIDMAP_BLOCK_WIDTH - (oPlayer.Position.X - 25);
+                    y = /*GridMapPB.Location.Y*/ + (j - 1) * GlobalConstants.GRIDMAP_BLOCK_HEIGHT - (oPlayer.Position.Y - 25);
                     PBLocation.X = oPlayer.Position.Location.X + i - GlobalConstants.GRIDMAP_WIDTH / 2;
                     PBLocation.Y = oPlayer.Position.Location.Y + j - GlobalConstants.GRIDMAP_HEIGHT / 2;
                     PBLocation.Z = 0;
@@ -189,7 +371,7 @@ namespace Maze.Forms
                     this.GridMapGraphic[i, j].Block = Block;
                     this.GridMapGraphic[i, j].Graphic = Graphics.FromImage(PictureMgr.GetPictureByType(Block.Type));
                     this.GridMapGraphic[i, j].Graphic.Dispose();
-                    this.GridMapGraphic[i, j].Graphic = this.CreateGraphics();
+                    this.GridMapGraphic[i, j].Graphic = this.GridMapPB.CreateGraphics();
                     
                     this.GridMapGraphic[i, j].Graphic.DrawImage(PictureMgr.GetPictureByType(Block.Type), x, y, GlobalConstants.GRIDMAP_BLOCK_WIDTH, GlobalConstants.GRIDMAP_BLOCK_HEIGHT);
                     // Draw Start Block
@@ -197,7 +379,7 @@ namespace Maze.Forms
                     {
                         //StartPB.Location = new Point(x + 5, y + 5);
                         Graphics g = Graphics.FromImage(PictureMgr.StartImage);
-                        g = this.CreateGraphics();
+                        g = this.GridMapPB.CreateGraphics();
                         g.DrawImage(PictureMgr.StartImage, x + 5, y + 5, 40, 40);
                         g.Dispose();
                     }
@@ -206,7 +388,7 @@ namespace Maze.Forms
                     {
                         //FinishPB.Location = new Point(x + 5, y + 5);
                         Graphics g = Graphics.FromImage(PictureMgr.FinishImage);// Non indexed image
-                        g = this.CreateGraphics();
+                        g = this.GridMapPB.CreateGraphics();
                         g.DrawImage(PictureMgr.FinishImage, x + 5, y + 5, 40, 40);
                         g.Dispose();
                     }
@@ -215,7 +397,7 @@ namespace Maze.Forms
                         !GetWorldMap().IsCoinCollected(Block))
                     {
                         Graphics g = Graphics.FromImage(PictureMgr.CoinImage);
-                        g = this.CreateGraphics();
+                        g = this.GridMapPB.CreateGraphics();
                         g.DrawImage(PictureMgr.CoinImage, x + 15, y + 10, 20, 30);
                         g.Dispose();
                     }
@@ -235,7 +417,7 @@ namespace Maze.Forms
                         }
 
                         Graphics g = Graphics.FromImage(UnitImage);
-                        g = this.CreateGraphics();
+                        g = this.GridMapPB.CreateGraphics();
                         g.DrawImage(UnitImage,
                             x + Units[d].Position.X - PictureMgr.DeimosImage.Size.Width / 2,
                             y + Units[d].Position.Y - PictureMgr.DeimosImage.Size.Height / 2,
