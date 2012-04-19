@@ -30,6 +30,16 @@ namespace Maze.Classes
             Name = name;
         }
 
+        public override void UpdateState()
+        {
+            if (!FinishReached)
+            {
+                List<Unit> Units = GetUnitsWithinRange(30);
+                if (Units != null && Units.Count != 0)
+                    FinishReached = true;
+            }
+        }
+
         public String GetName() { return Name; }
         public void SetName(String PlayerName) { Name = PlayerName; }
 

@@ -103,6 +103,45 @@ namespace Maze.Classes
             return World.GetWorldMap();
         }
 
+        protected List<Unit> GetUnitsWithinRange(int RangeDistance)
+        {
+            List<Unit> Units = new List<Unit>();
+            GPS SearchGPS = Position.Location;
+
+            // How much grids use for search
+            int GridToNorth = (int)Math.Ceiling(Math.Abs(Position.Y - RangeDistance) * 1d / GlobalConstants.GRIDMAP_BLOCK_HEIGHT);
+            int GridToSouth = (int)Math.Floor(Math.Abs(Position.Y + RangeDistance) * 1d / GlobalConstants.GRIDMAP_BLOCK_HEIGHT);
+            int GridToWest = (int)Math.Ceiling(Math.Abs(Position.X - RangeDistance) * 1d / GlobalConstants.GRIDMAP_BLOCK_WIDTH);
+            int GridToEast = (int)Math.Floor(Math.Abs(Position.X + RangeDistance) * 1d / GlobalConstants.GRIDMAP_BLOCK_WIDTH);
+
+            for (int width = Position.Location.X - GridToWest; width <= Position.Location.X + GridToEast; ++width)
+                for (int height = Position.Location.Y - GridToNorth; height <= Position.Location.Y + GridToSouth; ++height)
+                {
+                    SearchGPS.X = width;
+                    SearchGPS.Y = height;
+                    Units.AddRange(World.GetUnitContainer().GetAllUnitsByGPS(SearchGPS));
+                }
+
+            // exclude itself
+            Units.Remove(this);
+
+            if (Units.Count == 0)
+                return null;
+
+            List<Unit> UnitsWithinRange = new List<Unit>();
+            foreach (Unit unit in Units)
+                // Calculate actual distance
+                if (Math.Sqrt(Math.Pow(Position.X - unit.Position.X + (Position.Location.X - unit.Position.Location.X) * GlobalConstants.GRIDMAP_BLOCK_WIDTH, 2)
+                    + Math.Pow(Position.Y - unit.Position.Y + (Position.Location.Y - unit.Position.Location.Y) * GlobalConstants.GRIDMAP_BLOCK_HEIGHT, 2)) < RangeDistance)
+                {
+                    if (unit == this)
+                        continue;
+                    UnitsWithinRange.Add(unit);
+                }
+
+            return UnitsWithinRange;
+        }
+
         public double GetSpeedRate() { return SpeedRate; }
         public void SetSpeedRate(double SpeedRate) { this.SpeedRate = SpeedRate; }
 
