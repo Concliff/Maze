@@ -34,6 +34,8 @@ namespace Maze.Forms
 
         PictureManager PictureMgr;
         FormInterface CurrentInterface;
+
+        DateTime LastTickTime;
         //public Map FormMap;
 
         public Play()
@@ -41,6 +43,7 @@ namespace Maze.Forms
             //FormMap = new Map();
             tempCount = 0;
             ProgramStartDateTime = DateTime.Now;
+            LastTickTime = DateTime.Now;
             PictureMgr = new PictureManager();
 
             GamePaused = false;
@@ -284,11 +287,12 @@ namespace Maze.Forms
             if (oPlayer.IsFinished())
                 return;
 
-            // Call for Update every Unit
-            GetUnitContainer().UpdateState();
-
             // Refresh game run-time
             ProgramTime = DateTime.Now.Subtract(ProgramStartDateTime);
+
+            // Call for Update every Unit
+            GetUnitContainer().UpdateState(DateTime.Now.Subtract(LastTickTime).Milliseconds);
+            LastTickTime = DateTime.Now;
 
             // Repaint Game stats panel
             this.RightPanelPB.Invalidate();
@@ -319,13 +323,7 @@ namespace Maze.Forms
 
             MovementAction(MoveType);
 
-
-
             RebuildGraphMap();
-
-            //World.GetPlayForm().label1.Text = oPlayer.Position.Location.X.ToString() + "\n" + oPlayer.Position.Location.Y.ToString() +
-            //    "\n" + oPlayer.Position.X.ToString() + "\n" + oPlayer.Position.Y.ToString();// "move";
-            //label1.Text = tempCount.ToString();
         }
 
 

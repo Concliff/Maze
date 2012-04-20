@@ -30,7 +30,7 @@ namespace Maze.Classes
             Name = name;
         }
 
-        public override void UpdateState()
+        public override void UpdateState(int timeP)
         {
             if (!FinishReached)
             {
@@ -63,6 +63,7 @@ namespace Maze.Classes
         /// <param name="MoveType">Flags of direction</param>
         public GridGPS MovementAction(byte MoveType)
         {
+
             // New position coords
             int NewX, NewY;
             NewX = Position.X

@@ -45,11 +45,11 @@ namespace Maze.Classes
             return Units.FindAll(p => p.Position.Location.Equals(iGPS));
         }
 
-        public void UpdateState()
+        public void UpdateState(int timeP)
         {
             foreach (Unit unit in Units)
             {
-                unit.UpdateState();
+                unit.UpdateState(timeP);
             }
         }
 
@@ -145,7 +145,7 @@ namespace Maze.Classes
         public double GetSpeedRate() { return SpeedRate; }
         public void SetSpeedRate(double SpeedRate) { this.SpeedRate = SpeedRate; }
 
-        virtual public void UpdateState() { }
+        virtual public void UpdateState(int timeP) { }
         virtual public void StartMotion() { }
     }
 }

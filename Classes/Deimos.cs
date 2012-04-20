@@ -23,7 +23,7 @@ namespace Maze.Classes
             CurrentGridMap = World.GetWorldMap().GetGridMapByGPS(Position.Location);
         }
 
-        public override void UpdateState()
+        public override void UpdateState(int timeP)
         {
             if (IsInMotion)
                 MovementAction();
