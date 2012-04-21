@@ -174,6 +174,9 @@ namespace Maze.Classes
                     NewCoin.ID = GridMapStruct.ID;
                     NewCoin.Collected = false;
                     Coins.Add(NewCoin);
+
+                    // Create Deimos at Coin Location
+                    new Deimos(GridMapStruct.Location);
                 }
 
             }

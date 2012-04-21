@@ -67,15 +67,10 @@ namespace Maze.Forms
             label1.Hide();
 
             // Test-created monsters
-            new Deimos();
             new Phobos();
-
-            //
-
             SysTimer = new TimeControl(this);
 
             //RebuildGraphMap();
-            //SetInterface(FormInterface.Play);
             CurrentInterface = FormInterface.MainMenu;
             SetInterface(FormInterface.MainMenu);
         }
@@ -425,6 +420,5 @@ namespace Maze.Forms
                 }
             this.ResumeLayout();
         }
-
     }
 }
