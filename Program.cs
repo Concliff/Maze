@@ -20,6 +20,9 @@ namespace Maze
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
+            //Initialize Utilities
+            Random.Initialize();
+
             World WorldMgr = new World();
         }
     }
