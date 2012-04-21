@@ -114,8 +114,7 @@ namespace Maze.Classes
 
         private void ReachedGridMap()
         {
-            Random RandomInt = new Random();
-            if (RandomInt.Next(100) <= 20) // 20% chance to change direction
+            if (Random.Int(100) <= 33)  // 33% chance to change direction
                 SelectNewDirection();
 
             if (BinaryOperations.IsBit(CurrentGridMap.Type, (byte)CurrentDirection))
@@ -126,26 +125,23 @@ namespace Maze.Classes
 
         private void SelectNewDirection()
         {
-            Directions NewDirection = Directions.None;
+            Directions newDirection = Directions.None;
+            int maxIterations = 10;
 
-            int MaxIterations = 10;
-            Random RandomInt = new Random();
-
-            for (int i = 0; i < MaxIterations; ++i)
+            for (int i = 0; i < maxIterations; ++i)
             {
-                switch (RandomInt.Next(4) + 1)
+                switch (Random.Int(4) + 1)
                 {
-                    case 1: NewDirection = Directions.Right; break;
-                    case 2: NewDirection = Directions.Down; break;
-                    case 3: NewDirection = Directions.Left; break;
-                    case 4: NewDirection = Directions.Up; break;
+                    case 1: newDirection = Directions.Right; break;
+                    case 2: newDirection = Directions.Down; break;
+                    case 3: newDirection = Directions.Left; break;
+                    case 4: newDirection = Directions.Up; break;
                 }
-
                 // Ignore Opposite Direction if there is another one
-                if (BinaryOperations.IsBit(CurrentGridMap.Type, (byte)NewDirection) &&
-                    NewDirection != GetOppositeDirection(CurrentDirection))
+                if (BinaryOperations.IsBit(CurrentGridMap.Type, (byte)newDirection) &&
+                    (newDirection != GetOppositeDirection(CurrentDirection) || CurrentDirection == Directions.None))
                 {
-                    CurrentDirection = NewDirection;
+                    CurrentDirection = newDirection;
                     return;
                 }
             }
