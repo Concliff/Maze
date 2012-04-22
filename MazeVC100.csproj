@@ -126,6 +126,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <Compile Include="Utility.cs" />
+    <Compile Include="SolutionVersion.cs" />
     <Compile Include="World.cs" />
   </ItemGroup>
   <ItemGroup>
