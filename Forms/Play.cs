@@ -189,6 +189,7 @@ namespace Maze.Forms
                         {
                             //ChangeInterface(FormInterface.MainMenu, false);
                             PlayStarted = true;
+                            GetWorldMap().FillMapWithUnits();
                             SystemTimer.Start();
                             GetUnitContainer().StartMotion();
                         }
