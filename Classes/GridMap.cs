@@ -174,9 +174,6 @@ namespace Maze.Classes
                     NewCoin.ID = GridMapStruct.ID;
                     NewCoin.Collected = false;
                     Coins.Add(NewCoin);
-
-                    // Create Deimos at Coin Location
-                    //new Deimos(GridMapStruct.Location);
                 }
 
             }
@@ -205,6 +202,16 @@ namespace Maze.Classes
                 GridMapStream.WriteLine(GridMapString);
             }
             GridMapStream.Close();
+        }
+
+        public void FillMapWithUnits()
+        {
+            foreach (GridMap block in MapBlocks)
+            {
+                if (BinaryOperations.IsBit(block.Attribute, (byte)Attributes.HasCoin))
+                    // Create Deimos at Coin Location
+                    new Deimos(block.Location);
+            }
         }
 
         public GridMap GetGridMapByID(int BlockID)
