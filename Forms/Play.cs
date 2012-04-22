@@ -63,7 +63,6 @@ namespace Maze.Forms
             // Player grid is 7,5 (central)
 
             oPlayer = new Player();
-            PlayerPB.Hide();
             label1.Hide();
 
             // Test-created monsters
@@ -198,15 +197,12 @@ namespace Maze.Forms
                             // Implemented in FormInterface.Pause !show
                             //GamePaused = false;
                         }
-
-                        PlayerPB.Show();
                         break;
                     }
                 case FormInterface.Pause:
                     {
                         if (Show)
                         {
-                            PlayerPB.Hide();
                             GamePaused = true;
                             PausePB.Show();
                             PauseResumePB.Show();
@@ -371,6 +367,7 @@ namespace Maze.Forms
                     this.GridMapGraphic[i, j].Graphic = this.GridMapPB.CreateGraphics();
                     
                     this.GridMapGraphic[i, j].Graphic.DrawImage(PictureMgr.GetPictureByType(Block.Type), x, y, GlobalConstants.GRIDMAP_BLOCK_WIDTH, GlobalConstants.GRIDMAP_BLOCK_HEIGHT);
+
                     // Draw Start Block
                     if (HasBit(Block.Attribute, (byte)Attributes.IsStart))
                     {
@@ -424,11 +421,20 @@ namespace Maze.Forms
                     }
 
                     // Draw Player
-                    if (oPlayer.IsAlive() && !PlayerPB.Visible)
-                        PlayerPB.Show();
-                    if (!oPlayer.IsAlive() && PlayerPB.Visible)
-                        PlayerPB.Hide();
-                }
+                    Image PlayerImage;
+                    if (oPlayer.IsAlive())
+                        PlayerImage = PictureMgr.PlayerImage;
+                    else
+                        PlayerImage = PictureMgr.SoulImage;
+
+                    Graphics gPlayer = Graphics.FromImage(PlayerImage);
+                    gPlayer = this.GridMapPB.CreateGraphics();
+                    gPlayer.DrawImage(PlayerImage,
+                        (this.GridMapPB.Size.Width - PlayerImage.Width) / 2,
+                        (this.GridMapPB.Size.Height - PlayerImage.Height) / 2,
+                        PlayerImage.Width, PlayerImage.Height);
+                    gPlayer.Dispose();
+               }
             this.ResumeLayout();
         }
     }

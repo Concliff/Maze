@@ -99,6 +99,8 @@ namespace Maze.Classes
         /// <param name="MoveType">Flags of direction</param>
         public GridGPS MovementAction(byte MoveType)
         {
+            if (!IsAlive())
+                return Position;
             // New position coords
             int NewX, NewY;
             NewX = Position.X

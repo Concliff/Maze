@@ -15,6 +15,8 @@ namespace Maze.Classes
         public Image DeimosImage;
         public Image PhobosImage;
         public Image CoinImage;
+        public Image PlayerImage;
+        public Image SoulImage;
 
         private int CellsCount;
         private Image[] Pictures;           // Blocks Images
@@ -41,6 +43,8 @@ namespace Maze.Classes
             CoinImage = Image.FromFile(ImageDirectoryPath + "Coin.bmp");
             DeimosImage = Image.FromFile(ImageDirectoryPath + "Deimos.png");
             PhobosImage = Image.FromFile(ImageDirectoryPath + "Phobos.png");
+            PlayerImage = Image.FromFile(ImageDirectoryPath + "Man2.bmp");
+            SoulImage = Image.FromFile(ImageDirectoryPath + "Soul.png");
         }
 
         public Image GetPictureByType(int Type)
