@@ -7,29 +7,28 @@ namespace Maze.Classes
 {
     class Deimos : Unit
     {
-        private GPS RespawnLocation;
         private Directions CurrentDirection;
         private bool IsInMotion;
 
         public Deimos()
         {
             UnitType = UnitTypes.Deimos;
-            RespawnLocation = World.GetWorldMap().GetFinishPoint();
-            Position.Location = RespawnLocation;
+            respawnLocation = World.GetWorldMap().GetFinishPoint();
+            Position.Location = respawnLocation;
             Position.X = 25;
             Position.Y = 25;
-            Position.BlockID = 0;
+            Position.BlockID = World.GetWorldMap().GetGridMapByGPS(Position.Location).ID;
             IsInMotion = false;
             CurrentDirection = Directions.None;
 
             CurrentGridMap = World.GetWorldMap().GetGridMapByGPS(Position.Location);
         }
 
-        public Deimos(GPS RespawnLocation)
+        public Deimos(GPS respawnLocation)
             : this()
         {
-            this.RespawnLocation = RespawnLocation;
-            Position.Location = RespawnLocation;
+            this.respawnLocation = respawnLocation;
+            Position.Location = respawnLocation;
             CurrentGridMap = World.GetWorldMap().GetGridMapByGPS(Position.Location);
         }
 

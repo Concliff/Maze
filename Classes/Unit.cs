@@ -15,14 +15,22 @@ namespace Maze.Classes
         Phobos = 3,
     };
 
+    public enum DeathStates
+    {
+        Alive,
+        Dead,
+    };
+
     public class Unit
     {
         public GridGPS Position;
 
         protected UnitTypes UnitType;
+        protected DeathStates deathState;
         protected int GUID;
         protected GridMap CurrentGridMap;
         protected double SpeedRate;
+        protected GPS respawnLocation;
 
         public Unit()
         {
@@ -97,6 +105,11 @@ namespace Maze.Classes
 
         public double GetSpeedRate() { return SpeedRate; }
         public void SetSpeedRate(double SpeedRate) { this.SpeedRate = SpeedRate; }
+        public bool IsAlive() { return deathState == DeathStates.Alive; }
+        public virtual void SetDeathState(DeathStates deathState)
+        {
+            this.deathState = deathState;
+        }
 
         virtual public void UpdateState(int timeP) { }
         virtual public void StartMotion() { }
