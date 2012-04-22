@@ -15,53 +15,6 @@ namespace Maze.Classes
         Phobos = 3,
     };
 
-    public class UnitContainer
-    {
-        private List<Unit> Units;
-
-        public UnitContainer()
-        {
-            Units = new List<Unit>();
-        }
-
-        public int GetNextGuid() { return Units.Count; }
-
-        public int CreateUnit(Unit NewUnit)
-        {
-            Units.Add(NewUnit);
-            return Units.Count;
-        }
-
-        public Unit GetUnitByGUID(int GUID)
-        {
-            for (int i = 0; i < Units.Count; ++i)
-                if (Units[i].GetGUID() == GUID)
-                    return Units[i];
-            return null;
-        }
-
-        public List<Unit> GetAllUnitsByGPS(GPS iGPS)
-        {
-            return Units.FindAll(p => p.Position.Location.Equals(iGPS));
-        }
-
-        public void UpdateState(int timeP)
-        {
-            foreach (Unit unit in Units)
-            {
-                unit.UpdateState(timeP);
-            }
-        }
-
-        public void StartMotion()
-        {
-            foreach (Unit unit in Units)
-            {
-                unit.StartMotion();
-            }
-        }
-    }
-
     public class Unit
     {
         public GridGPS Position;
@@ -147,5 +100,52 @@ namespace Maze.Classes
 
         virtual public void UpdateState(int timeP) { }
         virtual public void StartMotion() { }
+    }
+
+    public class UnitContainer
+    {
+        private List<Unit> Units;
+
+        public UnitContainer()
+        {
+            Units = new List<Unit>();
+        }
+
+        public int GetNextGuid() { return Units.Count; }
+
+        public int CreateUnit(Unit NewUnit)
+        {
+            Units.Add(NewUnit);
+            return Units.Count;
+        }
+
+        public Unit GetUnitByGUID(int GUID)
+        {
+            for (int i = 0; i < Units.Count; ++i)
+                if (Units[i].GetGUID() == GUID)
+                    return Units[i];
+            return null;
+        }
+
+        public List<Unit> GetAllUnitsByGPS(GPS iGPS)
+        {
+            return Units.FindAll(p => p.Position.Location.Equals(iGPS));
+        }
+
+        public void UpdateState(int timeP)
+        {
+            foreach (Unit unit in Units)
+            {
+                unit.UpdateState(timeP);
+            }
+        }
+
+        public void StartMotion()
+        {
+            foreach (Unit unit in Units)
+            {
+                unit.StartMotion();
+            }
+        }
     }
 }
