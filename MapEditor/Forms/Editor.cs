@@ -6,20 +6,26 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using Maze.Classes;
+using Maze.Forms;
 using System.Windows.Forms;
 
 
-namespace Maze.Forms
+namespace MapEditor.Forms
 {
-    public partial class MapEditor : MazeForm
+    public partial class Editor : MazeForm
     {
-        private Player VirtualPlayer;
+        struct VritualPlayer
+        {
+            public GridGPS Position;
+        };
+
+        private VritualPlayer oPlayer;
         private Timer SystemTimer;
         private BlockEdit BlockEditForm;
 
         private PictureManager PictureMgr;
 
-        public MapEditor()
+        public Editor()
         {
             PictureMgr = new PictureManager();
 
@@ -31,7 +37,7 @@ namespace Maze.Forms
             SystemTimer.Tick += new EventHandler(SystemTimerTick);
             SystemTimer.Start();
 
-            VirtualPlayer = new Player();
+            oPlayer = new VritualPlayer();
 
             RebuildGraphMap();
         }
@@ -54,36 +60,36 @@ namespace Maze.Forms
         private void MovementAction(byte MoveType)
         {
             if (HasBit(MoveType, (byte)Directions.Right))
-                VirtualPlayer.Position.X += GlobalConstants.MOVEMENT_STEP_PX * 2;
+                oPlayer.Position.X += GlobalConstants.MOVEMENT_STEP_PX * 2;
             if (HasBit(MoveType, (byte)Directions.Left))
-                VirtualPlayer.Position.X -= GlobalConstants.MOVEMENT_STEP_PX * 2;
+                oPlayer.Position.X -= GlobalConstants.MOVEMENT_STEP_PX * 2;
             if (HasBit(MoveType, (byte)Directions.Up))
-                VirtualPlayer.Position.Y -= GlobalConstants.MOVEMENT_STEP_PX * 2;
+                oPlayer.Position.Y -= GlobalConstants.MOVEMENT_STEP_PX * 2;
             if (HasBit(MoveType, (byte)Directions.Down))
-                VirtualPlayer.Position.Y += GlobalConstants.MOVEMENT_STEP_PX * 2;
+                oPlayer.Position.Y += GlobalConstants.MOVEMENT_STEP_PX * 2;
 
-            if (VirtualPlayer.Position.X > GlobalConstants.GRIDMAP_BLOCK_WIDTH)
+            if (oPlayer.Position.X > GlobalConstants.GRIDMAP_BLOCK_WIDTH)
             {
-                ++VirtualPlayer.Position.Location.X;
-                VirtualPlayer.Position.X -= GlobalConstants.GRIDMAP_BLOCK_WIDTH;
+                ++oPlayer.Position.Location.X;
+                oPlayer.Position.X -= GlobalConstants.GRIDMAP_BLOCK_WIDTH;
             }
 
-            if (VirtualPlayer.Position.X < 0)
+            if (oPlayer.Position.X < 0)
             {
-                --VirtualPlayer.Position.Location.X;
-                VirtualPlayer.Position.X = GlobalConstants.GRIDMAP_BLOCK_WIDTH + VirtualPlayer.Position.X;
+                --oPlayer.Position.Location.X;
+                oPlayer.Position.X = GlobalConstants.GRIDMAP_BLOCK_WIDTH + oPlayer.Position.X;
             }
 
-            if (VirtualPlayer.Position.Y > GlobalConstants.GRIDMAP_BLOCK_HEIGHT)
+            if (oPlayer.Position.Y > GlobalConstants.GRIDMAP_BLOCK_HEIGHT)
             {
-                ++VirtualPlayer.Position.Location.Y;
-                VirtualPlayer.Position.Y -= GlobalConstants.GRIDMAP_BLOCK_HEIGHT;
+                ++oPlayer.Position.Location.Y;
+                oPlayer.Position.Y -= GlobalConstants.GRIDMAP_BLOCK_HEIGHT;
             }
 
-            if (VirtualPlayer.Position.Y < 0)
+            if (oPlayer.Position.Y < 0)
             {
-                --VirtualPlayer.Position.Location.Y;
-                VirtualPlayer.Position.Y = GlobalConstants.GRIDMAP_BLOCK_HEIGHT + VirtualPlayer.Position.Y;
+                --oPlayer.Position.Location.Y;
+                oPlayer.Position.Y = GlobalConstants.GRIDMAP_BLOCK_HEIGHT + oPlayer.Position.Y;
             }
 
             RebuildGraphMap();
@@ -99,13 +105,13 @@ namespace Maze.Forms
                 for (int j = 0; j < GlobalConstants.GRIDMAP_HEIGHT; ++j)
                 {
                     int x, y;
-                    x = (i - 1) * GlobalConstants.GRIDMAP_BLOCK_WIDTH - (VirtualPlayer.Position.X - GlobalConstants.GRIDMAP_BLOCK_WIDTH / 2);
-                    y = (j - 1) * GlobalConstants.GRIDMAP_BLOCK_HEIGHT - (VirtualPlayer.Position.Y - GlobalConstants.GRIDMAP_BLOCK_HEIGHT / 2);
-                    PBLocation.X = VirtualPlayer.Position.Location.X + i - GlobalConstants.GRIDMAP_WIDTH / 2;
-                    PBLocation.Y = VirtualPlayer.Position.Location.Y + j - GlobalConstants.GRIDMAP_HEIGHT / 2;
+                    x = (i - 1) * GlobalConstants.GRIDMAP_BLOCK_WIDTH - (oPlayer.Position.X - GlobalConstants.GRIDMAP_BLOCK_WIDTH / 2);
+                    y = (j - 1) * GlobalConstants.GRIDMAP_BLOCK_HEIGHT - (oPlayer.Position.Y - GlobalConstants.GRIDMAP_BLOCK_HEIGHT / 2);
+                    PBLocation.X = oPlayer.Position.Location.X + i - GlobalConstants.GRIDMAP_WIDTH / 2;
+                    PBLocation.Y = oPlayer.Position.Location.Y + j - GlobalConstants.GRIDMAP_HEIGHT / 2;
                     PBLocation.Z = 0;
                     PBLocation.Map = 0;
-                    Block = GetWorldMap().GetGridMapByGPS(PBLocation);
+                    Block = Program.WorldMap.GetGridMapByGPS(PBLocation);
 
                     this.GridMapGraphic[i, j].Block = Block;
                     this.GridMapGraphic[i, j].Graphic = Graphics.FromImage(PictureMgr.GetPictureByType(Block.Type));
@@ -146,19 +152,19 @@ namespace Maze.Forms
 
         void BlockClick(object sender, System.EventArgs e)
         {
-            GPS CursorGPS = VirtualPlayer.Position.Location;
+            GPS CursorGPS = oPlayer.Position.Location;
 
             // Calculate GPS of mouse click location by distance beetween player postion, 
             // form center point and MouseClick point
-            CursorGPS.X += (int)Math.Floor((VirtualPlayer.Position.X + (Cursor.Position.X - this.Location.X -
+            CursorGPS.X += (int)Math.Floor((oPlayer.Position.X + (Cursor.Position.X - this.Location.X -
                 (this.PlayerPB.Location.X + this.PlayerPB.Size.Width / 2 + FormBorderBarSize))) /
                 (double)GlobalConstants.GRIDMAP_BLOCK_WIDTH);
 
-            CursorGPS.Y += (int)Math.Floor((VirtualPlayer.Position.Y + (Cursor.Position.Y - this.Location.Y -
+            CursorGPS.Y += (int)Math.Floor((oPlayer.Position.Y + (Cursor.Position.Y - this.Location.Y -
                 (this.PlayerPB.Location.Y + this.PlayerPB.Size.Height / 2 + FormTitleBarSize))) /
                 (double)GlobalConstants.GRIDMAP_BLOCK_HEIGHT);
 
-            GridMap Block = GetWorldMap().GetGridMapByGPS(CursorGPS);
+            GridMap Block = Program.WorldMap.GetGridMapByGPS(CursorGPS);
 
             if (BlockEditForm == null)
                 BlockEditForm = new BlockEdit(Block);
@@ -178,7 +184,7 @@ namespace Maze.Forms
 
         void MapEditorFormClosing(object sender, FormClosingEventArgs e)
         {
-            GetWorldMap().CloseCurrentMap();
+            Program.WorldMap.CloseCurrentMap();
         }
     }
 }

@@ -137,7 +137,7 @@ namespace Maze.Forms
         {
             SetNextAction(WorldNextAction.MapEdit);
             GetWorldMap().LoadMap(MapComboBox.SelectedIndex);
-            World.CreateMapEditorForm();
+            //World.CreateMapEditorForm();
             this.Close();
         }
 
@@ -149,7 +149,7 @@ namespace Maze.Forms
                 return;
             }
             SetNextAction(WorldNextAction.MapEdit);
-            World.CreateMapEditorForm();
+            //World.CreateMapEditorForm();
             this.Close();
         }
     }

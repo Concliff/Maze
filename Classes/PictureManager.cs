@@ -8,7 +8,7 @@ using System.Drawing;
 
 namespace Maze.Classes
 {
-    class PictureManager
+    public class PictureManager
     {
         public Image StartImage;
         public Image FinishImage;

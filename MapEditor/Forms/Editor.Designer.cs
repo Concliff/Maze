@@ -1,9 +1,10 @@
 ﻿using Maze.Classes;
+using Maze.Forms;
 using System.Windows.Forms;
 
-namespace Maze.Forms
+namespace MapEditor.Forms
 {
-    partial class MapEditor
+    partial class Editor
     {
         /// <summary>
         /// Required designer variable.

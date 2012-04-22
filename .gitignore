@@ -4,6 +4,7 @@
 
 # Object Resources
 obj/*
+MapEditor/obj/*
 
 # Executable and Debug files
 bin/Release/*.*

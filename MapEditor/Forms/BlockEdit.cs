@@ -7,8 +7,9 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using Maze.Classes;
+using Maze.Forms;
 
-namespace Maze.Forms
+namespace MapEditor.Forms
 {
     public partial class BlockEdit : MazeForm
     {
@@ -31,7 +32,7 @@ namespace Maze.Forms
             // Add new or chage exsist MapBlock
             if (Block.ID == -1)
             {
-                BlockIDTextBox.Text = (GetWorldMap().GetBlocksCount()).ToString();
+                BlockIDTextBox.Text = Program.WorldMap.GetBlocksCount().ToString();
                 ConfirmButton.Text = "Add";
                 IsAdding = true;
             }
@@ -75,8 +76,8 @@ namespace Maze.Forms
             if (FinishCheckBox.Checked) SetBit(ref NewBlock.Attribute, (byte)Attributes.IsFinish);
             if (CoinCheckBox.Checked) SetBit(ref NewBlock.Attribute, (byte)Attributes.HasCoin);
 
-            GetWorldMap().AddGridMap(NewBlock);
-            World.GetMapEditorForm().RebuildGraphMap();
+            Program.WorldMap.AddGridMap(NewBlock);
+            Program.EditorForm.RebuildGraphMap();
             this.Close();
         }
 

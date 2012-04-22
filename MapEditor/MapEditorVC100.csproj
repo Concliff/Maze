@@ -1,15 +1,15 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="3.5" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{8F921A88-2013-4F16-BDA4-80BAC2BF4FD9}</ProjectGuid>
+    <ProjectGuid>{4F30A208-6261-4B06-A78A-752C62B38F3F}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Maze</RootNamespace>
-    <AssemblyName>Maze</AssemblyName>
+    <RootNamespace>MapEditor</RootNamespace>
+    <AssemblyName>MapEditor</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <PublishUrl>publish\</PublishUrl>
@@ -32,7 +32,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>..\bin\Release\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -40,7 +40,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
+    <OutputPath>..\bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -63,42 +63,26 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Classes\BinaryOperations.cs" />
-    <Compile Include="Classes\CPathFinding.cs" />
-    <Compile Include="Classes\CWayMap.cs" />
-    <Compile Include="Classes\Defines.cs" />
-    <Compile Include="Classes\Deimos.cs" />
-    <Compile Include="Classes\GlobalConstants.cs" />
-    <Compile Include="Classes\GridMap.cs" />
-    <Compile Include="Classes\KeyManager.cs" />
-    <Compile Include="Classes\Phobos.cs" />
-    <Compile Include="Classes\PictureManager.cs" />
-    <Compile Include="Classes\Player.cs" />
-    <Compile Include="Classes\TimeControl.cs" />
-    <Compile Include="Classes\Unit.cs" />
-    <Compile Include="Forms\GameForm.cs">
+    <Compile Include="Forms\BlockEdit.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\GameForm.Designer.cs">
-      <DependentUpon>GameForm.cs</DependentUpon>
+    <Compile Include="Forms\BlockEdit.Designer.cs">
+      <DependentUpon>BlockEdit.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\MazeForm.cs">
+    <Compile Include="Forms\Editor.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\Play.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\Play.Designer.cs">
-      <DependentUpon>Play.cs</DependentUpon>
+    <Compile Include="Forms\Editor.Designer.cs">
+      <DependentUpon>Editor.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="Forms\GameForm.resx">
-      <DependentUpon>GameForm.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\BlockEdit.resx">
+      <DependentUpon>BlockEdit.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Play.resx">
-      <DependentUpon>Play.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\Editor.resx">
+      <DependentUpon>Editor.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
@@ -109,7 +93,6 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
-      <DesignTime>True</DesignTime>
     </Compile>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -120,8 +103,12 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <Compile Include="Utility.cs" />
-    <Compile Include="World.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\MazeVC90.csproj">
+      <Project>{8F921A88-2013-4F16-BDA4-80BAC2BF4FD9}</Project>
+      <Name>Maze</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Framework.2.0">
@@ -144,9 +131,6 @@
       <ProductName>Установщик Windows 3.1</ProductName>
       <Install>true</Install>
     </BootstrapperPackage>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Data\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

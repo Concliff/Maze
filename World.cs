@@ -12,7 +12,6 @@ namespace Maze
         private static WorldNextAction NextAction;
         private static Map WorldMap;
         private static Play PlayForm;
-        private static MapEditor MapEditorForm;
         private GameForm StartGameForm;
         private static UnitContainer unitContainer;
         
@@ -21,8 +20,6 @@ namespace Maze
             unitContainer = new UnitContainer();
             NextAction = WorldNextAction.StartGame;
             WorldMap = new Map();
-            //PlayForm = new Play();
-            //MapEditorForm = new MapEditor();
             StartGameForm = new GameForm();
             Program();
         }
@@ -71,11 +68,6 @@ namespace Maze
             return PlayForm;
         }
 
-        public static MapEditor GetMapEditorForm()
-        {
-            return MapEditorForm;
-        }
-
         public static WorldNextAction GetNextAction()
         {
             return NextAction;
@@ -90,11 +82,5 @@ namespace Maze
             PlayForm = new Play();
         }
 
-        public static void CreateMapEditorForm()
-        {
-            MapEditorForm = new MapEditor();
-        }
-
-        
     }
 }

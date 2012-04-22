@@ -1,4 +1,4 @@
-﻿namespace Maze.Forms
+﻿namespace MapEditor.Forms
 {
     partial class BlockEdit
     {

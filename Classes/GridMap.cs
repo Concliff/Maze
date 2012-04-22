@@ -176,7 +176,7 @@ namespace Maze.Classes
                     Coins.Add(NewCoin);
 
                     // Create Deimos at Coin Location
-                    new Deimos(GridMapStruct.Location);
+                    //new Deimos(GridMapStruct.Location);
                 }
 
             }
