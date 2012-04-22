@@ -10,19 +10,24 @@ namespace Maze.Classes
     {
         private String Name;
         private bool FinishReached;
+        private int ressurectTimer;
 
         public Player()
         {
             Name = "Noname";
             UnitType = UnitTypes.Player;
-            Position.Location = World.GetWorldMap().GetStartPoint();
+            respawnLocation = World.GetWorldMap().GetStartPoint();
+
+            // Set Start Location
+            Position.Location = respawnLocation;
             Position.X = 25;
             Position.Y = 25;
-            Position.BlockID = 0;
+            Position.BlockID = World.GetWorldMap().GetGridMapByGPS(Position.Location).ID;
 
             CurrentGridMap = World.GetWorldMap().GetGridMapByGPS(Position.Location);
 
             FinishReached = false;
+            ressurectTimer = 3000;
         }
 
         public Player(String name) : this()
@@ -32,13 +37,44 @@ namespace Maze.Classes
 
         public override void UpdateState(int timeP)
         {
-            if (!FinishReached)
+            if (!FinishReached && IsAlive())
             {
                 List<Unit> Units = GetUnitsWithinRange(30);
                 if (Units != null && Units.Count != 0)
-                    FinishReached = true;
+                    SetDeathState(DeathStates.Dead);
+            }
+
+            if (!IsAlive())
+            {
+                if (ressurectTimer < timeP)
+                    RessurectPlayer();
+                else
+                    ressurectTimer -= timeP;
             }
         }
+
+        public override void SetDeathState(DeathStates deathState)
+        {
+            if (deathState == DeathStates.Dead)
+            {
+                ressurectTimer = 3000;
+            }
+
+            base.SetDeathState(deathState);
+        }
+
+        public void RessurectPlayer()
+        {
+            // Return to start location
+            Position.Location = respawnLocation;
+            Position.X = 25;
+            Position.Y = 25;
+            Position.BlockID = World.GetWorldMap().GetGridMapByGPS(Position.Location).ID;
+
+            SetDeathState(DeathStates.Alive);
+        }
+
+
 
         public String GetName() { return Name; }
         public void SetName(String PlayerName) { Name = PlayerName; }
@@ -63,7 +99,6 @@ namespace Maze.Classes
         /// <param name="MoveType">Flags of direction</param>
         public GridGPS MovementAction(byte MoveType)
         {
-
             // New position coords
             int NewX, NewY;
             NewX = Position.X

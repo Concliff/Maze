@@ -333,6 +333,9 @@ namespace Maze.Forms
                 !HasBit(MoveType, (byte)Directions.Right) && !HasBit(MoveType, (byte)Directions.Left))
                 return;
 
+            if (!oPlayer.IsAlive())
+                return;
+
             oPlayer.MovementAction(MoveType);
 
             if (oPlayer.IsFinished())
@@ -395,6 +398,7 @@ namespace Maze.Forms
                         g.Dispose();
                     }
 
+                    // Draw Visible Units
                     List<Unit> Units = GetUnitContainer().GetAllUnitsByGPS(Block.Location);
                     for (int d = 0; d < Units.Count; ++d)
                     {
@@ -417,6 +421,12 @@ namespace Maze.Forms
                             UnitImage.Size.Width, UnitImage.Size.Height);
                         g.Dispose();
                     }
+
+                    // Draw Player
+                    if (oPlayer.IsAlive() && !PlayerPB.Visible)
+                        PlayerPB.Show();
+                    if (!oPlayer.IsAlive() && PlayerPB.Visible)
+                        PlayerPB.Hide();
                 }
             this.ResumeLayout();
         }
