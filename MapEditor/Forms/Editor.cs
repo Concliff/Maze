@@ -62,6 +62,27 @@ namespace MapEditor.Forms
                 }
             MovementAction(MoveType);
 
+            // Get last pressed Key
+            switch (KeyMgr.ExtractKeyPressed())
+            {
+                case Keys.PageUp:
+                    int nextLevel = Program.WorldMap.GetLevel();
+                    ++nextLevel;
+                    Program.WorldMap.SetMap(Program.WorldMap.GetMap(), nextLevel);
+                    oPlayer.Position.Location.Level = nextLevel;
+                    RebuildGraphMap();
+                    break;
+                case Keys.PageDown:
+                    int previousLevel = Program.WorldMap.GetLevel();
+                    --previousLevel;
+                    if (previousLevel < 0)
+                        previousLevel = 0;
+                    Program.WorldMap.SetMap(Program.WorldMap.GetMap(), previousLevel);
+                    oPlayer.Position.Location.Level = previousLevel;
+                    RebuildGraphMap();
+                    break;
+            }
+
         }
         private void MovementAction(byte MoveType)
         {

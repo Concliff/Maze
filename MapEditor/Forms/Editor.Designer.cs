@@ -33,17 +33,19 @@ namespace MapEditor.Forms
         private void InitializeComponent()
         {
             this.SuspendLayout();
+
             // 
             // Editor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.Color.Black;
+            //this.BackColor = System.Drawing.Color.Black;
             this.ClientSize = new System.Drawing.Size(284, 262);
             this.Name = "Editor";
             this.Text = "Ally Map Editor";
             this.Load += new System.EventHandler(this.MapEditor_Load);
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -57,6 +59,7 @@ namespace MapEditor.Forms
             this.pbRightPanel = new PictureBox();
             this.lblCurrentMap = new Label();
             this.levelUpDown = new System.Windows.Forms.NumericUpDown();
+            this.lblDescription = new Label();
 
             this.Size = new System.Drawing.Size
                 ((GlobalConstants.GRIDMAP_BLOCK_WIDTH) * (GlobalConstants.GRIDMAP_WIDTH - 2),
@@ -72,6 +75,10 @@ namespace MapEditor.Forms
             lblCurrentMap.AutoSize = true;
             lblCurrentMap.Location = new System.Drawing.Point(pbRightPanel.Location.X + 10, 40);
             lblCurrentMap.Text = "Level:";
+
+            lblDescription.AutoSize = true;
+            lblDescription.Location = new System.Drawing.Point(pbRightPanel.Location.X + 10, 40);
+            lblDescription.Text = "Page Up\n - Next.\nPage Down\n - Previous";
 
             this.levelUpDown.Location = new System.Drawing.Point(pbRightPanel.Location.X + 10, 70);
             this.levelUpDown.Name = "Level";
@@ -104,8 +111,9 @@ namespace MapEditor.Forms
             // Adding Controls Order
 
             this.Controls.Add(this.PlayerPB);
-            this.Controls.Add(this.lblCurrentMap);
-            this.Controls.Add(this.levelUpDown);
+            //this.Controls.Add(this.lblCurrentMap);
+            //this.Controls.Add(this.levelUpDown);
+            this.Controls.Add(lblDescription);
             this.Controls.Add(this.pbRightPanel);
 
         }
@@ -123,19 +131,13 @@ namespace MapEditor.Forms
             this.Focus();
         }
 
-        void btnMapGo_Click(object sender, System.EventArgs e)
-        {
-
-        }
-
         KeyManager KeyMgr;
         private System.Windows.Forms.PictureBox PlayerPB;
         private System.Windows.Forms.PictureBox pbRightPanel;
         private NumericUpDown levelUpDown;
         private Label lblCurrentMap;
+        private Label lblDescription;
 
         private GridMapGraph[,] GridMapGraphic;
-
-
     }
 }
