@@ -299,7 +299,7 @@ namespace Maze.Classes
         {
             GPS result = new GPS();
             result.Level = currentLevel;
-            if (StartPoint.Count > currentLevel)
+            if (currentLevel <= StartPoint.Count)
                 result = StartPoint[currentLevel];
             return result;
         }
@@ -307,7 +307,7 @@ namespace Maze.Classes
         {
             GPS result = new GPS();
             result.Level = currentLevel;
-            if (FinishPoint.Count < currentLevel)
+            if (currentLevel <= FinishPoint.Count)
                 result = FinishPoint[currentLevel];
             return result;
         }

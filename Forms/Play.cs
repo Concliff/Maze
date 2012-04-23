@@ -336,7 +336,13 @@ namespace Maze.Forms
             oPlayer.MovementAction(MoveType);
 
             if (oPlayer.IsFinished())
-                MessageBox.Show("FINISH");
+            {
+                int currentMap = GetWorldMap().GetMap();
+                int currentLevel = GetWorldMap().GetLevel();
+                GetWorldMap().SetMap(currentMap, ++currentLevel);
+                oPlayer.LevelChanged();
+            }
+
         }
         /// <summary>
         /// RePaint PlayForm map pictures.
@@ -357,8 +363,8 @@ namespace Maze.Forms
                     y = /*GridMapPB.Location.Y*/ + (j - 1) * GlobalConstants.GRIDMAP_BLOCK_HEIGHT - (oPlayer.Position.Y - 25);
                     PBLocation.X = oPlayer.Position.Location.X + i - GlobalConstants.GRIDMAP_WIDTH / 2;
                     PBLocation.Y = oPlayer.Position.Location.Y + j - GlobalConstants.GRIDMAP_HEIGHT / 2;
-                    PBLocation.Z = 0;
-                    PBLocation.Level = 0;
+                    PBLocation.Z = oPlayer.Position.Location.Z;
+                    PBLocation.Level = oPlayer.Position.Location.Level;
                     Block = GetWorldMap().GetGridMap(PBLocation);
 
                     this.GridMapGraphic[i, j].Block = Block;

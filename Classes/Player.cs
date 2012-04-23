@@ -185,6 +185,16 @@ namespace Maze.Classes
             return Position;
         }
 
+        public void LevelChanged()
+        {
+            respawnLocation = GetWorldMap().GetStartPoint();
+            Position.Location = respawnLocation;
+            Position.X = 25;
+            Position.Y = 25;
+            FinishReached = false;
+        }
+
+
         public void TeleportTo() { }
 
         /// <summary>
