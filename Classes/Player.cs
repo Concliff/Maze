@@ -191,6 +191,7 @@ namespace Maze.Classes
             Position.Location = respawnLocation;
             Position.X = 25;
             Position.Y = 25;
+            CurrentGridMap = GetWorldMap().GetGridMap(Position.Location);
             FinishReached = false;
         }
 
