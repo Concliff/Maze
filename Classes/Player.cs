@@ -74,8 +74,6 @@ namespace Maze.Classes
             SetDeathState(DeathStates.Alive);
         }
 
-
-
         public String GetName() { return Name; }
         public void SetName(String PlayerName) { Name = PlayerName; }
 
@@ -86,7 +84,7 @@ namespace Maze.Classes
             Copy.Location.X = Position.Location.X;
             Copy.Location.Y = Position.Location.Y;
             Copy.Location.Z = Position.Location.Z;
-            Copy.Location.Map = Position.Location.Map;
+            Copy.Location.Level = Position.Location.Level;
             Copy.X = Position.X;
             Copy.Y = Position.Y;
             Copy.BlockID = Position.BlockID;

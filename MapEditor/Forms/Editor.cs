@@ -40,6 +40,7 @@ namespace MapEditor.Forms
             oPlayer = new VritualPlayer();
 
             RebuildGraphMap();
+            this.Focus();
         }
 
         public void SystemTimerTick(object sender, EventArgs e)
@@ -110,7 +111,7 @@ namespace MapEditor.Forms
                     PBLocation.X = oPlayer.Position.Location.X + i - GlobalConstants.GRIDMAP_WIDTH / 2;
                     PBLocation.Y = oPlayer.Position.Location.Y + j - GlobalConstants.GRIDMAP_HEIGHT / 2;
                     PBLocation.Z = 0;
-                    PBLocation.Map = 0;
+                    PBLocation.Level = 0;
                     Block = Program.WorldMap.GetGridMapByGPS(PBLocation);
 
                     this.GridMapGraphic[i, j].Block = Block;

@@ -51,14 +51,35 @@ namespace MapEditor.Forms
 
         private void CustomInitialize()
         {
-            this.Size = new System.Drawing.Size
-                ((GlobalConstants.GRIDMAP_BLOCK_WIDTH) * (GlobalConstants.GRIDMAP_WIDTH - 2),
-                (GlobalConstants.GRIDMAP_BLOCK_HEIGHT) * (GlobalConstants.GRIDMAP_HEIGHT - 2));
-            this.FormClosing += new FormClosingEventHandler(MapEditorFormClosing);
-            this.MouseClick +=new MouseEventHandler(BlockClick);
 
             this.KeyMgr = new KeyManager();
             this.PlayerPB = new PictureBox();
+            this.pbRightPanel = new PictureBox();
+            this.txtCurrentMap = new TextBox();
+            this.lblCurrentMap = new Label();
+            this.btnMapGo = new Button();
+
+            this.Size = new System.Drawing.Size
+                ((GlobalConstants.GRIDMAP_BLOCK_WIDTH) * (GlobalConstants.GRIDMAP_WIDTH - 2),
+                (GlobalConstants.GRIDMAP_BLOCK_HEIGHT) * (GlobalConstants.GRIDMAP_HEIGHT - 2) + 100);
+            this.FormClosing += new FormClosingEventHandler(MapEditorFormClosing);
+            this.MouseClick +=new MouseEventHandler(BlockClick);
+
+            this.pbRightPanel.Size = new System.Drawing.Size(100, this.Size.Height);
+            this.pbRightPanel.Location = new System.Drawing.Point(this.Size.Width - 100, 0);
+            this.pbRightPanel.BackColor = System.Drawing.Color.Gray;
+
+            lblCurrentMap.AutoSize = true;
+            lblCurrentMap.Location = new System.Drawing.Point(pbRightPanel.Location.X + 10, 40);
+            lblCurrentMap.Text = "Level:";
+
+            txtCurrentMap.Location = new System.Drawing.Point(pbRightPanel.Location.X + 10, 70);
+            txtCurrentMap.Size = new System.Drawing.Size(50, 20);
+
+            btnMapGo.Location = new System.Drawing.Point(pbRightPanel.Location.X + 10, 100);
+            btnMapGo.Size = new System.Drawing.Size(50, 20);
+            btnMapGo.Text = "Go";
+            btnMapGo.Click += new System.EventHandler(btnMapGo_Click);
 
             this.PlayerPB.Size = new System.Drawing.Size(10, 10);
             PlayerPB.BackColor = System.Drawing.Color.Red;
@@ -67,9 +88,7 @@ namespace MapEditor.Forms
             this.PlayerPB.Name = "PlayerPB";
             this.PlayerPB.TabIndex = 1;
             this.PlayerPB.TabStop = false;
-            this.Controls.Add(this.PlayerPB);
 
-            
             this.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.KeyMgr.EventKeyPress);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.KeyMgr.EventKeyDown);
             this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.KeyMgr.EventKeyUp);
@@ -81,10 +100,28 @@ namespace MapEditor.Forms
                     GridMapGraphic[i, j] = new GridMapGraph();
 
             this.SetStyle(ControlStyles.DoubleBuffer | ControlStyles.UserPaint | ControlStyles.AllPaintingInWmPaint, true);
+
+            // Adding Controls Order
+
+            this.Controls.Add(this.PlayerPB);
+            this.Controls.Add(this.lblCurrentMap);
+            this.Controls.Add(this.txtCurrentMap);
+            this.Controls.Add(this.btnMapGo);
+            this.Controls.Add(this.pbRightPanel);
+
+        }
+
+        void btnMapGo_Click(object sender, System.EventArgs e)
+        {
+
         }
 
         KeyManager KeyMgr;
         private System.Windows.Forms.PictureBox PlayerPB;
+        private System.Windows.Forms.PictureBox pbRightPanel;
+        private TextBox txtCurrentMap;
+        private Label lblCurrentMap;
+        private Button btnMapGo;
 
         private GridMapGraph[,] GridMapGraphic;
 

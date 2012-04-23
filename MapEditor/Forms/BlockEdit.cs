@@ -40,7 +40,7 @@ namespace MapEditor.Forms
             LocationXTextBox.Text = Block.Location.X.ToString();
             LocationYTextBox.Text = Block.Location.Y.ToString();
             LocationZTextBox.Text = Block.Location.Z.ToString();
-            LocationMapTextBox.Text = Block.Location.Map.ToString();
+            LocationMapTextBox.Text = Block.Location.Level.ToString();
 
             // Movement
             UpCheckBox.Checked = HasBit(Block.Type, (byte)Directions.Up);
@@ -63,7 +63,7 @@ namespace MapEditor.Forms
             NewBlock.Location.X = Convert.ToInt32(LocationXTextBox.Text);
             NewBlock.Location.Y = Convert.ToInt32(LocationYTextBox.Text);
             NewBlock.Location.Z = Convert.ToInt32(LocationZTextBox.Text);
-            NewBlock.Location.Map = Convert.ToInt32(LocationMapTextBox.Text);
+            NewBlock.Location.Level = Convert.ToInt32(LocationMapTextBox.Text);
 
             NewBlock.Type = 0;
             if (UpCheckBox.Checked) SetBit(ref NewBlock.Type, (byte)Directions.Up);

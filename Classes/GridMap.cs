@@ -27,7 +27,7 @@ namespace Maze.Classes
             Location.X = 0;
             Location.Y = 0;
             Location.Z = 0;
-            Location.Map = 0;
+            Location.Level = 0;
             Attribute = 0;
             Option = 0;
             OptionValue = 0;
@@ -40,7 +40,7 @@ namespace Maze.Classes
         public int X;
         public int Y;
         public int Z;
-        public int Map;
+        public int Level;
     };
 
     // Location on current Block
@@ -81,6 +81,8 @@ namespace Maze.Classes
         private int BlocksCount;
         private string CurrentMapName;
         private bool GridMapChanged;        // If map changed, it should be rewrited into mapFile
+        private int currentMapIndex;
+        private int currentLevel;
 
         private string MapDirectoryPath = GlobalConstants.MAPS_PATH;
 
@@ -118,8 +120,17 @@ namespace Maze.Classes
             if (GridMapChanged)
                 SaveToFile();
         }
+        public void SetMap(int mapIndex) { SetMap(mapIndex,0); }
 
-        public void LoadMap(int MapIndex)
+        public void SetMap(int mapIndex, int level)
+        {
+            if (currentMapIndex != mapIndex || MapBlocks == null)
+                LoadMap(mapIndex);
+            this.currentLevel = level;
+        }
+
+
+        private void LoadMap(int MapIndex)
         {
             LoadFromFile(MapNameList[MapIndex] + ".map");
         }
@@ -155,7 +166,7 @@ namespace Maze.Classes
                 GridMapStruct.Location.X = Convert.ToInt32(StringStruct[1]);
                 GridMapStruct.Location.Y = Convert.ToInt32(StringStruct[2]);
                 GridMapStruct.Location.Z = Convert.ToInt32(StringStruct[3]);
-                GridMapStruct.Location.Map = Convert.ToInt32(StringStruct[4]);
+                GridMapStruct.Location.Level = Convert.ToInt32(StringStruct[4]);
                 GridMapStruct.Type = Convert.ToInt32(StringStruct[5]);
                 GridMapStruct.Attribute = Convert.ToInt32(StringStruct[6]);
                 GridMapStruct.Option = Convert.ToInt32(StringStruct[7]);
@@ -193,7 +204,7 @@ namespace Maze.Classes
                     + Block.Location.X.ToString() + " "
                     + Block.Location.Y.ToString() + " "
                     + Block.Location.Z.ToString() + " "
-                    + Block.Location.Map.ToString() + " "
+                    + Block.Location.Level.ToString() + " "
                     + Block.Type.ToString() + " "
                     + Block.Attribute.ToString() + " "
                     + Block.Option.ToString() + " "
@@ -286,7 +297,7 @@ namespace Maze.Classes
             NewGridMap.Location.X = 0;
             NewGridMap.Location.Y = 0;
             NewGridMap.Location.Z = 0;
-            NewGridMap.Location.Map = 0;
+            NewGridMap.Location.Level = 0;
             NewGridMap.Attribute = 0;
             NewGridMap.Option = 0;
             NewGridMap.OptionValue = 0;

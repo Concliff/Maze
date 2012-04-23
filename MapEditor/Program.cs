@@ -19,7 +19,7 @@ namespace MapEditor
         static void Main()
         {
             WorldMap = new Map();
-            WorldMap.LoadMap(0);
+            WorldMap.SetMap(0);
 
             EditorForm = new Editor();
 

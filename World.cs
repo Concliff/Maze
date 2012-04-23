@@ -26,7 +26,7 @@ namespace Maze
 
         private void Program()
         {
-            WorldMap.LoadMap(0);
+            WorldMap.SetMap(0);
             CreatePlayForm();
             Application.Run(PlayForm);
             /*

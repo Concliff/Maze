@@ -128,7 +128,7 @@ namespace Maze.Forms
         void PlayButtonClick(object sender, System.EventArgs e)
         {
             SetNextAction(WorldNextAction.GamePlay);
-            GetWorldMap().LoadMap(MapComboBox.SelectedIndex);
+            GetWorldMap().SetMap(MapComboBox.SelectedIndex);
             World.CreatePlayForm();
             this.Close();
         }
@@ -136,7 +136,7 @@ namespace Maze.Forms
         void OpenSelectedMapButtonClick(object sender, System.EventArgs e)
         {
             SetNextAction(WorldNextAction.MapEdit);
-            GetWorldMap().LoadMap(MapComboBox.SelectedIndex);
+            GetWorldMap().SetMap(MapComboBox.SelectedIndex);
             //World.CreateMapEditorForm();
             this.Close();
         }
