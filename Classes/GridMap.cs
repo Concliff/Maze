@@ -83,7 +83,7 @@ namespace Maze.Classes
         private bool GridMapChanged;        // If map changed, it should be rewrited into mapFile
         private int currentMapIndex;
         private int currentLevel;
-
+        private int levelCount;
         private string MapDirectoryPath = GlobalConstants.MAPS_PATH;
 
         public Map()
@@ -91,6 +91,7 @@ namespace Maze.Classes
             BlocksCount = 0;
             LoadMapNameList();
             GridMapChanged = false;
+            levelCount = 0;
         }
 
         ~Map()
@@ -123,8 +124,11 @@ namespace Maze.Classes
 
         public int GetLevel() { return currentLevel; }
         public int GetMap() { return currentMapIndex; }
+        public int GetLevelCount() { return levelCount; }
 
         public void SetMap(int mapIndex) { SetMap(mapIndex,0); }
+
+        public void SetLevelCount(int levelCount) { this.levelCount = levelCount; }
 
         public void SetMap(int mapIndex, int level)
         {
@@ -160,6 +164,7 @@ namespace Maze.Classes
             StartPoint = new List<GPS>();
             FinishPoint = new List<GPS>();
             CurrentMapName = MapFileName.Split('.')[0];
+            int levelIndicator = 0;
 
             StreamReader GridMapStream = File.OpenText(MapDirectoryPath + MapFileName);
             string CurrentString;
@@ -184,6 +189,9 @@ namespace Maze.Classes
 
                 AddGridMap(GridMapStruct);
 
+                if (Convert.ToInt32(StringStruct[4]) >= levelIndicator)
+                    levelIndicator++;
+
                 if (BinaryOperations.IsBit(GridMapStruct.Attribute, (byte)Attributes.IsStart))
                     StartPoint.Insert(GridMapStruct.Location.Level, GridMapStruct.Location);
                 if (BinaryOperations.IsBit(GridMapStruct.Attribute, (byte)Attributes.IsFinish))
@@ -198,6 +206,7 @@ namespace Maze.Classes
 
             }
             GridMapStream.Close();
+            SetLevelCount(levelIndicator);
         }
 
         private void SaveToFile()
@@ -299,7 +308,7 @@ namespace Maze.Classes
         {
             GPS result = new GPS();
             result.Level = currentLevel;
-            if (currentLevel <= StartPoint.Count)
+            if (currentLevel < StartPoint.Count)
                 result = StartPoint[currentLevel];
             return result;
         }

@@ -339,8 +339,12 @@ namespace Maze.Forms
             {
                 int currentMap = GetWorldMap().GetMap();
                 int currentLevel = GetWorldMap().GetLevel();
-                GetWorldMap().SetMap(currentMap, ++currentLevel);
-                oPlayer.LevelChanged();
+                
+                if (++currentLevel < GetWorldMap().GetLevelCount())
+                {
+                    GetWorldMap().SetMap(currentMap, currentLevel);
+                    oPlayer.LevelChanged();
+                }
             }
 
         }
