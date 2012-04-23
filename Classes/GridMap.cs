@@ -126,7 +126,10 @@ namespace Maze.Classes
         {
             if (currentMapIndex != mapIndex || MapBlocks == null)
                 LoadMap(mapIndex);
-            this.currentLevel = level;
+            else
+                currentMapIndex = mapIndex;
+
+            currentLevel = level;
         }
 
 
@@ -199,7 +202,7 @@ namespace Maze.Classes
 
             for (int i = 0; i < BlocksCount; ++i)
             {
-                Block = GetGridMapByID(i);
+                Block = GetGridMap(i);
                 GridMapString = Block.ID.ToString() + " "
                     + Block.Location.X.ToString() + " "
                     + Block.Location.Y.ToString() + " "
@@ -225,7 +228,7 @@ namespace Maze.Classes
             }
         }
 
-        public GridMap GetGridMapByID(int BlockID)
+        public GridMap GetGridMap(int BlockID)
         {
             GridMap MapBlock = new GridMap();
             MapBlock.Initialize();
@@ -236,7 +239,7 @@ namespace Maze.Classes
 
             return MapBlock;
         }
-        public GridMap GetGridMapByGPS(GPS BlockLocation)
+        public GridMap GetGridMap(GPS BlockLocation)
         {
             GridMap MapBlock = new GridMap();
             MapBlock.Initialize();// Initialize(MapBlock);
@@ -256,7 +259,7 @@ namespace Maze.Classes
 
         public bool AddGridMap(GridMap NewGridMap)
         {
-            if (GetGridMapByID(NewGridMap.ID).ID != -1)
+            if (GetGridMap(NewGridMap.ID).ID != -1)
             {
                 ReplaceGridMap(NewGridMap);
                 return false;
@@ -276,7 +279,7 @@ namespace Maze.Classes
         }
         private bool ReplaceGridMap(GridMap ChangedGridMap)
         {
-            RemoveGridMap(GetGridMapByID(ChangedGridMap.ID));
+            RemoveGridMap(GetGridMap(ChangedGridMap.ID));
             AddGridMap(ChangedGridMap);
             return true;
         }
@@ -288,21 +291,6 @@ namespace Maze.Classes
 
         public GPS GetStartPoint() { return StartPoint; }
         public GPS GetFinishPoint() { return FinishPoint; }
-
-        // Outdated method
-        private void Initialize(GridMap NewGridMap)
-        {
-            NewGridMap.ID = -1;
-            NewGridMap.Type = 16;
-            NewGridMap.Location.X = 0;
-            NewGridMap.Location.Y = 0;
-            NewGridMap.Location.Z = 0;
-            NewGridMap.Location.Level = 0;
-            NewGridMap.Attribute = 0;
-            NewGridMap.Option = 0;
-            NewGridMap.OptionValue = 0;
-            NewGridMap.ND4 = 0;
-        }
 
         private bool IsMapExist(string MapName)
         {

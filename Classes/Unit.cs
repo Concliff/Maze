@@ -56,7 +56,7 @@ namespace Maze.Classes
                 case Directions.Right: Position.Location.X += BlockPassCount; break;
             }
 
-            CurrentGridMap = GetWorldMap().GetGridMapByGPS(Position.Location);
+            CurrentGridMap = GetWorldMap().GetGridMap(Position.Location);
         }
 
         protected Map GetWorldMap()

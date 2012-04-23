@@ -359,7 +359,7 @@ namespace Maze.Forms
                     PBLocation.Y = oPlayer.Position.Location.Y + j - GlobalConstants.GRIDMAP_HEIGHT / 2;
                     PBLocation.Z = 0;
                     PBLocation.Level = 0;
-                    Block = GetWorldMap().GetGridMapByGPS(PBLocation);
+                    Block = GetWorldMap().GetGridMap(PBLocation);
 
                     this.GridMapGraphic[i, j].Block = Block;
                     this.GridMapGraphic[i, j].Graphic = Graphics.FromImage(PictureMgr.GetPictureByType(Block.Type));

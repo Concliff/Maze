@@ -23,7 +23,7 @@ namespace Maze.Classes
             IsInMotion = false;
             CurrentDirection = Directions.None;
 
-            CurrentGridMap = World.GetWorldMap().GetGridMapByGPS(Position.Location);
+            CurrentGridMap = World.GetWorldMap().GetGridMap(Position.Location);
             
         }
 

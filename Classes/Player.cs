@@ -22,9 +22,9 @@ namespace Maze.Classes
             Position.Location = respawnLocation;
             Position.X = 25;
             Position.Y = 25;
-            Position.BlockID = World.GetWorldMap().GetGridMapByGPS(Position.Location).ID;
+            Position.BlockID = World.GetWorldMap().GetGridMap(Position.Location).ID;
 
-            CurrentGridMap = World.GetWorldMap().GetGridMapByGPS(Position.Location);
+            CurrentGridMap = World.GetWorldMap().GetGridMap(Position.Location);
 
             FinishReached = false;
             ressurectTimer = 3000;
@@ -69,7 +69,7 @@ namespace Maze.Classes
             Position.Location = respawnLocation;
             Position.X = 25;
             Position.Y = 25;
-            Position.BlockID = World.GetWorldMap().GetGridMapByGPS(Position.Location).ID;
+            Position.BlockID = World.GetWorldMap().GetGridMap(Position.Location).ID;
 
             SetDeathState(DeathStates.Alive);
         }
