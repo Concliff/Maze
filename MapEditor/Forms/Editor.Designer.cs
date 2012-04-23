@@ -34,13 +34,13 @@ namespace MapEditor.Forms
         {
             this.SuspendLayout();
             // 
-            // MapEditor
+            // Editor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.Black;
             this.ClientSize = new System.Drawing.Size(284, 262);
-            this.Name = "MapEditor";
+            this.Name = "Editor";
             this.Text = "Ally Map Editor";
             this.Load += new System.EventHandler(this.MapEditor_Load);
             this.ResumeLayout(false);
@@ -55,9 +55,8 @@ namespace MapEditor.Forms
             this.KeyMgr = new KeyManager();
             this.PlayerPB = new PictureBox();
             this.pbRightPanel = new PictureBox();
-            this.txtCurrentMap = new TextBox();
             this.lblCurrentMap = new Label();
-            this.btnMapGo = new Button();
+            this.levelUpDown = new System.Windows.Forms.NumericUpDown();
 
             this.Size = new System.Drawing.Size
                 ((GlobalConstants.GRIDMAP_BLOCK_WIDTH) * (GlobalConstants.GRIDMAP_WIDTH - 2),
@@ -65,7 +64,8 @@ namespace MapEditor.Forms
             this.FormClosing += new FormClosingEventHandler(MapEditorFormClosing);
             this.MouseClick +=new MouseEventHandler(BlockClick);
 
-            this.pbRightPanel.Size = new System.Drawing.Size(100, this.Size.Height);
+            this.pbRightPanel.Size = new System.Drawing.Size
+                (100 - 2*FormBorderBarSize, this.Size.Height - FormBorderBarSize - FormTitleBarSize);
             this.pbRightPanel.Location = new System.Drawing.Point(this.Size.Width - 100, 0);
             this.pbRightPanel.BackColor = System.Drawing.Color.Gray;
 
@@ -73,18 +73,18 @@ namespace MapEditor.Forms
             lblCurrentMap.Location = new System.Drawing.Point(pbRightPanel.Location.X + 10, 40);
             lblCurrentMap.Text = "Level:";
 
-            txtCurrentMap.Location = new System.Drawing.Point(pbRightPanel.Location.X + 10, 70);
-            txtCurrentMap.Size = new System.Drawing.Size(50, 20);
-
-            btnMapGo.Location = new System.Drawing.Point(pbRightPanel.Location.X + 10, 100);
-            btnMapGo.Size = new System.Drawing.Size(50, 20);
-            btnMapGo.Text = "Go";
-            btnMapGo.Click += new System.EventHandler(btnMapGo_Click);
+            this.levelUpDown.Location = new System.Drawing.Point(pbRightPanel.Location.X + 10, 70);
+            this.levelUpDown.Name = "Level";
+            this.levelUpDown.Size = new System.Drawing.Size(50, 20);
+            this.levelUpDown.TabIndex = 0;
+            this.levelUpDown.ValueChanged += new System.EventHandler(levelUpDown_ValueChanged);
+            this.levelUpDown.TabStop = false;
 
             this.PlayerPB.Size = new System.Drawing.Size(10, 10);
             PlayerPB.BackColor = System.Drawing.Color.Red;
             this.PlayerPB.Location = new System.Drawing.Point
-                ((this.Size.Width - this.PlayerPB.Size.Width) / 2, (this.Size.Height - this.PlayerPB.Size.Height) / 2);
+                ((this.Size.Width - pbRightPanel.Size.Width - this.PlayerPB.Size.Width) / 2, 
+                (this.Size.Height - this.PlayerPB.Size.Height) / 2 - (FormTitleBarSize - FormBorderBarSize));
             this.PlayerPB.Name = "PlayerPB";
             this.PlayerPB.TabIndex = 1;
             this.PlayerPB.TabStop = false;
@@ -105,10 +105,22 @@ namespace MapEditor.Forms
 
             this.Controls.Add(this.PlayerPB);
             this.Controls.Add(this.lblCurrentMap);
-            this.Controls.Add(this.txtCurrentMap);
-            this.Controls.Add(this.btnMapGo);
+            this.Controls.Add(this.levelUpDown);
             this.Controls.Add(this.pbRightPanel);
 
+        }
+
+        void levelUpDown_ValueChanged(object sender, System.EventArgs e)
+        {
+            if (levelUpDown.Value < 0)
+                levelUpDown.Value = 0;
+            else if (levelUpDown.Value > 100)
+                levelUpDown.Value = 100;
+
+            Program.WorldMap.SetMap(Program.WorldMap.GetMap(), (int)levelUpDown.Value);
+            oPlayer.Position.Location.Level = (int)levelUpDown.Value;
+
+            this.Focus();
         }
 
         void btnMapGo_Click(object sender, System.EventArgs e)
@@ -119,11 +131,11 @@ namespace MapEditor.Forms
         KeyManager KeyMgr;
         private System.Windows.Forms.PictureBox PlayerPB;
         private System.Windows.Forms.PictureBox pbRightPanel;
-        private TextBox txtCurrentMap;
+        private NumericUpDown levelUpDown;
         private Label lblCurrentMap;
-        private Button btnMapGo;
 
         private GridMapGraph[,] GridMapGraphic;
+
 
     }
 }

@@ -76,8 +76,8 @@ namespace Maze.Classes
         private ArrayList MapBlocks;        // Array of GridMap block of current map
         private ArrayList Coins;            // Array of Coins on map
         private string[] MapNameList;       // Names of All downloaded maps
-        private GPS StartPoint;
-        private GPS FinishPoint;
+        private List<GPS> StartPoint;
+        private List<GPS> FinishPoint;
         private int BlocksCount;
         private string CurrentMapName;
         private bool GridMapChanged;        // If map changed, it should be rewrited into mapFile
@@ -120,6 +120,10 @@ namespace Maze.Classes
             if (GridMapChanged)
                 SaveToFile();
         }
+
+        public int GetLevel() { return currentLevel; }
+        public int GetMap() { return currentMapIndex; }
+
         public void SetMap(int mapIndex) { SetMap(mapIndex,0); }
 
         public void SetMap(int mapIndex, int level)
@@ -153,6 +157,8 @@ namespace Maze.Classes
         {
             MapBlocks = new ArrayList();
             Coins = new ArrayList();
+            StartPoint = new List<GPS>();
+            FinishPoint = new List<GPS>();
             CurrentMapName = MapFileName.Split('.')[0];
 
             StreamReader GridMapStream = File.OpenText(MapDirectoryPath + MapFileName);
@@ -179,9 +185,9 @@ namespace Maze.Classes
                 AddGridMap(GridMapStruct);
 
                 if (BinaryOperations.IsBit(GridMapStruct.Attribute, (byte)Attributes.IsStart))
-                    StartPoint = GridMapStruct.Location;
+                    StartPoint.Insert(GridMapStruct.Location.Level, GridMapStruct.Location);
                 if (BinaryOperations.IsBit(GridMapStruct.Attribute, (byte)Attributes.IsFinish))
-                    FinishPoint = GridMapStruct.Location;
+                    FinishPoint.Insert(GridMapStruct.Location.Level, GridMapStruct.Location);
                 if (BinaryOperations.IsBit(GridMapStruct.Attribute, (byte)Attributes.HasCoin))
                 {
                     Coin NewCoin;
@@ -289,8 +295,22 @@ namespace Maze.Classes
             return MapNameList;
         }
 
-        public GPS GetStartPoint() { return StartPoint; }
-        public GPS GetFinishPoint() { return FinishPoint; }
+        public GPS GetStartPoint()
+        {
+            GPS result = new GPS();
+            result.Level = currentLevel;
+            if (StartPoint.Count > currentLevel)
+                result = StartPoint[currentLevel];
+            return result;
+        }
+        public GPS GetFinishPoint()
+        {
+            GPS result = new GPS();
+            result.Level = currentLevel;
+            if (FinishPoint.Count < currentLevel)
+                result = FinishPoint[currentLevel];
+            return result;
+        }
 
         private bool IsMapExist(string MapName)
         {

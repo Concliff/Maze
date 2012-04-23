@@ -38,6 +38,11 @@ namespace MapEditor.Forms
             SystemTimer.Start();
 
             oPlayer = new VritualPlayer();
+            oPlayer.Position.Location = Program.WorldMap.GetStartPoint();
+            oPlayer.Position.X = 25;
+            oPlayer.Position.Y = 25;
+
+            levelUpDown.Value = 0;
 
             RebuildGraphMap();
             this.Focus();
@@ -106,12 +111,12 @@ namespace MapEditor.Forms
                 for (int j = 0; j < GlobalConstants.GRIDMAP_HEIGHT; ++j)
                 {
                     int x, y;
-                    x = (i - 1) * GlobalConstants.GRIDMAP_BLOCK_WIDTH - (oPlayer.Position.X - GlobalConstants.GRIDMAP_BLOCK_WIDTH / 2);
-                    y = (j - 1) * GlobalConstants.GRIDMAP_BLOCK_HEIGHT - (oPlayer.Position.Y - GlobalConstants.GRIDMAP_BLOCK_HEIGHT / 2);
+                    x = (i - 1) * GlobalConstants.GRIDMAP_BLOCK_WIDTH - (oPlayer.Position.X - GlobalConstants.GRIDMAP_BLOCK_WIDTH / 2) - this.pbRightPanel.Size.Width/2;
+                    y = (j - 1) * GlobalConstants.GRIDMAP_BLOCK_HEIGHT - (oPlayer.Position.Y - GlobalConstants.GRIDMAP_BLOCK_HEIGHT / 2) + FormTitleBarSize;
                     PBLocation.X = oPlayer.Position.Location.X + i - GlobalConstants.GRIDMAP_WIDTH / 2;
                     PBLocation.Y = oPlayer.Position.Location.Y + j - GlobalConstants.GRIDMAP_HEIGHT / 2;
-                    PBLocation.Z = 0;
-                    PBLocation.Level = 0;
+                    PBLocation.Z = oPlayer.Position.Location.Z;
+                    PBLocation.Level = oPlayer.Position.Location.Level;
                     Block = Program.WorldMap.GetGridMap(PBLocation);
 
                     this.GridMapGraphic[i, j].Block = Block;

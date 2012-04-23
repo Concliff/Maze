@@ -51,11 +51,11 @@
             this.LocationXLabel = new System.Windows.Forms.Label();
             this.LocationYLabel = new System.Windows.Forms.Label();
             this.LocationZLabel = new System.Windows.Forms.Label();
-            this.LocationMapLabel = new System.Windows.Forms.Label();
+            this.LocationLevelLabel = new System.Windows.Forms.Label();
             this.LocationXTextBox = new System.Windows.Forms.TextBox();
             this.LocationYTextBox = new System.Windows.Forms.TextBox();
             this.LocationZTextBox = new System.Windows.Forms.TextBox();
-            this.LocationMapTextBox = new System.Windows.Forms.TextBox();
+            this.LocationLevelTextBox = new System.Windows.Forms.TextBox();
 
             this.MovementLabel = new System.Windows.Forms.Label();
             this.UpCheckBox = new System.Windows.Forms.CheckBox();
@@ -74,12 +74,12 @@
             LocationXLabel.Size = new System.Drawing.Size(80, 20);
             LocationYLabel.Size = new System.Drawing.Size(80, 20);
             LocationZLabel.Size = new System.Drawing.Size(80, 20);
-            LocationMapLabel.Size = new System.Drawing.Size(80, 20);
+            LocationLevelLabel.Size = new System.Drawing.Size(80, 20);
             BlockIDTextBox.Size = new System.Drawing.Size(50, 20);
             LocationXTextBox.Size = new System.Drawing.Size(50, 20);
             LocationYTextBox.Size = new System.Drawing.Size(50, 20);
             LocationZTextBox.Size = new System.Drawing.Size(50, 20);
-            LocationMapTextBox.Size = new System.Drawing.Size(50, 20);
+            LocationLevelTextBox.Size = new System.Drawing.Size(50, 20);
             MovementLabel.Size = new System.Drawing.Size(80, 20);
             UpCheckBox.AutoSize = true;
             LeftCheckBox.AutoSize = true;
@@ -95,11 +95,11 @@
             LocationXLabel.Location = new System.Drawing.Point(20, 80);
             LocationYLabel.Location = new System.Drawing.Point(20, 100);
             LocationZLabel.Location = new System.Drawing.Point(20, 120);
-            LocationMapLabel.Location = new System.Drawing.Point(20, 140);
+            LocationLevelLabel.Location = new System.Drawing.Point(20, 140);
             LocationXTextBox.Location = new System.Drawing.Point(120, 80);
             LocationYTextBox.Location = new System.Drawing.Point(120, 100);
             LocationZTextBox.Location = new System.Drawing.Point(120, 120);
-            LocationMapTextBox.Location = new System.Drawing.Point(120, 140);
+            LocationLevelTextBox.Location = new System.Drawing.Point(120, 140);
 
             MovementLabel.Location = new System.Drawing.Point(20, 170);
             UpCheckBox.Location = new System.Drawing.Point(70, 190);
@@ -116,12 +116,12 @@
             LocationXLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             LocationYLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             LocationZLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            LocationMapLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            LocationLevelLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             BlockIDTextBox.Enabled = false;
             LocationXTextBox.Enabled = false;
             LocationYTextBox.Enabled = false;
             LocationZTextBox.Enabled = false;
-            LocationMapTextBox.Enabled = false;
+            LocationLevelTextBox.Enabled = false;
 
             ConfirmButton.Click += new System.EventHandler(AcceptButtonClick);
             CancelButton.Click +=new System.EventHandler(CancelButtonClick);
@@ -131,7 +131,7 @@
             LocationXLabel.Text = "X";
             LocationYLabel.Text = "Y";
             LocationZLabel.Text = "Z";
-            LocationMapLabel.Text = "Map";
+            LocationLevelLabel.Text = "Level";
             MovementLabel.Text = "Allowed Move:";
             UpCheckBox.Text = "Up";
             LeftCheckBox.Text = "Left";
@@ -150,11 +150,11 @@
             this.Controls.Add(this.LocationXLabel);
             this.Controls.Add(this.LocationYLabel);
             this.Controls.Add(this.LocationZLabel);
-            this.Controls.Add(this.LocationMapLabel);
+            this.Controls.Add(this.LocationLevelLabel);
             this.Controls.Add(this.LocationXTextBox);
             this.Controls.Add(this.LocationYTextBox);
             this.Controls.Add(this.LocationZTextBox);
-            this.Controls.Add(this.LocationMapTextBox);
+            this.Controls.Add(this.LocationLevelTextBox);
 
             this.Controls.Add(this.MovementLabel);
             this.Controls.Add(this.UpCheckBox);
@@ -177,11 +177,11 @@
         private System.Windows.Forms.Label LocationXLabel;
         private System.Windows.Forms.Label LocationYLabel;
         private System.Windows.Forms.Label LocationZLabel;
-        private System.Windows.Forms.Label LocationMapLabel;
+        private System.Windows.Forms.Label LocationLevelLabel;
         private System.Windows.Forms.TextBox LocationXTextBox;
         private System.Windows.Forms.TextBox LocationYTextBox;
         private System.Windows.Forms.TextBox LocationZTextBox;
-        private System.Windows.Forms.TextBox LocationMapTextBox;
+        private System.Windows.Forms.TextBox LocationLevelTextBox;
         private System.Windows.Forms.Label MovementLabel;
         private System.Windows.Forms.CheckBox UpCheckBox;
         private System.Windows.Forms.CheckBox LeftCheckBox;
