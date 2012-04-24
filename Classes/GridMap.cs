@@ -74,7 +74,7 @@ namespace Maze.Classes
     public class Map
     {
         private ArrayList MapBlocks;        // Array of GridMap block of current map
-        private ArrayList Coins;            // Array of Coins on map
+        private List<List<Coin>> Coins;     // Coins per level on map
         private string[] MapNameList;       // Names of All downloaded maps
         private List<GPS> StartPoint;
         private List<GPS> FinishPoint;
@@ -160,11 +160,12 @@ namespace Maze.Classes
         private void LoadFromFile(string MapFileName)
         {
             MapBlocks = new ArrayList();
-            Coins = new ArrayList();
+            Coins = new List<List<Coin>>();
             StartPoint = new List<GPS>();
             FinishPoint = new List<GPS>();
             CurrentMapName = MapFileName.Split('.')[0];
             int levelIndicator = 0;
+            Coins.Add(new List<Coin>());
 
             StreamReader GridMapStream = File.OpenText(MapDirectoryPath + MapFileName);
             string CurrentString;
@@ -190,7 +191,10 @@ namespace Maze.Classes
                 AddGridMap(GridMapStruct);
 
                 if (Convert.ToInt32(StringStruct[4]) >= levelIndicator)
+                {
                     levelIndicator++;
+                    Coins.Add(new List<Coin>());
+                }
 
                 if (BinaryOperations.IsBit(GridMapStruct.Attribute, (byte)Attributes.IsStart))
                     StartPoint.Insert(GridMapStruct.Location.Level, GridMapStruct.Location);
@@ -201,7 +205,7 @@ namespace Maze.Classes
                     Coin NewCoin;
                     NewCoin.ID = GridMapStruct.ID;
                     NewCoin.Collected = false;
-                    Coins.Add(NewCoin);
+                    Coins[GridMapStruct.Location.Level].Add(NewCoin);
                 }
 
             }
@@ -330,13 +334,13 @@ namespace Maze.Classes
             return false;
         }
 
-        public int GetCoinsCount() { return Coins.Count; }
+        public int GetCoinsCount() { return Coins[currentLevel].Count; }
 
         public int GetCollectedCoinsCount()
         {
             int CollectedCoinsCount = 0;
-            for (int i = 0; i < Coins.Count; ++i)
-                if (((Coin)Coins[i]).Collected)
+            for (int i = 0; i < Coins[currentLevel].Count; ++i)
+                if (((Coin)Coins[currentLevel][i]).Collected)
                     ++CollectedCoinsCount;
 
             return CollectedCoinsCount;
@@ -344,23 +348,23 @@ namespace Maze.Classes
 
         public void CollectCoin(GridMap Block)
         {
-            for (int i = 0; i < Coins.Count; ++i)
-                if (((Coin)Coins[i]).ID == Block.ID)
+            for (int i = 0; i < Coins[currentLevel].Count; ++i)
+                if (((Coin)Coins[currentLevel][i]).ID == Block.ID)
                 {
                     Coin NewCoin;
                     NewCoin.ID = Block.ID;
                     NewCoin.Collected = true;
-                    Coins.Remove(Coins[i]);
-                    Coins.Add(NewCoin);
+                    Coins[currentLevel].Remove(Coins[currentLevel][i]);
+                    Coins[currentLevel].Add(NewCoin);
                     return;
                 }
         }
 
         public bool IsCoinCollected(GridMap Block)
         {
-            for (int i = 0; i < Coins.Count; ++i)
-                if (((Coin)Coins[i]).ID == Block.ID)
-                    return ((Coin)Coins[i]).Collected;
+            for (int i = 0; i < Coins[currentLevel].Count; ++i)
+                if (((Coin)Coins[currentLevel][i]).ID == Block.ID)
+                    return ((Coin)Coins[currentLevel][i]).Collected;
             return false;
         }
     }
