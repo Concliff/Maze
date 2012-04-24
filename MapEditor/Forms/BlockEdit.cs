@@ -14,7 +14,6 @@ namespace MapEditor.Forms
     public partial class BlockEdit : MazeForm
     {
         private GridMap Block;
-        private bool IsAdding;
 
         public BlockEdit(GridMap Block)
         {
@@ -22,7 +21,6 @@ namespace MapEditor.Forms
             InitializeComponent();
             CustomInitialize();
             FillComponents();
-            IsAdding = false;
         }
 
         private void FillComponents()
@@ -34,7 +32,6 @@ namespace MapEditor.Forms
             {
                 BlockIDTextBox.Text = Program.WorldMap.GetBlocksCount().ToString();
                 ConfirmButton.Text = "Add";
-                IsAdding = true;
             }
 
             LocationXTextBox.Text = Block.Location.X.ToString();

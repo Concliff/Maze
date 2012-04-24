@@ -187,7 +187,7 @@
         private System.Windows.Forms.CheckBox LeftCheckBox;
         private System.Windows.Forms.CheckBox DownCheckBox;
         private System.Windows.Forms.CheckBox RightCheckBox;
-        private System.Windows.Forms.Button CancelButton;
+        private new System.Windows.Forms.Button CancelButton;
         private System.Windows.Forms.Button ConfirmButton;
         private System.Windows.Forms.CheckBox StartCheckBox;
         private System.Windows.Forms.CheckBox FinishCheckBox;

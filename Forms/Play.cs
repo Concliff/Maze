@@ -151,16 +151,6 @@ namespace Maze.Forms
                             MenuNewGamePB.Show();
                             MenuContinueGamePB.Show();
                             MenuQuitPB.Show();
-                            Graphics g;
-                            /*g = this.MenuNewGamePB.CreateGraphics();
-                            g.DrawString("New Game", MenuFont, MenuUnselectedBrush, 0, 0);
-
-                            g = this.MenuContinueGamePB.CreateGraphics();
-                            g.DrawString("Continue", MenuFont, MenuUnselectedBrush, 0, 0);
-
-                            g = this.MenuQuitPB.CreateGraphics();
-                            g.DrawString("Quit", MenuFont, MenuUnselectedBrush, 0, 0);
-                             * */
                         }
                         else
                         {
