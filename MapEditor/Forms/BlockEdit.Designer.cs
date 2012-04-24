@@ -68,6 +68,7 @@
 
             this.CancelButton = new System.Windows.Forms.Button();
             this.ConfirmButton = new System.Windows.Forms.Button();
+            this.DeleteButton = new System.Windows.Forms.Button();
 
             BlockIDLabel.Size = new System.Drawing.Size(80, 20);
             LocationLabel.Size = new System.Drawing.Size(80, 20);
@@ -87,6 +88,7 @@
             RightCheckBox.AutoSize = true;
             ConfirmButton.Size = new System.Drawing.Size(80, 30);
             CancelButton.Size = new System.Drawing.Size(80, 30);
+            DeleteButton.Size = new System.Drawing.Size(70, 30);
 
             BlockIDLabel.Location = new System.Drawing.Point(20, 30);
             BlockIDTextBox.Location = new System.Drawing.Point(120, 30);
@@ -112,6 +114,7 @@
 
             ConfirmButton.Location = new System.Drawing.Point(50, 300);
             CancelButton.Location = new System.Drawing.Point(150, 300);
+            DeleteButton.Location = new System.Drawing.Point(200, 25);
 
             LocationXLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             LocationYLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -125,6 +128,7 @@
 
             ConfirmButton.Click += new System.EventHandler(AcceptButtonClick);
             CancelButton.Click +=new System.EventHandler(CancelButtonClick);
+            DeleteButton.Click += new System.EventHandler(DeleteButton_Click);
 
             BlockIDLabel.Text = "ID";
             LocationLabel.Text = "Location:";
@@ -142,6 +146,7 @@
             CoinCheckBox.Text = "Coin";
             ConfirmButton.Text = "Replace";
             CancelButton.Text = "Cancel";
+            DeleteButton.Text = "Delete";
 
             this.Controls.Add(this.BlockIDLabel);
             this.Controls.Add(this.BlockIDTextBox);
@@ -167,8 +172,7 @@
 
             this.Controls.Add(this.ConfirmButton);
             this.Controls.Add(this.CancelButton);
-
-            //PictureIDTextBox.Focus();
+            this.Controls.Add(this.DeleteButton);
         }
 
         private System.Windows.Forms.Label BlockIDLabel;
@@ -189,6 +193,7 @@
         private System.Windows.Forms.CheckBox RightCheckBox;
         private new System.Windows.Forms.Button CancelButton;
         private System.Windows.Forms.Button ConfirmButton;
+        private System.Windows.Forms.Button DeleteButton;
         private System.Windows.Forms.CheckBox StartCheckBox;
         private System.Windows.Forms.CheckBox FinishCheckBox;
         private System.Windows.Forms.CheckBox CoinCheckBox;

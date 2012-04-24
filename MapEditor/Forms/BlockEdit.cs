@@ -32,6 +32,7 @@ namespace MapEditor.Forms
             {
                 BlockIDTextBox.Text = Program.WorldMap.GetBlocksCount().ToString();
                 ConfirmButton.Text = "Add";
+                DeleteButton.Hide();
             }
 
             LocationXTextBox.Text = Block.Location.X.ToString();
@@ -81,6 +82,14 @@ namespace MapEditor.Forms
         void CancelButtonClick(object sender, System.EventArgs e)
         {
             this.Close();
+        }
+
+        void DeleteButton_Click(object sender, System.EventArgs e)
+        {
+            /**
+             * Need remove existing block somehow
+             * Maybe Add GridMap with ID = -1 ?
+             * */
         }
     }
 }
