@@ -1,6 +1,6 @@
 ﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <StartWorkingDirectory>E:\Games\Games Projects\Maze Repo\bin\Release\</StartWorkingDirectory>
+    <StartWorkingDirectory>d:\МОЁ Ё-Ё\ИРА\REPO\Maze\bin\Release\</StartWorkingDirectory>
   </PropertyGroup>
   <PropertyGroup>
     <PublishUrlHistory>publish\</PublishUrlHistory>

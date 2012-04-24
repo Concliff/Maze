@@ -283,11 +283,16 @@ namespace Maze.Classes
                 ReplaceGridMap(NewGridMap);
                 return false;
             }
-
+                    
             MapBlocks.Add(NewGridMap);
             ++BlocksCount;
             GridMapChanged = true;
             return true;
+        }
+
+        public void AddEmptyGrigMap(GridMap NewGridMap)
+        {
+            RemoveGridMap(NewGridMap);
         }
 
         private bool RemoveGridMap(GridMap RemovedGridMap)

@@ -90,6 +90,18 @@ namespace MapEditor.Forms
              * Need remove existing block somehow
              * Maybe Add GridMap with ID = -1 ?
              * */
+            
+            GPS blockGPS;
+            blockGPS.X = Convert.ToInt32(LocationXTextBox.Text);
+            blockGPS.Y = Convert.ToInt32(LocationYTextBox.Text);
+            blockGPS.Z = Convert.ToInt32(LocationZTextBox.Text);
+            blockGPS.Level = Convert.ToInt32(LocationLevelTextBox.Text);
+            GridMap NewBlock = Program.WorldMap.GetGridMap(blockGPS);
+
+            Program.WorldMap.AddEmptyGrigMap(NewBlock);
+            NewBlock.Type = 16;
+            Program.EditorForm.RebuildGraphMap();
+            this.Close();
         }
     }
 }
