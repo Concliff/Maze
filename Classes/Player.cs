@@ -11,6 +11,7 @@ namespace Maze.Classes
         private String Name;
         private bool FinishReached;
         private int ressurectTimer;
+        private int Scores;
 
         public Player()
         {
@@ -28,6 +29,8 @@ namespace Maze.Classes
 
             FinishReached = false;
             ressurectTimer = 3000;
+
+            Scores = 0;
         }
 
         public Player(String name) : this()
@@ -210,12 +213,16 @@ namespace Maze.Classes
 
             if (BinaryOperations.IsBit(CurrentGridMap.Attribute, (byte)Attributes.HasCoin) &&
                 !GetWorldMap().IsCoinCollected(CurrentGridMap))
+            {
                 GetWorldMap().CollectCoin(CurrentGridMap);
+
+                AddScores(10);
+            }
         }
 
         public bool IsFinished() { return FinishReached; }
- 
 
-
+        public int GetScores() { return Scores; }
+        public void AddScores(int Scores) { this.Scores += Scores; }
     }
 }

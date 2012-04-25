@@ -116,9 +116,10 @@ namespace Maze.Forms
             if (!PlayStarted)
                 return;
 
-            e.Graphics.DrawString("Time: " + (ProgramTime.Seconds + ProgramTime.Minutes*60).ToString(), new Font("Arial", 14), new SolidBrush(Color.White), 50, 30);
+            e.Graphics.DrawString("Time: " + (ProgramTime.Seconds + ProgramTime.Minutes*60).ToString(), new Font("Arial", 14), new SolidBrush(Color.White), 10, 30);
             e.Graphics.DrawString("Coins x " + (GetWorldMap().GetCoinsCount() - GetWorldMap().GetCollectedCoinsCount()).ToString(), 
-                new Font("Arial", 14), new SolidBrush(Color.White), 50, 50);
+                new Font("Arial", 14), new SolidBrush(Color.White), 10, 50);
+            e.Graphics.DrawString("Total scores: " + oPlayer.GetScores(), new Font("Arial", 12), new SolidBrush(Color.White), 10, 70);
         }
 
         #endregion
@@ -246,7 +247,7 @@ namespace Maze.Forms
         {
             if (!PlayStarted)
                 return;
-
+            
             // Get last pressed Key
             switch (KeyMgr.ExtractKeyPressed())
             {
@@ -334,6 +335,7 @@ namespace Maze.Forms
                 {
                     GetWorldMap().SetMap(currentMap, currentLevel);
                     oPlayer.LevelChanged();
+                    oPlayer.AddScores(30);
                 }
             }
 

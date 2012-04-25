@@ -40,11 +40,13 @@ namespace Maze.Forms
             this.pictureBox2 = new System.Windows.Forms.PictureBox();
             this.pictureBox3 = new System.Windows.Forms.PictureBox();
             this.RightPanelPB = new System.Windows.Forms.PictureBox();
+            this.ScoresPB = new System.Windows.Forms.PictureBox();
             ((System.ComponentModel.ISupportInitialize)(this.GridMapPB)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.RightPanelPB)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ScoresPB)).BeginInit();
             this.SuspendLayout();
             // 
             // SystemTimer
@@ -102,6 +104,7 @@ namespace Maze.Forms
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.RightPanelPB)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ScoresPB)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -132,6 +135,14 @@ namespace Maze.Forms
             this.GridMapPB.Visible = true;
             this.GridMapPB.Paint += new PaintEventHandler(GridMapPB_Paint);
 
+            //
+            // ScoresPB
+            //
+            this.ScoresPB.Location = new System.Drawing.Point(30, 20);
+            this.ScoresPB.Name = "Total scores";
+            this.ScoresPB.Size = new System.Drawing.Size(100, 25);
+            this.ScoresPB.BackColor = Color.Gray;
+            this.ScoresPB.Paint += new PaintEventHandler(RightPanelPBPaint);
             //
             // RightPanelPB
             //
@@ -245,6 +256,7 @@ namespace Maze.Forms
             this.Controls.Add(this.pictureBox2);
             this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.RightPanelPB);
+            this.Controls.Add(this.ScoresPB);
             this.Controls.Add(this.pictureBox3);
 
             //Menu
@@ -265,6 +277,7 @@ namespace Maze.Forms
         private System.Windows.Forms.PictureBox GridMapPB;
         private System.Windows.Forms.Timer SystemTimer;
         public  System.Windows.Forms.Label label1;
+        private PictureBox ScoresPB;
         private PictureBox pictureBox1;
         private PictureBox pictureBox2;
         private PictureBox pictureBox3;
