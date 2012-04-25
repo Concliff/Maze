@@ -69,7 +69,8 @@ namespace Maze.Classes
             Position.Location = respawnLocation;
             Position.X = 25;
             Position.Y = 25;
-            Position.BlockID = World.GetWorldMap().GetGridMap(Position.Location).ID;
+            CurrentGridMap = World.GetWorldMap().GetGridMap(Position.Location);
+            Position.BlockID = CurrentGridMap.ID;
 
             SetDeathState(DeathStates.Alive);
         }
