@@ -259,7 +259,14 @@ namespace Maze.Forms
                     }
                     break;
                 case Keys.Escape:
-                    SetInterface(FormInterface.Pause);
+                    if (CurrentInterface == FormInterface.Play)
+                    {
+                        SetInterface(FormInterface.Pause);
+                    }
+                    else if (CurrentInterface == FormInterface.Pause)
+                    {
+                        SetInterface(FormInterface.Play);
+                    }
                     break;
             }
 
