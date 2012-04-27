@@ -15,18 +15,15 @@ namespace Maze.Classes
             UnitType = UnitTypes.Phobos;
             IsInMotion = false;
 
-            
-            Position.Location = World.GetWorldMap().GetFinishPoint();
+            Position.Location = GetWorldMap().GetFinishPoint();
             Position.X = 10;
             Position.Y = 25;
             Position.BlockID = 0;
             IsInMotion = false;
             CurrentDirection = Directions.None;
 
-            CurrentGridMap = World.GetWorldMap().GetGridMap(Position.Location);
-            
+            CurrentGridMap = GetWorldMap().GetGridMap(Position.Location);
         }
-
         
     }
 }

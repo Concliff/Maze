@@ -8,22 +8,41 @@ namespace Maze.Forms
 {
     public partial class MazeForm : System.Windows.Forms.Form
     {
+        private static UnitContainer unitContainer;
+        private static Map worldMap;
+
         public static int FormTitleBarSize = 28;
         public static int FormBorderBarSize = 7;
 
-        protected Map GetWorldMap()
+        public MazeForm()
         {
-            return Maze.World.GetWorldMap();
+            CreateWorldMap();
+            CreateUnitContainer();
+        }
+
+        protected void CreateWorldMap()
+        {
+            worldMap = new Map();
+        }
+
+        protected void CreateUnitContainer()
+        {
+            unitContainer = new UnitContainer();
+        }
+
+        public static Map GetWorldMap()
+        {
+            return worldMap;
+        }
+
+        public static UnitContainer GetUnitContainer()
+        {
+            return unitContainer;
         }
 
         protected void SetNextAction(WorldNextAction NextAction)
         {
             World.SetNextAction(NextAction);
-        }
-
-        protected UnitContainer GetUnitContainer()
-        {
-            return World.GetUnitContainer();
         }
 
         protected void SetBit(ref int Number, byte Bit)

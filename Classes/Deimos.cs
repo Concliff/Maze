@@ -13,15 +13,15 @@ namespace Maze.Classes
         public Deimos()
         {
             UnitType = UnitTypes.Deimos;
-            respawnLocation = World.GetWorldMap().GetFinishPoint();
+            respawnLocation = GetWorldMap().GetFinishPoint();
             Position.Location = respawnLocation;
             Position.X = 25;
             Position.Y = 25;
-            Position.BlockID = World.GetWorldMap().GetGridMap(Position.Location).ID;
+            Position.BlockID = GetWorldMap().GetGridMap(Position.Location).ID;
             IsInMotion = false;
             CurrentDirection = Directions.None;
 
-            CurrentGridMap = World.GetWorldMap().GetGridMap(Position.Location);
+            CurrentGridMap = GetWorldMap().GetGridMap(Position.Location);
         }
 
         public Deimos(GPS respawnLocation)
@@ -29,7 +29,7 @@ namespace Maze.Classes
         {
             this.respawnLocation = respawnLocation;
             Position.Location = respawnLocation;
-            CurrentGridMap = World.GetWorldMap().GetGridMap(Position.Location);
+            CurrentGridMap = GetWorldMap().GetGridMap(Position.Location);
         }
 
         public override void UpdateState(int timeP)

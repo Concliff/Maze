@@ -245,6 +245,9 @@ namespace Maze.Classes
                     // Create Deimos at Coin Location
                     new Deimos(block.Location);
             }
+
+            // Test-created monsters
+            new Phobos();
         }
 
         public GridMap GetGridMap(int BlockID)

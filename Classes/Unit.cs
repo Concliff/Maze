@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections;
 using System.Linq;
 using System.Text;
+using Maze.Forms;
 
 namespace Maze.Classes
 {
@@ -35,7 +36,7 @@ namespace Maze.Classes
         public Unit()
         {
             UnitType = UnitTypes.None;
-            GUID = World.GetUnitContainer().CreateUnit(this);
+            GUID = Play.GetUnitContainer().CreateUnit(this);
             SpeedRate = 1.0d;
         }
 
@@ -61,7 +62,7 @@ namespace Maze.Classes
 
         protected Map GetWorldMap()
         {
-            return World.GetWorldMap();
+            return Play.GetWorldMap();
         }
 
         protected List<Unit> GetUnitsWithinRange(int RangeDistance)
@@ -80,7 +81,7 @@ namespace Maze.Classes
                 {
                     SearchGPS.X = width;
                     SearchGPS.Y = height;
-                    Units.AddRange(World.GetUnitContainer().GetAllUnitsByGPS(SearchGPS));
+                    Units.AddRange(Play.GetUnitContainer().GetAllUnitsByGPS(SearchGPS));
                 }
 
             // exclude itself

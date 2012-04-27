@@ -29,18 +29,15 @@ namespace Maze.Forms
         DateTime ProgramStartDateTime;  // Contains Time when game was started
         TimeSpan ProgramTime;           // Contains game run-time
 
-        TimeControl SysTimer;
-        Graphics TimeGraph;
+        //TimeControl SysTimer;         // Not implemented yet
 
         PictureManager PictureMgr;
         FormInterface CurrentInterface;
 
         DateTime LastTickTime;
-        //public Map FormMap;
 
         public Play()
         {
-            //FormMap = new Map();
             tempCount = 0;
             ProgramStartDateTime = DateTime.Now;
             LastTickTime = DateTime.Now;
@@ -54,20 +51,14 @@ namespace Maze.Forms
             AddControlsOrder();
             GridMapPB.BackColor = Color.Gray;
             SystemTimer.Interval = GlobalConstants.TIMER_TICK_IN_MS; // 50 ms
-            SystemTimer.Start();
-            //
+
             label1.Text = "0";
-            TimeGraph = this.RightPanelPB.CreateGraphics();
+            label1.Hide();
             
             // Visual is 11x7
             // Player grid is 7,5 (central)
 
-            oPlayer = new Player();
-            label1.Hide();
-
-            // Test-created monsters
-            new Phobos();
-            SysTimer = new TimeControl(this);
+            //SysTimer = new TimeControl(this);
 
             //RebuildGraphMap();
             CurrentInterface = FormInterface.MainMenu;
@@ -155,10 +146,11 @@ namespace Maze.Forms
                     {
                         if (Show)
                         {
-                            if (PlayStarted)
+                            if (PlayStarted)    // When paused
                             {
                                 PlayStarted = false;        // Stop the game
                                 SystemTimer.Stop();
+
                                 // Clean Form Controls
                                 GridMapPB.Invalidate();
                                 RightPanelPB.Invalidate();
@@ -191,13 +183,19 @@ namespace Maze.Forms
                         if (!Show)
                             break;
 
-                        if (!PlayStarted)               // Start New Game
+                        if (!PlayStarted)                   // Start New Game
                         {
-                            //ChangeInterface(FormInterface.MainMenu, false);
                             PlayStarted = true;
-                            GetWorldMap().FillMapWithUnits();
-                            SystemTimer.Start();
+
+                            CreateWorldMap();               // Create Map
+                            GetWorldMap().SetMap(0);
+                            CreateUnitContainer();
+                            GetWorldMap().FillMapWithUnits(); // Add units to map
                             GetUnitContainer().StartMotion();
+
+                            oPlayer = new Player();
+
+                            SystemTimer.Start();
                         }
                         if (PlayStarted && GamePaused)  //Continue Game
                         {

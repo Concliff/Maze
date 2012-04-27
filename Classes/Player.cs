@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Maze.Forms;
 
 namespace Maze.Classes
 {
@@ -17,15 +16,15 @@ namespace Maze.Classes
         {
             Name = "Noname";
             UnitType = UnitTypes.Player;
-            respawnLocation = World.GetWorldMap().GetStartPoint();
+            respawnLocation = GetWorldMap().GetStartPoint();
 
             // Set Start Location
             Position.Location = respawnLocation;
             Position.X = 25;
             Position.Y = 25;
-            Position.BlockID = World.GetWorldMap().GetGridMap(Position.Location).ID;
+            Position.BlockID = GetWorldMap().GetGridMap(Position.Location).ID;
 
-            CurrentGridMap = World.GetWorldMap().GetGridMap(Position.Location);
+            CurrentGridMap = GetWorldMap().GetGridMap(Position.Location);
 
             FinishReached = false;
             ressurectTimer = 3000;
@@ -72,7 +71,7 @@ namespace Maze.Classes
             Position.Location = respawnLocation;
             Position.X = 25;
             Position.Y = 25;
-            CurrentGridMap = World.GetWorldMap().GetGridMap(Position.Location);
+            CurrentGridMap = GetWorldMap().GetGridMap(Position.Location);
             Position.BlockID = CurrentGridMap.ID;
 
             SetDeathState(DeathStates.Alive);

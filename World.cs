@@ -10,23 +10,18 @@ namespace Maze
     public class World
     {
         private static WorldNextAction NextAction;
-        private static Map WorldMap;
         private static Play PlayForm;
         private GameForm StartGameForm;
-        private static UnitContainer unitContainer;
         
         public World()
         {
-            unitContainer = new UnitContainer();
             NextAction = WorldNextAction.StartGame;
-            WorldMap = new Map();
             StartGameForm = new GameForm();
             Program();
         }
 
         private void Program()
         {
-            WorldMap.SetMap(0);
             CreatePlayForm();
             Application.Run(PlayForm);
             /*
@@ -51,16 +46,6 @@ namespace Maze
                 }
             }
              * */
-        }
-
-        public static UnitContainer GetUnitContainer()
-        {
-            return unitContainer;
-        }
-
-        public static Map GetWorldMap()
-        {
-           return WorldMap;
         }
 
         public static Play GetPlayForm()
