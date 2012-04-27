@@ -16,6 +16,7 @@ namespace Maze.Forms
         {
             MainMenu,
             NewGame,
+            HighScores,
             Play,
             Pause,
             Quit,
@@ -158,6 +159,7 @@ namespace Maze.Forms
 
                             MenuNewGamePB.Show();
                             MenuContinueGamePB.Show();
+                            MenuHighScoresPB.Show();
                             MenuQuitPB.Show();
 
                         }
@@ -165,6 +167,7 @@ namespace Maze.Forms
                         {
                             MenuNewGamePB.Visible = false;
                             MenuContinueGamePB.Hide();
+                            MenuHighScoresPB.Hide();
                             MenuQuitPB.Hide();
                         }
                         break;

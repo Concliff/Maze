@@ -169,53 +169,60 @@ namespace Maze.Forms
 
             MenuNewGamePB = new PictureBox();
             MenuContinueGamePB = new PictureBox();
+            MenuHighScoresPB = new PictureBox();
             MenuQuitPB = new PictureBox();
             PauseResumePB = new PictureBox();
             PauseMainMenuPB = new PictureBox();
 
             MenuNewGamePB.Name = "New Game";
             MenuContinueGamePB.Name = "Continue";
+            MenuHighScoresPB.Name = "High Scores";
             MenuQuitPB.Name = "Quit";
             PauseResumePB.Name = "Resume";
             PauseMainMenuPB.Name = "Main Menu";
 
             PausePB.Hide();
-            PausePB.BackColor = MenuNewGamePB.BackColor = MenuContinueGamePB.BackColor =
+            PausePB.BackColor = MenuNewGamePB.BackColor = MenuContinueGamePB.BackColor = MenuHighScoresPB.BackColor =
                 MenuQuitPB.BackColor = PauseResumePB.BackColor = PauseMainMenuPB.BackColor = Color.Gray;
             // Hide All Menu (Show only ones that needed)
             MenuNewGamePB.Hide();
             PausePB.Hide();
             MenuContinueGamePB.Hide();
+            MenuHighScoresPB.Hide();
             MenuQuitPB.Hide();
             PauseResumePB.Hide();
             PauseMainMenuPB.Hide();
 
             MenuNewGamePB.MouseEnter += new System.EventHandler(MenuItemMouseEnter);
             MenuContinueGamePB.MouseEnter += new System.EventHandler(MenuItemMouseEnter);
+            MenuHighScoresPB.MouseEnter += new System.EventHandler(MenuItemMouseEnter);
             MenuQuitPB.MouseEnter += new System.EventHandler(MenuItemMouseEnter);
             PauseResumePB.MouseEnter += new System.EventHandler(MenuItemMouseEnter);
             PauseMainMenuPB.MouseEnter += new System.EventHandler(MenuItemMouseEnter);
 
             MenuNewGamePB.MouseLeave += new System.EventHandler(MenuItemMouseLeave);
             MenuContinueGamePB.MouseLeave += new System.EventHandler(MenuItemMouseLeave);
+            MenuHighScoresPB.MouseLeave += new System.EventHandler(MenuItemMouseLeave);
             MenuQuitPB.MouseLeave += new System.EventHandler(MenuItemMouseLeave);
             PauseResumePB.MouseLeave += new System.EventHandler(MenuItemMouseLeave);
             PauseMainMenuPB.MouseLeave += new System.EventHandler(MenuItemMouseLeave);
 
             MenuNewGamePB.Click += new System.EventHandler(MenuItemClick);
             MenuContinueGamePB.Click += new System.EventHandler(MenuItemClick);
+            MenuHighScoresPB.Click += new System.EventHandler(MenuItemClick);
             MenuQuitPB.Click += new System.EventHandler(MenuItemClick);
             PauseResumePB.Click += new System.EventHandler(MenuItemClick);
             PauseMainMenuPB.Click += new System.EventHandler(MenuItemClick);
 
             MenuNewGamePB.Paint += new PaintEventHandler(MenuItemPaint);
             MenuContinueGamePB.Paint += new PaintEventHandler(MenuItemPaint);
+            MenuHighScoresPB.Paint += new PaintEventHandler(MenuItemPaint);
             MenuQuitPB.Paint += new PaintEventHandler(MenuItemPaint);
             PauseResumePB.Paint += new PaintEventHandler(MenuItemPaint);
             PauseMainMenuPB.Paint += new PaintEventHandler(MenuItemPaint);
 
             // Size
-            MenuNewGamePB.Size = MenuContinueGamePB.Size = MenuQuitPB.Size =
+            MenuNewGamePB.Size = MenuContinueGamePB.Size = MenuHighScoresPB.Size = MenuQuitPB.Size =
                 PauseResumePB.Size = PauseMainMenuPB.Size = new Size(150, 20);
             PausePB.Size = new Size(200, 200);
 
@@ -240,6 +247,10 @@ namespace Maze.Forms
                 new Point(GridMapPB.Location.X + GridMapPB.Size.Width / 2 - MenuContinueGamePB.Size.Width / 2, GridMapPB.Location.Y + 40 * MenuItemIterator);
 
             MenuItemIterator = 3;
+            MenuHighScoresPB.Location =
+                new Point(GridMapPB.Location.X + GridMapPB.Size.Width / 2 - MenuHighScoresPB.Size.Width / 2, GridMapPB.Location.Y + 40 * MenuItemIterator);
+
+            MenuItemIterator = 4;
             MenuQuitPB.Location =
                 new Point(GridMapPB.Location.X + GridMapPB.Size.Width / 2 - MenuQuitPB.Size.Width / 2, GridMapPB.Location.Y + 40 * MenuItemIterator);
 
@@ -262,6 +273,7 @@ namespace Maze.Forms
             //Menu
             this.Controls.Add(this.MenuNewGamePB);
             this.Controls.Add(this.MenuContinueGamePB);
+            this.Controls.Add(this.MenuHighScoresPB);
             this.Controls.Add(this.MenuQuitPB);
             this.Controls.Add(this.PauseResumePB);
             this.Controls.Add(this.PauseMainMenuPB);
@@ -288,6 +300,7 @@ namespace Maze.Forms
         // Menu objects
         private PictureBox MenuNewGamePB;
         private PictureBox MenuContinueGamePB;
+        private PictureBox MenuHighScoresPB;
         private PictureBox MenuQuitPB;
         private PictureBox PausePB;
         private PictureBox PauseResumePB;
