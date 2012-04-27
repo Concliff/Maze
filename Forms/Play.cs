@@ -129,6 +129,10 @@ namespace Maze.Forms
             {
                 SetInterface(FormInterface.MainMenu);
             }
+            else if (sender == MenuQuitPB)
+            {
+                Application.Exit();
+            }
         }
 
 
