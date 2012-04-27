@@ -10,7 +10,7 @@ namespace Maze.Classes
         private String Name;
         private bool FinishReached;
         private int ressurectTimer;
-        private int Scores;
+        private int score;
 
         public Player()
         {
@@ -29,7 +29,7 @@ namespace Maze.Classes
             FinishReached = false;
             ressurectTimer = 3000;
 
-            Scores = 0;
+            score = 0;
         }
 
         public Player(String name) : this()
@@ -215,13 +215,13 @@ namespace Maze.Classes
             {
                 GetWorldMap().CollectCoin(CurrentGridMap);
 
-                AddScores(10);
+                AddPoints(10);
             }
         }
 
         public bool IsFinished() { return FinishReached; }
 
-        public int GetScores() { return Scores; }
-        public void AddScores(int Scores) { this.Scores += Scores; }
+        public int GetScore() { return score; }
+        public void AddPoints(int points) { this.score += points; }
     }
 }
