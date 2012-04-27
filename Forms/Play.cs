@@ -130,7 +130,13 @@ namespace Maze.Forms
         {
             //PictureBox SenderPB = (PictureBox)sender;
             if (sender == MenuNewGamePB || sender == PauseResumePB || sender == MenuContinueGamePB)
+            {
                 SetInterface(FormInterface.Play);
+            }
+            else if (sender == PauseMainMenuPB)
+            {
+                SetInterface(FormInterface.MainMenu);
+            }
         }
 
 
@@ -149,9 +155,19 @@ namespace Maze.Forms
                     {
                         if (Show)
                         {
+                            if (PlayStarted)
+                            {
+                                PlayStarted = false;        // Stop the game
+                                SystemTimer.Stop();
+                                // Clean Form Controls
+                                GridMapPB.Invalidate();
+                                RightPanelPB.Invalidate();
+                            }
+
                             MenuNewGamePB.Show();
                             MenuContinueGamePB.Show();
                             MenuQuitPB.Show();
+
                         }
                         else
                         {
