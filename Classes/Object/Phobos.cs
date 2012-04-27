@@ -12,7 +12,7 @@ namespace Maze.Classes
 
         public Phobos()
         {
-            UnitType = UnitTypes.Phobos;
+            unitType = UnitTypes.Phobos;
             IsInMotion = false;
 
             Position.Location = GetWorldMap().GetFinishPoint();
@@ -22,7 +22,7 @@ namespace Maze.Classes
             IsInMotion = false;
             CurrentDirection = Directions.None;
 
-            CurrentGridMap = GetWorldMap().GetGridMap(Position.Location);
+            currentGridMap = GetWorldMap().GetGridMap(Position.Location);
         }
         
     }

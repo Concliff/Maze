@@ -11,11 +11,12 @@ namespace Maze.Classes
         private bool FinishReached;
         private int ressurectTimer;
         private int score;
+        private int collectedCoinsCount;    // at current level
 
         public Player()
         {
             Name = "Noname";
-            UnitType = UnitTypes.Player;
+            objectType = ObjectType.Player;
             respawnLocation = GetWorldMap().GetStartPoint();
 
             // Set Start Location
@@ -24,12 +25,13 @@ namespace Maze.Classes
             Position.Y = 25;
             Position.BlockID = GetWorldMap().GetGridMap(Position.Location).ID;
 
-            CurrentGridMap = GetWorldMap().GetGridMap(Position.Location);
+            currentGridMap = GetWorldMap().GetGridMap(Position.Location);
 
             FinishReached = false;
             ressurectTimer = 3000;
 
             score = 0;
+            collectedCoinsCount = 0;
         }
 
         public Player(String name) : this()
@@ -71,8 +73,8 @@ namespace Maze.Classes
             Position.Location = respawnLocation;
             Position.X = 25;
             Position.Y = 25;
-            CurrentGridMap = GetWorldMap().GetGridMap(Position.Location);
-            Position.BlockID = CurrentGridMap.ID;
+            currentGridMap = GetWorldMap().GetGridMap(Position.Location);
+            Position.BlockID = currentGridMap.ID;
 
             SetDeathState(DeathStates.Alive);
         }
@@ -112,7 +114,7 @@ namespace Maze.Classes
             // If not - prevent movement or change location
             if (NewX > (GlobalConstants.GRIDMAP_BLOCK_WIDTH - GlobalConstants.GRIDMAP_BORDER_PX - GlobalConstants.PLAYER_SIZE_WIDTH / 2))
             {
-                if (BinaryOperations.IsBit(CurrentGridMap.Type, (byte)Directions.Right))
+                if (BinaryOperations.IsBit(currentGridMap.Type, (byte)Directions.Right))
                 {
                     if (NewX > GlobalConstants.GRIDMAP_BLOCK_WIDTH)
                     {
@@ -127,7 +129,7 @@ namespace Maze.Classes
             }
             else if (NewX < (GlobalConstants.GRIDMAP_BORDER_PX + GlobalConstants.PLAYER_SIZE_WIDTH / 2))
             {
-                if (BinaryOperations.IsBit(CurrentGridMap.Type, (byte)Directions.Left))
+                if (BinaryOperations.IsBit(currentGridMap.Type, (byte)Directions.Left))
                 {
                     if (NewX < 0)
                     {
@@ -148,7 +150,7 @@ namespace Maze.Classes
                 * GlobalConstants.MOVEMENT_STEP_PX;
             if (NewY > (GlobalConstants.GRIDMAP_BLOCK_HEIGHT - GlobalConstants.GRIDMAP_BORDER_PX - GlobalConstants.PLAYER_SIZE_HEIGHT / 2))
             {
-                if (BinaryOperations.IsBit(CurrentGridMap.Type, (byte)Directions.Down))
+                if (BinaryOperations.IsBit(currentGridMap.Type, (byte)Directions.Down))
                 {
                     if (NewY > GlobalConstants.GRIDMAP_BLOCK_HEIGHT)
                     {
@@ -163,7 +165,7 @@ namespace Maze.Classes
             }
             else if (NewY < (GlobalConstants.GRIDMAP_BORDER_PX + GlobalConstants.PLAYER_SIZE_HEIGHT / 2))
             {
-                if (BinaryOperations.IsBit(CurrentGridMap.Type, (byte)Directions.Up))
+                if (BinaryOperations.IsBit(currentGridMap.Type, (byte)Directions.Up))
                 {
                     if (NewY < 0)
                     {
@@ -194,7 +196,7 @@ namespace Maze.Classes
             Position.Location = respawnLocation;
             Position.X = 25;
             Position.Y = 25;
-            CurrentGridMap = GetWorldMap().GetGridMap(Position.Location);
+            currentGridMap = GetWorldMap().GetGridMap(Position.Location);
             FinishReached = false;
         }
 
@@ -204,24 +206,27 @@ namespace Maze.Classes
         /// <summary>
         /// Called when player moved to the next block
         /// </summary>
-        private void ReachedGridMap()
+        protected override void ReachedGridMap()
         {
-            if (BinaryOperations.IsBit(CurrentGridMap.Attribute, (byte)Attributes.IsFinish) &&
-                GetWorldMap().GetCoinsCount() == GetWorldMap().GetCollectedCoinsCount())
+            if (BinaryOperations.IsBit(currentGridMap.Attribute, (byte)Attributes.IsFinish) &&
+                GetWorldMap().CoinsRemain() == 0)
                 FinishReached = true;
 
-            if (BinaryOperations.IsBit(CurrentGridMap.Attribute, (byte)Attributes.HasCoin) &&
-                !GetWorldMap().IsCoinCollected(CurrentGridMap))
-            {
-                GetWorldMap().CollectCoin(CurrentGridMap);
+            base.ReachedGridMap();
+        }
 
-                AddPoints(10);
-            }
+        public void CollectCoin(Coin coin)
+        {
+            AddPoints(10);
+            GetWorldMap().CollectCoin(coin);
+            ++collectedCoinsCount;
         }
 
         public bool IsFinished() { return FinishReached; }
 
         public int GetScore() { return score; }
         public void AddPoints(int points) { this.score += points; }
+
+        public int GetCollectedCoinsCount() { return this.collectedCoinsCount; }
     }
 }

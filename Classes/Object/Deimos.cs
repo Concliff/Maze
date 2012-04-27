@@ -12,7 +12,7 @@ namespace Maze.Classes
 
         public Deimos()
         {
-            UnitType = UnitTypes.Deimos;
+            unitType = UnitTypes.Deimos;
             respawnLocation = GetWorldMap().GetFinishPoint();
             Position.Location = respawnLocation;
             Position.X = 25;
@@ -21,7 +21,7 @@ namespace Maze.Classes
             IsInMotion = false;
             CurrentDirection = Directions.None;
 
-            CurrentGridMap = GetWorldMap().GetGridMap(Position.Location);
+            currentGridMap = GetWorldMap().GetGridMap(Position.Location);
         }
 
         public Deimos(GPS respawnLocation)
@@ -29,7 +29,7 @@ namespace Maze.Classes
         {
             this.respawnLocation = respawnLocation;
             Position.Location = respawnLocation;
-            CurrentGridMap = GetWorldMap().GetGridMap(Position.Location);
+            currentGridMap = GetWorldMap().GetGridMap(Position.Location);
         }
 
         public override void UpdateState(int timeP)
@@ -111,15 +111,17 @@ namespace Maze.Classes
                 ReachedGridMap();
         }
 
-        private void ReachedGridMap()
+        protected override void ReachedGridMap()
         {
             if (Random.Int(100) <= 33)  // 33% chance to change direction
                 SelectNewDirection();
 
-            if (BinaryOperations.IsBit(CurrentGridMap.Type, (byte)CurrentDirection))
+            if (BinaryOperations.IsBit(currentGridMap.Type, (byte)CurrentDirection))
                 return;
             else
                 SelectNewDirection();
+
+            base.ReachedGridMap();
         }
 
         private void SelectNewDirection()
@@ -137,7 +139,7 @@ namespace Maze.Classes
                     case 4: newDirection = Directions.Up; break;
                 }
                 // Ignore Opposite Direction if there is another one
-                if (BinaryOperations.IsBit(CurrentGridMap.Type, (byte)newDirection) &&
+                if (BinaryOperations.IsBit(currentGridMap.Type, (byte)newDirection) &&
                     (newDirection != GetOppositeDirection(CurrentDirection) || CurrentDirection == Directions.None))
                 {
                     CurrentDirection = newDirection;
@@ -146,7 +148,7 @@ namespace Maze.Classes
             }
 
             // Go opposite Direction if no choice to go
-            if (BinaryOperations.IsBit(CurrentGridMap.Type, (byte)GetOppositeDirection(CurrentDirection)))
+            if (BinaryOperations.IsBit(currentGridMap.Type, (byte)GetOppositeDirection(CurrentDirection)))
                 CurrentDirection = GetOppositeDirection(CurrentDirection);
             else
                 CurrentDirection = Directions.None;

@@ -8,7 +8,7 @@ namespace Maze.Forms
 {
     public partial class MazeForm : System.Windows.Forms.Form
     {
-        private static UnitContainer unitContainer;
+        private static ObjectContainer objectContainer;
         private static Map worldMap;
 
         public static int FormTitleBarSize = 28;
@@ -17,7 +17,7 @@ namespace Maze.Forms
         public MazeForm()
         {
             CreateWorldMap();
-            CreateUnitContainer();
+            CreateObjectContainer();
         }
 
         protected void CreateWorldMap()
@@ -25,9 +25,9 @@ namespace Maze.Forms
             worldMap = new Map();
         }
 
-        protected void CreateUnitContainer()
+        protected void CreateObjectContainer()
         {
-            unitContainer = new UnitContainer();
+            objectContainer = new ObjectContainer();
         }
 
         public static Map GetWorldMap()
@@ -35,9 +35,9 @@ namespace Maze.Forms
             return worldMap;
         }
 
-        public static UnitContainer GetUnitContainer()
+        public static ObjectContainer GetObjectContainer()
         {
-            return unitContainer;
+            return objectContainer;
         }
 
         protected void SetNextAction(WorldNextAction NextAction)

@@ -109,7 +109,7 @@ namespace Maze.Forms
                 return;
 
             e.Graphics.DrawString("Time: " + (ProgramTime.Seconds + ProgramTime.Minutes*60).ToString(), new Font("Arial", 14), new SolidBrush(Color.White), 10, 30);
-            e.Graphics.DrawString("Coins x " + (GetWorldMap().GetCoinsCount() - GetWorldMap().GetCollectedCoinsCount()).ToString(), 
+            e.Graphics.DrawString("Coins x " + GetWorldMap().CoinsRemain().ToString(), 
                 new Font("Arial", 14), new SolidBrush(Color.White), 10, 50);
             e.Graphics.DrawString("Total scores: " + oPlayer.GetScore(), new Font("Arial", 12), new SolidBrush(Color.White), 10, 70);
         }
@@ -196,9 +196,10 @@ namespace Maze.Forms
 
                             CreateWorldMap();               // Create Map
                             GetWorldMap().SetMap(0);
-                            CreateUnitContainer();
+                            CreateObjectContainer();
                             GetWorldMap().FillMapWithUnits(); // Add units to map
-                            GetUnitContainer().StartMotion();
+                            GetWorldMap().FillMapWithObjects();// Add objects
+                            GetObjectContainer().StartMotion();
 
                             oPlayer = new Player();
 
@@ -302,7 +303,7 @@ namespace Maze.Forms
             ProgramTime = DateTime.Now.Subtract(ProgramStartDateTime);
 
             // Call for Update every Unit
-            GetUnitContainer().UpdateState(DateTime.Now.Subtract(LastTickTime).Milliseconds);
+            GetObjectContainer().UpdateState(DateTime.Now.Subtract(LastTickTime).Milliseconds);
             LastTickTime = DateTime.Now;
 
             // Repaint Game stats panel
@@ -366,7 +367,6 @@ namespace Maze.Forms
                     oPlayer.AddPoints(30);
                 }
             }
-
         }
         /// <summary>
         /// RePaint PlayForm map pictures.
@@ -377,6 +377,8 @@ namespace Maze.Forms
             this.SuspendLayout();
             GPS PBLocation = new GPS();
             GridMap Block = new GridMap();
+
+            List<Maze.Classes.Object> objectsOnMap = new List<Maze.Classes.Object>();
             // GridMapGraph
             for (int i = 0; i < GlobalConstants.GRIDMAP_WIDTH; ++i)
                 for (int j = 0; j < GlobalConstants.GRIDMAP_HEIGHT; ++j)
@@ -416,6 +418,7 @@ namespace Maze.Forms
                         g.DrawImage(PictureMgr.FinishImage, x + 5, y + 5, 40, 40);
                         g.Dispose();
                     }
+                    /*
                     // Draw Coin if not collected
                     if (HasBit(Block.Attribute, (byte) Attributes.HasCoin) &&
                         !GetWorldMap().IsCoinCollected(Block))
@@ -425,46 +428,76 @@ namespace Maze.Forms
                         g.DrawImage(PictureMgr.CoinImage, x + 15, y + 10, 20, 30);
                         g.Dispose();
                     }
-
+                    */
                     // Draw Visible Units
-                    List<Unit> Units = GetUnitContainer().GetAllUnitsByGPS(Block.Location);
-                    for (int d = 0; d < Units.Count; ++d)
+                    objectsOnMap.AddRange(GetObjectContainer().GetAllObjectsByGPS(Block.Location));
+                }
+
+            for (int i = 0; i < objectsOnMap.Count; ++i)
+            {
+                if (objectsOnMap[i].GetType() == ObjectType.Player)
+                    continue;
+
+                int xCoor = 0;
+                int yCoord = 0;
+
+                Image objectImage;
+                objectImage = PictureMgr.SoulImage; // Default
+
+                if (objectsOnMap[i].GetType() == ObjectType.Unit)
+                {
+                    Unit unit = (Unit)objectsOnMap[i];
+                    switch (unit.GetUnitType())
                     {
-                        if (Units[d].GetUnitType() == UnitTypes.Player)
-                            continue;
-
-                        Image UnitImage;
-                        switch (Units[d].GetUnitType())
-                        {
-                            case UnitTypes.Deimos: UnitImage = PictureMgr.DeimosImage; break;
-                            case UnitTypes.Phobos: UnitImage = PictureMgr.PhobosImage; break;
-                            default: UnitImage = PictureMgr.DeimosImage; break;
-                        }
-
-                        Graphics g = Graphics.FromImage(UnitImage);
-                        g = this.GridMapPB.CreateGraphics();
-                        g.DrawImage(UnitImage,
-                            x + Units[d].Position.X - PictureMgr.DeimosImage.Size.Width / 2,
-                            y + Units[d].Position.Y - PictureMgr.DeimosImage.Size.Height / 2,
-                            UnitImage.Size.Width, UnitImage.Size.Height);
-                        g.Dispose();
+                        case UnitTypes.Deimos: objectImage = PictureMgr.DeimosImage; break;
+                        case UnitTypes.Phobos: objectImage = PictureMgr.PhobosImage; break;
+                        default: objectImage = PictureMgr.DeimosImage; break;
                     }
 
-                    // Draw Player
-                    Image PlayerImage;
-                    if (oPlayer.IsAlive())
-                        PlayerImage = PictureMgr.PlayerImage;
-                    else
-                        PlayerImage = PictureMgr.SoulImage;
+                    xCoor = GridMapPB.Size.Width / 2 - ((oPlayer.Position.Location.X - unit.Position.Location.X) *
+                        GlobalConstants.GRIDMAP_BLOCK_WIDTH + oPlayer.Position.X - unit.Position.X) - objectImage.Size.Width /2;
+                    yCoord = GridMapPB.Size.Height / 2 - ((oPlayer.Position.Location.Y - unit.Position.Location.Y) *
+                        GlobalConstants.GRIDMAP_BLOCK_HEIGHT + oPlayer.Position.Y - unit.Position.Y) - objectImage.Size.Height / 2;
+                }
+                else if (objectsOnMap[i].GetType() == ObjectType.GridObject)
+                {
+                    GridObject gridObject = (GridObject)objectsOnMap[i];
+                    if (!gridObject.IsActive())
+                        return;
 
-                    Graphics gPlayer = Graphics.FromImage(PlayerImage);
-                    gPlayer = this.GridMapPB.CreateGraphics();
-                    gPlayer.DrawImage(PlayerImage,
-                        (this.GridMapPB.Size.Width - PlayerImage.Width) / 2,
-                        (this.GridMapPB.Size.Height - PlayerImage.Height) / 2,
-                        PlayerImage.Width, PlayerImage.Height);
-                    gPlayer.Dispose();
-               }
+                    switch (gridObject.GetObjectType())
+                    {
+                        case GridObjectType.Coin: objectImage = PictureMgr.CoinImage; break;
+                        default: objectImage = PictureMgr.CoinImage; break;
+                    }
+                    xCoor = GridMapPB.Size.Width / 2 - ((oPlayer.Position.Location.X - gridObject.Position.Location.X) *
+                        GlobalConstants.GRIDMAP_BLOCK_WIDTH + oPlayer.Position.X - gridObject.Position.X) - objectImage.Size.Width / 2;
+                    yCoord = GridMapPB.Size.Height / 2 - ((oPlayer.Position.Location.Y - gridObject.Position.Location.Y) *
+                        GlobalConstants.GRIDMAP_BLOCK_HEIGHT + oPlayer.Position.Y - gridObject.Position.Y) - objectImage.Size.Height / 2;
+                }
+
+                Graphics g = Graphics.FromImage(objectImage);
+                g = this.GridMapPB.CreateGraphics();
+                g.DrawImage(objectImage, xCoor, yCoord,
+                    objectImage.Size.Width, objectImage.Size.Height);
+                g.Dispose();
+            }
+
+            // Draw Player
+            Image PlayerImage;
+            if (oPlayer.IsAlive())
+                PlayerImage = PictureMgr.PlayerImage;
+            else
+                PlayerImage = PictureMgr.SoulImage;
+
+            Graphics gPlayer = Graphics.FromImage(PlayerImage);
+            gPlayer = this.GridMapPB.CreateGraphics();
+            gPlayer.DrawImage(PlayerImage,
+                (this.GridMapPB.Size.Width - PlayerImage.Width) / 2,
+                (this.GridMapPB.Size.Height - PlayerImage.Height) / 2,
+                PlayerImage.Width, PlayerImage.Height);
+            gPlayer.Dispose();
+
             this.ResumeLayout();
         }
     }
