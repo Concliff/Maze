@@ -64,6 +64,7 @@ namespace Maze.Forms
             GridMap Block = new GridMap();
 
             List<Maze.Classes.Object> objectsOnMap = new List<Maze.Classes.Object>();
+            
             // GridMapGraph
             for (int i = 0; i < GlobalConstants.GRIDMAP_WIDTH; ++i)
                 for (int j = 0; j < GlobalConstants.GRIDMAP_HEIGHT; ++j)
@@ -94,6 +95,7 @@ namespace Maze.Forms
                         g.DrawImage(PictureMgr.StartImage, x + 5, y + 5, 40, 40);
                         g.Dispose();
                     }
+
                     // Draw Finish Block
                     if (HasBit(Block.Attribute, (byte)Attributes.IsFinish))
                     {
@@ -103,6 +105,7 @@ namespace Maze.Forms
                         g.DrawImage(PictureMgr.FinishImage, x + 5, y + 5, 40, 40);
                         g.Dispose();
                     }
+
                     /*
                     // Draw Coin if not collected
                     if (HasBit(Block.Attribute, (byte) Attributes.HasCoin) &&
@@ -114,6 +117,7 @@ namespace Maze.Forms
                         g.Dispose();
                     }
                     */
+
                     // Draw Visible Units
                     objectsOnMap.AddRange(GetObjectContainer().GetAllObjectsByGPS(Block.Location));
                 }
@@ -122,10 +126,7 @@ namespace Maze.Forms
             {
                 if (objectsOnMap[i].GetType() == ObjectType.Player)
                     continue;
-
-                int xCoor = 0;
-                int yCoord = 0;
-
+                
                 Image objectImage;
                 objectImage = PictureMgr.SoulImage; // Default
 
@@ -138,11 +139,6 @@ namespace Maze.Forms
                         case UnitTypes.Phobos: objectImage = PictureMgr.PhobosImage; break;
                         default: objectImage = PictureMgr.DeimosImage; break;
                     }
-
-                    xCoor = GridMapPB.Size.Width / 2 - ((oPlayer.Position.Location.X - unit.Position.Location.X) *
-                        GlobalConstants.GRIDMAP_BLOCK_WIDTH + oPlayer.Position.X - unit.Position.X) - objectImage.Size.Width / 2;
-                    yCoord = GridMapPB.Size.Height / 2 - ((oPlayer.Position.Location.Y - unit.Position.Location.Y) *
-                        GlobalConstants.GRIDMAP_BLOCK_HEIGHT + oPlayer.Position.Y - unit.Position.Y) - objectImage.Size.Height / 2;
                 }
                 else if (objectsOnMap[i].GetType() == ObjectType.GridObject)
                 {
@@ -155,15 +151,17 @@ namespace Maze.Forms
                         case GridObjectType.Coin: objectImage = PictureMgr.CoinImage; break;
                         default: objectImage = PictureMgr.CoinImage; break;
                     }
-                    xCoor = GridMapPB.Size.Width / 2 - ((oPlayer.Position.Location.X - gridObject.Position.Location.X) *
-                        GlobalConstants.GRIDMAP_BLOCK_WIDTH + oPlayer.Position.X - gridObject.Position.X) - objectImage.Size.Width / 2;
-                    yCoord = GridMapPB.Size.Height / 2 - ((oPlayer.Position.Location.Y - gridObject.Position.Location.Y) *
-                        GlobalConstants.GRIDMAP_BLOCK_HEIGHT + oPlayer.Position.Y - gridObject.Position.Y) - objectImage.Size.Height / 2;
                 }
+
+                int xCoord = GridMapPB.Size.Width / 2 - ((oPlayer.Position.Location.X - objectsOnMap[i].Position.Location.X) *
+                        GlobalConstants.GRIDMAP_BLOCK_WIDTH + oPlayer.Position.X - objectsOnMap[i].Position.X) - objectImage.Size.Width / 2;
+                int yCoord = GridMapPB.Size.Height / 2 - ((oPlayer.Position.Location.Y - objectsOnMap[i].Position.Location.Y) *
+                        GlobalConstants.GRIDMAP_BLOCK_HEIGHT + oPlayer.Position.Y - objectsOnMap[i].Position.Y) - objectImage.Size.Height / 2;
+
 
                 Graphics g = Graphics.FromImage(objectImage);
                 g = this.GridMapPB.CreateGraphics();
-                g.DrawImage(objectImage, xCoor, yCoord,
+                g.DrawImage(objectImage, xCoord, yCoord,
                     objectImage.Size.Width, objectImage.Size.Height);
                 g.Dispose();
             }
