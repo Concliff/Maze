@@ -142,7 +142,7 @@ namespace Maze.Forms
             this.ScoresPB.Name = "Total scores";
             this.ScoresPB.Size = new System.Drawing.Size(100, 25);
             this.ScoresPB.BackColor = Color.Gray;
-            this.ScoresPB.Paint += new PaintEventHandler(RightPanelPBPaint);
+            this.ScoresPB.Paint += new PaintEventHandler(RightPanelPB_Paint);
             //
             // RightPanelPB
             //
@@ -152,7 +152,7 @@ namespace Maze.Forms
             this.RightPanelPB.BackColor = Color.Gray;
             this.RightPanelPB.TabIndex = 7;
             this.RightPanelPB.TabStop = false;
-            this.RightPanelPB.Paint += new PaintEventHandler(RightPanelPBPaint);
+            this.RightPanelPB.Paint += new PaintEventHandler(RightPanelPB_Paint);
 
             GridMapGraphic = new GridMapGraph[GlobalConstants.GRIDMAP_WIDTH, GlobalConstants.GRIDMAP_HEIGHT];
             for (int i = 0; i < GlobalConstants.GRIDMAP_WIDTH; ++i)
