@@ -7,6 +7,15 @@ namespace Maze.Forms
 {
     partial class Play
     {
+        // Graphic  objects of Form.Controls
+        Graphics gGridMapBP;
+
+        private void InitializeGraphic()
+        {
+            gGridMapBP = this.GridMapPB.CreateGraphics();
+        }
+
+
         void RightPanelPB_Paint(object sender, PaintEventArgs e)
         {
             if (!PlayStarted)
@@ -80,57 +89,40 @@ namespace Maze.Forms
                     Block = GetWorldMap().GetGridMap(PBLocation);
 
                     this.GridMapGraphic[i, j].Block = Block;
-                    this.GridMapGraphic[i, j].Graphic = Graphics.FromImage(PictureMgr.GetPictureByType(Block.Type));
-                    this.GridMapGraphic[i, j].Graphic.Dispose();
-                    this.GridMapGraphic[i, j].Graphic = this.GridMapPB.CreateGraphics();
+                    gGridMapBP.DrawImage(PictureMgr.GetPictureByType(Block.Type), x, y, GlobalConstants.GRIDMAP_BLOCK_WIDTH, GlobalConstants.GRIDMAP_BLOCK_HEIGHT);
 
-                    this.GridMapGraphic[i, j].Graphic.DrawImage(PictureMgr.GetPictureByType(Block.Type), x, y, GlobalConstants.GRIDMAP_BLOCK_WIDTH, GlobalConstants.GRIDMAP_BLOCK_HEIGHT);
 
                     // Draw Start Block
                     if (HasBit(Block.Attribute, (byte)Attributes.IsStart))
                     {
-                        //StartPB.Location = new Point(x + 5, y + 5);
-                        Graphics g = Graphics.FromImage(PictureMgr.StartImage);
-                        g = this.GridMapPB.CreateGraphics();
-                        g.DrawImage(PictureMgr.StartImage, x + 5, y + 5, 40, 40);
-                        g.Dispose();
+                        gGridMapBP.DrawImage(PictureMgr.StartImage, x + 5, y + 5, 40, 40);
                     }
 
                     // Draw Finish Block
                     if (HasBit(Block.Attribute, (byte)Attributes.IsFinish))
                     {
-                        //FinishPB.Location = new Point(x + 5, y + 5);
-                        Graphics g = Graphics.FromImage(PictureMgr.FinishImage);// Non indexed image
-                        g = this.GridMapPB.CreateGraphics();
-                        g.DrawImage(PictureMgr.FinishImage, x + 5, y + 5, 40, 40);
-                        g.Dispose();
+                        gGridMapBP.DrawImage(PictureMgr.FinishImage, x + 5, y + 5, 40, 40);
                     }
 
-                    /*
-                    // Draw Coin if not collected
-                    if (HasBit(Block.Attribute, (byte) Attributes.HasCoin) &&
-                        !GetWorldMap().IsCoinCollected(Block))
-                    {
-                        Graphics g = Graphics.FromImage(PictureMgr.CoinImage);
-                        g = this.GridMapPB.CreateGraphics();
-                        g.DrawImage(PictureMgr.CoinImage, x + 15, y + 10, 20, 30);
-                        g.Dispose();
-                    }
-                    */
-
-                    // Draw Visible Units
+                    // Include all objects in this grid
                     objectsOnMap.AddRange(GetObjectContainer().GetAllObjectsByGPS(Block.Location));
                 }
 
+
+            // Draw Visible Objects
             for (int i = 0; i < objectsOnMap.Count; ++i)
             {
-                if (objectsOnMap[i].GetType() == ObjectType.Player)
-                    continue;
-                
                 Image objectImage;
                 objectImage = PictureMgr.SoulImage; // Default
 
-                if (objectsOnMap[i].GetType() == ObjectType.Unit)
+                if (objectsOnMap[i].GetType() == ObjectType.Player)
+                {
+                    if (oPlayer.IsAlive())
+                        objectImage = PictureMgr.PlayerImage;
+                    else
+                        objectImage = PictureMgr.SoulImage;
+                }
+                else if (objectsOnMap[i].GetType() == ObjectType.Unit)
                 {
                     Unit unit = (Unit)objectsOnMap[i];
                     switch (unit.GetUnitType())
@@ -144,7 +136,7 @@ namespace Maze.Forms
                 {
                     GridObject gridObject = (GridObject)objectsOnMap[i];
                     if (!gridObject.IsActive())
-                        return;
+                        continue;
 
                     switch (gridObject.GetObjectType())
                     {
@@ -158,28 +150,9 @@ namespace Maze.Forms
                 int yCoord = GridMapPB.Size.Height / 2 - ((oPlayer.Position.Location.Y - objectsOnMap[i].Position.Location.Y) *
                         GlobalConstants.GRIDMAP_BLOCK_HEIGHT + oPlayer.Position.Y - objectsOnMap[i].Position.Y) - objectImage.Size.Height / 2;
 
-
-                Graphics g = Graphics.FromImage(objectImage);
-                g = this.GridMapPB.CreateGraphics();
-                g.DrawImage(objectImage, xCoord, yCoord,
+                gGridMapBP.DrawImage(objectImage, xCoord, yCoord,
                     objectImage.Size.Width, objectImage.Size.Height);
-                g.Dispose();
             }
-
-            // Draw Player
-            Image PlayerImage;
-            if (oPlayer.IsAlive())
-                PlayerImage = PictureMgr.PlayerImage;
-            else
-                PlayerImage = PictureMgr.SoulImage;
-
-            Graphics gPlayer = Graphics.FromImage(PlayerImage);
-            gPlayer = this.GridMapPB.CreateGraphics();
-            gPlayer.DrawImage(PlayerImage,
-                (this.GridMapPB.Size.Width - PlayerImage.Width) / 2,
-                (this.GridMapPB.Size.Height - PlayerImage.Height) / 2,
-                PlayerImage.Width, PlayerImage.Height);
-            gPlayer.Dispose();
 
             this.ResumeLayout();
         }
