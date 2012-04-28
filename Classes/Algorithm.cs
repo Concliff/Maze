@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Maze.Classes
 {
-    class Algorithm
+    class Algorithm: Object
     {
         public struct CellParam
         {
@@ -37,29 +37,51 @@ namespace Maze.Classes
             CloseList = new List<CellParam>();
             Way = new List<GridMap>();
 
+            Map currentMap = GetWorldMap();
+            
             // for test
-            CellParam Start = new CellParam();
-            Start.InitializeCell();
-            Start.ID = 75;
-            CellParam Finish = new CellParam();
-            Finish.InitializeCell();
-            Finish.ID = 73;
-            Way = FindWay(Start, Finish);
+            GridMap StartPoint = new GridMap();
+            StartPoint.ID = 75;
+            StartPoint = GetWorldMap().GetGridMap(StartPoint.ID);
+             
+            GridMap FinishPoint = new GridMap();
+            FinishPoint.ID = 73;
+            FinishPoint = GetWorldMap().GetGridMap(FinishPoint.ID);
+            Way = FindWay(StartPoint, FinishPoint, currentMap);
             //
         }
 
-        void AddOpenList(CellParam Cell)
+        private void AddOpenList(CellParam Cell)
         {
             OpenList.Add(Cell);
         }
 
-        void AddCloseList(CellParam Cell)
+        private void AddCloseList(CellParam Cell)
         {
             CloseList.Add(Cell);
         }
 
-        
-        CellParam FindCell(GridMap Block)
+        private bool SearchInList(List<CellParam> List, CellParam Element)
+        {
+            foreach (CellParam el in List)
+            {
+                if (el.ID == Element.ID)
+                    return true;
+            }
+            return false;
+        }
+
+        private bool SearchInList(List<GridMap> List, GridMap Element)
+        {
+            foreach (GridMap el in List)
+            {
+                if (el.ID == Element.ID)
+                    return true;
+            }
+            return false;
+        }
+
+        private CellParam FindCell(GridMap Block)
         {
             CellParam Cell = new CellParam();
             Cell.InitializeCell();
@@ -71,79 +93,106 @@ namespace Maze.Classes
             return Cell;
         }
 
-        GridMap FindCell(CellParam Cell)
+        private GridMap FindCell(List<CellParam> List, CellParam Cell, Map CurrentMap)
         {
             GridMap Block = new GridMap();
-            Map currentMap = new Map();
+            
             Block.Initialize();
-            for (int i = 0; i < OpenList.Count; ++i)
+            for (int i = 0; i < List.Count; ++i)
             {
-                if (Cell.ID == OpenList[i].ID)
+                if (Cell.ID == List[i].ID)
                 {
-                    Block = currentMap.GetGridMap(OpenList[i].ID);
+                    Block = CurrentMap.GetGridMap(List[i].ID);
                     break;
                 }
             }
             return Block;
         }
 
-        private List<GridMap> FindWay(CellParam StartPoint, CellParam FinalPoint)
+        private List<GridMap> FindWay(GridMap StartPoint, GridMap FinalPoint, Map currentMap)
         {
             CellParam currentCell = new CellParam();
+            CellParam finalCell = new CellParam();
             currentCell.InitializeCell();
-            currentCell = StartPoint;
-            AddOpenList(StartPoint);
+            finalCell.InitializeCell();
+
+            currentCell.ID = StartPoint.ID;
+            AddOpenList(currentCell);
             
-            while(!currentCell.Equals(FinalPoint))
+            finalCell.ID = FinalPoint.ID;
+            AddOpenList(finalCell);
+
+            while(currentCell.ID != FinalPoint.ID)
             {
-                Block = FindCell(currentCell);
-                FindNeighbors(FinalPoint);
-                currentCell = GetCellWithMinF();
+                Block = FindCell(OpenList, currentCell, currentMap);
+                FindNeighbors(Block, finalCell, currentMap);
+                if (!SearchInList(CloseList, finalCell))
+                    currentCell = GetCellWithMinF();
+                else
+                    break;
             }
 
-            Way.Add(FindCell(FinalPoint));
+            currentCell = CloseList[CloseList.Count - 1];
+            Way.Add(FindCell(OpenList, currentCell, currentMap));
 
-            for (int i = CloseList.Count - 2; i <= 0; --i)
+            for (int i = CloseList.Count - 1; i > 0; --i)   // CloseList[0] == Start Cell
             {
-                if (CloseList[i].ID == currentCell.MID)
+                foreach(CellParam element in CloseList)
                 {
-                    Way.Add(FindCell(CloseList[i]));
+                    GridMap tempCell = new GridMap();
+                    tempCell = FindCell(CloseList, element, currentMap);
+                    if (element.ID == CloseList[i].MID)
+                    {
+                        if (!SearchInList(Way, tempCell))
+                        {
+                            Way.Add(tempCell);
+                            break;
+                        }
+                    }
                 }
             }
             return Way;
         }
 
         // Find all passable neighbors
-        private void FindNeighbors(CellParam FinalPoint)
-        {            
-            Map currentMap = new Map();
-
+        private void FindNeighbors(GridMap Block, CellParam FinalPoint, Map CurrentMap)
+        {
+            CellParam currentCell = FindCell(Block);
+            
             for (int i = -1; i <= 1; ++i)
             {
                 for (int j = -1; j <= 1; ++j)
                 {
-                    if (i != 0 && j != 0)
+                    if (i != 0 || j != 0)
                     {
                         GPS location = new GPS();
                         location.X = Block.Location.X + i;
                         location.Y = Block.Location.Y + j;
                         location.Level = Block.Location.Level;
-                        if (currentMap.GetGridMap(location).ID != 0)
+                        if (CurrentMap.GetGridMap(location).Type != 16)
                         {
                             CellParam Cell = new CellParam();
-                            Cell.ID = currentMap.GetGridMap(location).ID;
+                            Cell.ID = CurrentMap.GetGridMap(location).ID;
                             Cell.MID = Block.ID;
                             if (i == 0 || j == 0)
-                                Cell.G = FindCell(Block).G + 10; // Vertical or horizontal movement
+                                Cell.G = currentCell.G + 10;    // Vertical or horizontal movement
                             else
-                                Cell.G = FindCell(Block).G + 14; // Diagonal movement
+                                Cell.G = currentCell.G + 14;    // Diagonal movement
 
-                            Cell.H = (Math.Abs(location.X - currentMap.GetFinishPoint().X) + Math.Abs(location.Y - currentMap.GetFinishPoint().Y)) * 10;
+                            Cell.H = (Math.Abs(location.X - FindCell(OpenList, FinalPoint, CurrentMap).Location.X) + Math.Abs(location.Y - FindCell(OpenList, FinalPoint, CurrentMap).Location.Y)) * 10;
                             Cell.F = Cell.G + Cell.H;
 
-                            OpenList.Add(Cell);
-                            OpenList.Remove(FindCell(Block));
-                            CloseList.Add(FindCell(Block));
+                            if(!SearchInList(OpenList, Cell) && !SearchInList(CloseList, Cell))
+                                OpenList.Add(Cell);
+                            if (!SearchInList(CloseList, currentCell))
+                                CloseList.Add(currentCell);
+                            if (SearchInList(OpenList, currentCell))
+                                OpenList.Remove(currentCell);
+                            if (Cell.ID == FinalPoint.ID)
+                            {
+                                CloseList.Add(Cell);
+                                return;
+                            }
                         }
                     }
                 }
@@ -154,8 +203,9 @@ namespace Maze.Classes
         {
             CellParam Cell = new CellParam();
             Cell.InitializeCell();
-            int F = Cell.F;
-            for (int i = 0; i < OpenList.Count; ++i)
+            int F = OpenList[OpenList.Count-1].F;
+            Cell = OpenList[OpenList.Count - 1];
+            for (int i = OpenList.Count - 1; i > 1; --i)    // OpenList[0] == FinishPoint
             {
                 if (OpenList[i].F < F)
                 {
