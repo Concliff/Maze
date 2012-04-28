@@ -50,7 +50,6 @@ namespace Maze.Forms
             InitializeComponent();
             CustomInitialize();
             AddControlsOrder();
-            InitializeGraphic();
             GridMapPB.BackColor = Color.Gray;
             SystemTimer.Interval = GlobalConstants.TIMER_TICK_IN_MS; // 50 ms
 
@@ -290,7 +289,8 @@ namespace Maze.Forms
 
             MovementAction(MoveType);
 
-            RebuildGraphMap();
+            // Redraw Form Map
+            GridMapPB.Invalidate();
         }
 
 

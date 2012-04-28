@@ -7,15 +7,6 @@ namespace Maze.Forms
 {
     partial class Play
     {
-        // Graphic  objects of Form.Controls
-        Graphics gGridMapBP;
-
-        private void InitializeGraphic()
-        {
-            gGridMapBP = this.GridMapPB.CreateGraphics();
-        }
-
-
         void RightPanelPB_Paint(object sender, PaintEventArgs e)
         {
             if (!PlayStarted)
@@ -29,9 +20,9 @@ namespace Maze.Forms
 
         void GridMapPB_Paint(object sender, PaintEventArgs e)
         {
-
-            //SetInterface(CurrentInterface);
-            //ChangeInterface(CurrentInterface, true);
+            // Only when game is started
+            if (PlayStarted)
+                RebuildGraphMap(e.Graphics);
         }
 
         private void Play_Paint(object sender, PaintEventArgs e)
@@ -66,14 +57,13 @@ namespace Maze.Forms
         /// RePaint PlayForm map pictures.
         /// Include images of the player, blocks and objects on a block
         /// </summary>
-        private void RebuildGraphMap()
+        private void RebuildGraphMap(Graphics gGridMapBP)
         {
-            this.SuspendLayout();
             GPS PBLocation = new GPS();
             GridMap Block = new GridMap();
 
             List<Maze.Classes.Object> objectsOnMap = new List<Maze.Classes.Object>();
-            
+
             // GridMapGraph
             for (int i = 0; i < GlobalConstants.GRIDMAP_WIDTH; ++i)
                 for (int j = 0; j < GlobalConstants.GRIDMAP_HEIGHT; ++j)
@@ -106,8 +96,8 @@ namespace Maze.Forms
 
                     // Include all objects in this grid
                     objectsOnMap.AddRange(GetObjectContainer().GetAllObjectsByGPS(Block.Location));
-                }
 
+                }
 
             // Draw Visible Objects
             for (int i = 0; i < objectsOnMap.Count; ++i)
@@ -153,8 +143,6 @@ namespace Maze.Forms
                 gGridMapBP.DrawImage(objectImage, xCoord, yCoord,
                     objectImage.Size.Width, objectImage.Size.Height);
             }
-
-            this.ResumeLayout();
         }
 
     }

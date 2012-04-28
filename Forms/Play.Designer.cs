@@ -33,7 +33,6 @@ namespace Maze.Forms
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            this.GridMapPB = new System.Windows.Forms.PictureBox();
             this.SystemTimer = new System.Windows.Forms.Timer(this.components);
             this.label1 = new System.Windows.Forms.Label();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
@@ -41,7 +40,6 @@ namespace Maze.Forms
             this.pictureBox3 = new System.Windows.Forms.PictureBox();
             this.RightPanelPB = new System.Windows.Forms.PictureBox();
             this.ScoresPB = new System.Windows.Forms.PictureBox();
-            ((System.ComponentModel.ISupportInitialize)(this.GridMapPB)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
@@ -99,7 +97,6 @@ namespace Maze.Forms
             this.Text = "Play";
             this.Load += new System.EventHandler(this.Play_Load);
             this.Paint += new System.Windows.Forms.PaintEventHandler(this.Play_Paint);
-            ((System.ComponentModel.ISupportInitialize)(this.GridMapPB)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).EndInit();
@@ -125,10 +122,15 @@ namespace Maze.Forms
             this.Shown += new System.EventHandler(Play_Shown);
             this.VisibleChanged += new System.EventHandler(Play_VisibleChanged);
 
+            this.SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
+            this.SetStyle(ControlStyles.AllPaintingInWmPaint, true);
+            this.SetStyle(ControlStyles.UserPaint, true);
+
 
             //
             // GridMapPB
             //
+            this.GridMapPB = new System.Windows.Forms.PictureBox();
             this.GridMapPB.Location = new System.Drawing.Point(150, 60);
             this.GridMapPB.Name = "GridMapPB";
             this.GridMapPB.Size = new System.Drawing.Size(550, 350);
