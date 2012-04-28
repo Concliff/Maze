@@ -83,6 +83,8 @@ namespace Maze.Classes
             Position.Y = 0;
             Position.BlockID = 0;
 
+            currentGridMap.Initialize();
+
             GUID = Play.GetObjectContainer().CreateObject(this);
         }
 

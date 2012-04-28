@@ -30,6 +30,12 @@ namespace Maze.Classes
 
         public Unit()
         {
+            SetDeathState(DeathStates.Alive);
+            gridMapReached = true;
+
+            respawnLocation.Level = respawnLocation.X =
+                respawnLocation.Y = respawnLocation.Z = 0;
+
             objectType = ObjectType.Unit;
             unitType = UnitTypes.Unit;
             SpeedRate = 1.0d;
@@ -60,13 +66,11 @@ namespace Maze.Classes
                 return;
 
             List<GridObject> objects = GetGridObjectsWithinRange(GlobalConstants.GRIDMAP_BLOCK_HEIGHT / 2);
-            if (objects.Count != 0)
+
+            foreach (GridObject obj in objects)
             {
-                foreach (GridObject obj in objects)
-                {
-                    if (obj.IsActive())
-                        obj.Use(this);
-                }
+                if (obj.IsActive())
+                    obj.Use(this);
             }
 
             gridMapReached = true;
