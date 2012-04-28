@@ -8,10 +8,37 @@ namespace Maze.Classes
 {
     class ObjectSearcher
     {
+        private static GridGPS DefaultGridGPS(GPS location)
+        {
+            GridGPS gridGPS;
+            gridGPS.Location = location;
+            gridGPS.X = GlobalConstants.GRIDMAP_BLOCK_WIDTH / 2;
+            gridGPS.Y = GlobalConstants.GRIDMAP_BLOCK_HEIGHT / 2;
+            gridGPS.BlockID = 0;
+
+            return gridGPS;
+        }
+
         public static List<GridObject> GetGridObjectsWithinRange(Object searcher, int rangeDistance)
         {
+            List<GridObject> gridObjects = GetGridObjectsInArea(searcher.Position, rangeDistance);
+
+            // exclude itself
+            if (searcher.GetType() == ObjectType.GridObject)
+                gridObjects.Remove((GridObject)searcher);
+
+            return gridObjects;
+        }
+
+        public static List<GridObject> GetGridObjectsInArea(GPS centralGPS, int radius)
+        {
+            return GetGridObjectsInArea(DefaultGridGPS(centralGPS), radius);
+        }
+
+        public static List<GridObject> GetGridObjectsInArea(GridGPS centralGridGPS, int radius)
+        {
             List<Object> objects = new List<Object>();
-            objects = GetObjectsWithinRange(searcher, rangeDistance);
+            objects = GetObjectsInArea(centralGridGPS, radius);
 
             List<GridObject> result = new List<GridObject>();
 
@@ -28,8 +55,24 @@ namespace Maze.Classes
 
         public static List<Unit> GetUnitsWithinRange(Object searcher, int rangeDistance)
         {
+            List<Unit> units = GetUnitsInArea(searcher.Position, rangeDistance);
+
+            // exclude itself
+            if (searcher.GetType() == ObjectType.Unit)
+                units.Remove((Unit)searcher);
+
+            return units;
+        }
+
+        public static List<Unit> GetUnitsInArea(GPS centralGPS, int radius)
+        {
+            return GetUnitsInArea(DefaultGridGPS(centralGPS), radius);
+        }
+
+        public static List<Unit> GetUnitsInArea(GridGPS centralGridGPS, int radius)
+        {
             List<Object> objects = new List<Object>();
-            objects = GetObjectsWithinRange(searcher, rangeDistance);
+            objects = GetObjectsInArea(centralGridGPS, radius);
 
             List<Unit> result = new List<Unit>();
 
@@ -46,33 +89,45 @@ namespace Maze.Classes
 
         public static List<Object> GetObjectsWithinRange(Object searcher, int rangeDistance)
         {
+            List<Object> objects = GetObjectsInArea(searcher.Position, rangeDistance);
+
+            // exclude itself
+            objects.Remove(searcher);
+
+            return objects;
+        }
+
+        public static List<Object> GetObjectsInArea(GPS centralGPS, int radius)
+        {
+            return GetObjectsInArea(DefaultGridGPS(centralGPS), radius);
+        }
+
+        public static List<Object> GetObjectsInArea(GridGPS centralGridGPS, int radius)
+        {
             List<Object> objects = new List<Object>();
-            GPS SearchGPS = searcher.Position.Location;
+            GPS SearchGPS = centralGridGPS.Location;
 
             // How much grids use for search
-            int GridToNorth = (int)Math.Ceiling(Math.Abs(searcher.Position.Y - rangeDistance) * 1d / GlobalConstants.GRIDMAP_BLOCK_HEIGHT);
-            int GridToSouth = (int)Math.Floor(Math.Abs(searcher.Position.Y + rangeDistance) * 1d / GlobalConstants.GRIDMAP_BLOCK_HEIGHT);
-            int GridToWest = (int)Math.Ceiling(Math.Abs(searcher.Position.X - rangeDistance) * 1d / GlobalConstants.GRIDMAP_BLOCK_WIDTH);
-            int GridToEast = (int)Math.Floor(Math.Abs(searcher.Position.X + rangeDistance) * 1d / GlobalConstants.GRIDMAP_BLOCK_WIDTH);
+            int GridToNorth = (int)Math.Ceiling(Math.Abs(centralGridGPS.Y - radius) * 1d / GlobalConstants.GRIDMAP_BLOCK_HEIGHT);
+            int GridToSouth = (int)Math.Floor(Math.Abs(centralGridGPS.Y + radius) * 1d / GlobalConstants.GRIDMAP_BLOCK_HEIGHT);
+            int GridToWest = (int)Math.Ceiling(Math.Abs(centralGridGPS.X - radius) * 1d / GlobalConstants.GRIDMAP_BLOCK_WIDTH);
+            int GridToEast = (int)Math.Floor(Math.Abs(centralGridGPS.X + radius) * 1d / GlobalConstants.GRIDMAP_BLOCK_WIDTH);
 
-            for (int width = searcher.Position.Location.X - GridToWest; width <= searcher.Position.Location.X + GridToEast; ++width)
-                for (int height = searcher.Position.Location.Y - GridToNorth; height <= searcher.Position.Location.Y + GridToSouth; ++height)
+            for (int width = centralGridGPS.Location.X - GridToWest; width <= centralGridGPS.Location.X + GridToEast; ++width)
+                for (int height = centralGridGPS.Location.Y - GridToNorth; height <= centralGridGPS.Location.Y + GridToSouth; ++height)
                 {
                     SearchGPS.X = width;
                     SearchGPS.Y = height;
                     objects.AddRange(Play.GetObjectContainer().GetAllObjectsByGPS(SearchGPS));
                 }
 
-            // exclude itself
-            objects.Remove(searcher);
-
             List<Object> result = new List<Object>();
 
             foreach (Object obj in objects)
             {
                 // Calculate actual distance
-                if (Math.Sqrt(Math.Pow(searcher.Position.X - obj.Position.X + (searcher.Position.Location.X - obj.Position.Location.X) * GlobalConstants.GRIDMAP_BLOCK_WIDTH, 2)
-                    + Math.Pow(searcher.Position.Y - obj.Position.Y + (searcher.Position.Location.Y - obj.Position.Location.Y) * GlobalConstants.GRIDMAP_BLOCK_HEIGHT, 2)) < rangeDistance)
+                if (Math.Sqrt(Math.Pow(centralGridGPS.X - obj.Position.X + (centralGridGPS.Location.X - obj.Position.Location.X) * GlobalConstants.GRIDMAP_BLOCK_WIDTH, 2)
+                    + Math.Pow(centralGridGPS.Y - obj.Position.Y + (centralGridGPS.Location.Y - obj.Position.Location.Y) * GlobalConstants.GRIDMAP_BLOCK_HEIGHT, 2)) < radius)
                 {
                     result.Add(obj);
                 }
@@ -80,5 +135,6 @@ namespace Maze.Classes
 
             return result;
         }
+
     }
 }
