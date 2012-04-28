@@ -225,7 +225,7 @@ namespace Maze.Forms
 
             // Size
             MenuNewGamePB.Size = MenuContinueGamePB.Size = MenuHighScoresPB.Size = MenuQuitPB.Size =
-                PauseResumePB.Size = PauseMainMenuPB.Size = new Size(150, 20);
+                PauseResumePB.Size = PauseMainMenuPB.Size = new Size(150, 30);
             PausePB.Size = new Size(200, 200);
 
             PausePB.Location = new Point(GridMapPB.Location.X + GridMapPB.Size.Width / 2 - PausePB.Size.Width / 2,
@@ -233,7 +233,7 @@ namespace Maze.Forms
 
             // Pause Menu Location
             PauseResumePB.Location =
-                new Point(GridMapPB.Location.X + GridMapPB.Size.Width / 2 - PauseResumePB.Size.Width / 2, GridMapPB.Location.Y + GridMapPB.Size.Height / 2 - 20);
+                new Point(GridMapPB.Location.X + GridMapPB.Size.Width / 2 - PauseResumePB.Size.Width / 2, GridMapPB.Location.Y + GridMapPB.Size.Height / 2 - 30);
 
             PauseMainMenuPB.Location =
                 new Point(GridMapPB.Location.X + GridMapPB.Size.Width / 2 - PauseMainMenuPB.Size.Width / 2, GridMapPB.Location.Y + GridMapPB.Size.Height / 2);
