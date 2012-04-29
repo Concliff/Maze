@@ -5,13 +5,13 @@ using System.Text;
 
 namespace Maze.Classes
 {
-    public enum Directions : byte
+    public enum Directions : uint
     {
-        Right = 1,
-        Down = 2,
-        Left = 3,
-        Up = 4,
-        None = 5,
+        Right   = 0x001,
+        Down    = 0x002,
+        Left    = 0x004,
+        Up      = 0x008,
+        None    = 0x010,
     };
 
     public enum GridMapAttributes : uint

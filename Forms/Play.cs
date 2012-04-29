@@ -273,18 +273,17 @@ namespace Maze.Forms
             // | Y
             //
             // Moving
-            byte MoveType = 0;
-            SetBit(ref MoveType, (byte)Directions.None);
+            uint MoveType = (uint)Directions.None;
 
             // Review all the keys are currently down
             for (int counter = 0; counter < KeyMgr.KeysDownCount; ++counter)
                 switch (KeyMgr.KeyDown(counter))
                 {
                     // Catch moving keys
-                    case Keys.W: SetBit(ref MoveType, (byte)Directions.Up); break;
-                    case Keys.A: SetBit(ref MoveType, (byte)Directions.Left); break;
-                    case Keys.S: SetBit(ref MoveType, (byte)Directions.Down); break;
-                    case Keys.D: SetBit(ref MoveType, (byte)Directions.Right); break;
+                    case Keys.W: MoveType += (uint)Directions.Up; break;
+                    case Keys.A: MoveType += (uint)Directions.Left; break;
+                    case Keys.S: MoveType += (uint)Directions.Down; break;
+                    case Keys.D: MoveType += (uint)Directions.Right; break;
                 }
 
             MovementAction(MoveType);
@@ -298,11 +297,11 @@ namespace Maze.Forms
         /// PlayForm Moving Handler
         /// </summary>
         /// <param name="MoveType">Flags of direction</param>
-        private void MovementAction(byte MoveType)
+        private void MovementAction(uint MoveType)
         {
             // Check if moving occurs
-            if (!HasBit(MoveType, (byte)Directions.Up) && !HasBit(MoveType, (byte)Directions.Down) &&
-                !HasBit(MoveType, (byte)Directions.Right) && !HasBit(MoveType, (byte)Directions.Left))
+            if ((MoveType & (uint)Directions.Up) == 0 && (MoveType & (uint)Directions.Down) == 0 &&
+                (MoveType & (uint)Directions.Right) == 0 && (MoveType & (uint)Directions.Left) == 0)
                 return;
 
             if (!oPlayer.IsAlive())

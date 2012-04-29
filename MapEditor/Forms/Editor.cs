@@ -50,15 +50,14 @@ namespace MapEditor.Forms
 
         public void SystemTimerTick(object sender, EventArgs e)
         {
-            byte MoveType = 0;
-            SetBit(ref MoveType, (byte)Directions.None);
+            uint MoveType = (uint)Directions.None;
             for (int counter = 0; counter < KeyMgr.KeysDownCount; ++counter)
                 switch (KeyMgr.KeyDown(counter))
                 {
-                    case Keys.W: SetBit(ref MoveType, (byte)Directions.Up); break;
-                    case Keys.A: SetBit(ref MoveType, (byte)Directions.Left); break;
-                    case Keys.S: SetBit(ref MoveType, (byte)Directions.Down); break;
-                    case Keys.D: SetBit(ref MoveType, (byte)Directions.Right); break;
+                    case Keys.W: MoveType += (uint)Directions.Up; break;
+                    case Keys.A: MoveType += (uint)Directions.Left; break;
+                    case Keys.S: MoveType += (uint)Directions.Down; break;
+                    case Keys.D: MoveType += (uint)Directions.Right; break;
                 }
             MovementAction(MoveType);
 
@@ -84,15 +83,15 @@ namespace MapEditor.Forms
             }
 
         }
-        private void MovementAction(byte MoveType)
+        private void MovementAction(uint MoveType)
         {
-            if (HasBit(MoveType, (byte)Directions.Right))
+            if ((MoveType & (uint)Directions.Right) != 0)
                 oPlayer.Position.X += GlobalConstants.MOVEMENT_STEP_PX * 2;
-            if (HasBit(MoveType, (byte)Directions.Left))
+            if ((MoveType & (uint)Directions.Up) != 0)
                 oPlayer.Position.X -= GlobalConstants.MOVEMENT_STEP_PX * 2;
-            if (HasBit(MoveType, (byte)Directions.Up))
+            if ((MoveType & (uint)Directions.Up) != 0)
                 oPlayer.Position.Y -= GlobalConstants.MOVEMENT_STEP_PX * 2;
-            if (HasBit(MoveType, (byte)Directions.Down))
+            if ((MoveType & (uint)Directions.Down) != 0)
                 oPlayer.Position.Y += GlobalConstants.MOVEMENT_STEP_PX * 2;
 
             if (oPlayer.Position.X > GlobalConstants.GRIDMAP_BLOCK_WIDTH)

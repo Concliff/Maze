@@ -100,21 +100,21 @@ namespace Maze.Classes
         /// Player Moving Handler
         /// </summary>
         /// <param name="MoveType">Flags of direction</param>
-        public GridGPS MovementAction(byte MoveType)
+        public GridGPS MovementAction(uint MoveType)
         {
             if (!IsAlive())
                 return Position;
             // New position coords
             int NewX, NewY;
-            NewX = Position.X
-                + (BinaryOperations.GetBit(MoveType, (byte)Directions.Right) -  BinaryOperations.GetBit(MoveType, (byte)Directions.Left))
-                * GlobalConstants.MOVEMENT_STEP_PX;
+            NewX = Position.X +
+                (int)(GlobalConstants.MOVEMENT_STEP_PX * SpeedRate *
+                (((MoveType & (uint)Directions.Right) == 0 ? 0 : 1) - ((MoveType & (uint)Directions.Left) == 0 ? 0 : 1)));
 
             // New position X and Y should be within allowed range
             // If not - prevent movement or change location
             if (NewX > (GlobalConstants.GRIDMAP_BLOCK_WIDTH - GlobalConstants.GRIDMAP_BORDER_PX - GlobalConstants.PLAYER_SIZE_WIDTH / 2))
             {
-                if (BinaryOperations.IsBit(currentGridMap.Type, (byte)Directions.Right))
+                if (currentGridMap.CanMoveTo(Directions.Right))
                 {
                     if (NewX > GlobalConstants.GRIDMAP_BLOCK_WIDTH)
                     {
@@ -129,7 +129,7 @@ namespace Maze.Classes
             }
             else if (NewX < (GlobalConstants.GRIDMAP_BORDER_PX + GlobalConstants.PLAYER_SIZE_WIDTH / 2))
             {
-                if (BinaryOperations.IsBit(currentGridMap.Type, (byte)Directions.Left))
+                if (currentGridMap.CanMoveTo(Directions.Left))
                 {
                     if (NewX < 0)
                     {
@@ -145,12 +145,12 @@ namespace Maze.Classes
             else
                 Position.X = NewX;
 
-            NewY = Position.Y
-                + (BinaryOperations.GetBit(MoveType, (byte)Directions.Down) - BinaryOperations.GetBit(MoveType, (byte)Directions.Up))
-                * GlobalConstants.MOVEMENT_STEP_PX;
+            NewY = Position.Y +
+                (int)(GlobalConstants.MOVEMENT_STEP_PX * SpeedRate *
+                (((MoveType & (uint)Directions.Down) == 0 ? 0 : 1) - ((MoveType & (uint)Directions.Up) == 0 ? 0 : 1)));
             if (NewY > (GlobalConstants.GRIDMAP_BLOCK_HEIGHT - GlobalConstants.GRIDMAP_BORDER_PX - GlobalConstants.PLAYER_SIZE_HEIGHT / 2))
             {
-                if (BinaryOperations.IsBit(currentGridMap.Type, (byte)Directions.Down))
+                if (currentGridMap.CanMoveTo(Directions.Down))
                 {
                     if (NewY > GlobalConstants.GRIDMAP_BLOCK_HEIGHT)
                     {
@@ -165,7 +165,7 @@ namespace Maze.Classes
             }
             else if (NewY < (GlobalConstants.GRIDMAP_BORDER_PX + GlobalConstants.PLAYER_SIZE_HEIGHT / 2))
             {
-                if (BinaryOperations.IsBit(currentGridMap.Type, (byte)Directions.Up))
+                if (currentGridMap.CanMoveTo(Directions.Up))
                 {
                     if (NewY < 0)
                     {

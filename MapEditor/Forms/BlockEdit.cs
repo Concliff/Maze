@@ -41,10 +41,10 @@ namespace MapEditor.Forms
             LocationLevelTextBox.Text = Block.Location.Level.ToString();
 
             // Movement
-            UpCheckBox.Checked = HasBit(Block.Type, (byte)Directions.Up);
-            LeftCheckBox.Checked = HasBit(Block.Type, (byte)Directions.Left);
-            DownCheckBox.Checked = HasBit(Block.Type, (byte)Directions.Down);
-            RightCheckBox.Checked = HasBit(Block.Type, (byte)Directions.Right);
+            UpCheckBox.Checked      = Block.CanMoveTo(Directions.Up);
+            LeftCheckBox.Checked    = Block.CanMoveTo(Directions.Left);
+            DownCheckBox.Checked    = Block.CanMoveTo(Directions.Down);
+            RightCheckBox.Checked   = Block.CanMoveTo(Directions.Right);
 
             // Attributes
             StartCheckBox.Checked   = Block.HasAttribute(GridMapAttributes.IsStart);
@@ -63,11 +63,11 @@ namespace MapEditor.Forms
             NewBlock.Location.Z = Convert.ToInt32(LocationZTextBox.Text);
             NewBlock.Location.Level = Convert.ToInt32(LocationLevelTextBox.Text);
 
-            NewBlock.Type = 0;
-            if (UpCheckBox.Checked) SetBit(ref NewBlock.Type, (byte)Directions.Up);
-            if (LeftCheckBox.Checked) SetBit(ref NewBlock.Type, (byte)Directions.Left);
-            if (DownCheckBox.Checked) SetBit(ref NewBlock.Type, (byte)Directions.Down);
-            if (RightCheckBox.Checked) SetBit(ref NewBlock.Type, (byte)Directions.Right);
+            NewBlock.Type = (uint)Directions.None;
+            if (UpCheckBox.Checked)     NewBlock.Type += (uint)Directions.Up;
+            if (LeftCheckBox.Checked)   NewBlock.Type += (uint)Directions.Left;
+            if (DownCheckBox.Checked)   NewBlock.Type += (uint)Directions.Down;
+            if (RightCheckBox.Checked)  NewBlock.Type += (uint)Directions.Right;
 
             NewBlock.Attribute = 0;
             if (StartCheckBox.Checked)  NewBlock.Attribute += (uint)GridMapAttributes.IsStart;

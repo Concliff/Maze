@@ -44,20 +44,5 @@ namespace Maze.Forms
         {
             World.SetNextAction(NextAction);
         }
-
-        protected void SetBit(ref int Number, byte Bit)
-        {
-            BinaryOperations.SetBit(ref Number, Bit);
-        }
-
-        protected void SetBit(ref byte Number, byte Bit)
-        {
-            BinaryOperations.SetBit(ref Number, (byte)Bit);
-        }
-
-        protected bool HasBit(int Number, byte Bit)
-        {
-            return BinaryOperations.IsBit(Number, Bit);
-        }
     }
 }

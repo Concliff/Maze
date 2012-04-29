@@ -47,7 +47,7 @@ namespace Maze.Classes
             SoulImage = Image.FromFile(ImageDirectoryPath + "Soul.png");
         }
 
-        public Image GetPictureByType(int Type)
+        public Image GetPictureByType(uint Type)
         {
             if (Type >= CellsCount)
                 return null;

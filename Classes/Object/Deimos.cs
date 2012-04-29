@@ -116,7 +116,7 @@ namespace Maze.Classes
             if (Random.Int(100) <= 33)  // 33% chance to change direction
                 SelectNewDirection();
 
-            if (BinaryOperations.IsBit(currentGridMap.Type, (byte)CurrentDirection))
+            if (currentGridMap.CanMoveTo(CurrentDirection))
                 return;
             else
                 SelectNewDirection();
@@ -139,7 +139,7 @@ namespace Maze.Classes
                     case 4: newDirection = Directions.Up; break;
                 }
                 // Ignore Opposite Direction if there is another one
-                if (BinaryOperations.IsBit(currentGridMap.Type, (byte)newDirection) &&
+                if (currentGridMap.CanMoveTo(newDirection) &&
                     (newDirection != GetOppositeDirection(CurrentDirection) || CurrentDirection == Directions.None))
                 {
                     CurrentDirection = newDirection;
@@ -148,7 +148,7 @@ namespace Maze.Classes
             }
 
             // Go opposite Direction if no choice to go
-            if (BinaryOperations.IsBit(currentGridMap.Type, (byte)GetOppositeDirection(CurrentDirection)))
+            if (currentGridMap.CanMoveTo(GetOppositeDirection(CurrentDirection)))
                 CurrentDirection = GetOppositeDirection(CurrentDirection);
             else
                 CurrentDirection = Directions.None;

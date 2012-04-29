@@ -13,7 +13,7 @@ namespace Maze.Classes
         public int ID;
         //public int PictureID;
         public GPS Location;
-        public int Type;
+        public uint Type;
         public uint Attribute;
         public uint Option;
         public int OptionValue;
@@ -42,6 +42,11 @@ namespace Maze.Classes
         public bool HasOption(GridMapOptions option)
         {
             return (Option & (uint)option) != 0;
+        }
+
+        public bool CanMoveTo(Directions direction)
+        {
+            return (Type & (uint)direction) != 0;
         }
     };
 
@@ -184,7 +189,7 @@ namespace Maze.Classes
                 GridMapStruct.Location.Y = Convert.ToInt32(StringStruct[2]);
                 GridMapStruct.Location.Z = Convert.ToInt32(StringStruct[3]);
                 GridMapStruct.Location.Level = Convert.ToInt32(StringStruct[4]);
-                GridMapStruct.Type = Convert.ToInt32(StringStruct[5]);
+                GridMapStruct.Type = Convert.ToUInt32(StringStruct[5]);
                 GridMapStruct.Attribute = Convert.ToUInt32(StringStruct[6]);
                 GridMapStruct.Option = Convert.ToUInt32(StringStruct[7]);
                 GridMapStruct.OptionValue = Convert.ToInt32(StringStruct[8]);
