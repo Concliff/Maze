@@ -14,8 +14,8 @@ namespace Maze.Classes
         //public int PictureID;
         public GPS Location;
         public int Type;
-        public int Attribute;
-        public int Option;
+        public uint Attribute;
+        public uint Option;
         public int OptionValue;
         public int ND4;
 
@@ -32,6 +32,16 @@ namespace Maze.Classes
             Option = 0;
             OptionValue = 0;
             ND4 = 0;
+        }
+
+        public bool HasAttribute(GridMapAttributes attribute)
+        {
+            return (Attribute & (uint)attribute) != 0;
+        }
+
+        public bool HasOption(GridMapOptions option)
+        {
+            return (Option & (uint)option) != 0;
         }
     };
 
@@ -175,8 +185,8 @@ namespace Maze.Classes
                 GridMapStruct.Location.Z = Convert.ToInt32(StringStruct[3]);
                 GridMapStruct.Location.Level = Convert.ToInt32(StringStruct[4]);
                 GridMapStruct.Type = Convert.ToInt32(StringStruct[5]);
-                GridMapStruct.Attribute = Convert.ToInt32(StringStruct[6]);
-                GridMapStruct.Option = Convert.ToInt32(StringStruct[7]);
+                GridMapStruct.Attribute = Convert.ToUInt32(StringStruct[6]);
+                GridMapStruct.Option = Convert.ToUInt32(StringStruct[7]);
                 GridMapStruct.OptionValue = Convert.ToInt32(StringStruct[8]);
                 GridMapStruct.ND4 = Convert.ToInt32(StringStruct[9]);
 
@@ -185,9 +195,9 @@ namespace Maze.Classes
                 if (Convert.ToInt32(StringStruct[4]) >= levelIndicator)
                     levelIndicator++;
 
-                if (BinaryOperations.IsBit(GridMapStruct.Attribute, (byte)Attributes.IsStart))
+                if (GridMapStruct.HasAttribute(GridMapAttributes.IsStart))
                     StartPoint.Insert(GridMapStruct.Location.Level, GridMapStruct.Location);
-                if (BinaryOperations.IsBit(GridMapStruct.Attribute, (byte)Attributes.IsFinish))
+                if (GridMapStruct.HasAttribute(GridMapAttributes.IsFinish))
                     FinishPoint.Insert(GridMapStruct.Location.Level, GridMapStruct.Location);
             }
             GridMapStream.Close();
@@ -223,7 +233,7 @@ namespace Maze.Classes
         {
             foreach (GridMap block in MapBlocks)
             {
-                if (BinaryOperations.IsBit(block.Attribute, (byte)Attributes.HasCoin))
+                if (block.HasAttribute(GridMapAttributes.HasCoin))
                     // Create Deimos at Coin Location
                     new Deimos(block.Location);
             }
@@ -236,7 +246,7 @@ namespace Maze.Classes
         {
             foreach (GridMap block in MapBlocks)
             {
-                if (BinaryOperations.IsBit(block.Attribute, (byte)Attributes.HasCoin))
+                if (block.HasAttribute(GridMapAttributes.HasCoin))
                 {
                     new Coin(block);
                     ++coinsCount[block.Location.Level];

@@ -147,7 +147,7 @@ namespace MapEditor.Forms
 
                     this.GridMapGraphic[i, j].Graphic.DrawImage(PictureMgr.GetPictureByType(Block.Type), x, y, GlobalConstants.GRIDMAP_BLOCK_WIDTH, GlobalConstants.GRIDMAP_BLOCK_HEIGHT);
                     // Draw Start Block
-                    if (HasBit(Block.Attribute, (byte)Attributes.IsStart))
+                    if (Block.HasAttribute(GridMapAttributes.IsStart))
                     {
                         //StartPB.Location = new Point(x + 5, y + 5);
                         Graphics g = Graphics.FromImage(PictureMgr.StartImage);
@@ -156,7 +156,7 @@ namespace MapEditor.Forms
                         g.Dispose();
                     }
                     // Draw Finish Block
-                    if (HasBit(Block.Attribute, (byte)Attributes.IsFinish))
+                    if (Block.HasAttribute(GridMapAttributes.IsFinish))
                     {
                         //FinishPB.Location = new Point(x + 5, y + 5);
                         Graphics g = Graphics.FromImage(PictureMgr.FinishImage);// Non indexed image
@@ -164,8 +164,9 @@ namespace MapEditor.Forms
                         g.DrawImage(PictureMgr.FinishImage, x + 5, y + 5, 40, 40);
                         g.Dispose();
                     }
+
                     // Draw Coin
-                    if (HasBit(Block.Attribute, (byte)Attributes.HasCoin))
+                    if (Block.HasAttribute(GridMapAttributes.HasCoin))
                     {
                         Graphics g = Graphics.FromImage(PictureMgr.CoinImage);
                         g = this.CreateGraphics();

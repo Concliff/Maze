@@ -14,23 +14,23 @@ namespace Maze.Classes
         None = 5,
     };
 
-    public enum Attributes : byte
+    public enum GridMapAttributes : uint
     {
-        IsStart = 1,
-        IsFinish = 2,
-        HasCoin = 3,
-        Attribute4,
-        Attribute5,
-        Attribute6,
-        Attribute7,
-        Attribute8,
-        Attribute9,
-        Attribute10,
+        IsStart     = 0x001,
+        IsFinish    = 0x002,
+        HasCoin     = 0x004,
+        Attribute4  = 0x008,
+        Attribute5  = 0x010,
+        Attribute6  = 0x020,
+        Attribute7  = 0x040,
+        Attribute8  = 0x080,
+        Attribute9  = 0x100,
+        Attribute10 = 0x200,
     };
 
-    public enum GridMapOptions : byte
+    public enum GridMapOptions : uint
     {
-        Portal = 1,
+        Portal = 0x001,
         Option2,
         Option3,
         Option4,

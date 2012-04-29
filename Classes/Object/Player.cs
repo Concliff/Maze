@@ -200,7 +200,6 @@ namespace Maze.Classes
             FinishReached = false;
         }
 
-
         public void TeleportTo() { }
 
         /// <summary>
@@ -208,11 +207,11 @@ namespace Maze.Classes
         /// </summary>
         protected override void ReachedGridMap()
         {
-            if (BinaryOperations.IsBit(currentGridMap.Attribute, (byte)Attributes.IsFinish) &&
+            base.ReachedGridMap();
+
+            if (currentGridMap.HasAttribute(GridMapAttributes.IsFinish) &&
                 GetWorldMap().CoinsRemain() == 0)
                 FinishReached = true;
-
-            base.ReachedGridMap();
         }
 
         public void CollectCoin(Coin coin)

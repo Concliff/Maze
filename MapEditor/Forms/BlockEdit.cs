@@ -47,9 +47,9 @@ namespace MapEditor.Forms
             RightCheckBox.Checked = HasBit(Block.Type, (byte)Directions.Right);
 
             // Attributes
-            StartCheckBox.Checked = HasBit(Block.Attribute,(byte)Attributes.IsStart);
-            FinishCheckBox.Checked = HasBit(Block.Attribute,(byte)Attributes.IsFinish);
-            CoinCheckBox.Checked = HasBit(Block.Attribute,(byte)Attributes.HasCoin);
+            StartCheckBox.Checked   = Block.HasAttribute(GridMapAttributes.IsStart);
+            FinishCheckBox.Checked  = Block.HasAttribute(GridMapAttributes.IsFinish);
+            CoinCheckBox.Checked    = Block.HasAttribute(GridMapAttributes.HasCoin);
         }
          
         void AcceptButtonClick(object sender, System.EventArgs e)
@@ -70,9 +70,9 @@ namespace MapEditor.Forms
             if (RightCheckBox.Checked) SetBit(ref NewBlock.Type, (byte)Directions.Right);
 
             NewBlock.Attribute = 0;
-            if (StartCheckBox.Checked) SetBit(ref NewBlock.Attribute, (byte)Attributes.IsStart);
-            if (FinishCheckBox.Checked) SetBit(ref NewBlock.Attribute, (byte)Attributes.IsFinish);
-            if (CoinCheckBox.Checked) SetBit(ref NewBlock.Attribute, (byte)Attributes.HasCoin);
+            if (StartCheckBox.Checked)  NewBlock.Attribute += (uint)GridMapAttributes.IsStart;
+            if (FinishCheckBox.Checked) NewBlock.Attribute += (uint)GridMapAttributes.IsFinish;
+            if (CoinCheckBox.Checked)   NewBlock.Attribute += (uint)GridMapAttributes.HasCoin;
 
             Program.WorldMap.AddGridMap(NewBlock);
             Program.EditorForm.RebuildGraphMap();

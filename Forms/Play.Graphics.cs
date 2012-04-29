@@ -83,13 +83,13 @@ namespace Maze.Forms
 
 
                     // Draw Start Block
-                    if (HasBit(Block.Attribute, (byte)Attributes.IsStart))
+                    if (Block.HasAttribute(GridMapAttributes.IsStart))
                     {
                         gGridMapBP.DrawImage(PictureMgr.StartImage, x + 5, y + 5, 40, 40);
                     }
 
                     // Draw Finish Block
-                    if (HasBit(Block.Attribute, (byte)Attributes.IsFinish))
+                    if (Block.HasAttribute(GridMapAttributes.IsFinish))
                     {
                         gGridMapBP.DrawImage(PictureMgr.FinishImage, x + 5, y + 5, 40, 40);
                     }
