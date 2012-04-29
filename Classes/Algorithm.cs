@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Maze.Classes
 {
-    class Algorithm: Object
+    class Algorithm
     {
         public struct CellParam
         {
@@ -214,6 +214,11 @@ namespace Maze.Classes
                 }
             }
             return Cell;
+        }
+
+        private Map GetWorldMap()
+        {
+            return Maze.Forms.Play.GetWorldMap();
         }
     }
 }
