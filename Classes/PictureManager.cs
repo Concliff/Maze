@@ -17,6 +17,7 @@ namespace Maze.Classes
         public Image CoinImage;
         public Image PlayerImage;
         public Image SoulImage;
+        public Image PortalImage;
 
         private int CellsCount;
         private Image[] Pictures;           // Blocks Images
@@ -45,6 +46,7 @@ namespace Maze.Classes
             PhobosImage = Image.FromFile(ImageDirectoryPath + "Phobos.png");
             PlayerImage = Image.FromFile(ImageDirectoryPath + "Man2.bmp");
             SoulImage = Image.FromFile(ImageDirectoryPath + "Soul.png");
+            PortalImage = Image.FromFile(ImageDirectoryPath + "Portal.png");
         }
 
         public Image GetPictureByType(uint Type)
