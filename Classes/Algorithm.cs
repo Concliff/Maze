@@ -25,9 +25,9 @@ namespace Maze.Classes
             }
         };
 
-        List<CellParam> OpenList;
-        List<CellParam> CloseList;
-        List<GridMap> Way;
+        private List<CellParam> OpenList;
+        private List<CellParam> CloseList;
+        public List<GridMap> Way;
 
         GridMap Block;
 
@@ -47,7 +47,7 @@ namespace Maze.Classes
             GridMap FinishPoint = new GridMap();
             FinishPoint.ID = 73;
             FinishPoint = GetWorldMap().GetGridMap(FinishPoint.ID);
-            Way = FindWay(StartPoint, FinishPoint, currentMap);
+            Way = FindWay(StartPoint, FinishPoint);
             //
         }
 
@@ -93,7 +93,7 @@ namespace Maze.Classes
             return Cell;
         }
 
-        private GridMap FindCell(List<CellParam> List, CellParam Cell, Map CurrentMap)
+        private GridMap FindCell(List<CellParam> List, CellParam Cell)
         {
             GridMap Block = new GridMap();
             
@@ -102,14 +102,27 @@ namespace Maze.Classes
             {
                 if (Cell.ID == List[i].ID)
                 {
-                    Block = CurrentMap.GetGridMap(List[i].ID);
+                    Block = GetWorldMap().GetGridMap(List[i].ID);
                     break;
                 }
             }
             return Block;
         }
 
-        private List<GridMap> FindWay(GridMap StartPoint, GridMap FinalPoint, Map currentMap)
+        private CellParam FindInList(List<CellParam> List, int X, int Y)
+        {
+            CellParam defaultElement = new CellParam();
+            defaultElement.InitializeCell();
+            foreach (CellParam element in List)
+            {
+                if (FindCell(List, element).Location.X == X ||
+                    FindCell(List, element).Location.Y == Y)
+                    return element;
+            }
+            return defaultElement;
+        }
+
+        public List<GridMap> FindWay(GridMap StartPoint, GridMap FinalPoint)
         {
             CellParam currentCell = new CellParam();
             CellParam finalCell = new CellParam();
@@ -124,8 +137,8 @@ namespace Maze.Classes
 
             while(currentCell.ID != FinalPoint.ID)
             {
-                Block = FindCell(OpenList, currentCell, currentMap);
-                FindNeighbors(Block, finalCell, currentMap);
+                Block = FindCell(OpenList, currentCell);
+                FindNeighbors(Block, finalCell);
                 if (!SearchInList(CloseList, finalCell))
                     currentCell = GetCellWithMinF();
                 else
@@ -133,14 +146,14 @@ namespace Maze.Classes
             }
 
             currentCell = CloseList[CloseList.Count - 1];
-            Way.Add(FindCell(OpenList, currentCell, currentMap));
+            Way.Add(FindCell(OpenList, currentCell));
 
             for (int i = CloseList.Count - 1; i > 0; --i)   // CloseList[0] == Start Cell
             {
                 foreach(CellParam element in CloseList)
                 {
                     GridMap tempCell = new GridMap();
-                    tempCell = FindCell(CloseList, element, currentMap);
+                    tempCell = FindCell(CloseList, element);
                     if (element.ID == CloseList[i].MID)
                     {
                         if (!SearchInList(Way, tempCell))
@@ -155,10 +168,10 @@ namespace Maze.Classes
         }
 
         // Find all passable neighbors
-        private void FindNeighbors(GridMap Block, CellParam FinalPoint, Map CurrentMap)
+        private void FindNeighbors(GridMap Block, CellParam FinalPoint)
         {
             CellParam currentCell = FindCell(Block);
-            
+                       
             for (int i = -1; i <= 1; ++i)
             {
                 for (int j = -1; j <= 1; ++j)
@@ -169,29 +182,124 @@ namespace Maze.Classes
                         location.X = Block.Location.X + i;
                         location.Y = Block.Location.Y + j;
                         location.Level = Block.Location.Level;
-                        if (CurrentMap.GetGridMap(location).Type != 16)
+                        if (GetWorldMap().GetGridMap(location).Type != 16)
                         {
-                            CellParam Cell = new CellParam();
-                            Cell.ID = CurrentMap.GetGridMap(location).ID;
-                            Cell.MID = Block.ID;
-                            if (i == 0 || j == 0)
-                                Cell.G = currentCell.G + 10;    // Vertical or horizontal movement
-                            else
-                                Cell.G = currentCell.G + 14;    // Diagonal movement
+                            bool flag = false;
 
-                            Cell.H = (Math.Abs(location.X - FindCell(OpenList, FinalPoint, CurrentMap).Location.X) + Math.Abs(location.Y - FindCell(OpenList, FinalPoint, CurrentMap).Location.Y)) * 10;
-                            Cell.F = Cell.G + Cell.H;
-
-                            if(!SearchInList(OpenList, Cell) && !SearchInList(CloseList, Cell))
-                                OpenList.Add(Cell);
-                            if (!SearchInList(CloseList, currentCell))
-                                CloseList.Add(currentCell);
-                            if (SearchInList(OpenList, currentCell))
-                                OpenList.Remove(currentCell);
-                            if (Cell.ID == FinalPoint.ID)
+                            switch (i * j)
                             {
-                                CloseList.Add(Cell);
-                                return;
+                                case -1:
+                                    if (i == -1)    // diagonal moving - left and down
+                                    {
+                                        GPS locDown = Block.Location;
+                                        locDown.Y ++;
+                                        GPS locLeft = Block.Location;
+                                        locLeft.X --;
+
+                                        // Check cell's passability
+                                        if ((Block.CanMoveTo(Directions.Down) &&
+                                            GetWorldMap().GetGridMap(locDown).CanMoveTo(Directions.Left)) ||
+                                            (Block.CanMoveTo(Directions.Left) &&
+                                            GetWorldMap().GetGridMap(locLeft).CanMoveTo(Directions.Down)))
+                                        {
+                                            flag = true;
+                                        }
+                                    }
+                                    else    // diagonal moving - right and up
+                                    {
+                                        GPS locUp = Block.Location;
+                                        locUp.Y --;
+                                        GPS locRight = Block.Location;
+                                        locRight.X ++;
+
+                                        if ((Block.CanMoveTo(Directions.Up) &&
+                                            GetWorldMap().GetGridMap(locUp).CanMoveTo(Directions.Right)) ||
+                                            (Block.CanMoveTo(Directions.Right) &&
+                                            GetWorldMap().GetGridMap(locRight).CanMoveTo(Directions.Up)))
+                                        {
+                                            flag = true;
+                                        }
+                                    }
+                                    break;
+                                case 1:
+                                    if (i == -1)    // diagonal moving - left and up
+                                    {
+                                        GPS locUp = Block.Location;
+                                        locUp.Y --;
+                                        GPS locLeft = Block.Location;
+                                        locLeft.X --;
+
+                                        if ((Block.CanMoveTo(Directions.Left) &&
+                                            GetWorldMap().GetGridMap(locLeft).CanMoveTo(Directions.Up)) ||
+                                            (Block.CanMoveTo(Directions.Up) &&
+                                            GetWorldMap().GetGridMap(locUp).CanMoveTo(Directions.Left)))
+                                        {
+                                            flag = true;
+                                        }
+                                    }
+                                    else    // diagonal moving - right and down
+                                    {
+                                        GPS locDown = Block.Location;
+                                        locDown.Y ++;
+                                        GPS locRight = Block.Location;
+                                        locRight.X ++;
+
+                                        if ((Block.CanMoveTo(Directions.Down) &&
+                                            GetWorldMap().GetGridMap(locDown).CanMoveTo(Directions.Right)) ||
+                                            (Block.CanMoveTo(Directions.Right) &&
+                                            GetWorldMap().GetGridMap(locRight).CanMoveTo(Directions.Down)))
+                                        {
+                                            flag = true;
+                                        }
+                                    }
+                                    break;
+                                case 0:
+                                    if (i == 0)    // moving up or down
+                                    {
+                                        if (Block.CanMoveTo(Directions.Up) ||
+                                            Block.CanMoveTo(Directions.Down))
+                                        {
+                                            flag = true;
+                                        }
+                                    }
+                                    else    // moving - right or left
+                                    {
+                                        if (Block.CanMoveTo(Directions.Right) ||
+                                            Block.CanMoveTo(Directions.Left))
+                                        {
+                                            flag = true;
+                                        }
+                                    }
+                                    break;
+                            }
+
+                            if (flag)
+                            {
+                                CellParam Cell = new CellParam();
+                                Cell.ID = GetWorldMap().GetGridMap(location).ID;
+                                Cell.MID = Block.ID;
+                                if (i == 0 || j == 0)
+                                    Cell.G = currentCell.G + 10;    // Vertical or horizontal movement
+                                else
+                                    Cell.G = currentCell.G + 14;    // Diagonal movement
+
+                                Cell.H = (Math.Abs(location.X - FindCell(OpenList, FinalPoint).Location.X) + Math.Abs(location.Y - FindCell(OpenList, FinalPoint/*, CurrentMap*/).Location.Y)) * 10;
+                                Cell.F = Cell.G + Cell.H;
+
+                                if (!SearchInList(OpenList, Cell) && !SearchInList(CloseList, Cell))
+                                    OpenList.Add(Cell);
+                                                                
+                                if (!SearchInList(CloseList, currentCell))
+                                    CloseList.Add(currentCell);
+                                    
+                                if (SearchInList(OpenList, currentCell))
+                                    OpenList.Remove(currentCell);
+                                    
+                                if (Cell.ID == FinalPoint.ID)
+                                {
+                                    CloseList.Add(Cell);
+                                    return;
+                                }
                             }
                         }
                     }
@@ -216,7 +324,7 @@ namespace Maze.Classes
             return Cell;
         }
 
-        private Map GetWorldMap()
+        public Map GetWorldMap()
         {
             return Maze.Forms.Play.GetWorldMap();
         }
