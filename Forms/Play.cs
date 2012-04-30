@@ -24,7 +24,7 @@ namespace Maze.Forms
 
         bool GamePaused;
         bool PlayStarted;
-        Player oPlayer;
+        Slug player;
         int tempCount;
 
         DateTime ProgramStartDateTime;  // Contains Time when game was started
@@ -177,7 +177,7 @@ namespace Maze.Forms
                             GetWorldMap().FillMapWithObjects();// Add objects
                             GetObjectContainer().StartMotion();
 
-                            oPlayer = new Player();
+                            player = new Slug();
 
                             SystemTimer.Start();
                         }
@@ -250,7 +250,7 @@ namespace Maze.Forms
                 return;
 
             // return if a player reached finish block
-            if (oPlayer.IsFinished())
+            if (player.IsFinished())
                 return;
 
             // Refresh game run-time
@@ -304,12 +304,12 @@ namespace Maze.Forms
                 (MoveType & (uint)Directions.Right) == 0 && (MoveType & (uint)Directions.Left) == 0)
                 return;
 
-            if (!oPlayer.IsAlive())
+            if (!player.IsAlive())
                 return;
 
-            oPlayer.MovementAction(MoveType);
+            player.MovementAction(MoveType);
 
-            if (oPlayer.IsFinished())
+            if (player.IsFinished())
             {
                 int currentMap = GetWorldMap().GetMap();
                 int currentLevel = GetWorldMap().GetLevel();
@@ -317,8 +317,8 @@ namespace Maze.Forms
                 if (++currentLevel < GetWorldMap().GetLevelCount())
                 {
                     GetWorldMap().SetMap(currentMap, currentLevel);
-                    oPlayer.LevelChanged();
-                    oPlayer.AddPoints(30);
+                    player.LevelChanged();
+                    player.AddPoints(30);
                 }
             }
         }

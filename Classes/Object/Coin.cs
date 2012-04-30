@@ -20,10 +20,10 @@ namespace Maze.Classes
         }
         public override void Use(Unit user)
         {
-            if (objectState != GridObjectState.Active || user.GetType() != ObjectType.Player)
+            if (objectState != GridObjectState.Active || user.GetType() != ObjectType.Slug)
                 return;
 
-            ((Player)user).CollectCoin(this);
+            ((Slug)user).CollectCoin(this);
 
             SetState(GridObjectState.Inactive);
         }

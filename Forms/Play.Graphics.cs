@@ -15,7 +15,7 @@ namespace Maze.Forms
             e.Graphics.DrawString("Time: " + (ProgramTime.Seconds + ProgramTime.Minutes * 60).ToString(), new Font("Arial", 14), new SolidBrush(Color.White), 10, 30);
             e.Graphics.DrawString("Coins x " + GetWorldMap().CoinsRemain().ToString(),
                 new Font("Arial", 14), new SolidBrush(Color.White), 10, 50);
-            e.Graphics.DrawString("Total scores: " + oPlayer.GetScore(), new Font("Arial", 12), new SolidBrush(Color.White), 10, 70);
+            e.Graphics.DrawString("Total scores: " + player.GetScore(), new Font("Arial", 12), new SolidBrush(Color.White), 10, 70);
         }
 
         void GridMapPB_Paint(object sender, PaintEventArgs e)
@@ -70,12 +70,12 @@ namespace Maze.Forms
                 {
                     // Calculated location point for every block
                     int x, y;
-                    x = /*GridMapPB.Location.X*/ +(i - 1) * GlobalConstants.GRIDMAP_BLOCK_WIDTH - (oPlayer.Position.X - 25);
-                    y = /*GridMapPB.Location.Y*/ +(j - 1) * GlobalConstants.GRIDMAP_BLOCK_HEIGHT - (oPlayer.Position.Y - 25);
-                    PBLocation.X = oPlayer.Position.Location.X + i - GlobalConstants.GRIDMAP_WIDTH / 2;
-                    PBLocation.Y = oPlayer.Position.Location.Y + j - GlobalConstants.GRIDMAP_HEIGHT / 2;
-                    PBLocation.Z = oPlayer.Position.Location.Z;
-                    PBLocation.Level = oPlayer.Position.Location.Level;
+                    x = /*GridMapPB.Location.X*/ +(i - 1) * GlobalConstants.GRIDMAP_BLOCK_WIDTH - (player.Position.X - 25);
+                    y = /*GridMapPB.Location.Y*/ +(j - 1) * GlobalConstants.GRIDMAP_BLOCK_HEIGHT - (player.Position.Y - 25);
+                    PBLocation.X = player.Position.Location.X + i - GlobalConstants.GRIDMAP_WIDTH / 2;
+                    PBLocation.Y = player.Position.Location.Y + j - GlobalConstants.GRIDMAP_HEIGHT / 2;
+                    PBLocation.Z = player.Position.Location.Z;
+                    PBLocation.Level = player.Position.Location.Level;
                     Block = GetWorldMap().GetGridMap(PBLocation);
 
                     this.GridMapGraphic[i, j].Block = Block;
@@ -105,10 +105,10 @@ namespace Maze.Forms
                 Image objectImage;
                 objectImage = PictureMgr.SoulImage; // Default
 
-                if (objectsOnMap[i].GetType() == ObjectType.Player)
+                if (objectsOnMap[i].GetType() == ObjectType.Slug)
                 {
-                    if (oPlayer.IsAlive())
-                        objectImage = PictureMgr.PlayerImage;
+                    if (player.IsAlive())
+                        objectImage = PictureMgr.SlugImage;
                     else
                         objectImage = PictureMgr.SoulImage;
                 }
@@ -136,10 +136,10 @@ namespace Maze.Forms
                     }
                 }
 
-                int xCoord = GridMapPB.Size.Width / 2 - ((oPlayer.Position.Location.X - objectsOnMap[i].Position.Location.X) *
-                        GlobalConstants.GRIDMAP_BLOCK_WIDTH + oPlayer.Position.X - objectsOnMap[i].Position.X) - objectImage.Size.Width / 2;
-                int yCoord = GridMapPB.Size.Height / 2 - ((oPlayer.Position.Location.Y - objectsOnMap[i].Position.Location.Y) *
-                        GlobalConstants.GRIDMAP_BLOCK_HEIGHT + oPlayer.Position.Y - objectsOnMap[i].Position.Y) - objectImage.Size.Height / 2;
+                int xCoord = GridMapPB.Size.Width / 2 - ((player.Position.Location.X - objectsOnMap[i].Position.Location.X) *
+                        GlobalConstants.GRIDMAP_BLOCK_WIDTH + player.Position.X - objectsOnMap[i].Position.X) - objectImage.Size.Width / 2;
+                int yCoord = GridMapPB.Size.Height / 2 - ((player.Position.Location.Y - objectsOnMap[i].Position.Location.Y) *
+                        GlobalConstants.GRIDMAP_BLOCK_HEIGHT + player.Position.Y - objectsOnMap[i].Position.Y) - objectImage.Size.Height / 2;
 
                 gGridMapBP.DrawImage(objectImage, xCoord, yCoord,
                     objectImage.Size.Width, objectImage.Size.Height);

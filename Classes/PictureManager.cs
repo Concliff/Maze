@@ -15,7 +15,7 @@ namespace Maze.Classes
         public Image DeimosImage;
         public Image PhobosImage;
         public Image CoinImage;
-        public Image PlayerImage;
+        public Image SlugImage;
         public Image SoulImage;
         public Image PortalImage;
 
@@ -44,7 +44,7 @@ namespace Maze.Classes
             CoinImage = Image.FromFile(ImageDirectoryPath + "Coin.bmp");
             DeimosImage = Image.FromFile(ImageDirectoryPath + "Deimos.png");
             PhobosImage = Image.FromFile(ImageDirectoryPath + "Phobos.png");
-            PlayerImage = Image.FromFile(ImageDirectoryPath + "Man2.bmp");
+            SlugImage = Image.FromFile(ImageDirectoryPath + "Man2.bmp");
             SoulImage = Image.FromFile(ImageDirectoryPath + "Soul.png");
             PortalImage = Image.FromFile(ImageDirectoryPath + "Portal.png");
         }

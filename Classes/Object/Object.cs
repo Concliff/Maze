@@ -11,7 +11,7 @@ namespace Maze.Classes
         Object,
         GridObject,
         Unit,
-        Player,
+        Slug,
     };
 
     public class ObjectContainer

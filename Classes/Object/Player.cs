@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Maze.Classes
 {
-    public class Player : Unit
+    public class Slug : Unit
     {
         private String Name;
         private bool FinishReached;
@@ -13,10 +13,10 @@ namespace Maze.Classes
         private int score;
         private int collectedCoinsCount;    // at current level
 
-        public Player()
+        public Slug()
         {
             Name = "Noname";
-            objectType = ObjectType.Player;
+            objectType = ObjectType.Slug;
             respawnLocation = GetWorldMap().GetStartPoint();
 
             // Set Start Location
@@ -34,7 +34,7 @@ namespace Maze.Classes
             collectedCoinsCount = 0;
         }
 
-        public Player(String name) : this()
+        public Slug(String name) : this()
         {
             Name = name;
         }
