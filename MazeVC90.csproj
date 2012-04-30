@@ -80,7 +80,7 @@
     <Compile Include="Classes\Object\Portal.cs" />
     <Compile Include="Classes\Object\Slime.cs" />
     <Compile Include="Classes\PictureManager.cs" />
-    <Compile Include="Classes\Object\Player.cs" />
+    <Compile Include="Classes\Object\Slug.cs" />
     <Compile Include="Classes\TimeControl.cs" />
     <Compile Include="Classes\Object\Unit.cs" />
     <Compile Include="Forms\GameForm.cs">

@@ -51,7 +51,7 @@ namespace Maze.Classes
             if (!IsAlive())
             {
                 if (ressurectTimer < timeP)
-                    RessurectPlayer();
+                    Ressurect();
                 else
                     ressurectTimer -= timeP;
             }
@@ -67,7 +67,7 @@ namespace Maze.Classes
             base.SetDeathState(deathState);
         }
 
-        public void RessurectPlayer()
+        public void Ressurect()
         {
             // Return to start location
             Position.Location = respawnLocation;
@@ -80,7 +80,7 @@ namespace Maze.Classes
         }
 
         public String GetName() { return Name; }
-        public void SetName(String PlayerName) { Name = PlayerName; }
+        public void SetName(String name) { Name = name; }
 
         public GridGPS CopyGridGPS()
         {
