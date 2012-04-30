@@ -113,6 +113,8 @@ namespace Maze.Classes
 
         protected override void ReachedGridMap()
         {
+            base.ReachedGridMap();
+
             if (Random.Int(100) <= 33)  // 33% chance to change direction
                 SelectNewDirection();
 
@@ -120,8 +122,6 @@ namespace Maze.Classes
                 return;
             else
                 SelectNewDirection();
-
-            base.ReachedGridMap();
         }
 
         private void SelectNewDirection()
