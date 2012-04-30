@@ -34,7 +34,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(300, 350);
+            this.ClientSize = new System.Drawing.Size(450, 350);
             this.Name = "BlockEdit";
             this.Text = "Block Edit";
             this.ResumeLayout(false);
@@ -66,9 +66,15 @@
             this.FinishCheckBox = new System.Windows.Forms.CheckBox();
             this.CoinCheckBox = new System.Windows.Forms.CheckBox();
 
+            // Attributes
             this.CancelButton = new System.Windows.Forms.Button();
             this.ConfirmButton = new System.Windows.Forms.Button();
             this.DeleteButton = new System.Windows.Forms.Button();
+
+            // Options
+            this.OptionValueTextBox = new System.Windows.Forms.TextBox();
+            this.OptionValueLabel = new System.Windows.Forms.Label();
+            this.PortalCheckBox = new System.Windows.Forms.CheckBox();
 
             BlockIDLabel.Size = new System.Drawing.Size(80, 20);
             LocationLabel.Size = new System.Drawing.Size(80, 20);
@@ -112,6 +118,12 @@
             FinishCheckBox.Location = new System.Drawing.Point(200, 220);
             CoinCheckBox.Location = new System.Drawing.Point(200, 250);
 
+            OptionValueLabel.Location = new System.Drawing.Point(300, 30);
+            OptionValueLabel.AutoSize = true;
+            OptionValueTextBox.Location = new System.Drawing.Point(380, 30);
+            OptionValueTextBox.Size = new System.Drawing.Size(40, 20);
+            PortalCheckBox.Location = new System.Drawing.Point(300, 60);
+
             ConfirmButton.Location = new System.Drawing.Point(50, 300);
             CancelButton.Location = new System.Drawing.Point(150, 300);
             DeleteButton.Location = new System.Drawing.Point(200, 25);
@@ -144,6 +156,8 @@
             StartCheckBox.Text = "Start";
             FinishCheckBox.Text = "Finish";
             CoinCheckBox.Text = "Coin";
+            OptionValueLabel.Text = "Option Value";
+            PortalCheckBox.Text = "Portal";
             ConfirmButton.Text = "Replace";
             CancelButton.Text = "Cancel";
             DeleteButton.Text = "Delete";
@@ -170,6 +184,10 @@
             this.Controls.Add(this.FinishCheckBox);
             this.Controls.Add(this.CoinCheckBox);
 
+            this.Controls.Add(this.OptionValueLabel);
+            this.Controls.Add(this.OptionValueTextBox);
+            this.Controls.Add(this.PortalCheckBox);
+
             this.Controls.Add(this.ConfirmButton);
             this.Controls.Add(this.CancelButton);
             this.Controls.Add(this.DeleteButton);
@@ -194,9 +212,16 @@
         private new System.Windows.Forms.Button CancelButton;
         private System.Windows.Forms.Button ConfirmButton;
         private System.Windows.Forms.Button DeleteButton;
+
+        // Attributes
         private System.Windows.Forms.CheckBox StartCheckBox;
         private System.Windows.Forms.CheckBox FinishCheckBox;
         private System.Windows.Forms.CheckBox CoinCheckBox;
+
+        // Options
+        private System.Windows.Forms.Label OptionValueLabel;
+        private System.Windows.Forms.TextBox OptionValueTextBox;
+        private System.Windows.Forms.CheckBox PortalCheckBox;
 
     }
 }

@@ -9,7 +9,7 @@ namespace Maze.Classes
     {
         GridObject,
         Coin,
-        Teleport,
+        Portal,
         Bomb,
     };
 

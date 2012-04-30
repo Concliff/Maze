@@ -87,7 +87,7 @@ namespace MapEditor.Forms
         {
             if ((MoveType & (uint)Directions.Right) != 0)
                 oPlayer.Position.X += GlobalConstants.MOVEMENT_STEP_PX * 2;
-            if ((MoveType & (uint)Directions.Up) != 0)
+            if ((MoveType & (uint)Directions.Left) != 0)
                 oPlayer.Position.X -= GlobalConstants.MOVEMENT_STEP_PX * 2;
             if ((MoveType & (uint)Directions.Up) != 0)
                 oPlayer.Position.Y -= GlobalConstants.MOVEMENT_STEP_PX * 2;
@@ -123,6 +123,8 @@ namespace MapEditor.Forms
 
         public void RebuildGraphMap()
         {
+            Graphics gGraphic;
+            gGraphic = this.CreateGraphics();
             this.SuspendLayout();
             GPS PBLocation = new GPS();
             GridMap Block = new GridMap();
@@ -131,7 +133,7 @@ namespace MapEditor.Forms
                 for (int j = 0; j < GlobalConstants.GRIDMAP_HEIGHT; ++j)
                 {
                     int x, y;
-                    x = (i - 1) * GlobalConstants.GRIDMAP_BLOCK_WIDTH - (oPlayer.Position.X - GlobalConstants.GRIDMAP_BLOCK_WIDTH / 2) - this.pbRightPanel.Size.Width/2;
+                    x = (i - 1) * GlobalConstants.GRIDMAP_BLOCK_WIDTH - (oPlayer.Position.X - GlobalConstants.GRIDMAP_BLOCK_WIDTH / 2) - this.pbRightPanel.Size.Width / 2;
                     y = (j - 1) * GlobalConstants.GRIDMAP_BLOCK_HEIGHT - (oPlayer.Position.Y - GlobalConstants.GRIDMAP_BLOCK_HEIGHT / 2) + FormTitleBarSize;
                     PBLocation.X = oPlayer.Position.Location.X + i - GlobalConstants.GRIDMAP_WIDTH / 2;
                     PBLocation.Y = oPlayer.Position.Location.Y + j - GlobalConstants.GRIDMAP_HEIGHT / 2;
@@ -140,40 +142,38 @@ namespace MapEditor.Forms
                     Block = Program.WorldMap.GetGridMap(PBLocation);
 
                     this.GridMapGraphic[i, j].Block = Block;
-                    this.GridMapGraphic[i, j].Graphic = Graphics.FromImage(PictureMgr.GetPictureByType(Block.Type));
-                    this.GridMapGraphic[i, j].Graphic.Dispose();
-                    this.GridMapGraphic[i, j].Graphic = this.CreateGraphics();
 
-                    this.GridMapGraphic[i, j].Graphic.DrawImage(PictureMgr.GetPictureByType(Block.Type), x, y, GlobalConstants.GRIDMAP_BLOCK_WIDTH, GlobalConstants.GRIDMAP_BLOCK_HEIGHT);
+                    gGraphic.DrawImage(PictureMgr.GetPictureByType(Block.Type), x, y, GlobalConstants.GRIDMAP_BLOCK_WIDTH, GlobalConstants.GRIDMAP_BLOCK_HEIGHT);
+
                     // Draw Start Block
                     if (Block.HasAttribute(GridMapAttributes.IsStart))
                     {
-                        //StartPB.Location = new Point(x + 5, y + 5);
-                        Graphics g = Graphics.FromImage(PictureMgr.StartImage);
-                        g = this.CreateGraphics();
-                        g.DrawImage(PictureMgr.StartImage, x + 5, y + 5, 40, 40);
-                        g.Dispose();
+                        gGraphic.DrawImage(PictureMgr.StartImage, x + 5, y + 5, 40, 40);
                     }
+
                     // Draw Finish Block
                     if (Block.HasAttribute(GridMapAttributes.IsFinish))
                     {
-                        //FinishPB.Location = new Point(x + 5, y + 5);
-                        Graphics g = Graphics.FromImage(PictureMgr.FinishImage);// Non indexed image
-                        g = this.CreateGraphics();
-                        g.DrawImage(PictureMgr.FinishImage, x + 5, y + 5, 40, 40);
-                        g.Dispose();
+                        gGraphic.DrawImage(PictureMgr.FinishImage, x + 5, y + 5, 40, 40);
                     }
 
                     // Draw Coin
                     if (Block.HasAttribute(GridMapAttributes.HasCoin))
                     {
-                        Graphics g = Graphics.FromImage(PictureMgr.CoinImage);
-                        g = this.CreateGraphics();
-                        g.DrawImage(PictureMgr.CoinImage, x + 15, y + 10, 20, 30);
-                        g.Dispose();
+                        gGraphic.DrawImage(PictureMgr.CoinImage, x + 15, y + 10, 20, 30);
                     }
 
+                    // Portal
+                    if (Block.HasOption(GridMapOptions.Portal))
+                    {
+                        Image image = PictureMgr.PortalImage;
+                        gGraphic.DrawImage(image,
+                            x + (GlobalConstants.GRIDMAP_BLOCK_WIDTH - image.Width) / 2,
+                            y + (GlobalConstants.GRIDMAP_BLOCK_HEIGHT - image.Height) / 2,
+                            PictureMgr.PortalImage.Width, PictureMgr.PortalImage.Height);
+                    }
                 }
+            gGraphic.Dispose();
             this.ResumeLayout();
         }
 

@@ -77,6 +77,7 @@
     <Compile Include="Classes\Object\ObjectSearcher.cs" />
     <Compile Include="Classes\Object\Object.cs" />
     <Compile Include="Classes\Object\Phobos.cs" />
+    <Compile Include="Classes\Object\Portal.cs" />
     <Compile Include="Classes\PictureManager.cs" />
     <Compile Include="Classes\Object\Player.cs" />
     <Compile Include="Classes\TimeControl.cs" />

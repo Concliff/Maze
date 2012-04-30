@@ -256,6 +256,12 @@ namespace Maze.Classes
                     new Coin(block);
                     ++coinsCount[block.Location.Level];
                 }
+
+                if (block.HasOption(GridMapOptions.Portal))
+                {
+                    Portal portal = new Portal(block);
+                    portal.SetDestination(GetGridMap(block.OptionValue));
+                }
             }
         }
 

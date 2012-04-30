@@ -200,8 +200,6 @@ namespace Maze.Classes
             FinishReached = false;
         }
 
-        public void TeleportTo() { }
-
         /// <summary>
         /// Called when player moved to the next block
         /// </summary>

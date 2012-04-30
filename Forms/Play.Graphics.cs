@@ -131,6 +131,7 @@ namespace Maze.Forms
                     switch (gridObject.GetObjectType())
                     {
                         case GridObjectType.Coin: objectImage = PictureMgr.CoinImage; break;
+                        case GridObjectType.Portal: objectImage = PictureMgr.PortalImage; break;
                         default: objectImage = PictureMgr.CoinImage; break;
                     }
                 }

@@ -50,6 +50,10 @@ namespace MapEditor.Forms
             StartCheckBox.Checked   = Block.HasAttribute(GridMapAttributes.IsStart);
             FinishCheckBox.Checked  = Block.HasAttribute(GridMapAttributes.IsFinish);
             CoinCheckBox.Checked    = Block.HasAttribute(GridMapAttributes.HasCoin);
+
+            // Options
+            PortalCheckBox.Checked = Block.HasOption(GridMapOptions.Portal);
+            OptionValueTextBox.Text = Block.OptionValue.ToString();
         }
          
         void AcceptButtonClick(object sender, System.EventArgs e)
@@ -63,7 +67,7 @@ namespace MapEditor.Forms
             NewBlock.Location.Z = Convert.ToInt32(LocationZTextBox.Text);
             NewBlock.Location.Level = Convert.ToInt32(LocationLevelTextBox.Text);
 
-            NewBlock.Type = (uint)Directions.None;
+            NewBlock.Type = 0;
             if (UpCheckBox.Checked)     NewBlock.Type += (uint)Directions.Up;
             if (LeftCheckBox.Checked)   NewBlock.Type += (uint)Directions.Left;
             if (DownCheckBox.Checked)   NewBlock.Type += (uint)Directions.Down;
@@ -73,6 +77,11 @@ namespace MapEditor.Forms
             if (StartCheckBox.Checked)  NewBlock.Attribute += (uint)GridMapAttributes.IsStart;
             if (FinishCheckBox.Checked) NewBlock.Attribute += (uint)GridMapAttributes.IsFinish;
             if (CoinCheckBox.Checked)   NewBlock.Attribute += (uint)GridMapAttributes.HasCoin;
+
+            NewBlock.Option = 0;
+            if (PortalCheckBox.Checked) NewBlock.Option += (uint)GridMapOptions.Portal;
+
+            NewBlock.OptionValue = Convert.ToInt32(OptionValueTextBox.Text);
 
             Program.WorldMap.AddGridMap(NewBlock);
             Program.EditorForm.RebuildGraphMap();

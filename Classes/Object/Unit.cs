@@ -60,6 +60,23 @@ namespace Maze.Classes
             gridMapReached = false;
         }
 
+        public void TeleportTo(GridMap destinationGridMap)
+        {
+            currentGridMap = destinationGridMap;
+            Position.Location = destinationGridMap.Location;
+            Position.X = 25;
+            Position.Y = 25;
+            Position.BlockID = destinationGridMap.ID;
+
+            ReachedGridMap();
+        }
+
+        public void TeleportTo(GPS destinationGPS)
+        {
+            GridMap destinationGridMap = GetWorldMap().GetGridMap(destinationGPS);
+            TeleportTo(destinationGridMap);
+        }
+
         protected virtual void ReachedGridMap()
         {
             if (gridMapReached)
