@@ -263,6 +263,8 @@ namespace Maze.Forms
             // Repaint Game stats panel
             this.RightPanelPB.Invalidate();
 
+            this.LeftPanelPB.Invalidate();
+
             //this.SuspendLayout();
             // |------------------------>
             // |                        X

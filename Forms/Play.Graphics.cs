@@ -18,6 +18,23 @@ namespace Maze.Forms
             e.Graphics.DrawString("Total scores: " + player.GetScore(), new Font("Arial", 12), new SolidBrush(Color.White), 10, 70);
         }
 
+
+        void LeftPanelPB_Paint(object sender, PaintEventArgs e)
+        {
+            if (!PlayStarted)
+                return;
+
+            int playerOozePercent = player.OozeEnergy * 100 / Slug.MaxOozeEnergy;
+            Brush emptyBrush = new SolidBrush(Color.Black);
+            Brush filledBrush = new SolidBrush(Color.Green);
+            Rectangle oozeBar = new Rectangle(20, 100, 100, 30);
+            Rectangle oozeAmount = new Rectangle(20, 100, 100 * playerOozePercent / 100, 30);
+
+            e.Graphics.FillRectangle(emptyBrush, oozeBar);
+            e.Graphics.FillRectangle(filledBrush, oozeAmount);
+            e.Graphics.DrawString(player.OozeEnergy.ToString(), new Font("Arial", 14), new SolidBrush(Color.White), 50, 105);
+        }
+
         void GridMapPB_Paint(object sender, PaintEventArgs e)
         {
             // Only when game is started

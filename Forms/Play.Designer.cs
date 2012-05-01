@@ -37,12 +37,12 @@ namespace Maze.Forms
             this.label1 = new System.Windows.Forms.Label();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.pictureBox2 = new System.Windows.Forms.PictureBox();
-            this.pictureBox3 = new System.Windows.Forms.PictureBox();
+            this.LeftPanelPB = new System.Windows.Forms.PictureBox();
             this.RightPanelPB = new System.Windows.Forms.PictureBox();
             this.ScoresPB = new System.Windows.Forms.PictureBox();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.LeftPanelPB)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.RightPanelPB)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ScoresPB)).BeginInit();
             this.SuspendLayout();
@@ -78,15 +78,6 @@ namespace Maze.Forms
             this.pictureBox2.TabIndex = 5;
             this.pictureBox2.TabStop = false;
             // 
-            // pictureBox3
-            // 
-            this.pictureBox3.Location = new System.Drawing.Point(0, 0);
-            this.pictureBox3.Name = "pictureBox3";
-            this.pictureBox3.Size = new System.Drawing.Size(150, 470);
-            this.pictureBox3.BackColor = Color.Gray;
-            this.pictureBox3.TabIndex = 6;
-            this.pictureBox3.TabStop = false;
-            // 
             // Play
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -99,7 +90,7 @@ namespace Maze.Forms
             this.Paint += new System.Windows.Forms.PaintEventHandler(this.Play_Paint);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.LeftPanelPB)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.RightPanelPB)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ScoresPB)).EndInit();
             this.ResumeLayout(false);
@@ -155,6 +146,16 @@ namespace Maze.Forms
             this.RightPanelPB.TabIndex = 7;
             this.RightPanelPB.TabStop = false;
             this.RightPanelPB.Paint += new PaintEventHandler(RightPanelPB_Paint);
+            //
+            // LeftPanelPB
+            //
+            this.LeftPanelPB.Location = new System.Drawing.Point(0, 0);
+            this.LeftPanelPB.Name = "pictureBox3";
+            this.LeftPanelPB.Size = new System.Drawing.Size(150, 470);
+            this.LeftPanelPB.BackColor = Color.Gray;
+            this.LeftPanelPB.TabIndex = 6;
+            this.LeftPanelPB.TabStop = false;
+            this.LeftPanelPB.Paint += new PaintEventHandler(LeftPanelPB_Paint);
 
             GridMapGraphic = new GridMapGraph[GlobalConstants.GRIDMAP_WIDTH, GlobalConstants.GRIDMAP_HEIGHT];
             for (int i = 0; i < GlobalConstants.GRIDMAP_WIDTH; ++i)
@@ -269,8 +270,8 @@ namespace Maze.Forms
             this.Controls.Add(this.pictureBox2);
             this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.RightPanelPB);
-            this.Controls.Add(this.ScoresPB);
-            this.Controls.Add(this.pictureBox3);
+            //this.Controls.Add(this.ScoresPB);
+            this.Controls.Add(this.LeftPanelPB);
 
             //Menu
             this.Controls.Add(this.MenuNewGamePB);
@@ -294,7 +295,7 @@ namespace Maze.Forms
         private PictureBox ScoresPB;
         private PictureBox pictureBox1;
         private PictureBox pictureBox2;
-        private PictureBox pictureBox3;
+        private PictureBox LeftPanelPB;
         private PictureBox RightPanelPB;
 
         private GridMapGraph[,] GridMapGraphic;

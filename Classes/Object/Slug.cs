@@ -13,6 +13,27 @@ namespace Maze.Classes
         private int score;
         private int collectedCoinsCount;    // at current level
 
+        // ooze
+        public const int MaxOozeEnergy = 100;
+        public int OozeEnergy
+        {
+            get { return oozeEnergy;}
+            set
+            {
+                if (value > MaxOozeEnergy)
+                    oozeEnergy = MaxOozeEnergy;
+                else if (value <0)
+                    oozeEnergy = 0;
+                else
+                    oozeEnergy = value;
+            }
+        }
+
+        private int oozeEnergy;
+        private int downTime;
+        private int travelTime;
+        private bool isInMotion;
+
         public Slug()
         {
             Name = "Noname";
@@ -32,6 +53,12 @@ namespace Maze.Classes
 
             score = 0;
             collectedCoinsCount = 0;
+
+            oozeEnergy = MaxOozeEnergy;
+            downTime = 0;
+            travelTime = 0;
+            isInMotion = false;
+
         }
 
         public Slug(String name) : this()
@@ -45,7 +72,10 @@ namespace Maze.Classes
             {
                 List<Unit> Units = GetUnitsWithinRange(30);
                 if (Units != null && Units.Count != 0)
+                {
                     SetDeathState(DeathStates.Dead);
+                    return;
+                }
             }
 
             if (!IsAlive())
@@ -54,7 +84,32 @@ namespace Maze.Classes
                     Ressurect();
                 else
                     ressurectTimer -= timeP;
+
+                return;
             }
+
+            if (isInMotion)
+            {
+                travelTime += timeP;
+                if (travelTime > 1000)    // 1 second of motion
+                {
+                    travelTime -= 1000;
+                    OozeEnergy -= 2;
+                }
+
+                isInMotion = false;
+            }
+            else
+            {
+                downTime += timeP;
+                if (downTime > 1000)    // not in motion over 5 seconds
+                {
+                    downTime -= 1000;
+                    OozeEnergy += 1;
+                }
+            }
+
+
         }
 
         public override void SetDeathState(DeathStates deathState)
@@ -180,6 +235,8 @@ namespace Maze.Classes
             }
             else
                 Position.Y = NewY;
+
+            isInMotion = true;
 
             //create slime at new position
             new Slime(Position);
