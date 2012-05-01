@@ -181,6 +181,9 @@ namespace Maze.Classes
             else
                 Position.Y = NewY;
 
+            //create slime at new position
+            new Slime(Position);
+
             // Check whether player moved into block (account block border)
             if ((Position.X <= GlobalConstants.GRIDMAP_BLOCK_WIDTH - GlobalConstants.GRIDMAP_BORDER_PX) &&
                 (Position.X >= GlobalConstants.GRIDMAP_BORDER_PX) &&

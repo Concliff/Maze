@@ -14,13 +14,21 @@ namespace Maze.Classes
         Slug,
     };
 
+    public enum ObjectState
+    {
+        Default,    // Setted by Default
+        Removed,     // Waiting deletion form container
+    }
+
     public class ObjectContainer
     {
         private List<Object> objects;
+        private Stack<Object> objectsToRemove;
 
         public ObjectContainer()
         {
             objects = new List<Object>();
+            objectsToRemove = new Stack<Object>();
         }
 
         public int GetNextGuid() { return objects.Count; }
@@ -46,10 +54,30 @@ namespace Maze.Classes
 
         public void UpdateState(int timeP)
         {
+            // Update each object or add to Remove Stack
             foreach (Object objectF in objects)
             {
-                objectF.UpdateState(timeP);
+                if (objectF.GetObjectState() == ObjectState.Removed)
+                {
+                    objectsToRemove.Push(objectF);
+                }
+                else
+                {
+                    objectF.UpdateState(timeP);
+                }
             }
+
+            // Delete all removed objects
+            int removeCount = objectsToRemove.Count;
+            if (removeCount == 0)       // Skip deletion
+                return;
+
+            for (int i = 0; i < removeCount; ++i)
+            {
+                objects.Remove(objectsToRemove.Pop());
+            }
+
+            objectsToRemove.Clear();
         }
 
         // Motion only for Units
@@ -66,6 +94,7 @@ namespace Maze.Classes
     {
         protected int GUID;
         protected ObjectType objectType;
+        protected ObjectState objectState;
         protected GridMap currentGridMap;
 
         public GridGPS Position;
@@ -73,6 +102,7 @@ namespace Maze.Classes
         public Object()
         {
             objectType = ObjectType.Object;
+            objectState = ObjectState.Default;
 
             //Initialize Position by default values
             Position.Location.X = 0;
@@ -107,6 +137,12 @@ namespace Maze.Classes
         }
 
         public int GetGUID() { return GUID; }
+
+        public ObjectState GetObjectState() { return objectState; }
+        public void SetObjectState(ObjectState objectState)
+        {
+            this.objectState = objectState;
+        }
 
         public virtual void UpdateState(int timeP) { }
 

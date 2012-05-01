@@ -23,12 +23,12 @@ namespace Maze.Classes
 
     public class GridObject : Object
     {
-        protected GridObjectState objectState;
+        protected GridObjectState gridObjectState;
         protected GridObjectType gridObjectType;
 
         public GridObject()
         {
-            objectState = GridObjectState.Active;
+            gridObjectState = GridObjectState.Active;
             objectType = ObjectType.GridObject;
             gridObjectType = GridObjectType.GridObject;
 
@@ -39,18 +39,18 @@ namespace Maze.Classes
 
         public GPS GetLocation() { return Position.Location; }
 
-        public GridObjectType GetObjectType() { return gridObjectType; }
+        public GridObjectType GetGridObjectType() { return gridObjectType; }
 
-        public void SetState(GridObjectState objectState)
+        public void SetGridObjectState(GridObjectState gridObjectState)
         {
-            if (objectState != GridObjectState.OFF)
+            if (gridObjectState != GridObjectState.OFF)
             {
-                this.objectState = objectState;
+                this.gridObjectState = gridObjectState;
             }
         }
 
         public virtual void Use(Unit user) { }
 
-        public bool IsActive() { return this.objectState == GridObjectState.Active; }
+        public bool IsActive() { return this.gridObjectState == GridObjectState.Active; }
     }
 }

@@ -43,7 +43,7 @@ namespace Maze.Classes
             {
                 if (timeToActivate < timeP)
                 {
-                    SetState(GridObjectState.Active);
+                    SetGridObjectState(GridObjectState.Active);
                     recentlyUsed = false;
                 }
                 else
@@ -59,7 +59,7 @@ namespace Maze.Classes
         {
             user.TeleportTo(destinationGridMap);
 
-            SetState(GridObjectState.Inactive);
+            SetGridObjectState(GridObjectState.Inactive);
             recentlyUsed = true;
             timeToActivate = 3000;
 

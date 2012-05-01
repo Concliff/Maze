@@ -128,7 +128,7 @@ namespace Maze.Forms
                     if (!gridObject.IsActive())
                         continue;
 
-                    switch (gridObject.GetObjectType())
+                    switch (gridObject.GetGridObjectType())
                     {
                         case GridObjectType.Coin: objectImage = PictureMgr.CoinImage; break;
                         case GridObjectType.Portal: objectImage = PictureMgr.PortalImage; break;

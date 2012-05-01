@@ -30,8 +30,7 @@ namespace Maze.Classes
         {
             if (timeToLive < timeP)
             {
-                // TO DO:
-                // Remove slime
+                SetObjectState(ObjectState.Removed);
             }
             else
                 timeToLive -= timeP;
