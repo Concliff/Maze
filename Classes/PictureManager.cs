@@ -17,6 +17,7 @@ namespace Maze.Classes
         public Image CoinImage;
         public Image SlugImage;
         public Image SoulImage;
+        public Image SlimeImage;
         public Image PortalImage;
 
         private int CellsCount;
@@ -44,7 +45,8 @@ namespace Maze.Classes
             CoinImage = Image.FromFile(ImageDirectoryPath + "Coin.bmp");
             DeimosImage = Image.FromFile(ImageDirectoryPath + "Deimos.png");
             PhobosImage = Image.FromFile(ImageDirectoryPath + "Phobos.png");
-            SlugImage = Image.FromFile(ImageDirectoryPath + "Man2.bmp");
+            SlimeImage = Image.FromFile(ImageDirectoryPath + "Slime.png");
+            SlugImage = Image.FromFile(ImageDirectoryPath + "Slug.png");
             SoulImage = Image.FromFile(ImageDirectoryPath + "Soul.png");
             PortalImage = Image.FromFile(ImageDirectoryPath + "Portal.png");
         }

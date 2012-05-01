@@ -99,51 +99,92 @@ namespace Maze.Forms
 
                 }
 
-            // Draw Visible Objects
-            for (int i = 0; i < objectsOnMap.Count; ++i)
-            {
-                Image objectImage;
-                objectImage = PictureMgr.SoulImage; // Default
+            /* Draw Visible Objects
+             * Order:
+             * 1. Slime
+             * 2. GridObjects
+             * 3. Units
+             * 4. Slug
+             */
+            Image objectImage;
+            objectImage = PictureMgr.SoulImage; // Default
 
-                if (objectsOnMap[i].GetType() == ObjectType.Slug)
+            for (int j = 0; j < 4; ++j)
+                for (int i = 0; i < objectsOnMap.Count; ++i)
                 {
-                    if (player.IsAlive())
-                        objectImage = PictureMgr.SlugImage;
-                    else
-                        objectImage = PictureMgr.SoulImage;
-                }
-                else if (objectsOnMap[i].GetType() == ObjectType.Unit)
-                {
-                    Unit unit = (Unit)objectsOnMap[i];
-                    switch (unit.GetUnitType())
+
+                    switch (j)
                     {
-                        case UnitTypes.Deimos: objectImage = PictureMgr.DeimosImage; break;
-                        case UnitTypes.Phobos: objectImage = PictureMgr.PhobosImage; break;
-                        default: objectImage = PictureMgr.DeimosImage; break;
+                        case 0:
+                            // Slime
+                            if (objectsOnMap[i].GetType() == ObjectType.GridObject &&
+                                ((GridObject)objectsOnMap[i]).GetGridObjectType() == GridObjectType.Slime)
+                            {
+                                objectImage = PictureMgr.SlimeImage;
+                            }
+                            else
+                                continue;
+                            break;
+                        case 1:
+                            // GridObjects
+                            if (objectsOnMap[i].GetType() == ObjectType.GridObject)
+                            {
+                                GridObject gridObject = (GridObject)objectsOnMap[i];
+                                if (gridObject.GetGridObjectType() == GridObjectType.Slime)
+                                    continue;
+
+                                if (!gridObject.IsActive())
+                                    continue;
+
+                                switch (gridObject.GetGridObjectType())
+                                {
+                                    case GridObjectType.Coin: objectImage = PictureMgr.CoinImage; break;
+                                    case GridObjectType.Portal: objectImage = PictureMgr.PortalImage; break;
+                                    default: objectImage = PictureMgr.CoinImage; break;
+                                }
+                            }
+                            else
+                                continue;
+                            break;
+                        case 2:
+                            // Units
+                            if (objectsOnMap[i].GetType() == ObjectType.Unit)
+                            {
+                                Unit unit = (Unit)objectsOnMap[i];
+                                switch (unit.GetUnitType())
+                                {
+                                    case UnitTypes.Deimos: objectImage = PictureMgr.DeimosImage; break;
+                                    case UnitTypes.Phobos: objectImage = PictureMgr.PhobosImage; break;
+                                    default: objectImage = PictureMgr.DeimosImage; break;
+                                }
+                            }
+                            else
+                                continue;
+                            break;
+                        case 3:
+                            // Slug
+                            if (objectsOnMap[i].GetType() == ObjectType.Slug)
+                            {
+                                if (player.IsAlive())
+                                    objectImage = PictureMgr.SlugImage;
+                                else
+                                    objectImage = PictureMgr.SoulImage;
+                            }
+                            else
+                                continue;
+                            break;
                     }
+
+
+
+                    int xCoord = GridMapPB.Size.Width / 2 - ((player.Position.Location.X - objectsOnMap[i].Position.Location.X) *
+                            GlobalConstants.GRIDMAP_BLOCK_WIDTH + player.Position.X - objectsOnMap[i].Position.X) - objectImage.Size.Width / 2;
+                    int yCoord = GridMapPB.Size.Height / 2 - ((player.Position.Location.Y - objectsOnMap[i].Position.Location.Y) *
+                            GlobalConstants.GRIDMAP_BLOCK_HEIGHT + player.Position.Y - objectsOnMap[i].Position.Y) - objectImage.Size.Height / 2;
+
+                    gGridMapBP.DrawImage(objectImage, xCoord, yCoord,
+                        objectImage.Size.Width, objectImage.Size.Height);
                 }
-                else if (objectsOnMap[i].GetType() == ObjectType.GridObject)
-                {
-                    GridObject gridObject = (GridObject)objectsOnMap[i];
-                    if (!gridObject.IsActive())
-                        continue;
-
-                    switch (gridObject.GetGridObjectType())
-                    {
-                        case GridObjectType.Coin: objectImage = PictureMgr.CoinImage; break;
-                        case GridObjectType.Portal: objectImage = PictureMgr.PortalImage; break;
-                        default: objectImage = PictureMgr.CoinImage; break;
-                    }
-                }
-
-                int xCoord = GridMapPB.Size.Width / 2 - ((player.Position.Location.X - objectsOnMap[i].Position.Location.X) *
-                        GlobalConstants.GRIDMAP_BLOCK_WIDTH + player.Position.X - objectsOnMap[i].Position.X) - objectImage.Size.Width / 2;
-                int yCoord = GridMapPB.Size.Height / 2 - ((player.Position.Location.Y - objectsOnMap[i].Position.Location.Y) *
-                        GlobalConstants.GRIDMAP_BLOCK_HEIGHT + player.Position.Y - objectsOnMap[i].Position.Y) - objectImage.Size.Height / 2;
-
-                gGridMapBP.DrawImage(objectImage, xCoord, yCoord,
-                    objectImage.Size.Width, objectImage.Size.Height);
-            }
         }
 
     }
