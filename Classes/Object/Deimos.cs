@@ -36,6 +36,8 @@ namespace Maze.Classes
         {
             if (IsInMotion)
                 MovementAction();
+
+            base.UpdateState(timeP);
         }
 
         public override void StartMotion()
@@ -45,6 +47,33 @@ namespace Maze.Classes
             // find the first allowed direction
             if (CurrentDirection == Directions.None)
                 SelectNewDirection();
+
+            // Selecting with random might be failed
+            // Recheck the availability of all four directions
+            if (CurrentDirection == Directions.None)
+            {
+                if (currentGridMap.CanMoveTo(Directions.Up))
+                {
+                    CurrentDirection = Directions.Up;
+                    return;
+                }
+                else if (currentGridMap.CanMoveTo(Directions.Left))
+                {
+                    CurrentDirection = Directions.Left;
+                    return;
+                }
+                else if (currentGridMap.CanMoveTo(Directions.Down))
+                {
+                    CurrentDirection = Directions.Down;
+                    return;
+                }
+                else if (currentGridMap.CanMoveTo(Directions.Right))
+                {
+                    CurrentDirection = Directions.Right;
+                    return;
+                }
+            }
+
         }
 
         public void StopMotion() { IsInMotion = false; }
@@ -54,7 +83,11 @@ namespace Maze.Classes
             if (CurrentDirection == Directions.None)
                 return;
 
-            int movementStep = (int)(GlobalConstants.MOVEMENT_STEP_PX * SpeedRate);
+            int speedModifier = 0;
+            Effect speedEffect = GetEffectByType(EffectTypes.Speed);
+            if (speedEffect != null)
+                speedModifier = speedEffect.Modifier;
+            int movementStep = (int)(GlobalConstants.MOVEMENT_STEP_PX * speedRate);
 
             switch (CurrentDirection)
             {
@@ -119,12 +152,38 @@ namespace Maze.Classes
                 SelectNewDirection();
 
             if (currentGridMap.CanMoveTo(CurrentDirection))
+            {
+                GPS nextGPS = Position.Location;
+                GridMap nextGridMap;
+
+                switch (CurrentDirection)
+                {
+                    case Directions.Up: --nextGPS.Y; break;
+                    case Directions.Down: ++nextGPS.Y; break;
+                    case Directions.Left: --nextGPS.X; break;
+                    case Directions.Right: ++nextGPS.X; break;
+                }
+
+                nextGridMap = GetWorldMap().GetGridMap(nextGPS);
+                if (nextGridMap.HasAttribute(GridMapAttributes.IsStart))
+                {
+                    SelectNewDirection(false);
+                }
+
                 return;
+            }
             else
+            {
                 SelectNewDirection();
+            }
         }
 
         private void SelectNewDirection()
+        {
+            SelectNewDirection(true);
+        }
+
+        private void SelectNewDirection(bool includeCurrent)
         {
             Directions newDirection = Directions.None;
             int maxIterations = 10;
@@ -138,6 +197,9 @@ namespace Maze.Classes
                     case 3: newDirection = Directions.Left; break;
                     case 4: newDirection = Directions.Up; break;
                 }
+                if (!includeCurrent && newDirection == CurrentDirection)
+                    continue;
+
                 // Ignore Opposite Direction if there is another one
                 if (currentGridMap.CanMoveTo(newDirection) &&
                     (newDirection != GetOppositeDirection(CurrentDirection) || CurrentDirection == Directions.None))
