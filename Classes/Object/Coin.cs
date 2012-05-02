@@ -10,6 +10,7 @@ namespace Maze.Classes
         public Coin()
         {
             gridObjectType = GridObjectType.Coin;
+            SetFlag(GridObjectFlags.Disposable);
         }
 
         public Coin(GridMap gridMap)
@@ -20,12 +21,12 @@ namespace Maze.Classes
         }
         public override void Use(Unit user)
         {
-            if (gridObjectState != GridObjectState.Active || user.GetType() != ObjectType.Slug)
+            if (!IsActive() || user.GetType() != ObjectType.Slug)
                 return;
 
             ((Slug)user).CollectCoin(this);
 
-            SetGridObjectState(GridObjectState.Inactive);
+            base.Use(user);
         }
     }
 }

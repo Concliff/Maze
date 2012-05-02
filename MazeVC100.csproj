@@ -78,6 +78,7 @@
     <Compile Include="Classes\GlobalConstants.cs" />
     <Compile Include="Classes\GridMap.cs" />
     <Compile Include="Classes\KeyManager.cs" />
+    <Compile Include="Classes\Object\Effect.cs" />
     <Compile Include="Classes\Object\GridObject.cs" />
     <Compile Include="Classes\Object\ObjectSearcher.cs" />
     <Compile Include="Classes\Object\Object.cs" />

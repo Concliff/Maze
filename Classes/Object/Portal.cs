@@ -7,15 +7,12 @@ namespace Maze.Classes
 {
     public class Portal : GridObject
     {
-        private bool recentlyUsed;
-        private int timeToActivate;
         private GridMap destinationGridMap;
 
         public Portal()
         {
             gridObjectType = GridObjectType.Portal;
-            recentlyUsed = false;
-            timeToActivate = 3000;  // 3 seconds
+            activationTime = 3000;  // 3 seconds
             destinationGridMap.Initialize();
         }
 
@@ -39,29 +36,12 @@ namespace Maze.Classes
 
         public override void UpdateState(int timeP)
         {
-            if (recentlyUsed)
-            {
-                if (timeToActivate < timeP)
-                {
-                    SetGridObjectState(GridObjectState.Active);
-                    recentlyUsed = false;
-                }
-                else
-                {
-                    timeToActivate -= timeP;
-                }
-            }
-
             base.UpdateState(timeP);
         }
 
         public override void Use(Unit user)
         {
             user.TeleportTo(destinationGridMap);
-
-            SetGridObjectState(GridObjectState.Inactive);
-            recentlyUsed = true;
-            timeToActivate = 3000;
 
             base.Use(user);
         }

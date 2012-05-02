@@ -7,12 +7,11 @@ namespace Maze.Classes
 {
     public class Slime : GridObject
     {
-        private int timeToLive;
-
         public Slime()
         {
             gridObjectType = GridObjectType.Slime;
-            timeToLive = 5000;
+            SetFlag(GridObjectFlags.Temporal);
+            timeToLive = 3000;
         }
         public Slime(GridGPS currentGridGPS)
             : this()
@@ -21,19 +20,21 @@ namespace Maze.Classes
             currentGridMap = GetWorldMap().GetGridMap(currentGridGPS.Location);
         }
 
-        public int GetTTL()
-        {
-            return timeToLive;
-        }
-
         public override void UpdateState(int timeP)
         {
-            if (timeToLive < timeP)
+            List<Unit> nearestUnits = ObjectSearcher.GetUnitsWithinRange(this, 10);
+            foreach (Unit unit in nearestUnits)
             {
-                SetObjectState(ObjectState.Removed);
+                EffectEntry effectEntry = new EffectEntry();
+                effectEntry.EffectType = EffectTypes.Speed;
+                effectEntry.Duration = -1;
+                if (unit.GetType() == ObjectType.Slug)
+                    effectEntry.Value = 50;
+                else
+                    effectEntry.Value = -50;
+
+                Effect effect = new Effect(effectEntry, unit, this);
             }
-            else
-                timeToLive -= timeP;
 
             base.UpdateState(timeP);
         }

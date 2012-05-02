@@ -59,6 +59,8 @@ namespace Maze.Classes
             travelTime = 0;
             isInMotion = false;
 
+            SetBaseSpeed(0.5d);
+
         }
 
         public Slug(String name) : this()
@@ -109,7 +111,7 @@ namespace Maze.Classes
                 }
             }
 
-
+            base.UpdateState(timeP);
         }
 
         public override void SetDeathState(DeathStates deathState)
@@ -159,10 +161,14 @@ namespace Maze.Classes
         {
             if (!IsAlive())
                 return Position;
+
+            //create slime at old position
+            new Slime(Position);
+
             // New position coords
             int NewX, NewY;
             NewX = Position.X +
-                (int)(GlobalConstants.MOVEMENT_STEP_PX * SpeedRate *
+                (int)(GlobalConstants.MOVEMENT_STEP_PX * speedRate *
                 (((MoveType & (uint)Directions.Right) == 0 ? 0 : 1) - ((MoveType & (uint)Directions.Left) == 0 ? 0 : 1)));
 
             // New position X and Y should be within allowed range
@@ -201,7 +207,7 @@ namespace Maze.Classes
                 Position.X = NewX;
 
             NewY = Position.Y +
-                (int)(GlobalConstants.MOVEMENT_STEP_PX * SpeedRate *
+                (int)(GlobalConstants.MOVEMENT_STEP_PX * speedRate *
                 (((MoveType & (uint)Directions.Down) == 0 ? 0 : 1) - ((MoveType & (uint)Directions.Up) == 0 ? 0 : 1)));
             if (NewY > (GlobalConstants.GRIDMAP_BLOCK_HEIGHT - GlobalConstants.GRIDMAP_BORDER_PX - GlobalConstants.PLAYER_SIZE_HEIGHT / 2))
             {
@@ -237,9 +243,6 @@ namespace Maze.Classes
                 Position.Y = NewY;
 
             isInMotion = true;
-
-            //create slime at new position
-            new Slime(Position);
 
             // Check whether player moved into block (account block border)
             if ((Position.X <= GlobalConstants.GRIDMAP_BLOCK_WIDTH - GlobalConstants.GRIDMAP_BORDER_PX) &&

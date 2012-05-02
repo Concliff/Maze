@@ -24,9 +24,11 @@ namespace Maze.Classes
     {
         protected bool gridMapReached;
         protected DeathStates deathState;
-        protected double SpeedRate;
+        protected double baseSpeed; // base speed of the Unit
+        protected double speedRate; // Current speed(+effects)
         protected GPS respawnLocation;
         protected UnitTypes unitType;
+        protected List<Effect> effectList;
 
         public Unit()
         {
@@ -38,7 +40,9 @@ namespace Maze.Classes
 
             objectType = ObjectType.Unit;
             unitType = UnitTypes.Unit;
-            SpeedRate = 1.0d;
+            baseSpeed = 1.0d;
+            speedRate = baseSpeed;
+            effectList = new List<Effect>();
         }
 
         public UnitTypes GetUnitType() { return unitType; }
@@ -81,25 +85,76 @@ namespace Maze.Classes
         {
             if (gridMapReached)
                 return;
-
+            // asd
             List<GridObject> objects = GetGridObjectsWithinRange(GlobalConstants.GRIDMAP_BLOCK_HEIGHT / 2);
 
             foreach (GridObject obj in objects)
             {
-                if (obj.IsActive())
+                if (obj.IsActive() && obj.HasFlag(GridObjectFlags.Usable))
                     obj.Use(this);
             }
 
             gridMapReached = true;
         }
 
+        public void ApplyEffect(Effect newEffect)
+        {
+            // checking this effect for existing
+            if (effectList.Count > 0)
+                foreach (Effect effect in effectList)
+                {
+                    if (effect.GetType() == newEffect.GetType())
+                        return;
+                }
 
-        public double GetSpeedRate() { return SpeedRate; }
-        public void SetSpeedRate(double SpeedRate) { this.SpeedRate = SpeedRate; }
+            effectList.Add(newEffect);
+
+            // Update speed
+            if (newEffect.GetType() == EffectTypes.Speed)
+                speedRate = speedRate + newEffect.Modifier / 100d;
+        }
+
+        public Effect GetEffectByType(EffectTypes effectType)
+        {
+            if (effectList.Count > 0)
+                foreach (Effect effect in effectList)
+                {
+                    if (effect.GetType() == effectType)
+                        return effect;
+                }
+            return null;
+        }
+
+
+        public double GetSpeedRate() { return speedRate; }
+        public void SetBaseSpeed(double speed) { this.baseSpeed = speed; }
         public bool IsAlive() { return deathState == DeathStates.Alive; }
         public virtual void SetDeathState(DeathStates deathState)
         {
             this.deathState = deathState;
+        }
+
+        public override void UpdateState(int timeP)
+        {
+            // Update unit effects
+            for (int i = 0; i < effectList.Count;)
+            {
+                if (effectList[i].GetState() == EffectState.Expired)
+                {
+                    // Update speed
+                    if (effectList[i].GetType() == EffectTypes.Speed)
+                        //speedRate = speedRate - effectList[i].Modifier;
+                        speedRate = baseSpeed;
+
+                    effectList.Remove(effectList[i]);
+                    continue;
+                }
+
+                effectList[i].UpdateTime(timeP);
+                ++i;
+            }
+
+            base.UpdateState(timeP);
         }
 
         virtual public void StartMotion() { }
