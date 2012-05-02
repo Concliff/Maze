@@ -31,7 +31,7 @@ namespace Maze.Classes
 
         GridMap Block;
 
-        public Algorithm()
+        public Algorithm(GridMap StartPoint, GridMap FinishPoint)
         {
             OpenList = new List<CellParam>();
             CloseList = new List<CellParam>();
@@ -40,13 +40,13 @@ namespace Maze.Classes
             Map currentMap = GetWorldMap();
             
             // for test
-            GridMap StartPoint = new GridMap();
-            StartPoint.ID = 75;
-            StartPoint = GetWorldMap().GetGridMap(StartPoint.ID);
+            //GridMap StartPoint = new GridMap();
+            //StartPoint.ID = 75;
+            //StartPoint = GetWorldMap().GetGridMap(StartPoint.ID);
              
-            GridMap FinishPoint = new GridMap();
-            FinishPoint.ID = 73;
-            FinishPoint = GetWorldMap().GetGridMap(FinishPoint.ID);
+            //GridMap FinishPoint = new GridMap();
+            //FinishPoint.ID = 73;
+            //FinishPoint = GetWorldMap().GetGridMap(FinishPoint.ID);
             Way = FindWay(StartPoint, FinishPoint);
             //
         }
@@ -81,14 +81,14 @@ namespace Maze.Classes
             return false;
         }
 
-        private CellParam FindCell(GridMap Block)
+        private CellParam FindCell(List<CellParam> List, GridMap Block)
         {
             CellParam Cell = new CellParam();
             Cell.InitializeCell();
-            for (int i = 0; i < OpenList.Count; ++i)
+            for (int i = 0; i < List.Count; ++i)
             {
-                if (Block.ID == OpenList[i].ID)
-                    return OpenList[i];
+                if (Block.ID == List[i].ID)
+                    return List[i];
             }
             return Cell;
         }
@@ -126,6 +126,7 @@ namespace Maze.Classes
         {
             CellParam currentCell = new CellParam();
             CellParam finalCell = new CellParam();
+            List<CellParam> bannedList = new List<CellParam>();
             currentCell.InitializeCell();
             finalCell.InitializeCell();
 
@@ -135,12 +136,23 @@ namespace Maze.Classes
             finalCell.ID = FinalPoint.ID;
             AddOpenList(finalCell);
 
+            //int circleCount = 0;
             while(currentCell.ID != FinalPoint.ID)
             {
                 Block = FindCell(OpenList, currentCell);
                 FindNeighbors(Block, finalCell);
+
+                CellParam CellWithMinF = currentCell;
                 if (!SearchInList(CloseList, finalCell))
-                    currentCell = GetCellWithMinF();
+                {
+                    CellWithMinF = GetCellWithMinF(bannedList);
+                    
+                    if(CellWithMinF.Equals(currentCell))
+                        bannedList.Add(currentCell);
+                    
+                    currentCell = GetCellWithMinF(bannedList);
+                    
+                }
                 else
                     break;
             }
@@ -148,29 +160,27 @@ namespace Maze.Classes
             currentCell = CloseList[CloseList.Count - 1];
             Way.Add(FindCell(OpenList, currentCell));
 
-            for (int i = CloseList.Count - 1; i > 0; --i)   // CloseList[0] == Start Cell
+            for (int i = CloseList.Count - 1; i >= 0; --i)   // CloseList[0] == Start Cell
             {
-                foreach(CellParam element in CloseList)
+                if (CloseList[i].ID == FindCell(CloseList, Way[Way.Count - 1]).MID)
                 {
                     GridMap tempCell = new GridMap();
-                    tempCell = FindCell(CloseList, element);
-                    if (element.ID == CloseList[i].MID)
+                    tempCell = FindCell(CloseList, CloseList[i]);
+                    if (!SearchInList(Way, tempCell))
                     {
-                        if (!SearchInList(Way, tempCell))
-                        {
-                            Way.Add(tempCell);
-                            break;
-                        }
+                        Way.Add(tempCell);
+                        i = CloseList.Count;
                     }
                 }
             }
+            
             return Way;
         }
 
         // Find all passable neighbors
         private void FindNeighbors(GridMap Block, CellParam FinalPoint)
         {
-            CellParam currentCell = FindCell(Block);
+            CellParam currentCell = FindCell(OpenList, Block);
                        
             for (int i = -1; i <= 1; ++i)
             {
@@ -256,16 +266,16 @@ namespace Maze.Classes
                                 case 0:
                                     if (i == 0)    // moving up or down
                                     {
-                                        if (Block.CanMoveTo(Directions.Up) ||
-                                            Block.CanMoveTo(Directions.Down))
+                                        if ((j == -1 && Block.CanMoveTo(Directions.Up)) ||
+                                            (j == 1 && Block.CanMoveTo(Directions.Down)))
                                         {
                                             flag = true;
                                         }
                                     }
                                     else    // moving - right or left
                                     {
-                                        if (Block.CanMoveTo(Directions.Right) ||
-                                            Block.CanMoveTo(Directions.Left))
+                                        if ((i == 1 && Block.CanMoveTo(Directions.Right)) ||
+                                            (i == -1 && Block.CanMoveTo(Directions.Left)))
                                         {
                                             flag = true;
                                         }
@@ -287,19 +297,24 @@ namespace Maze.Classes
                                 Cell.F = Cell.G + Cell.H;
 
                                 if (!SearchInList(OpenList, Cell) && !SearchInList(CloseList, Cell))
-                                    OpenList.Add(Cell);
-                                                                
-                                if (!SearchInList(CloseList, currentCell))
-                                    CloseList.Add(currentCell);
-                                    
-                                if (SearchInList(OpenList, currentCell))
-                                    OpenList.Remove(currentCell);
-                                    
-                                if (Cell.ID == FinalPoint.ID)
                                 {
-                                    CloseList.Add(Cell);
-                                    return;
+                                    OpenList.Add(Cell);
+
+                                    if (!SearchInList(CloseList, currentCell))
+                                        CloseList.Add(currentCell);
+
+                                    if (SearchInList(OpenList, currentCell))
+                                        OpenList.Remove(currentCell);
                                 }
+
+                                    if (Cell.ID == FinalPoint.ID)
+                                    {
+                                        if(!SearchInList(CloseList, currentCell))
+                                            CloseList.Add(currentCell);
+                                        CloseList.Add(Cell);
+                                        return;
+                                    }
+                                
                             }
                         }
                     }
@@ -307,15 +322,25 @@ namespace Maze.Classes
             }
         }
 
-        private CellParam GetCellWithMinF()
+        private CellParam GetCellWithMinF(List<CellParam> BannedList)
         {
             CellParam Cell = new CellParam();
             Cell.InitializeCell();
-            int F = OpenList[OpenList.Count-1].F;
-            Cell = OpenList[OpenList.Count - 1];
-            for (int i = OpenList.Count - 1; i > 1; --i)    // OpenList[0] == FinishPoint
+            int F = Cell.F;
+            int i = OpenList.Count - 1;
+            while(i!=0)
             {
-                if (OpenList[i].F < F)
+                if(!BannedList.Contains(OpenList[i]))
+                {
+                    Cell = OpenList[i];
+                    F = Cell.F;
+                    break;
+                }
+                --i;
+            }
+            for (i = OpenList.Count - 1; i > 0; --i)    // OpenList[0] == FinishPoint
+            {
+                if (OpenList[i].F < F && !BannedList.Contains(OpenList[i]))
                 {
                     F = OpenList[i].F;
                     Cell = OpenList[i];
