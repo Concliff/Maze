@@ -244,7 +244,11 @@ namespace Maze.Classes
             }
 
             // Test-created monsters
-            new Phobos();
+            GridMap StartPoint = new GridMap();
+            StartPoint = GetGridMap(50);
+            GridMap FinishPoint = new GridMap();
+            FinishPoint = GetGridMap(75);
+            new Phobos(FinishPoint, StartPoint);
         }
 
         internal void FillMapWithObjects()

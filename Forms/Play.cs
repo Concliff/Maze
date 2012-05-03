@@ -324,5 +324,10 @@ namespace Maze.Forms
                 }
             }
         }
+
+        public Slug GetPlayer()
+        {
+            return player;
+        }
     }
 }
