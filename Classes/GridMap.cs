@@ -135,7 +135,7 @@ namespace Maze.Classes
         public int GetMap() { return currentMapIndex; }
         public int GetLevelCount() { return levelCount; }
 
-        public void SetMap(int mapIndex) { SetMap(mapIndex,0); }
+        public void SetMap(int mapIndex) { SetMap(mapIndex, 0); }
 
         public void SetLevelCount(int levelCount) { this.levelCount = levelCount; }
 
@@ -245,10 +245,10 @@ namespace Maze.Classes
 
             // Test-created monsters
             GridMap StartPoint = new GridMap();
-            StartPoint = GetGridMap(50);
+            StartPoint = GetGridMap(75);
             GridMap FinishPoint = new GridMap();
-            FinishPoint = GetGridMap(75);
-            new Phobos(FinishPoint, StartPoint);
+            FinishPoint = GetGridMap(100);
+            new Phobos(StartPoint, FinishPoint);
         }
 
         internal void FillMapWithObjects()
@@ -305,7 +305,7 @@ namespace Maze.Classes
                 ReplaceGridMap(NewGridMap);
                 return false;
             }
-                    
+
             MapBlocks.Add(NewGridMap);
             ++BlocksCount;
             GridMapChanged = true;
