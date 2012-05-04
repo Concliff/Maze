@@ -24,22 +24,29 @@ namespace Maze.Classes
     {
         private List<Object> objects;
         private Stack<Object> objectsToRemove;
+        private Stack<uint> releasedGUIDs;
+        public static uint GUIDCounter;
 
         public ObjectContainer()
         {
             objects = new List<Object>();
             objectsToRemove = new Stack<Object>();
+            releasedGUIDs = new Stack<uint>();
+            GUIDCounter = 0;
         }
 
-        public int GetNextGuid() { return objects.Count; }
-
-        public int CreateObject(Object newObject)
+        public uint CreateObject(Object newObject)
         {
             objects.Add(newObject);
-            return objects.Count;
+
+            // Define GUID of the new object
+            if (releasedGUIDs.Count > 0)
+                return releasedGUIDs.Pop();
+            else
+                return ++GUIDCounter;
         }
 
-        public Object GetObjectByGUID(int GUID)
+        public Object GetObjectByGUID(uint GUID)
         {
             for (int i = 0; i < objects.Count; ++i)
                 if (objects[i].GetGUID() == GUID)
@@ -74,7 +81,10 @@ namespace Maze.Classes
 
             for (int i = 0; i < removeCount; ++i)
             {
-                objects.Remove(objectsToRemove.Pop());
+                Object objectToRemove = objectsToRemove.Pop();
+                // Store free GUIDs
+                releasedGUIDs.Push(objectToRemove.GetGUID());
+                objects.Remove(objectToRemove);
             }
 
             objectsToRemove.Clear();
@@ -92,7 +102,7 @@ namespace Maze.Classes
     }
     public class Object
     {
-        protected int GUID;
+        protected uint GUID;
         protected ObjectType objectType;
         protected ObjectState objectState;
         protected GridMap currentGridMap;
@@ -136,7 +146,7 @@ namespace Maze.Classes
             return ObjectSearcher.GetUnitsWithinRange(this, rangeDistance);
         }
 
-        public int GetGUID() { return GUID; }
+        public uint GetGUID() { return GUID; }
 
         public ObjectState GetObjectState() { return objectState; }
         public void SetObjectState(ObjectState objectState)
@@ -147,6 +157,4 @@ namespace Maze.Classes
         public virtual void UpdateState(int timeP) { }
 
     }
-
-
 }
