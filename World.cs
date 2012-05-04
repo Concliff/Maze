@@ -24,8 +24,6 @@ namespace Maze
         {
             CreatePlayForm();
             Application.Run(PlayForm);
-            // for test
-            Algorithm alg = new Algorithm();
             
             /*
             while(true)

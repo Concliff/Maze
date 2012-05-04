@@ -208,7 +208,7 @@ namespace Maze.Classes
 
                                         // Check cell's passability
                                         if ((Block.CanMoveTo(Directions.Down) &&
-                                            GetWorldMap().GetGridMap(locDown).CanMoveTo(Directions.Left)) ||
+                                            GetWorldMap().GetGridMap(locDown).CanMoveTo(Directions.Left)) &&
                                             (Block.CanMoveTo(Directions.Left) &&
                                             GetWorldMap().GetGridMap(locLeft).CanMoveTo(Directions.Down)))
                                         {
@@ -223,7 +223,7 @@ namespace Maze.Classes
                                         locRight.X ++;
 
                                         if ((Block.CanMoveTo(Directions.Up) &&
-                                            GetWorldMap().GetGridMap(locUp).CanMoveTo(Directions.Right)) ||
+                                            GetWorldMap().GetGridMap(locUp).CanMoveTo(Directions.Right)) &&
                                             (Block.CanMoveTo(Directions.Right) &&
                                             GetWorldMap().GetGridMap(locRight).CanMoveTo(Directions.Up)))
                                         {
@@ -240,7 +240,7 @@ namespace Maze.Classes
                                         locLeft.X --;
 
                                         if ((Block.CanMoveTo(Directions.Left) &&
-                                            GetWorldMap().GetGridMap(locLeft).CanMoveTo(Directions.Up)) ||
+                                            GetWorldMap().GetGridMap(locLeft).CanMoveTo(Directions.Up)) &&
                                             (Block.CanMoveTo(Directions.Up) &&
                                             GetWorldMap().GetGridMap(locUp).CanMoveTo(Directions.Left)))
                                         {
@@ -255,7 +255,7 @@ namespace Maze.Classes
                                         locRight.X ++;
 
                                         if ((Block.CanMoveTo(Directions.Down) &&
-                                            GetWorldMap().GetGridMap(locDown).CanMoveTo(Directions.Right)) ||
+                                            GetWorldMap().GetGridMap(locDown).CanMoveTo(Directions.Right)) &&
                                             (Block.CanMoveTo(Directions.Right) &&
                                             GetWorldMap().GetGridMap(locRight).CanMoveTo(Directions.Down)))
                                         {
