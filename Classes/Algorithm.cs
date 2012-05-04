@@ -31,19 +31,24 @@ namespace Maze.Classes
 
         GridMap Block;
 
-        public Algorithm(GridMap StartPoint, GridMap FinishPoint)
+        public Algorithm()
         {
             OpenList = new List<CellParam>();
             CloseList = new List<CellParam>();
             Way = new List<GridMap>();
 
             Map currentMap = GetWorldMap();
-            
+        }
+
+        public Algorithm(GridMap StartPoint, GridMap FinishPoint)
+            : this()
+        {
+
             // for test
             //GridMap StartPoint = new GridMap();
             //StartPoint.ID = 75;
             //StartPoint = GetWorldMap().GetGridMap(StartPoint.ID);
-             
+
             //GridMap FinishPoint = new GridMap();
             //FinishPoint.ID = 73;
             //FinishPoint = GetWorldMap().GetGridMap(FinishPoint.ID);
@@ -127,6 +132,11 @@ namespace Maze.Classes
             CellParam currentCell = new CellParam();
             CellParam finalCell = new CellParam();
             List<CellParam> bannedList = new List<CellParam>();
+            Way = new List<GridMap>();
+            OpenList = new List<CellParam>();
+            CloseList = new List<CellParam>();
+
+
             currentCell.InitializeCell();
             finalCell.InitializeCell();
 

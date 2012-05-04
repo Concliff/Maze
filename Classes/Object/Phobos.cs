@@ -19,80 +19,66 @@ namespace Maze.Classes
 
         private Directions CurrentDirection;
         private bool IsInMotion;
+        private int pathFindingTimer;
 
-        Algorithm alg;
-        Map currentMap;
-        GridMap StartPoint;
-        GridMap FinishPoint;
-        GridGPS CurrentPosition;
-        Slug player;
+        private Algorithm alg;
+        private Unit victim;
 
-        SubDirections subDirection;
+        private SubDirections subDirection;
 
-        public Phobos(GridMap StartPoint, GridMap FinishPoint)
+        public Phobos(GPS respawnLocation)
         {
             unitType = UnitTypes.Phobos;
             IsInMotion = false;
 
-            this.StartPoint = StartPoint;
-            this.FinishPoint = FinishPoint;
+            this.respawnLocation = respawnLocation;
 
-            Position.Location = this.StartPoint.Location;
+            // Just for now
+            victim = World.GetPlayForm().GetPlayer();
+
+            Position.Location = respawnLocation;
             Position.X = 25;
-            Position.Y = 5;
-            Position.BlockID = this.StartPoint.ID;
+            Position.Y = 25;
+            Position.BlockID = GetWorldMap().GetGridMap(Position.Location).ID;
+
             IsInMotion = false;
             CurrentDirection = Directions.None;
-            CurrentPosition = Position;
-            alg = new Algorithm(StartPoint, FinishPoint);
+            alg = new Algorithm();
 
-            currentMap = alg.GetWorldMap();
+            currentGridMap = GetWorldMap().GetGridMap(Position.Location);
 
-            currentGridMap = StartPoint;
-
-            player = World.GetPlayForm().GetPlayer();
+            pathFindingTimer = 1000;
 
             // Tested Speed
             // Should be 0.7 or about
-            SetBaseSpeed(0.5d);
+            SetBaseSpeed(1.0d);
             speedRate = baseSpeed;
         }
 
         public override void StartMotion()
         {
+            if (victim == null)
+                return;
+
+            alg.Way = alg.FindWay(currentGridMap, GetWorldMap().GetGridMap(victim.Position.Location));
+
             IsInMotion = true;
-
-            alg.Way = alg.FindWay(currentGridMap, FinishPoint);
-
-            if (CurrentDirection == Directions.None)
-            {
-                if (currentGridMap.CanMoveTo(Directions.Up))
-                {
-                    CurrentDirection = Directions.Up;
-                    return;
-                }
-                else if (currentGridMap.CanMoveTo(Directions.Left))
-                {
-                    CurrentDirection = Directions.Left;
-                    return;
-                }
-                else if (currentGridMap.CanMoveTo(Directions.Down))
-                {
-                    CurrentDirection = Directions.Down;
-                    return;
-                }
-                else if (currentGridMap.CanMoveTo(Directions.Right))
-                {
-                    CurrentDirection = Directions.Right;
-                    return;
-                }
-            }
         }
 
         public override void UpdateState(int timeP)
         {
             if (IsInMotion)
             {
+                if (pathFindingTimer < timeP)
+                {
+                    alg.Way = alg.FindWay(currentGridMap, GetWorldMap().GetGridMap(victim.Position.Location));
+                    pathFindingTimer = 1000;
+                }
+                else
+                {
+                    pathFindingTimer -= timeP;
+                }
+
                 MovementAction();
             }
 
