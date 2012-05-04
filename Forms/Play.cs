@@ -173,11 +173,12 @@ namespace Maze.Forms
                             CreateWorldMap();               // Create Map
                             GetWorldMap().SetMap(0);
                             CreateObjectContainer();
+
+                            player = new Slug();
+
                             GetWorldMap().FillMapWithUnits(); // Add units to map
                             GetWorldMap().FillMapWithObjects();// Add objects
                             GetObjectContainer().StartMotion();
-
-                            player = new Slug();
 
                             SystemTimer.Start();
                         }
