@@ -76,6 +76,17 @@ namespace Maze.Classes
                 if (Units != null && Units.Count != 0)
                 {
                     SetDeathState(DeathStates.Dead);
+                    foreach (Unit unit in Units)
+                    {
+                        if (unit.GetUnitType() == UnitTypes.Phobos)
+                        {
+                            unit.SetDeathState(DeathStates.Dead);
+                            
+                            Units.Remove(unit);
+                            break;
+                        }
+
+                    }
                     return;
                 }
             }

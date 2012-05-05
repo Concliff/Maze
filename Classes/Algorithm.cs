@@ -166,24 +166,25 @@ namespace Maze.Classes
                 else
                     break;
             }
-
-            currentCell = CloseList[CloseList.Count - 1];
-            Way.Add(FindCell(OpenList, currentCell));
-
-            for (int i = CloseList.Count - 1; i >= 0; --i)   // CloseList[0] == Start Cell
+            if (CloseList.Count > 0)
             {
-                if (CloseList[i].ID == FindCell(CloseList, Way[Way.Count - 1]).MID)
+                currentCell = CloseList[CloseList.Count - 1];
+                Way.Add(FindCell(OpenList, currentCell));
+
+                for (int i = CloseList.Count - 1; i >= 0; --i)   // CloseList[0] == Start Cell
                 {
-                    GridMap tempCell = new GridMap();
-                    tempCell = FindCell(CloseList, CloseList[i]);
-                    if (!SearchInList(Way, tempCell))
+                    if (CloseList[i].ID == FindCell(CloseList, Way[Way.Count - 1]).MID)
                     {
-                        Way.Add(tempCell);
-                        i = CloseList.Count;
+                        GridMap tempCell = new GridMap();
+                        tempCell = FindCell(CloseList, CloseList[i]);
+                        if (!SearchInList(Way, tempCell))
+                        {
+                            Way.Add(tempCell);
+                            i = CloseList.Count;
+                        }
                     }
                 }
             }
-            
             return Way;
         }
 

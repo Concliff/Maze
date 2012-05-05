@@ -168,10 +168,21 @@ namespace Maze.Forms
                             if (objectsOnMap[i].GetType() == ObjectType.Unit)
                             {
                                 Unit unit = (Unit)objectsOnMap[i];
+                                if (unit.GetUnitType() == UnitTypes.Phobos && !unit.IsAlive())
+                                    continue;
                                 switch (unit.GetUnitType())
                                 {
                                     case UnitTypes.Deimos: objectImage = PictureMgr.DeimosImage; break;
-                                    case UnitTypes.Phobos: objectImage = PictureMgr.PhobosImage; break;
+                                    case UnitTypes.Phobos:
+                                        if (unit.IsAlive())
+                                            objectImage = PictureMgr.PhobosImage;
+                                        else
+                                        {
+                                            unit.Position.Location = Play.GetWorldMap().GetFinishPoint();
+                                            unit.SetDeathState(DeathStates.Alive);
+                                        }
+                                        //    objectsOnMap.Remove(unit);
+                                        break;
                                     default: objectImage = PictureMgr.DeimosImage; break;
                                 }
                             }
