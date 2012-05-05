@@ -7,8 +7,6 @@ namespace Maze.Classes
 {
     class Deimos : Unit
     {
-        private Directions CurrentDirection;
-        private bool IsInMotion;
 
         public Deimos()
         {
@@ -18,8 +16,8 @@ namespace Maze.Classes
             Position.X = 25;
             Position.Y = 25;
             Position.BlockID = GetWorldMap().GetGridMap(Position.Location).ID;
-            IsInMotion = false;
-            CurrentDirection = Directions.None;
+            isInMotion = false;
+            currentDirection = Directions.None;
 
             currentGridMap = GetWorldMap().GetGridMap(Position.Location);
         }
@@ -34,53 +32,53 @@ namespace Maze.Classes
 
         public override void UpdateState(int timeP)
         {
-            if (IsInMotion)
+            if (isInMotion)
                 MovementAction();
 
             base.UpdateState(timeP);
         }
 
         public override void StartMotion()
-        { 
-            IsInMotion = true; 
+        {
+            isInMotion = true;
             
             // find the first allowed direction
-            if (CurrentDirection == Directions.None)
+            if (currentDirection == Directions.None)
                 SelectNewDirection();
 
             // Selecting with random might be failed
             // Recheck the availability of all four directions
-            if (CurrentDirection == Directions.None)
+            if (currentDirection == Directions.None)
             {
                 if (currentGridMap.CanMoveTo(Directions.Up))
                 {
-                    CurrentDirection = Directions.Up;
+                    currentDirection = Directions.Up;
                     return;
                 }
                 else if (currentGridMap.CanMoveTo(Directions.Left))
                 {
-                    CurrentDirection = Directions.Left;
+                    currentDirection = Directions.Left;
                     return;
                 }
                 else if (currentGridMap.CanMoveTo(Directions.Down))
                 {
-                    CurrentDirection = Directions.Down;
+                    currentDirection = Directions.Down;
                     return;
                 }
                 else if (currentGridMap.CanMoveTo(Directions.Right))
                 {
-                    CurrentDirection = Directions.Right;
+                    currentDirection = Directions.Right;
                     return;
                 }
             }
 
         }
 
-        public void StopMotion() { IsInMotion = false; }
+        public void StopMotion() { isInMotion = false; }
 
         public void MovementAction()
         {
-            if (CurrentDirection == Directions.None)
+            if (currentDirection == Directions.None)
                 return;
 
             int speedModifier = 0;
@@ -89,7 +87,7 @@ namespace Maze.Classes
                 speedModifier = speedEffect.Modifier;
             int movementStep = (int)(GlobalConstants.MOVEMENT_STEP_PX * speedRate);
 
-            switch (CurrentDirection)
+            switch (currentDirection)
             {
                 case Directions.Up:
                     {
@@ -151,12 +149,12 @@ namespace Maze.Classes
             if (Random.Int(100) <= 33)  // 33% chance to change direction
                 SelectNewDirection();
 
-            if (currentGridMap.CanMoveTo(CurrentDirection))
+            if (currentGridMap.CanMoveTo(currentDirection))
             {
                 GPS nextGPS = Position.Location;
                 GridMap nextGridMap;
 
-                switch (CurrentDirection)
+                switch (currentDirection)
                 {
                     case Directions.Up: --nextGPS.Y; break;
                     case Directions.Down: ++nextGPS.Y; break;
@@ -197,23 +195,23 @@ namespace Maze.Classes
                     case 3: newDirection = Directions.Left; break;
                     case 4: newDirection = Directions.Up; break;
                 }
-                if (!includeCurrent && newDirection == CurrentDirection)
+                if (!includeCurrent && newDirection == currentDirection)
                     continue;
 
                 // Ignore Opposite Direction if there is another one
                 if (currentGridMap.CanMoveTo(newDirection) &&
-                    (newDirection != GetOppositeDirection(CurrentDirection) || CurrentDirection == Directions.None))
+                    (newDirection != GetOppositeDirection(currentDirection) || currentDirection == Directions.None))
                 {
-                    CurrentDirection = newDirection;
+                    currentDirection = newDirection;
                     return;
                 }
             }
 
             // Go opposite Direction if no choice to go
-            if (currentGridMap.CanMoveTo(GetOppositeDirection(CurrentDirection)))
-                CurrentDirection = GetOppositeDirection(CurrentDirection);
+            if (currentGridMap.CanMoveTo(GetOppositeDirection(currentDirection)))
+                currentDirection = GetOppositeDirection(currentDirection);
             else
-                CurrentDirection = Directions.None;
+                currentDirection = Directions.None;
         }
 
         private Directions GetOppositeDirection(Directions Direction)

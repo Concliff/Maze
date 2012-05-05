@@ -30,6 +30,9 @@ namespace Maze.Classes
         protected UnitTypes unitType;
         protected List<Effect> effectList;
 
+        protected bool isInMotion;
+        protected Directions currentDirection;
+
         public Unit()
         {
             SetDeathState(DeathStates.Alive);

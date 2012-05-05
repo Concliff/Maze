@@ -32,7 +32,6 @@ namespace Maze.Classes
         private int oozeEnergy;
         private int downTime;
         private int travelTime;
-        private bool isInMotion;
 
         public Slug()
         {
