@@ -79,8 +79,31 @@ namespace Maze.Classes
                     pathFindingTimer -= timeP;
                 }
 
+
+                if (IsAlive())
+                {
+                    List<Object> Objects = GetObjectsWithinRange(30);
+                    if (Objects != null && Objects.Count != 0)
+                    {
+                        foreach (Object obj in Objects)
+                        {
+                            if (obj.GetType() == ObjectType.Slug)
+                            {
+                                Unit unit = (Unit)obj;
+                                if (unit.IsAlive())
+                                {
+                                    SetDeathState(DeathStates.Dead);
+                                    return;
+                                }
+                            }
+                        }
+                    }
+                }
+
                 if (alg.Way.Count > 0)
                     MovementAction();
+
+
             }
 
             base.UpdateState(timeP);

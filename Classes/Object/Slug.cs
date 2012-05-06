@@ -80,9 +80,7 @@ namespace Maze.Classes
                     {
                         if (unit.GetUnitType() == UnitTypes.Phobos)
                         {
-                            unit.SetDeathState(DeathStates.Dead);
-                            
-                            Units.Remove(unit);
+                            SetDeathState(DeathStates.Alive);
                             break;
                         }
 
