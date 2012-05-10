@@ -79,7 +79,6 @@ namespace Maze.Classes
                     pathFindingTimer -= timeP;
                 }
 
-
                 if (IsAlive())
                 {
                     List<Object> Objects = GetObjectsWithinRange(30);
@@ -247,8 +246,8 @@ namespace Maze.Classes
 
         protected override void ReachedGridMap()
         {
-            base.ReachedGridMap();
-
+            alg.Way = alg.FindWay(currentGridMap, GetWorldMap().GetGridMap(victim.Position.Location));
+            
             if (alg.Way.Contains(currentGridMap))// && currentGridMap.CanMoveTo(CurrentDirection))
             {
                 int index = alg.Way.IndexOf(currentGridMap);
@@ -303,6 +302,7 @@ namespace Maze.Classes
                 else
                     nextGridMap = alg.Way[index];
             }
+            base.ReachedGridMap();
         }
 
         private Directions GetOppositeDirection(Directions Direction)
