@@ -146,6 +146,10 @@ namespace Maze.Classes
             finalCell.ID = FinalPoint.ID;
             AddOpenList(finalCell);
 
+            // return empty Way at points on different levels
+            if (StartPoint.Location.Level != FinalPoint.Location.Level)
+                return Way;
+
             //int circleCount = 0;
             while(currentCell.ID != FinalPoint.ID)
             {
