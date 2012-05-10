@@ -154,7 +154,7 @@ namespace MapEditor.Forms
                     // Draw Finish Block
                     if (Block.HasAttribute(GridMapAttributes.IsFinish))
                     {
-                        gGraphic.DrawImage(PictureMgr.FinishImage, x + 5, y + 5, 40, 40);
+                        gGraphic.DrawImage(PictureMgr.FinishImage, x + 5, y + 5, PictureMgr.FinishImage.Width, PictureMgr.FinishImage.Height);
                     }
 
                     // Draw Coin
