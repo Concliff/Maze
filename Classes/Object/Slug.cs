@@ -58,7 +58,7 @@ namespace Maze.Classes
             travelTime = 0;
             isInMotion = false;
 
-            SetBaseSpeed(0.5d);
+            SetBaseSpeed(0.7d);
 
         }
 
@@ -161,13 +161,77 @@ namespace Maze.Classes
             if (!IsAlive())
                 return Position;
 
+            // Define direction of motion
+            if ((MoveType & (uint)Directions.Up) != 0)
+                this.currentDirection = Directions.Up;
+            else if ((MoveType & (uint)Directions.Down) != 0)
+                this.currentDirection = Directions.Down;
+            else if ((MoveType & (uint)Directions.Left) != 0)
+                this.currentDirection = Directions.Left;
+            else if ((MoveType & (uint)Directions.Right) != 0)
+                this.currentDirection = Directions.Right;
+            else
+                this.currentDirection = Directions.None;
+
+            // Find a point in currectDirection + searchingStep
+            GridGPS searchingPoint = this.Position;
+            int searchingStep = 10;
+            List<GridObject> slimeAround;
+            bool slimePersist = false;
+            double slimeSpeedRate = this.speedRate;
+
+            switch (currentDirection)
+            {
+                case Directions.Right:
+                    searchingPoint.X = Position.X + searchingStep;
+                    if (searchingPoint.X > GlobalConstants.GRIDMAP_BLOCK_WIDTH)
+                    {
+                        searchingPoint.X -= GlobalConstants.GRIDMAP_BLOCK_WIDTH;
+                        ++searchingPoint.Location.X;
+                    }
+                    break;
+                case Directions.Left:
+                    searchingPoint.X = Position.X - searchingStep;
+                    if (searchingPoint.X < 0)
+                    {
+                        searchingPoint.X -= GlobalConstants.GRIDMAP_BLOCK_WIDTH;
+                        --searchingPoint.Location.X;
+                    }
+                    break;
+                case Directions.Up:
+                    searchingPoint.Y = Position.Y - searchingStep;
+                    if (searchingPoint.Y < 0)
+                    {
+                        searchingPoint.Y += GlobalConstants.GRIDMAP_BLOCK_HEIGHT;
+                        --searchingPoint.Location.Y;
+                    }
+                    break;
+                case Directions.Down:
+                    searchingPoint.Y = Position.Y + searchingStep;
+                    if (searchingPoint.Y > GlobalConstants.GRIDMAP_BLOCK_HEIGHT)
+                    {
+                        searchingPoint.Y -= GlobalConstants.GRIDMAP_BLOCK_HEIGHT;
+                        ++searchingPoint.Location.Y;
+                    }
+                    break;
+            }
+            slimeAround = ObjectSearcher.GetGridObjectsInArea(searchingPoint, searchingStep);
+            foreach (GridObject slime in slimeAround)
+            {
+                if (slime.GetGridObjectType() == GridObjectType.Slime)
+                    slimePersist = true;
+            }
+            // Increase speed by 0.5
+            if (slimePersist)
+                slimeSpeedRate += 0.5;
+
             //create slime at old position
             new Slime(Position);
 
             // New position coords
             int NewX, NewY;
             NewX = Position.X +
-                (int)(GlobalConstants.MOVEMENT_STEP_PX * speedRate *
+                (int)(GlobalConstants.MOVEMENT_STEP_PX * slimeSpeedRate *
                 (((MoveType & (uint)Directions.Right) == 0 ? 0 : 1) - ((MoveType & (uint)Directions.Left) == 0 ? 0 : 1)));
 
             // New position X and Y should be within allowed range
