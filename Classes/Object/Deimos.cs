@@ -81,10 +81,6 @@ namespace Maze.Classes
             if (currentDirection == Directions.None)
                 return;
 
-            int speedModifier = 0;
-            Effect speedEffect = GetEffectByType(EffectTypes.Speed);
-            if (speedEffect != null)
-                speedModifier = speedEffect.Modifier;
             int movementStep = (int)(GlobalConstants.MOVEMENT_STEP_PX * speedRate);
 
             switch (currentDirection)

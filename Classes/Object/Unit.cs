@@ -112,9 +112,9 @@ namespace Maze.Classes
 
             effectList.Add(newEffect);
 
-            // Update speed
+            // Update unit stats
             if (newEffect.GetType() == EffectTypes.Speed)
-                speedRate = speedRate + newEffect.Modifier / 100d;
+                CalculateSpeedRate();
         }
 
         public Effect GetEffectByType(EffectTypes effectType)
@@ -130,7 +130,24 @@ namespace Maze.Classes
 
 
         public double GetSpeedRate() { return speedRate; }
-        public void SetBaseSpeed(double speed) { this.baseSpeed = speed; }
+        public void SetBaseSpeed(double speed)
+        {
+            this.baseSpeed = speed;
+
+            CalculateSpeedRate();
+        }
+        protected void CalculateSpeedRate()
+        {
+            this.speedRate = this.baseSpeed;
+
+            int speedModifier = 0;
+            Effect speedEffect = GetEffectByType(EffectTypes.Speed);
+            if (speedEffect != null)
+                speedModifier = speedEffect.Modifier;
+
+            this.speedRate += this.speedRate * speedModifier / 100d;
+        }
+
         public bool IsAlive() { return deathState == DeathStates.Alive; }
         public virtual void SetDeathState(DeathStates deathState)
         {
@@ -144,12 +161,15 @@ namespace Maze.Classes
             {
                 if (effectList[i].GetState() == EffectState.Expired)
                 {
-                    // Update speed
-                    if (effectList[i].GetType() == EffectTypes.Speed)
-                        //speedRate = speedRate - effectList[i].Modifier;
-                        speedRate = baseSpeed;
+                    // Save Type of removable effect
+                    EffectTypes effectType = effectList[i].GetType();
 
                     effectList.Remove(effectList[i]);
+
+                    // Update Speed
+                    if (effectType == EffectTypes.Speed)
+                        CalculateSpeedRate();
+
                     continue;
                 }
 

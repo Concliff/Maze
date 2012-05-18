@@ -29,7 +29,7 @@ namespace Maze.Classes
                 effectEntry.EffectType = EffectTypes.Speed;
                 effectEntry.Duration = -1;
                 if (unit.GetType() == ObjectType.Slug)
-                    effectEntry.Value = 50;
+                    continue;
                 else
                     effectEntry.Value = -50;
 
