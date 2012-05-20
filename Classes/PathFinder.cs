@@ -5,15 +5,15 @@ using System.Text;
 
 namespace Maze.Classes
 {
-    class Algorithm
+    class PathFinder
     {
         public struct CellParam
         {
-            public int ID; // Cell's number in grid
+            public int ID;  // Cell's number in grid
             public int MID; // Master cell
-            public int G; // Moving cost from the start piont to the current one
-            public int H; // Moving cost from the current point to the final one
-            public int F; // F= G + H
+            public int G;   // Moving cost from the start piont to the current one
+            public int H;   // Moving cost from the current point to the final one
+            public int F;   // F= G + H
 
             public void InitializeCell()
             {
@@ -25,40 +25,35 @@ namespace Maze.Classes
             }
         };
 
-        private List<CellParam> OpenList;
-        private List<CellParam> CloseList;
-        public List<GridMap> Way;
+        private List<CellParam> openList;
+        private List<CellParam> closeList;
+        public List<GridMap> Path;
 
         GridMap Block;
 
-        public Algorithm(GridMap StartPoint, GridMap FinishPoint)
+        public PathFinder()
         {
-            OpenList = new List<CellParam>();
-            CloseList = new List<CellParam>();
-            Way = new List<GridMap>();
+            openList = new List<CellParam>();
+            closeList = new List<CellParam>();
+            Path = new List<GridMap>();
 
             Map currentMap = GetWorldMap();
-            
-            // for test
-            //GridMap StartPoint = new GridMap();
-            //StartPoint.ID = 75;
-            //StartPoint = GetWorldMap().GetGridMap(StartPoint.ID);
-             
-            //GridMap FinishPoint = new GridMap();
-            //FinishPoint.ID = 73;
-            //FinishPoint = GetWorldMap().GetGridMap(FinishPoint.ID);
-            Way = FindWay(StartPoint, FinishPoint);
-            //
+        }
+
+        public PathFinder(GridMap StartPoint, GridMap FinishPoint)
+            : this()
+        {
+            GeneratePath(StartPoint, FinishPoint);
         }
 
         private void AddOpenList(CellParam Cell)
         {
-            OpenList.Add(Cell);
+            openList.Add(Cell);
         }
 
         private void AddCloseList(CellParam Cell)
         {
-            CloseList.Add(Cell);
+            closeList.Add(Cell);
         }
 
         private bool SearchInList(List<CellParam> List, CellParam Element)
@@ -96,7 +91,7 @@ namespace Maze.Classes
         private GridMap FindCell(List<CellParam> List, CellParam Cell)
         {
             GridMap Block = new GridMap();
-            
+
             Block.Initialize();
             for (int i = 0; i < List.Count; ++i)
             {
@@ -122,66 +117,74 @@ namespace Maze.Classes
             return defaultElement;
         }
 
-        public List<GridMap> FindWay(GridMap StartPoint, GridMap FinalPoint)
+        public void GeneratePath(GridMap StartPoint, GridMap FinalPoint)
         {
             CellParam currentCell = new CellParam();
             CellParam finalCell = new CellParam();
             List<CellParam> bannedList = new List<CellParam>();
+            Path = new List<GridMap>();
+            openList = new List<CellParam>();
+            closeList = new List<CellParam>();
+
+
             currentCell.InitializeCell();
             finalCell.InitializeCell();
 
             currentCell.ID = StartPoint.ID;
             AddOpenList(currentCell);
-            
+
             finalCell.ID = FinalPoint.ID;
             AddOpenList(finalCell);
 
-            //int circleCount = 0;
-            while(currentCell.ID != FinalPoint.ID)
+            // return empty Way at points on different levels
+            if (StartPoint.Location.Level != FinalPoint.Location.Level)
+                return;
+
+            while (currentCell.ID != FinalPoint.ID)
             {
-                Block = FindCell(OpenList, currentCell);
+                Block = FindCell(openList, currentCell);
                 FindNeighbors(Block, finalCell);
 
                 CellParam CellWithMinF = currentCell;
-                if (!SearchInList(CloseList, finalCell))
+                if (!SearchInList(closeList, finalCell))
                 {
                     CellWithMinF = GetCellWithMinF(bannedList);
-                    
-                    if(CellWithMinF.Equals(currentCell))
+
+                    if (CellWithMinF.Equals(currentCell))
                         bannedList.Add(currentCell);
-                    
+
                     currentCell = GetCellWithMinF(bannedList);
-                    
+
                 }
                 else
                     break;
             }
-
-            currentCell = CloseList[CloseList.Count - 1];
-            Way.Add(FindCell(OpenList, currentCell));
-
-            for (int i = CloseList.Count - 1; i >= 0; --i)   // CloseList[0] == Start Cell
+            if (closeList.Count > 0)
             {
-                if (CloseList[i].ID == FindCell(CloseList, Way[Way.Count - 1]).MID)
+                currentCell = closeList[closeList.Count - 1];
+                Path.Add(FindCell(openList, currentCell));
+
+                for (int i = closeList.Count - 1; i >= 0; --i)   // CloseList[0] == Start Cell
                 {
-                    GridMap tempCell = new GridMap();
-                    tempCell = FindCell(CloseList, CloseList[i]);
-                    if (!SearchInList(Way, tempCell))
+                    if (closeList[i].ID == FindCell(closeList, Path[Path.Count - 1]).MID)
                     {
-                        Way.Add(tempCell);
-                        i = CloseList.Count;
+                        GridMap tempCell = new GridMap();
+                        tempCell = FindCell(closeList, closeList[i]);
+                        if (!SearchInList(Path, tempCell))
+                        {
+                            Path.Add(tempCell);
+                            i = closeList.Count;
+                        }
                     }
                 }
             }
-            
-            return Way;
         }
 
         // Find all passable neighbors
         private void FindNeighbors(GridMap Block, CellParam FinalPoint)
         {
-            CellParam currentCell = FindCell(OpenList, Block);
-                       
+            CellParam currentCell = FindCell(openList, Block);
+
             for (int i = -1; i <= 1; ++i)
             {
                 for (int j = -1; j <= 1; ++j)
@@ -202,13 +205,13 @@ namespace Maze.Classes
                                     if (i == -1)    // diagonal moving - left and down
                                     {
                                         GPS locDown = Block.Location;
-                                        locDown.Y ++;
+                                        locDown.Y++;
                                         GPS locLeft = Block.Location;
-                                        locLeft.X --;
+                                        locLeft.X--;
 
                                         // Check cell's passability
                                         if ((Block.CanMoveTo(Directions.Down) &&
-                                            GetWorldMap().GetGridMap(locDown).CanMoveTo(Directions.Left)) ||
+                                            GetWorldMap().GetGridMap(locDown).CanMoveTo(Directions.Left)) &&
                                             (Block.CanMoveTo(Directions.Left) &&
                                             GetWorldMap().GetGridMap(locLeft).CanMoveTo(Directions.Down)))
                                         {
@@ -218,12 +221,12 @@ namespace Maze.Classes
                                     else    // diagonal moving - right and up
                                     {
                                         GPS locUp = Block.Location;
-                                        locUp.Y --;
+                                        locUp.Y--;
                                         GPS locRight = Block.Location;
-                                        locRight.X ++;
+                                        locRight.X++;
 
                                         if ((Block.CanMoveTo(Directions.Up) &&
-                                            GetWorldMap().GetGridMap(locUp).CanMoveTo(Directions.Right)) ||
+                                            GetWorldMap().GetGridMap(locUp).CanMoveTo(Directions.Right)) &&
                                             (Block.CanMoveTo(Directions.Right) &&
                                             GetWorldMap().GetGridMap(locRight).CanMoveTo(Directions.Up)))
                                         {
@@ -235,12 +238,12 @@ namespace Maze.Classes
                                     if (i == -1)    // diagonal moving - left and up
                                     {
                                         GPS locUp = Block.Location;
-                                        locUp.Y --;
+                                        locUp.Y--;
                                         GPS locLeft = Block.Location;
-                                        locLeft.X --;
+                                        locLeft.X--;
 
                                         if ((Block.CanMoveTo(Directions.Left) &&
-                                            GetWorldMap().GetGridMap(locLeft).CanMoveTo(Directions.Up)) ||
+                                            GetWorldMap().GetGridMap(locLeft).CanMoveTo(Directions.Up)) &&
                                             (Block.CanMoveTo(Directions.Up) &&
                                             GetWorldMap().GetGridMap(locUp).CanMoveTo(Directions.Left)))
                                         {
@@ -250,12 +253,12 @@ namespace Maze.Classes
                                     else    // diagonal moving - right and down
                                     {
                                         GPS locDown = Block.Location;
-                                        locDown.Y ++;
+                                        locDown.Y++;
                                         GPS locRight = Block.Location;
-                                        locRight.X ++;
+                                        locRight.X++;
 
                                         if ((Block.CanMoveTo(Directions.Down) &&
-                                            GetWorldMap().GetGridMap(locDown).CanMoveTo(Directions.Right)) ||
+                                            GetWorldMap().GetGridMap(locDown).CanMoveTo(Directions.Right)) &&
                                             (Block.CanMoveTo(Directions.Right) &&
                                             GetWorldMap().GetGridMap(locRight).CanMoveTo(Directions.Down)))
                                         {
@@ -293,28 +296,28 @@ namespace Maze.Classes
                                 else
                                     Cell.G = currentCell.G + 14;    // Diagonal movement
 
-                                Cell.H = (Math.Abs(location.X - FindCell(OpenList, FinalPoint).Location.X) + Math.Abs(location.Y - FindCell(OpenList, FinalPoint/*, CurrentMap*/).Location.Y)) * 10;
+                                Cell.H = (Math.Abs(location.X - FindCell(openList, FinalPoint).Location.X) + Math.Abs(location.Y - FindCell(openList, FinalPoint/*, CurrentMap*/).Location.Y)) * 10;
                                 Cell.F = Cell.G + Cell.H;
 
-                                if (!SearchInList(OpenList, Cell) && !SearchInList(CloseList, Cell))
+                                if (!SearchInList(openList, Cell) && !SearchInList(closeList, Cell))
                                 {
-                                    OpenList.Add(Cell);
+                                    openList.Add(Cell);
 
-                                    if (!SearchInList(CloseList, currentCell))
-                                        CloseList.Add(currentCell);
+                                    if (!SearchInList(closeList, currentCell))
+                                        closeList.Add(currentCell);
 
-                                    if (SearchInList(OpenList, currentCell))
-                                        OpenList.Remove(currentCell);
+                                    if (SearchInList(openList, currentCell))
+                                        openList.Remove(currentCell);
                                 }
 
-                                    if (Cell.ID == FinalPoint.ID)
-                                    {
-                                        if(!SearchInList(CloseList, currentCell))
-                                            CloseList.Add(currentCell);
-                                        CloseList.Add(Cell);
-                                        return;
-                                    }
-                                
+                                if (Cell.ID == FinalPoint.ID)
+                                {
+                                    if (!SearchInList(closeList, currentCell))
+                                        closeList.Add(currentCell);
+                                    closeList.Add(Cell);
+                                    return;
+                                }
+
                             }
                         }
                     }
@@ -327,23 +330,23 @@ namespace Maze.Classes
             CellParam Cell = new CellParam();
             Cell.InitializeCell();
             int F = Cell.F;
-            int i = OpenList.Count - 1;
-            while(i!=0)
+            int i = openList.Count - 1;
+            while (i != 0)
             {
-                if(!BannedList.Contains(OpenList[i]))
+                if (!BannedList.Contains(openList[i]))
                 {
-                    Cell = OpenList[i];
+                    Cell = openList[i];
                     F = Cell.F;
                     break;
                 }
                 --i;
             }
-            for (i = OpenList.Count - 1; i > 0; --i)    // OpenList[0] == FinishPoint
+            for (i = openList.Count - 1; i > 0; --i)    // OpenList[0] == FinishPoint
             {
-                if (OpenList[i].F < F && !BannedList.Contains(OpenList[i]))
+                if (openList[i].F < F && !BannedList.Contains(openList[i]))
                 {
-                    F = OpenList[i].F;
-                    Cell = OpenList[i];
+                    F = openList[i].F;
+                    Cell = openList[i];
                 }
             }
             return Cell;

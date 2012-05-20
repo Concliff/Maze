@@ -135,7 +135,7 @@ namespace Maze.Classes
         public int GetMap() { return currentMapIndex; }
         public int GetLevelCount() { return levelCount; }
 
-        public void SetMap(int mapIndex) { SetMap(mapIndex,0); }
+        public void SetMap(int mapIndex) { SetMap(mapIndex, 0); }
 
         public void SetLevelCount(int levelCount) { this.levelCount = levelCount; }
 
@@ -244,7 +244,7 @@ namespace Maze.Classes
             }
 
             // Test-created monsters
-            new Phobos();
+            new Phobos(FinishPoint[GetLevel()]);
         }
 
         internal void FillMapWithObjects()

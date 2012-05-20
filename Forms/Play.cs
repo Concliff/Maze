@@ -224,7 +224,7 @@ namespace Maze.Forms
         {
             if (!PlayStarted)
                 return;
-            
+
             // Get last pressed Key
             switch (KeyMgr.ExtractKeyPressed())
             {
@@ -316,7 +316,7 @@ namespace Maze.Forms
             {
                 int currentMap = GetWorldMap().GetMap();
                 int currentLevel = GetWorldMap().GetLevel();
-                
+
                 if (++currentLevel < GetWorldMap().GetLevelCount())
                 {
                     GetWorldMap().SetMap(currentMap, currentLevel);
@@ -324,6 +324,11 @@ namespace Maze.Forms
                     player.AddPoints(30);
                 }
             }
+        }
+
+        public Slug GetPlayer()
+        {
+            return player;
         }
     }
 }
