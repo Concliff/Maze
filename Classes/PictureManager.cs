@@ -40,7 +40,7 @@ namespace Maze.Classes
             for (int i = 0; i < CellsCount; ++i)
                 Pictures[i] = Image.FromFile(ImageDirectoryPath + "Cell" + i.ToString() + ".bmp");
 
-            FinishImage = Image.FromFile(ImageDirectoryPath + "Finish.bmp");
+            FinishImage = Image.FromFile(ImageDirectoryPath + "Brain.png");
             StartImage = Image.FromFile(ImageDirectoryPath + "Start.bmp");
             CoinImage = Image.FromFile(ImageDirectoryPath + "Coin.bmp");
             DeimosImage = Image.FromFile(ImageDirectoryPath + "Deimos.png");
