@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.IO;
+using System.Data;
 
 namespace Maze.Classes
 {
@@ -35,6 +37,7 @@ namespace Maze.Classes
 
         public int Modifier;
 
+        private string BaseDirectoryPath = "Data\\Base\\";
 
         public Effect(EffectEntry effectEntry, Unit target, Object caster)
         {
@@ -46,6 +49,18 @@ namespace Maze.Classes
 
             target.ApplyEffect(this);
             effectState = EffectState.Applied;
+
+            //WorkDBF WDBF = new WorkDBF(BaseDirectoryPath);
+            //string TableName = "EFFECTSD";
+            //WDBF.CreateTable(TableName);
+            //WDBF.FillTable(TableName2, "1", "Wall", "1", "10", "10", "The player creates a barrier in front of himself from the slime through which the monster can not pass");
+            //WDBF.FillTable(TableName2, "2", "Invulnerability", "2", "6", "5", "The player becomes immune to monsters attacks for some time");
+            //WDBF.FillTable(TableName2, "3", "Accelerator", "3", "4", "10", "The player gets a bonus to the speed of movement for X seconds");
+            //DataTable table3 = WDBF.Execute("CREATE TABLE Clients (EffectId char(4), EffectName char(64), EffectType char(3), EffectValue char(10), Duration char(5), Description char(254))");
+            //DataTable table = WDBF.GetAll(TableName);
+            //DataTable table2 = WDBF.Execute("SELECT EFFECTID, EFFECTNAME FROM " + TableName);
+
+            //WDBF.FillTable(TableName, 2, "Invulnerability", 2, 3, 2, 1, 4, 10, "The player becomes immune to monsters attacks for some time");
         }
 
         public new EffectTypes GetType()
@@ -78,8 +93,5 @@ namespace Maze.Classes
             else
                 duration -= timeP;
         }
-
-
-
     }
 }
