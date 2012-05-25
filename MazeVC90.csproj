@@ -63,6 +63,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Classes\ReadDataTable.cs" />
     <Compile Include="Classes\Object\Bonus.cs" />
     <Compile Include="Classes\PathFinder.cs" />
     <Compile Include="Classes\BinaryOperations.cs" />
