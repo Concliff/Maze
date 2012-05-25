@@ -113,7 +113,7 @@ namespace Maze.Classes
             effectList.Add(newEffect);
 
             // Update unit stats
-            if (newEffect.GetType() == EffectTypes.Speed)
+            if (newEffect.GetType() == EffectTypes.Snare)
                 CalculateSpeedRate();
         }
 
@@ -141,7 +141,7 @@ namespace Maze.Classes
             this.speedRate = this.baseSpeed;
 
             int speedModifier = 0;
-            Effect speedEffect = GetEffectByType(EffectTypes.Speed);
+            Effect speedEffect = GetEffectByType(EffectTypes.Snare);
             if (speedEffect != null)
                 speedModifier = speedEffect.Modifier;
 
@@ -167,7 +167,7 @@ namespace Maze.Classes
                     effectList.Remove(effectList[i]);
 
                     // Update Speed
-                    if (effectType == EffectTypes.Speed)
+                    if (effectType == EffectTypes.Snare)
                         CalculateSpeedRate();
 
                     continue;

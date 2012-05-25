@@ -7,10 +7,21 @@ using System.Data;
 
 namespace Maze.Classes
 {
-    public enum EffectTypes
+    public enum EffectTypes : byte
     {
-        Speed,
-        Stun,
+        None            = 0,
+        IncreaseSpeed   = 1,
+        Snare           = 2,
+        Stun            = 3,
+        SlimeDuration   = 4,
+    };
+
+    public enum EffectTargets : byte
+    {
+        None                = 0,
+        Caster              = 1,
+        NearestUnit         = 2,
+        AllEnemiesInArea    = 3,
     };
 
     public enum EffectState
@@ -22,9 +33,19 @@ namespace Maze.Classes
 
     public struct EffectEntry
     {
+        public ushort ID;
+        public String EffectName;
+        public ushort Attributes;
+        public EffectTargets Targets;
+        public short Range;
         public EffectTypes EffectType;
         public int Value;
-        public int Duration;
+        public short Duration;
+        public short ND1;
+        public short ND2;
+        public short ND3;
+        public short ND4;
+        public String Description;
     }
 
     public class Effect

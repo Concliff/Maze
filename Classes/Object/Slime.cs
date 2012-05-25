@@ -26,7 +26,7 @@ namespace Maze.Classes
             foreach (Unit unit in nearestUnits)
             {
                 EffectEntry effectEntry = new EffectEntry();
-                effectEntry.EffectType = EffectTypes.Speed;
+                effectEntry.EffectType = EffectTypes.Snare;
                 effectEntry.Duration = -1;
                 if (unit.GetType() == ObjectType.Slug)
                     continue;

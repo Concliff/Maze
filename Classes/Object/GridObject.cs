@@ -12,6 +12,7 @@ namespace Maze.Classes
         Portal,
         Bomb,
         Slime,
+        Bonus,
     };
 
     public enum GridObjectState : byte
