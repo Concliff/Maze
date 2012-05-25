@@ -64,6 +64,10 @@ namespace Maze.Forms
             //RebuildGraphMap();
             CurrentInterface = FormInterface.MainMenu;
             SetInterface(FormInterface.MainMenu);
+
+            // Load DataBase
+            DBStores.InitializeComponents();
+            DBStores.Load();
         }
 
         ~Play()
