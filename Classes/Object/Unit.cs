@@ -28,7 +28,7 @@ namespace Maze.Classes
         protected double speedRate; // Current speed(+effects)
         protected GPS respawnLocation;
         protected UnitTypes unitType;
-        protected List<Effect> effectList;
+        protected List<EffectHolder> effectList;
 
         protected bool isInMotion;
         protected Directions currentDirection;
@@ -45,7 +45,7 @@ namespace Maze.Classes
             unitType = UnitTypes.Unit;
             baseSpeed = 1.0d;
             speedRate = baseSpeed;
-            effectList = new List<Effect>();
+            effectList = new List<EffectHolder>();
         }
 
         public UnitTypes GetUnitType() { return unitType; }
@@ -100,32 +100,41 @@ namespace Maze.Classes
             gridMapReached = true;
         }
 
-        public void ApplyEffect(Effect newEffect)
+        public void CastEffect(ushort effectID, Unit target)
         {
-            // checking this effect for existing
-            if (effectList.Count > 0)
-                foreach (Effect effect in effectList)
+            EffectEntry effectEntry = DBStores.EffectStore[effectID];
+
+            Effect effect = new Effect(effectEntry, target, this);
+            effect.Cast();
+        }
+
+        public void ApplyEffect(EffectHolder newHolder)
+        {
+            // prevent applying double effect
+            if (this.effectList.Count > 0)
+                foreach (EffectHolder effect in effectList)
                 {
-                    if (effect.GetType() == newEffect.GetType())
+                    if (effect.EffectInfo.ID == newHolder.EffectInfo.ID)
                         return;
                 }
 
-            effectList.Add(newEffect);
+            effectList.Add(newHolder);
 
             // Update unit stats
-            if (newEffect.GetType() == EffectTypes.Snare)
+            if (newHolder.EffectInfo.EffectType == EffectTypes.Snare ||
+                newHolder.EffectInfo.EffectType == EffectTypes.IncreaseSpeed)
                 CalculateSpeedRate();
         }
 
-        public Effect GetEffectByType(EffectTypes effectType)
+        public List<EffectEntry> GetEffectsByType(EffectTypes effectType)
         {
-            if (effectList.Count > 0)
-                foreach (Effect effect in effectList)
-                {
-                    if (effect.GetType() == effectType)
-                        return effect;
-                }
-            return null;
+            List<EffectEntry> result = new List<EffectEntry>();
+            foreach (EffectHolder effect in effectList)
+            {
+                if (effect.EffectInfo.EffectType == effectType)
+                    result.Add(effect.EffectInfo);
+            }
+            return result;
         }
 
 
@@ -141,9 +150,18 @@ namespace Maze.Classes
             this.speedRate = this.baseSpeed;
 
             int speedModifier = 0;
-            Effect speedEffect = GetEffectByType(EffectTypes.Snare);
-            if (speedEffect != null)
-                speedModifier = speedEffect.Modifier;
+            List<EffectEntry> speedEffects;
+
+            speedEffects = GetEffectsByType(EffectTypes.Snare);
+            foreach (EffectEntry effect in speedEffects)
+                speedModifier -= effect.Value;
+
+            this.speedRate += this.speedRate * speedModifier / 100d;
+
+            speedModifier = 0;
+            speedEffects = GetEffectsByType(EffectTypes.IncreaseSpeed);
+            foreach (EffectEntry effect in speedEffects)
+                speedModifier += effect.Value;
 
             this.speedRate += this.speedRate * speedModifier / 100d;
         }
@@ -162,12 +180,13 @@ namespace Maze.Classes
                 if (effectList[i].GetState() == EffectState.Expired)
                 {
                     // Save Type of removable effect
-                    EffectTypes effectType = effectList[i].GetType();
+                    EffectTypes effectType = effectList[i].EffectInfo.EffectType;
 
                     effectList.Remove(effectList[i]);
 
                     // Update Speed
-                    if (effectType == EffectTypes.Snare)
+                    if (effectType == EffectTypes.Snare ||
+                        effectType == EffectTypes.IncreaseSpeed)
                         CalculateSpeedRate();
 
                     continue;

@@ -7,6 +7,9 @@ namespace Maze.Classes
 {
     public class Slime : GridObject
     {
+        // Slime effect ID
+        private ushort ViscousSlime = 1;
+
         public Slime()
         {
             gridObjectType = GridObjectType.Slime;
@@ -25,15 +28,9 @@ namespace Maze.Classes
             List<Unit> nearestUnits = ObjectSearcher.GetUnitsWithinRange(this, 10);
             foreach (Unit unit in nearestUnits)
             {
-                EffectEntry effectEntry = new EffectEntry();
-                effectEntry.EffectType = EffectTypes.Snare;
-                effectEntry.Duration = -1;
-                if (unit.GetType() == ObjectType.Slug)
-                    continue;
-                else
-                    effectEntry.Value = -50;
-
-                Effect effect = new Effect(effectEntry, unit, this);
+                // ignore Slug
+                if (unit.GetType() != ObjectType.Slug)
+                    unit.CastEffect(ViscousSlime, unit);
             }
 
             base.UpdateState(timeP);

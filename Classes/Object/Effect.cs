@@ -50,34 +50,68 @@ namespace Maze.Classes
 
     public class Effect
     {
-        private EffectEntry effectEntry;
-        private int duration;   // Current effect time
+        private EffectEntry effectInfo;
         private Unit target;
-        private Object caster;
-        private EffectState effectState;
+        private Unit caster;
 
-        public int Modifier;
-
-        public Effect(EffectEntry effectEntry, Unit target, Object caster)
+        public Effect(EffectEntry effectEntry, Unit target, Unit caster)
         {
-            this.effectEntry = effectEntry;
-            this.duration = effectEntry.Duration;
+            this.effectInfo = effectEntry;
             this.target = target;
             this.caster = caster;
-            this.Modifier = effectEntry.Value;
+        }
 
-            target.ApplyEffect(this);
+        public void Cast()
+        {
+            EffectHolder effectHolder = new EffectHolder(effectInfo);
+
+            switch (effectInfo.Targets)
+            {
+                case EffectTargets.Caster:
+                    caster.ApplyEffect(effectHolder);
+                    break;
+                case EffectTargets.NearestUnit:
+                    List<Unit> unitsAround = ObjectSearcher.GetUnitsWithinRange(caster, effectInfo.Range);
+                    int minDistance = effectInfo.Range;
+                    Unit nearestUnit = null;
+
+                    foreach (Unit unit in unitsAround)
+                    {
+                        if (caster.GetDistance(unit) < minDistance)
+                            nearestUnit = unit;
+                    }
+
+                    if (nearestUnit != null)
+                        nearestUnit.ApplyEffect(effectHolder);
+                    break;
+                case EffectTargets.AllEnemiesInArea:
+                    List<Unit> enemiesAround = ObjectSearcher.GetUnitsWithinRange(caster, effectInfo.Range);
+                    foreach (Unit unit in enemiesAround)
+                    {
+                        if (unit.GetType() == caster.GetType())
+                            continue;
+
+                        unit.ApplyEffect(effectHolder);
+                    }
+                    break;
+            }
+
+        }
+    }
+
+    public class EffectHolder
+    {
+        private int duration;
+        private EffectState effectState;
+
+        public EffectEntry EffectInfo;
+
+        public EffectHolder(EffectEntry effectEntry)
+        {
+            this.EffectInfo = effectEntry;
+            this.duration = effectEntry.Duration;
+
             effectState = EffectState.Applied;
-        }
-
-        public new EffectTypes GetType()
-        {
-            return effectEntry.EffectType;
-        }
-
-        public EffectState GetState()
-        {
-            return effectState;
         }
 
         public void UpdateTime(int timeP)
@@ -88,7 +122,7 @@ namespace Maze.Classes
                 return;
             }
 
-            if (effectEntry.Duration == -1)   // One-Tact effect
+            if (EffectInfo.Duration == -1)   // One-Tact effect
             {
                 effectState = EffectState.Expired;
                 return;
@@ -100,5 +134,11 @@ namespace Maze.Classes
             else
                 duration -= timeP;
         }
+
+        public EffectState GetState()
+        {
+            return effectState;
+        }
+
     }
 }
