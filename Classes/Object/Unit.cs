@@ -26,6 +26,7 @@ namespace Maze.Classes
         protected DeathStates deathState;
         protected double baseSpeed; // base speed of the Unit
         protected double speedRate; // Current speed(+effects)
+        protected double stepRemainder; // Due to conversion from double(speedRate) to int(Coords)
         protected GPS respawnLocation;
         protected UnitTypes unitType;
         protected List<EffectHolder> effectList;
@@ -45,6 +46,7 @@ namespace Maze.Classes
             unitType = UnitTypes.Unit;
             baseSpeed = 1.0d;
             speedRate = baseSpeed;
+            stepRemainder = 0;
             effectList = new List<EffectHolder>();
         }
 
@@ -199,6 +201,6 @@ namespace Maze.Classes
             base.UpdateState(timeP);
         }
 
-        virtual public void StartMotion() { }
+        public virtual void StartMotion() { }
     }
 }

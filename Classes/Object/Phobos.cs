@@ -109,7 +109,15 @@ namespace Maze.Classes
             if (!IsAlive())
                 return;
 
-            int movementStep = (int)(GlobalConstants.MOVEMENT_STEP_PX * speedRate);
+            double movementStepD = GlobalConstants.MOVEMENT_STEP_PX * this.speedRate;
+            int movementStep = (int)(movementStepD);
+            stepRemainder += movementStepD - movementStep;
+            if (stepRemainder > 1d)
+            {
+                ++movementStep;
+                stepRemainder -= 1;
+            }
+
             if (pathFinder.Path.Contains(currentGridMap))
             {
                 switch (currentDirection)

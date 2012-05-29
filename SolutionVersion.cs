@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+
 namespace Maze
 {
     class SolutionVersion
@@ -10,7 +11,7 @@ namespace Maze
         private const uint Major    = 0;
         private const uint Minor    = 5;
         private const uint Build    = 5;
-        private const uint Revision = 133;
+        private const uint Revision = 134;
 
 
         public static string GetVersion()
