@@ -17,7 +17,8 @@ namespace Maze.Classes
 
             gridObjectType = GridObjectType.Bonus;
             SetFlag(GridObjectFlags.Temporal);
-            timeToLive = 10000; // LifeTime = 10 sec
+            SetFlag(GridObjectFlags.Disposable);
+            timeToLive = 5000; // LifeTime = 5 sec
 
             effectID = 0;
             isOpen = true;
@@ -29,14 +30,17 @@ namespace Maze.Classes
             this.effectID = effectID;
         }
 
+        public ushort GetEffect()
+        {
+            if (isOpen)
+                return effectID;
+            else
+                return 0;
+        }
+
         public override void Use(Unit user)
         {
-            /* Apply Effect
-             * 
-             * 
-             * 
-
-             * */
+            user.CastEffect(effectID, user);
 
             base.Use(user);
         }

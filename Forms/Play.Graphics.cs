@@ -157,6 +157,9 @@ namespace Maze.Forms
                                 {
                                     case GridObjectType.Coin: objectImage = PictureMgr.CoinImage; break;
                                     case GridObjectType.Portal: objectImage = PictureMgr.PortalImage; break;
+                                    case GridObjectType.Bonus:
+                                        objectImage = PictureMgr.EffectImages[((Bonus)gridObject).GetEffect()].Map;
+                                        break;
                                     default: objectImage = PictureMgr.CoinImage; break;
                                 }
                             }

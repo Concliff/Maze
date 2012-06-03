@@ -10,6 +10,12 @@ namespace Maze.Classes
 {
     public class PictureManager
     {
+        public struct EffectImage
+        {
+            public Image Map;
+            public Image Aura;
+        };
+
         public Image StartImage;
         public Image FinishImage;
         public Image DeimosImage;
@@ -22,6 +28,7 @@ namespace Maze.Classes
 
         private int CellsCount;
         private Image[] Pictures;           // Blocks Images
+        public EffectImage[] EffectImages;
         private string ImageDirectoryPath = GlobalConstants.IMAGES_PATH;
 
         public PictureManager()
@@ -49,6 +56,18 @@ namespace Maze.Classes
             SlugImage = Image.FromFile(ImageDirectoryPath + "Slug.png");
             SoulImage = Image.FromFile(ImageDirectoryPath + "Soul.png");
             PortalImage = Image.FromFile(ImageDirectoryPath + "Portal.png");
+
+            // Load effects images
+            EffectImages = new EffectImage[DBStores.EffectStore.Count + 1];
+            EffectImages[0].Map = Image.FromFile(ImageDirectoryPath + "Effects\\Hidden.png");
+            for (int i = 1; i <= DBStores.EffectStore.Count; ++i)
+            {
+                string mapFileName = ImageDirectoryPath + "Effects\\Map" + i.ToString() + ".png";
+                if (File.Exists(mapFileName))
+                    EffectImages[i].Map = Image.FromFile(ImageDirectoryPath + "Effects\\Map" + i.ToString() + ".png");
+            }
+
+
         }
 
         public Image GetPictureByType(uint Type)

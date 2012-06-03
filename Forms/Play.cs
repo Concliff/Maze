@@ -37,11 +37,18 @@ namespace Maze.Forms
 
         DateTime LastTickTime;
 
+        private int bonusGenerateTimer;
+
         public Play()
         {
             tempCount = 0;
             ProgramStartDateTime = DateTime.Now;
             LastTickTime = DateTime.Now;
+
+            // Load DataBase
+            DBStores.InitializeComponents();
+            DBStores.Load();
+
             PictureMgr = new PictureManager();
 
             GamePaused = false;
@@ -65,9 +72,7 @@ namespace Maze.Forms
             CurrentInterface = FormInterface.MainMenu;
             SetInterface(FormInterface.MainMenu);
 
-            // Load DataBase
-            DBStores.InitializeComponents();
-            DBStores.Load();
+            bonusGenerateTimer = 10000;
         }
 
         ~Play()
@@ -262,7 +267,8 @@ namespace Maze.Forms
             ProgramTime = DateTime.Now.Subtract(ProgramStartDateTime);
 
             // Call for Update every Unit
-            GetObjectContainer().UpdateState(DateTime.Now.Subtract(LastTickTime).Milliseconds);
+            int tickTime = DateTime.Now.Subtract(LastTickTime).Milliseconds;
+            GetObjectContainer().UpdateState(tickTime);
             LastTickTime = DateTime.Now;
 
             // Repaint Game stats panel
@@ -294,6 +300,30 @@ namespace Maze.Forms
                 }
 
             MovementAction(MoveType);
+
+            // Generate Bonus
+            if (bonusGenerateTimer <= 0)
+            {
+                // Define location of the bonus
+                // in 3 Blocks radius range
+                GridGPS bonusGridGPS = player.Position;
+                short xDiff = (short)Random.Int(6);
+                short yDiff = (short)Random.Int(6);
+                bonusGridGPS.X = Random.Int(30) + 10;
+                bonusGridGPS.Y = Random.Int(30) + 10;
+                bonusGridGPS.Location.X += xDiff - 3;
+                bonusGridGPS.Location.Y += yDiff - 3;
+
+                Bonus newBonus = new Bonus(bonusGridGPS);
+
+                // TO DO: random effect
+                newBonus.SetEffect(1, true);
+
+                bonusGenerateTimer = 10000;
+
+            }
+            else
+                bonusGenerateTimer -= tickTime;
 
             // Redraw Form Map
             GridMapPB.Invalidate();
