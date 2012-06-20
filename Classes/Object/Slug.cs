@@ -22,8 +22,12 @@ namespace Maze.Classes
             {
                 if (value > MaxOozeEnergy)
                     oozeEnergy = MaxOozeEnergy;
-                else if (value <0)
+                else if (value <= 0)
+                {
                     oozeEnergy = 0;
+                    // Cast Deslimation when energy ends
+                    CastEffect(4, this);
+                }
                 else
                     oozeEnergy = value;
             }
@@ -159,6 +163,8 @@ namespace Maze.Classes
         public GridGPS MovementAction(uint MoveType)
         {
             if (!IsAlive())
+                return Position;
+            if (GetEffectsByType(EffectTypes.Root).Count != 0)
                 return Position;
 
             // Define direction of motion

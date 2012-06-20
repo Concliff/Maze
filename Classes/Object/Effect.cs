@@ -14,6 +14,7 @@ namespace Maze.Classes
         Snare           = 2,
         Stun            = 3,
         SlimeDuration   = 4,
+        Root            = 5,
     };
 
     public enum EffectTargets : byte
