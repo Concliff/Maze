@@ -16,6 +16,7 @@ namespace Maze.Forms
         {
             MainMenu,
             NewGame,
+            Random,
             HighScores,
             Play,
             Pause,
@@ -73,6 +74,7 @@ namespace Maze.Forms
             SetInterface(FormInterface.MainMenu);
 
             bonusGenerateTimer = 10000;
+
         }
 
         ~Play()
@@ -106,7 +108,15 @@ namespace Maze.Forms
         void MenuItemClick(object sender, System.EventArgs e)
         {
             //PictureBox SenderPB = (PictureBox)sender;
-            if (sender == MenuNewGamePB || sender == PauseResumePB || sender == MenuContinueGamePB)
+            if (sender == MenuNewGamePB)
+            {
+                SetInterface(FormInterface.NewGame);
+            }
+            else if (sender == MenuRandomGamePB)
+            {
+                SetInterface(FormInterface.Random);
+            }
+            else if (sender == PauseMainMenuPB)
             {
                 SetInterface(FormInterface.Play);
             }
@@ -147,7 +157,7 @@ namespace Maze.Forms
                             }
 
                             MenuNewGamePB.Show();
-                            MenuContinueGamePB.Show();
+                            MenuRandomGamePB.Show();
                             MenuHighScoresPB.Show();
                             MenuQuitPB.Show();
 
@@ -155,7 +165,7 @@ namespace Maze.Forms
                         else
                         {
                             MenuNewGamePB.Visible = false;
-                            MenuContinueGamePB.Hide();
+                            MenuRandomGamePB.Hide();
                             MenuHighScoresPB.Hide();
                             MenuQuitPB.Hide();
                         }
@@ -165,9 +175,25 @@ namespace Maze.Forms
                     {
                         if (Show)
                         {
+                            // Create Map and units
+                            CreateWorldMap();               // Create Map
+                            GetWorldMap().SetMap(0);
+
                             SetInterface(FormInterface.Play);
                         }
 
+                        break;
+                    }
+                case FormInterface.Random:
+                    {
+                        if (Show)
+                        {
+                            // Create Map and units
+                            CreateWorldMap();               // Create Map
+                            GetWorldMap().GenerateRandomMap();
+
+                            SetInterface(FormInterface.Play);
+                        }
                         break;
                     }
                 case FormInterface.Play:
@@ -179,8 +205,6 @@ namespace Maze.Forms
                         {
                             PlayStarted = true;
 
-                            CreateWorldMap();               // Create Map
-                            GetWorldMap().SetMap(0);
                             CreateObjectContainer();
 
                             player = new Slug();
@@ -224,7 +248,7 @@ namespace Maze.Forms
                         break;
                     }
             }
-            MenuContinueGamePB.Invalidate();
+            MenuRandomGamePB.Invalidate();
         }
 
         #endregion

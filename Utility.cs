@@ -25,5 +25,10 @@ namespace Maze
         {
             return random.Next(maxValue);
         }
+
+        public static int Int(int minValue, int maxValue)
+        {
+            return random.Next(minValue, maxValue);
+        }
     }
 }

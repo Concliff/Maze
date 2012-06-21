@@ -82,7 +82,7 @@ namespace Maze.Classes
 
     public class Map
     {
-        private ArrayList MapBlocks;        // Array of GridMap block of current map
+        private List<GridMap> MapBlocks;    // Array of GridMap block of current map
         private int[] coinsCount;            // Coins per level on map
         private string[] MapNameList;       // Names of All downloaded maps
         private List<GPS> StartPoint;
@@ -149,6 +149,36 @@ namespace Maze.Classes
             currentLevel = level;
         }
 
+        public void GenerateRandomMap()
+        {
+            currentMapIndex = 0;
+            currentLevel = 0;
+
+            MazeGenerator generator = new MazeGenerator();
+            MapBlocks = generator.Generate(0);
+            StartPoint = new List<GPS>();
+            FinishPoint = new List<GPS>();
+            StartPoint.Add(generator.StartPoint.Location);
+            FinishPoint.Add(generator.FinishPoint.Location);
+
+            SetLevelCount(1);
+            coinsCount = new int[GetLevelCount()];
+            // Generate Coins
+            // Every 25th block should have a coin
+            coinsCount[GetLevel()] = MapBlocks.Count / 25;
+
+            for (int i = 0; i < coinsCount[GetLevel()]; ++i)
+            {
+                GridMap block = MapBlocks[Random.Int(MapBlocks.Count)];
+                if (block.HasAttribute(GridMapAttributes.HasCoin))
+                {
+                    --i;
+                    continue;
+                }
+                block.Attribute += (uint)GridMapAttributes.HasCoin;
+                ReplaceGridMap(block);
+            }            
+        }
 
         private void LoadMap(int MapIndex)
         {
@@ -168,7 +198,7 @@ namespace Maze.Classes
 
         private void LoadFromFile(string MapFileName)
         {
-            MapBlocks = new ArrayList();
+            MapBlocks = new List<GridMap>();
             StartPoint = new List<GPS>();
             FinishPoint = new List<GPS>();
             CurrentMapName = MapFileName.Split('.')[0];
