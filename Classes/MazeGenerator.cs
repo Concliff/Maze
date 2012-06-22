@@ -136,11 +136,11 @@ namespace Maze.Classes
                 int segmentLenth = Random.Int(SEGMENT_LENGTH_MIN, SEGMENT_LENGTH_MAX);
                 for (int j = 0; j < segmentLenth; ++j)
                 {
-                    currentPoint = MoveTo(currentPoint, currentDirection);
-
                     ++currentLenth;
                     if (currentLenth > pathLenth)
                         break;
+
+                    currentPoint = MoveTo(currentPoint, currentDirection);
 
                     bounds.Recheck(currentPoint);
 
@@ -150,6 +150,8 @@ namespace Maze.Classes
             }
 
             finish = currentPoint;
+
+            maze.AddRange(mainPath);
 
             //
             // Generate Branch Paths
@@ -201,8 +203,6 @@ namespace Maze.Classes
 
                 }
             }
-
-            maze.AddRange(mainPath);
 
             //
             // Create Maze Table
