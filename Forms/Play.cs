@@ -116,7 +116,7 @@ namespace Maze.Forms
             {
                 SetInterface(FormInterface.Random);
             }
-            else if (sender == PauseMainMenuPB)
+            else if (sender == PauseResumePB)
             {
                 SetInterface(FormInterface.Play);
             }
@@ -134,8 +134,8 @@ namespace Maze.Forms
         private void SetInterface(FormInterface NewInterface)
         {
             ChangeInterface(CurrentInterface, false);
-            ChangeInterface(NewInterface, true);
             CurrentInterface = NewInterface;
+            ChangeInterface(NewInterface, true);
         }
 
         private void ChangeInterface(FormInterface Interface, bool Show)
