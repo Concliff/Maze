@@ -94,12 +94,14 @@ namespace Maze.Classes
         private int currentLevel;
         private int levelCount;
         private string MapDirectoryPath = GlobalConstants.MAPS_PATH;
+        private bool isRandom;
 
         public Map()
         {
             BlocksCount = 0;
             LoadMapNameList();
             GridMapChanged = false;
+            isRandom = false;
             levelCount = 0;
         }
 
@@ -151,6 +153,7 @@ namespace Maze.Classes
 
         public void GenerateRandomMap()
         {
+            isRandom = true;
             currentMapIndex = 0;
             currentLevel = 0;
 
@@ -242,6 +245,9 @@ namespace Maze.Classes
 
         private void SaveToFile()
         {
+            if (isRandom)
+                return;
+
             StreamWriter GridMapStream = new StreamWriter(MapDirectoryPath + CurrentMapName + ".map", false);
             string GridMapString;
             GridMap Block;
