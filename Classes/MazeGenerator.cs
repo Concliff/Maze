@@ -47,8 +47,8 @@ namespace Maze.Classes
         //
         // Maze parameters
         //
-        private const int MAINPATH_LENGTH_MIN = 40;
-        private const int MAINPATH_LENGTH_MAX = 50;
+        private const int MAINPATH_LENGTH_MIN = 30;
+        private const int MAINPATH_LENGTH_MAX = 40;
         // SEGMENT is section of mainpath before change the direction
         private const int SEGMENT_LENGTH_MIN = 2;   
         private const int SEGMENT_LENGTH_MAX = 4;
@@ -188,6 +188,9 @@ namespace Maze.Classes
                     } while (GetOppositeDirection(oldDirection) == currentDirection);
 
                     int segmentLenth = Random.Int(BRANCH_SEGMENT_MIN, BRANCH_SEGMENT_MAX);
+                    // Reduce the length of long straight segments
+                    if (oldDirection == currentDirection)
+                        segmentLenth /= 2;
                     for (int j = 0; j < segmentLenth; ++j)
                     {
                         currentPoint = MoveTo(currentPoint, currentDirection);
