@@ -159,6 +159,7 @@ namespace Maze.Classes
 
             MazeGenerator generator = new MazeGenerator();
             MapBlocks = generator.Generate(0);
+            BlocksCount = MapBlocks.Count;
             StartPoint = new List<GPS>();
             FinishPoint = new List<GPS>();
             StartPoint.Add(generator.StartPoint.Location);
@@ -167,18 +168,20 @@ namespace Maze.Classes
             SetLevelCount(1);
             coinsCount = new int[GetLevelCount()];
             // Generate Coins
-            // Every 25th block should have a coin
-            coinsCount[GetLevel()] = MapBlocks.Count / 25;
+            // Every 15th block should have a coin
+            int coinsCounter = MapBlocks.Count / 15;
 
-            for (int i = 0; i < coinsCount[GetLevel()]; ++i)
+            int currentCointsCount = 0;
+            while (currentCointsCount < coinsCounter)
             {
                 GridMap block = MapBlocks[Random.Int(MapBlocks.Count)];
-                if (block.HasAttribute(GridMapAttributes.HasCoin))
-                {
-                    --i;
+                if (block.HasAttribute(GridMapAttributes.HasCoin) ||
+                    block.HasAttribute(GridMapAttributes.IsStart) ||
+                    block.HasAttribute(GridMapAttributes.IsFinish))
                     continue;
-                }
+
                 block.Attribute += (uint)GridMapAttributes.HasCoin;
+                ++currentCointsCount;
                 ReplaceGridMap(block);
             }            
         }
