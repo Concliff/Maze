@@ -17,7 +17,7 @@ namespace Maze.Classes
         };
 
         private int pathFindingTimer;
-
+        private int refindingTimer;
         private PathFinder pathFinder;
         private Unit victim;
 
@@ -29,9 +29,6 @@ namespace Maze.Classes
             isInMotion = false;
 
             this.respawnLocation = respawnLocation;
-
-            // Just for now
-            victim = World.GetPlayForm().GetPlayer();
 
             Position.Location = respawnLocation;
             Position.X = 25;
@@ -45,12 +42,15 @@ namespace Maze.Classes
             currentGridMap = GetWorldMap().GetGridMap(Position.Location);
 
             pathFindingTimer = 1000;
+            refindingTimer = 5000;
 
-            SetBaseSpeed(1.0d);
+            SetBaseSpeed(0.4d);
         }
 
         public override void StartMotion()
         {
+            victim = World.GetPlayForm().GetPlayer();
+
             if (victim == null)
                 return;
 
@@ -95,9 +95,23 @@ namespace Maze.Classes
 
                 if (pathFinder.Path.Count > 0)
                     MovementAction();
-
-
+                else
+                    isInMotion = false;
             }
+            // every 5 seconds try to find a way
+            else
+            {
+                if (refindingTimer < 0)
+                {
+                    refindingTimer = 5000;
+                    pathFinder.GeneratePath(currentGridMap, GetWorldMap().GetGridMap(victim.Position.Location));
+                    if (pathFinder.Path.Count > 0)
+                        isInMotion = true;
+                }
+                else
+                    refindingTimer -= timeP;
+            }
+
 
             base.UpdateState(timeP);
         }
