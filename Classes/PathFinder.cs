@@ -46,16 +46,6 @@ namespace Maze.Classes
             GeneratePath(StartPoint, FinishPoint);
         }
 
-        private void AddOpenList(CellParam Cell)
-        {
-            openList.Add(Cell);
-        }
-
-        private void AddCloseList(CellParam Cell)
-        {
-            closeList.Add(Cell);
-        }
-
         private bool SearchInList(List<CellParam> List, CellParam Element)
         {
             foreach (CellParam el in List)
@@ -131,10 +121,10 @@ namespace Maze.Classes
             finalCell.InitializeCell();
 
             currentCell.ID = StartPoint.ID;
-            AddOpenList(currentCell);
+            openList.Add(currentCell);
 
             finalCell.ID = FinalPoint.ID;
-            AddOpenList(finalCell);
+            openList.Add(finalCell);
 
             // return empty Way at points on different levels
             if (StartPoint.Location.Level != FinalPoint.Location.Level)
@@ -153,7 +143,7 @@ namespace Maze.Classes
                     if (CellWithMinF.Equals(currentCell))
                         bannedList.Add(currentCell);
 
-                    currentCell = GetCellWithMinF(bannedList);
+                    currentCell = CellWithMinF;
 
                 }
                 else
@@ -329,6 +319,10 @@ namespace Maze.Classes
         {
             CellParam Cell = new CellParam();
             Cell.InitializeCell();
+
+            //if (BannedList.Count == 0)
+            //    return Cell;
+
             int F = Cell.F;
             int i = openList.Count - 1;
             while (i != 0)
