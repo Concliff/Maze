@@ -7,6 +7,15 @@ namespace Maze.Classes
 {
     public class Phobos : Unit
     {
+        private enum PhobosStates
+        {
+            None,           // Initialized
+            StandingBy,     // victim is unreachable or not found
+            Chasing,        // Chases the victim
+            ReturningHome,  // Returns to spawn location (victim is dead or at its spawn location)
+            DestinationReached,    // Reached final destination
+        };
+
         private enum SubDirections
         {
             None,
@@ -16,10 +25,12 @@ namespace Maze.Classes
             RightDown,
         };
 
+        private const int PATHFINDING_TIME = 3000;
+
         private int pathFindingTimer;
-        private int refindingTimer;
         private PathFinder pathFinder;
         private Unit victim;
+        private PhobosStates state;
 
         private SubDirections subDirection;
 
@@ -41,8 +52,8 @@ namespace Maze.Classes
 
             currentGridMap = GetWorldMap().GetGridMap(Position.Location);
 
-            pathFindingTimer = 1000;
-            refindingTimer = 5000;
+            pathFindingTimer = PATHFINDING_TIME;
+            state = PhobosStates.None;
 
             SetBaseSpeed(0.4d);
         }
@@ -52,29 +63,24 @@ namespace Maze.Classes
             victim = World.GetPlayForm().GetPlayer();
 
             if (victim == null)
+            {
+                state = PhobosStates.StandingBy;
                 return;
+            }
 
-            pathFinder.GeneratePath(currentGridMap, GetWorldMap().GetGridMap(victim.Position.Location));
-
-            isInMotion = true;
+            FindPath();
         }
 
         public override void UpdateState(int timeP)
         {
-            if (isInMotion)
-            {
-                if (pathFindingTimer < timeP)
-                {
-                    pathFinder.GeneratePath(currentGridMap, GetWorldMap().GetGridMap(victim.Position.Location));
-                    pathFindingTimer = 1000;
-                }
-                else
-                {
-                    pathFindingTimer -= timeP;
-                }
+            // Nothing to do if is dead
+            if (!IsAlive())
+                return;
 
-                if (IsAlive())
-                {
+            switch (state)
+            {
+                case PhobosStates.Chasing:
+                    MovementAction();
                     List<Object> Objects = GetObjectsWithinRange(30);
                     if (Objects != null && Objects.Count != 0)
                     {
@@ -85,33 +91,30 @@ namespace Maze.Classes
                                 Unit unit = (Unit)obj;
                                 if (unit.IsAlive())
                                 {
-                                    SetDeathState(DeathStates.Dead);
+                                    unit.SetDeathState(DeathStates.Dead);
+                                    state = PhobosStates.ReturningHome;
                                     return;
                                 }
                             }
                         }
                     }
-                }
-
-                if (pathFinder.Path.Count > 0)
+                    break;
+                case PhobosStates.ReturningHome:
                     MovementAction();
-                else
-                    isInMotion = false;
+                    break;
+                case PhobosStates.DestinationReached:
+                case PhobosStates.StandingBy:
+                    if (pathFindingTimer < timeP)
+                    {
+                        FindPath();
+                        pathFindingTimer = PATHFINDING_TIME;
+                    }
+                    else
+                        pathFindingTimer -= timeP;
+                    break;
+                default:
+                    return;
             }
-            // every 5 seconds try to find a way
-            else
-            {
-                if (refindingTimer < 0)
-                {
-                    refindingTimer = 5000;
-                    pathFinder.GeneratePath(currentGridMap, GetWorldMap().GetGridMap(victim.Position.Location));
-                    if (pathFinder.Path.Count > 0)
-                        isInMotion = true;
-                }
-                else
-                    refindingTimer -= timeP;
-            }
-
 
             base.UpdateState(timeP);
         }
@@ -264,7 +267,9 @@ namespace Maze.Classes
 
         protected override void ReachedGridMap()
         {
-            pathFinder.GeneratePath(currentGridMap, GetWorldMap().GetGridMap(victim.Position.Location));
+            FindPath();
+
+            // TODO: Define state PhobosStates.DestinationReached
 
             if (pathFinder.Path.Contains(currentGridMap))// && currentGridMap.CanMoveTo(currentDirection))
             {
@@ -321,6 +326,25 @@ namespace Maze.Classes
                     nextGridMap = pathFinder.Path[index];
             }
             base.ReachedGridMap();
+        }
+
+        private void FindPath()
+        {
+            if (!victim.IsAlive() || victim.IsAtRespawnLocation())
+            {
+                state = PhobosStates.ReturningHome;
+            }
+            else if (state == PhobosStates.ReturningHome)
+                state = PhobosStates.StandingBy;
+
+            bool isHome = state == PhobosStates.ReturningHome;
+
+            pathFinder.GeneratePath(currentGridMap,
+                isHome ? GetWorldMap().GetGridMap(respawnLocation) : GetWorldMap().GetGridMap(victim.Position.Location));
+            if (pathFinder.Path.Count == 0)
+                state = PhobosStates.StandingBy;
+            else
+                state = isHome ? PhobosStates.ReturningHome : PhobosStates.Chasing;
         }
 
         private Directions GetOppositeDirection(Directions Direction)

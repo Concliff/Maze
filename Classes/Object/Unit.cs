@@ -174,6 +174,11 @@ namespace Maze.Classes
             this.deathState = deathState;
         }
 
+        public bool IsAtRespawnLocation()
+        {
+            return currentGridMap.Location.Equals(respawnLocation);
+        }
+
         public override void UpdateState(int timeP)
         {
             // Update unit effects
