@@ -340,7 +340,7 @@ namespace Maze.Forms
 
                 Bonus newBonus = new Bonus(bonusGridGPS);
 
-                // TO DO: random effect
+                // TODO: random effect
                 newBonus.SetEffect(1, true);
 
                 bonusGenerateTimer = 10000;
@@ -386,7 +386,7 @@ namespace Maze.Forms
                 }
                 else
                 {
-                    // TO DO: clear objects for past levels
+                    // TODO: clear objects for past levels
                     int currentMap = GetWorldMap().GetMap();
                     int currentLevel = GetWorldMap().GetLevel();
 

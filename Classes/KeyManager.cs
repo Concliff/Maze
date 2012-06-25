@@ -61,7 +61,7 @@ namespace Maze.Classes
         /// </summary>
         public void EventKeyPress(object sender, KeyPressEventArgs e)
         {
-            // TO DO
+            // TODO: remove or something else
         }
 
         public Keys KeyDown(int Number) { return (Keys)KeysDownList[Number]; }
