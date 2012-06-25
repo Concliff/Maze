@@ -74,6 +74,11 @@ namespace Maze.Classes
                 }
             }
 
+            RemoveTaggedObjects();
+        }
+
+        private void RemoveTaggedObjects()
+        {
             // Delete all removed objects
             int removeCount = objectsToRemove.Count;
             if (removeCount == 0)       // Skip deletion
@@ -98,6 +103,18 @@ namespace Maze.Classes
                 if (unit.GetType() == ObjectType.Unit)
                     ((Unit)unit).StartMotion();
             }
+        }
+        /// <summary>
+        /// Remove all Object except Slug
+        /// </summary>
+        /// <param name="?"></param>
+        public void ClearEnvironment()
+        {
+            foreach (Object objectF in objects)
+                if (objectF.GetType() != ObjectType.Slug)
+                    objectsToRemove.Push(objectF);
+
+            RemoveTaggedObjects();
         }
     }
     public class Object

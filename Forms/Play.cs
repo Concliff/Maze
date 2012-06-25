@@ -372,15 +372,30 @@ namespace Maze.Forms
 
             if (player.IsFinished())
             {
-                int currentMap = GetWorldMap().GetMap();
-                int currentLevel = GetWorldMap().GetLevel();
-
-                if (++currentLevel < GetWorldMap().GetLevelCount())
+                if (GetWorldMap().IsRandom())
                 {
-                    GetWorldMap().SetMap(currentMap, currentLevel);
-                    player.LevelChanged();
-                    player.AddPoints(30);
+                    // Regenerate Map and Objects
+                    CreateWorldMap();               // Create New Map
+                    GetWorldMap().GenerateRandomMap();
+
+                    GetObjectContainer().ClearEnvironment();
+
+                    GetWorldMap().FillMapWithUnits();
+                    GetWorldMap().FillMapWithObjects();
+                    GetObjectContainer().StartMotion();
                 }
+                else
+                {
+                    // TO DO: clear objects for past levels
+                    int currentMap = GetWorldMap().GetMap();
+                    int currentLevel = GetWorldMap().GetLevel();
+
+                    if (++currentLevel < GetWorldMap().GetLevelCount())
+                        GetWorldMap().SetMap(currentMap, currentLevel);
+                }
+
+                player.LevelChanged();
+                player.AddPoints(30);
             }
         }
 

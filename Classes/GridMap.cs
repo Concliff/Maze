@@ -186,6 +186,11 @@ namespace Maze.Classes
             }            
         }
 
+        public bool IsRandom()
+        {
+            return isRandom;
+        }
+
         private void LoadMap(int MapIndex)
         {
             LoadFromFile(MapNameList[MapIndex] + ".map");
