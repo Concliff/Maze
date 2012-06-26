@@ -14,7 +14,10 @@ namespace Maze.Classes
         {
             gridObjectType = GridObjectType.Slime;
             SetFlag(GridObjectFlags.Temporal);
-            timeToLive = 3000;
+            if (World.GetPlayForm().GetPlayer().GetEffectsByType(EffectTypes.SlimeDuration).Count > 0)
+                timeToLive = 5000;
+            else
+                timeToLive = 3000;
         }
         public Slime(GridGPS currentGridGPS)
             : this()

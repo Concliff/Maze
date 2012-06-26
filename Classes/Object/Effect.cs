@@ -25,6 +25,12 @@ namespace Maze.Classes
         AllEnemiesInArea    = 3,
     };
 
+    public enum EffectAttributes : ushort
+    {
+        None                = 0,
+        OnlySlug            = 0x001,    // Applies only on Slug
+    };
+
     public enum EffectState
     {
         Applied,
@@ -47,6 +53,11 @@ namespace Maze.Classes
         public short ND3;
         public short ND4;
         public String Description;
+
+        public bool HasAttribute(EffectAttributes attribute)
+        {
+            return (Attributes & (uint)attribute) != 0;
+        }
     }
 
     public class Effect
@@ -64,6 +75,9 @@ namespace Maze.Classes
 
         public void Cast()
         {
+            if (effectInfo.HasAttribute(EffectAttributes.OnlySlug) && target.GetType() != ObjectType.Slug)
+                return;
+
             EffectHolder effectHolder = new EffectHolder(effectInfo);
 
             switch (effectInfo.Targets)
