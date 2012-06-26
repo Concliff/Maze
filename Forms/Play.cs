@@ -330,21 +330,31 @@ namespace Maze.Forms
             {
                 // Define location of the bonus
                 // in 3 Blocks radius range
-                GridGPS bonusGridGPS = player.Position;
-                short xDiff = (short)Random.Int(6);
-                short yDiff = (short)Random.Int(6);
-                bonusGridGPS.X = Random.Int(30) + 10;
-                bonusGridGPS.Y = Random.Int(30) + 10;
-                bonusGridGPS.Location.X += xDiff - 3;
-                bonusGridGPS.Location.Y += yDiff - 3;
+                GridGPS bonusGridGPS;
+                // Try 10 times to find appropriate point
+                for (int i = 0; i < 10; ++i)
+                {
+                    bonusGridGPS = player.Position;
+                    short xDiff = (short)Random.Int(6);
+                    short yDiff = (short)Random.Int(6);
+                     bonusGridGPS.Location.X += xDiff - 3;
+                    bonusGridGPS.Location.Y += yDiff - 3;
 
-                Bonus newBonus = new Bonus(bonusGridGPS);
+                    // If current GPS doesn't have a map block
+                    if (GetWorldMap().GetGridMap(bonusGridGPS.Location).ID == -1)
+                        continue;
+                    // else
+                    bonusGridGPS.X = Random.Int(30) + 10;
+                    bonusGridGPS.Y = Random.Int(30) + 10;
 
-                // TODO: random effect
-                newBonus.SetEffect(1, true);
+                    Bonus newBonus = new Bonus(bonusGridGPS);
 
-                bonusGenerateTimer = 10000;
-
+                    // TODO: random effect
+                    newBonus.SetEffect(1, true);
+                    bonusGenerateTimer = 10000;
+                    // leave cycle
+                    break;
+                }
             }
             else
                 bonusGenerateTimer -= tickTime;
