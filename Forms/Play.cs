@@ -350,7 +350,7 @@ namespace Maze.Forms
                     Bonus newBonus = new Bonus(bonusGridGPS);
 
                     // TODO: random effect
-                    newBonus.SetEffect(1, true);
+                    newBonus.SetEffect(/*Sprint effect*/2, true);
                     bonusGenerateTimer = 10000;
                     // leave cycle
                     break;
