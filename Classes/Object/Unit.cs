@@ -207,5 +207,10 @@ namespace Maze.Classes
         }
 
         public virtual void StartMotion() { }
+
+        public bool IsVisible()
+        {
+            return (GetEffectsByType(EffectTypes.Invisibility).Count == 0);
+        }
     }
 }
