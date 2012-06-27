@@ -137,126 +137,128 @@ namespace Maze.Classes
                 stepRemainder -= 1;
             }
 
-            if (pathFinder.Path.Contains(currentGridMap))
+            // Generate Path if located at unknown grid
+            if (!pathFinder.Path.Contains(currentGridMap))
+                FindPath();
+
+            switch (currentDirection)
             {
-                switch (currentDirection)
-                {
-                    case Directions.Up:
+                case Directions.Up:
+                    {
+                        Position.X = 25;
+                        Position.Y -= movementStep;
+                        if (Position.Y < 0)
                         {
-                            Position.X = 25;
-                            Position.Y -= movementStep;
-                            if (Position.Y < 0)
-                            {
-                                Position.Y += GlobalConstants.GRIDMAP_BLOCK_HEIGHT;
-                                ChangeGPSDueDirection(1, Directions.Up);
-                            }
-
-                            break;
-                        }
-                    case Directions.Down:
-                        {
-                            Position.X = 25;
-                            Position.Y += movementStep;
-                            if (Position.Y > GlobalConstants.GRIDMAP_BLOCK_HEIGHT)
-                            {
-                                Position.Y -= GlobalConstants.GRIDMAP_BLOCK_HEIGHT;
-                                ChangeGPSDueDirection(1, Directions.Down);
-                            }
-                            break;
-                        }
-                    case Directions.Left:
-                        {
-                            Position.Y = 25;
-                            Position.X -= movementStep;
-                            if (Position.X < 0)
-                            {
-                                Position.X += GlobalConstants.GRIDMAP_BLOCK_WIDTH;
-                                ChangeGPSDueDirection(1, Directions.Left);
-                            }
-                            break;
-                        }
-                    case Directions.Right:
-                        {
-                            Position.Y = 25;
-                            Position.X += movementStep;
-                            if (Position.X > GlobalConstants.GRIDMAP_BLOCK_HEIGHT)
-                            {
-                                Position.X -= GlobalConstants.GRIDMAP_BLOCK_HEIGHT;
-                                ChangeGPSDueDirection(1, Directions.Right);
-                            }
-                            break;
+                            Position.Y += GlobalConstants.GRIDMAP_BLOCK_HEIGHT;
+                            ChangeGPSDueDirection(1, Directions.Up);
                         }
 
-                }
+                        break;
+                    }
+                case Directions.Down:
+                    {
+                        Position.X = 25;
+                        Position.Y += movementStep;
+                        if (Position.Y > GlobalConstants.GRIDMAP_BLOCK_HEIGHT)
+                        {
+                            Position.Y -= GlobalConstants.GRIDMAP_BLOCK_HEIGHT;
+                            ChangeGPSDueDirection(1, Directions.Down);
+                        }
+                        break;
+                    }
+                case Directions.Left:
+                    {
+                        Position.Y = 25;
+                        Position.X -= movementStep;
+                        if (Position.X < 0)
+                        {
+                            Position.X += GlobalConstants.GRIDMAP_BLOCK_WIDTH;
+                            ChangeGPSDueDirection(1, Directions.Left);
+                        }
+                        break;
+                    }
+                case Directions.Right:
+                    {
+                        Position.Y = 25;
+                        Position.X += movementStep;
+                        if (Position.X > GlobalConstants.GRIDMAP_BLOCK_HEIGHT)
+                        {
+                            Position.X -= GlobalConstants.GRIDMAP_BLOCK_HEIGHT;
+                            ChangeGPSDueDirection(1, Directions.Right);
+                        }
+                        break;
+                    }
 
-                switch (subDirection)
-                {
-                    case SubDirections.LeftDown:
-                        {
-                            Position.X -= movementStep;
-                            Position.Y += movementStep;
-                            if (Position.X < 0)
-                            {
-                                Position.X += GlobalConstants.GRIDMAP_BLOCK_HEIGHT;
-                                ChangeGPSDueDirection(1, Directions.Left);
-                            }
-                            if (Position.Y > GlobalConstants.GRIDMAP_BLOCK_HEIGHT)
-                            {
-                                Position.Y -= GlobalConstants.GRIDMAP_BLOCK_HEIGHT;
-                                ChangeGPSDueDirection(1, Directions.Down);
-                            }
-                            break;
-                        }
-                    case SubDirections.LeftUp:
-                        {
-                            Position.X -= movementStep;
-                            Position.Y -= movementStep;
-                            if (Position.Y < 0)
-                            {
-                                Position.Y += GlobalConstants.GRIDMAP_BLOCK_HEIGHT;
-                                ChangeGPSDueDirection(1, Directions.Up);
-                            }
-                            if (Position.X < 0)
-                            {
-                                Position.X += GlobalConstants.GRIDMAP_BLOCK_HEIGHT;
-                                ChangeGPSDueDirection(1, Directions.Left);
-                            }
-                            break;
-                        }
-                    case SubDirections.RightDown:
-                        {
-                            Position.X += movementStep;
-                            Position.Y += movementStep;
-                            if (Position.X > GlobalConstants.GRIDMAP_BLOCK_HEIGHT)
-                            {
-                                Position.X -= GlobalConstants.GRIDMAP_BLOCK_WIDTH;
-                                ChangeGPSDueDirection(1, Directions.Right);
-                            }
-                            if (Position.Y > GlobalConstants.GRIDMAP_BLOCK_HEIGHT)
-                            {
-                                Position.Y -= GlobalConstants.GRIDMAP_BLOCK_WIDTH;
-                                ChangeGPSDueDirection(1, Directions.Down);
-                            }
-                            break;
-                        }
-                    case SubDirections.RightUp:
-                        {
-                            Position.X += movementStep;
-                            Position.Y -= movementStep;
-                            if (Position.X > GlobalConstants.GRIDMAP_BLOCK_HEIGHT)
-                            {
-                                Position.X -= GlobalConstants.GRIDMAP_BLOCK_HEIGHT;
-                                ChangeGPSDueDirection(1, Directions.Right);
-                            }
-                            if (Position.Y < 0)
-                            {
-                                Position.Y += GlobalConstants.GRIDMAP_BLOCK_HEIGHT;
-                                ChangeGPSDueDirection(1, Directions.Up);
-                            }
-                            break;
-                        }
-                }
             }
+
+            switch (subDirection)
+            {
+                case SubDirections.LeftDown:
+                    {
+                        Position.X -= movementStep;
+                        Position.Y += movementStep;
+                        if (Position.X < 0)
+                        {
+                            Position.X += GlobalConstants.GRIDMAP_BLOCK_HEIGHT;
+                            ChangeGPSDueDirection(1, Directions.Left);
+                        }
+                        if (Position.Y > GlobalConstants.GRIDMAP_BLOCK_HEIGHT)
+                        {
+                            Position.Y -= GlobalConstants.GRIDMAP_BLOCK_HEIGHT;
+                            ChangeGPSDueDirection(1, Directions.Down);
+                        }
+                        break;
+                    }
+                case SubDirections.LeftUp:
+                    {
+                        Position.X -= movementStep;
+                        Position.Y -= movementStep;
+                        if (Position.Y < 0)
+                        {
+                            Position.Y += GlobalConstants.GRIDMAP_BLOCK_HEIGHT;
+                            ChangeGPSDueDirection(1, Directions.Up);
+                        }
+                        if (Position.X < 0)
+                        {
+                            Position.X += GlobalConstants.GRIDMAP_BLOCK_HEIGHT;
+                            ChangeGPSDueDirection(1, Directions.Left);
+                        }
+                        break;
+                    }
+                case SubDirections.RightDown:
+                    {
+                        Position.X += movementStep;
+                        Position.Y += movementStep;
+                        if (Position.X > GlobalConstants.GRIDMAP_BLOCK_HEIGHT)
+                        {
+                            Position.X -= GlobalConstants.GRIDMAP_BLOCK_WIDTH;
+                            ChangeGPSDueDirection(1, Directions.Right);
+                        }
+                        if (Position.Y > GlobalConstants.GRIDMAP_BLOCK_HEIGHT)
+                        {
+                            Position.Y -= GlobalConstants.GRIDMAP_BLOCK_WIDTH;
+                            ChangeGPSDueDirection(1, Directions.Down);
+                        }
+                        break;
+                    }
+                case SubDirections.RightUp:
+                    {
+                        Position.X += movementStep;
+                        Position.Y -= movementStep;
+                        if (Position.X > GlobalConstants.GRIDMAP_BLOCK_HEIGHT)
+                        {
+                            Position.X -= GlobalConstants.GRIDMAP_BLOCK_HEIGHT;
+                            ChangeGPSDueDirection(1, Directions.Right);
+                        }
+                        if (Position.Y < 0)
+                        {
+                            Position.Y += GlobalConstants.GRIDMAP_BLOCK_HEIGHT;
+                            ChangeGPSDueDirection(1, Directions.Up);
+                        }
+                        break;
+                    }
+            }
+
             if ((Position.X <= GlobalConstants.GRIDMAP_BLOCK_WIDTH / 2 + movementStep / 2) &&
                 (Position.X >= GlobalConstants.GRIDMAP_BLOCK_WIDTH / 2 - movementStep / 2) &&
                 (Position.Y <= GlobalConstants.GRIDMAP_BLOCK_HEIGHT / 2 + movementStep / 2) &&
