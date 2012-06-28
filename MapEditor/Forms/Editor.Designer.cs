@@ -43,7 +43,6 @@ namespace MapEditor.Forms
             this.ClientSize = new System.Drawing.Size(284, 262);
             this.Name = "Editor";
             this.Text = "Ally Map Editor";
-            this.Load += new System.EventHandler(this.MapEditor_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 

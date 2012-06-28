@@ -204,11 +204,6 @@ namespace MapEditor.Forms
             BlockEditForm.Focus();
         }
 
-        private void MapEditor_Load(object sender, EventArgs e)
-        {
-            SetNextAction(WorldNextAction.ApplicationQuit);
-        }
-
         void MapEditorFormClosing(object sender, FormClosingEventArgs e)
         {
             Program.WorldMap.CloseCurrentMap();

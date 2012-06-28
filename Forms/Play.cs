@@ -95,7 +95,6 @@ namespace Maze.Forms
 
         private void Play_Load(object sender, EventArgs e)
         {
-            SetNextAction(WorldNextAction.ApplicationQuit);
             //RebuildGraphMap();
         }
 
@@ -270,13 +269,6 @@ namespace Maze.Forms
             // Get last pressed Key
             switch (KeyMgr.ExtractKeyPressed())
             {
-                case Keys.M:
-                    if (KeyMgr.Control())
-                    {
-                        SetNextAction(WorldNextAction.MapEdit);
-                        this.Close();
-                    }
-                    break;
                 case Keys.Escape:
                     if (CurrentInterface == FormInterface.Play)
                     {

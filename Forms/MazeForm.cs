@@ -39,10 +39,5 @@ namespace Maze.Forms
         {
             return objectContainer;
         }
-
-        protected void SetNextAction(WorldNextAction NextAction)
-        {
-            World.SetNextAction(NextAction);
-        }
     }
 }
