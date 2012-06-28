@@ -55,7 +55,12 @@ namespace Maze.Classes
 
         public static List<Unit> GetUnitsWithinRange(Object searcher, int rangeDistance)
         {
-            List<Unit> units = GetUnitsInArea(searcher.Position, rangeDistance);
+            return GetUnitsWithinRange(searcher, rangeDistance, false, false);
+        }
+
+        public static List<Unit> GetUnitsWithinRange(Object searcher, int rangeDistance, bool includeInvisible, bool includeDead)
+        {
+            List<Unit> units = GetUnitsInArea(searcher.Position, rangeDistance, includeInvisible, includeDead);
 
             // exclude itself
             if (searcher.GetType() == ObjectType.Unit)
@@ -64,12 +69,12 @@ namespace Maze.Classes
             return units;
         }
 
-        public static List<Unit> GetUnitsInArea(GPS centralGPS, int radius)
+        public static List<Unit> GetUnitsInArea(GPS centralGPS, int radius, bool includeInvisible, bool includeDead)
         {
-            return GetUnitsInArea(DefaultGridGPS(centralGPS), radius);
+            return GetUnitsInArea(DefaultGridGPS(centralGPS), radius, includeInvisible, includeDead);
         }
 
-        public static List<Unit> GetUnitsInArea(GridGPS centralGridGPS, int radius)
+        public static List<Unit> GetUnitsInArea(GridGPS centralGridGPS, int radius, bool includeInvisible, bool includeDead)
         {
             List<Object> objects = new List<Object>();
             objects = GetObjectsInArea(centralGridGPS, radius);
@@ -80,7 +85,12 @@ namespace Maze.Classes
             {
                 if (obj.GetType() == ObjectType.Unit)
                 {
-                    result.Add((Unit)obj);
+                    Unit unit = (Unit)obj;
+                    if (!unit.IsVisible() && !includeInvisible)
+                        continue;
+                    if (!unit.IsAlive() && !includeDead)
+                        continue;
+                    result.Add(unit);
                 }
             }
 

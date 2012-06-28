@@ -163,6 +163,11 @@ namespace Maze.Classes
             return ObjectSearcher.GetUnitsWithinRange(this, rangeDistance);
         }
 
+        protected List<Unit> GetUnitsWithinRange(int rangeDistance, bool includeInvisible, bool includeDead)
+        {
+            return ObjectSearcher.GetUnitsWithinRange(this, rangeDistance, includeInvisible, includeDead);
+        }
+
         public double GetDistance(Object target)
         {
             double distance = Math.Sqrt(Math.Pow(this.Position.X - target.Position.X + (this.Position.Location.X - target.Position.Location.X) * GlobalConstants.GRIDMAP_BLOCK_WIDTH, 2)
