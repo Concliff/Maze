@@ -39,6 +39,7 @@ namespace Maze.Forms
         DateTime LastTickTime;
 
         private int bonusGenerateTimer;
+        private BonusEffect[] bonusEffects;
 
         public Play()
         {
@@ -73,7 +74,15 @@ namespace Maze.Forms
             CurrentInterface = FormInterface.MainMenu;
             SetInterface(FormInterface.MainMenu);
 
-            bonusGenerateTimer = 10000;
+            bonusGenerateTimer = 5000;
+            // Define bonus effects
+            bonusEffects = new BonusEffect[]
+            {
+                new BonusEffect(2 , true),      // Sprint
+                new BonusEffect(3 , true),      // Icy Wind
+                new BonusEffect(5 , true),      // Thickener
+                new BonusEffect(6 , true),      // A Cap of Invisibility
+            };
 
         }
 
@@ -349,9 +358,10 @@ namespace Maze.Forms
 
                     Bonus newBonus = new Bonus(bonusGridGPS);
 
-                    // TODO: random effect
-                    newBonus.SetEffect(/*Sprint effect*/2, true);
-                    bonusGenerateTimer = 10000;
+                    // Get Random effect
+                    BonusEffect eff = bonusEffects[Random.Int(bonusEffects.Count() - 1)];
+                    newBonus.SetEffect(eff);
+                    bonusGenerateTimer = 5000;
                     // leave cycle
                     break;
                 }
