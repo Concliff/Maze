@@ -171,6 +171,9 @@ namespace Maze.Forms
                             if (objectsOnMap[i].GetType() == ObjectType.Unit)
                             {
                                 Unit unit = (Unit)objectsOnMap[i];
+                                if (!unit.IsVisible())
+                                    continue;
+
                                 switch (unit.GetUnitType())
                                 {
                                     case UnitTypes.Deimos: objectImage = PictureMgr.DeimosImage; break;
@@ -186,9 +189,9 @@ namespace Maze.Forms
                             if (objectsOnMap[i].GetType() == ObjectType.Slug)
                             {
                                 if (player.IsAlive())
-                                    objectImage = PictureMgr.SlugImage;
-                                else
-                                    objectImage = PictureMgr.SoulImage;
+                                        objectImage = PictureMgr.SlugImage;
+                                    else
+                                        objectImage = PictureMgr.SoulImage;
                             }
                             else
                                 continue;

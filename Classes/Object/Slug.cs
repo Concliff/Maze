@@ -73,7 +73,7 @@ namespace Maze.Classes
 
         public override void UpdateState(int timeP)
         {
-            if (!FinishReached && IsAlive())
+            if (!FinishReached && IsAlive() && IsVisible())
             {
                 List<Unit> Units = GetUnitsWithinRange(30);
                 if (Units != null && Units.Count != 0)
