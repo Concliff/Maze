@@ -18,6 +18,10 @@ namespace MapEditor
         [STAThread]
         static void Main()
         {
+            // Load Pictures
+            PictureManager.InitializeComponents();
+            PictureManager.Load();
+
             WorldMap = new Map();
             WorldMap.SetMap(0, 0);
 

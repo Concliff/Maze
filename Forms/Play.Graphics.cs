@@ -96,19 +96,19 @@ namespace Maze.Forms
                     Block = GetWorldMap().GetGridMap(PBLocation);
 
                     this.GridMapGraphic[i, j].Block = Block;
-                    gGridMapBP.DrawImage(PictureMgr.GetPictureByType(Block.Type), x, y, GlobalConstants.GRIDMAP_BLOCK_WIDTH, GlobalConstants.GRIDMAP_BLOCK_HEIGHT);
+                    gGridMapBP.DrawImage(PictureManager.GetPictureByType(Block.Type), x, y, GlobalConstants.GRIDMAP_BLOCK_WIDTH, GlobalConstants.GRIDMAP_BLOCK_HEIGHT);
 
 
                     // Draw Start Block
                     if (Block.HasAttribute(GridMapAttributes.IsStart))
                     {
-                        gGridMapBP.DrawImage(PictureMgr.StartImage, x + 5, y + 5, 40, 40);
+                        gGridMapBP.DrawImage(PictureManager.StartImage, x + 5, y + 5, 40, 40);
                     }
 
                     // Draw Finish Block
                     if (Block.HasAttribute(GridMapAttributes.IsFinish))
                     {
-                        gGridMapBP.DrawImage(PictureMgr.FinishImage, x + 5, y + 5, 40, 40);
+                        gGridMapBP.DrawImage(PictureManager.FinishImage, x + 5, y + 5, 40, 40);
                     }
 
                     // Include all objects in this grid
@@ -124,12 +124,12 @@ namespace Maze.Forms
              * 4. Slug
              */
             Image objectImage;
-            objectImage = PictureMgr.SoulImage; // Default
 
             for (int j = 0; j < 4; ++j)
                 for (int i = 0; i < objectsOnMap.Count; ++i)
                 {
-
+                    // Default NULL
+                    objectImage = null;
                     switch (j)
                     {
                         case 0:
@@ -137,7 +137,7 @@ namespace Maze.Forms
                             if (objectsOnMap[i].GetType() == ObjectType.GridObject &&
                                 ((GridObject)objectsOnMap[i]).GetGridObjectType() == GridObjectType.Slime)
                             {
-                                objectImage = PictureMgr.SlimeImage;
+                                objectImage = PictureManager.SlimeImage;
                             }
                             else
                                 continue;
@@ -150,18 +150,7 @@ namespace Maze.Forms
                                 if (gridObject.GetGridObjectType() == GridObjectType.Slime)
                                     continue;
 
-                                if (!gridObject.IsActive())
-                                    continue;
-
-                                switch (gridObject.GetGridObjectType())
-                                {
-                                    case GridObjectType.Coin: objectImage = PictureMgr.CoinImage; break;
-                                    case GridObjectType.Portal: objectImage = PictureMgr.PortalImage; break;
-                                    case GridObjectType.Bonus:
-                                        objectImage = PictureMgr.EffectImages[((Bonus)gridObject).GetEffect()].Map;
-                                        break;
-                                    default: objectImage = PictureMgr.CoinImage; break;
-                                }
+                                objectImage = PictureManager.GetGridObjectImage(gridObject);
                             }
                             else
                                 continue;
@@ -170,16 +159,7 @@ namespace Maze.Forms
                             // Units
                             if (objectsOnMap[i].GetType() == ObjectType.Unit)
                             {
-                                Unit unit = (Unit)objectsOnMap[i];
-                                if (!unit.IsVisible())
-                                    continue;
-
-                                switch (unit.GetUnitType())
-                                {
-                                    case UnitTypes.Deimos: objectImage = PictureMgr.DeimosImage; break;
-                                    case UnitTypes.Phobos: objectImage = PictureMgr.PhobosImage; break;
-                                    default: objectImage = PictureMgr.DeimosImage; break;
-                                }
+                                objectImage = PictureManager.GetUnitImage((Unit)objectsOnMap[i]);
                             }
                             else
                                 continue;
@@ -187,18 +167,14 @@ namespace Maze.Forms
                         case 3:
                             // Slug
                             if (objectsOnMap[i].GetType() == ObjectType.Slug)
-                            {
-                                if (player.IsAlive())
-                                        objectImage = PictureMgr.SlugImage;
-                                    else
-                                        objectImage = PictureMgr.SoulImage;
-                            }
+                                objectImage = PictureManager.GetSlugImage((Slug)objectsOnMap[i]);
                             else
                                 continue;
                             break;
                     }
 
-
+                    if (objectImage == null)
+                        continue;
 
                     int xCoord = GridMapPB.Size.Width / 2 - ((player.Position.Location.X - objectsOnMap[i].Position.Location.X) *
                             GlobalConstants.GRIDMAP_BLOCK_WIDTH + player.Position.X - objectsOnMap[i].Position.X) - objectImage.Size.Width / 2;

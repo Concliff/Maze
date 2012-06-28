@@ -23,12 +23,8 @@ namespace MapEditor.Forms
         private Timer SystemTimer;
         private BlockEdit BlockEditForm;
 
-        private PictureManager PictureMgr;
-
         public Editor()
         {
-            PictureMgr = new PictureManager();
-
             InitializeComponent();
             CustomInitialize();
 
@@ -143,34 +139,34 @@ namespace MapEditor.Forms
 
                     this.GridMapGraphic[i, j].Block = Block;
 
-                    gGraphic.DrawImage(PictureMgr.GetPictureByType(Block.Type), x, y, GlobalConstants.GRIDMAP_BLOCK_WIDTH, GlobalConstants.GRIDMAP_BLOCK_HEIGHT);
+                    gGraphic.DrawImage(PictureManager.GetPictureByType(Block.Type), x, y, GlobalConstants.GRIDMAP_BLOCK_WIDTH, GlobalConstants.GRIDMAP_BLOCK_HEIGHT);
 
                     // Draw Start Block
                     if (Block.HasAttribute(GridMapAttributes.IsStart))
                     {
-                        gGraphic.DrawImage(PictureMgr.StartImage, x + 5, y + 5, 40, 40);
+                        gGraphic.DrawImage(PictureManager.StartImage, x + 5, y + 5, 40, 40);
                     }
 
                     // Draw Finish Block
                     if (Block.HasAttribute(GridMapAttributes.IsFinish))
                     {
-                        gGraphic.DrawImage(PictureMgr.FinishImage, x + 5, y + 5, PictureMgr.FinishImage.Width, PictureMgr.FinishImage.Height);
+                        gGraphic.DrawImage(PictureManager.FinishImage, x + 5, y + 5, PictureManager.FinishImage.Width, PictureManager.FinishImage.Height);
                     }
 
                     // Draw Coin
                     if (Block.HasAttribute(GridMapAttributes.HasCoin))
                     {
-                        gGraphic.DrawImage(PictureMgr.CoinImage, x + 15, y + 10, 20, 30);
+                        gGraphic.DrawImage(PictureManager.CoinImage, x + 15, y + 10, 20, 30);
                     }
 
                     // Portal
                     if (Block.HasOption(GridMapOptions.Portal))
                     {
-                        Image image = PictureMgr.PortalImage;
+                        Image image = PictureManager.PortalImage;
                         gGraphic.DrawImage(image,
                             x + (GlobalConstants.GRIDMAP_BLOCK_WIDTH - image.Width) / 2,
                             y + (GlobalConstants.GRIDMAP_BLOCK_HEIGHT - image.Height) / 2,
-                            PictureMgr.PortalImage.Width, PictureMgr.PortalImage.Height);
+                            PictureManager.PortalImage.Width, PictureManager.PortalImage.Height);
                     }
                 }
             gGraphic.Dispose();

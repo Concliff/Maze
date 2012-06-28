@@ -8,7 +8,7 @@ using System.Drawing;
 
 namespace Maze.Classes
 {
-    public class PictureManager
+    public static class PictureManager
     {
         public struct EffectImage
         {
@@ -16,36 +16,35 @@ namespace Maze.Classes
             public Image Aura;
         };
 
-        public Image StartImage;
-        public Image FinishImage;
-        public Image DeimosImage;
-        public Image PhobosImage;
-        public Image CoinImage;
-        public Image SlugImage;
-        public Image SoulImage;
-        public Image SlimeImage;
-        public Image PortalImage;
+        public static Image StartImage;
+        public static Image FinishImage;
+        public static Image DeimosImage;
+        public static Image PhobosImage;
+        public static Image CoinImage;
+        public static Image SlugImage;
+        public static Image SoulImage;
+        public static Image SlimeImage;
+        public static Image PortalImage;
 
-        private int CellsCount;
-        private Image[] Pictures;           // Blocks Images
-        public EffectImage[] EffectImages;
-        private string ImageDirectoryPath = GlobalConstants.IMAGES_PATH;
+        private static int mapImageCount;
+        private static Image[] mapImage;           // Blocks Images
+        public static EffectImage[] EffectImages;
+        private static string ImageDirectoryPath = GlobalConstants.IMAGES_PATH;
 
-        public PictureManager()
+        public static void InitializeComponents()
         {
-            CellsCount = 0;
-            LoadImages();
+            mapImageCount = 0;
         }
         
-        private void LoadImages()
+        public static void Load()
         {
             StreamReader CellsStream = File.OpenText(ImageDirectoryPath + "Cells.dat");
-            CellsCount = Convert.ToInt32(CellsStream.ReadLine());
+            mapImageCount = Convert.ToInt32(CellsStream.ReadLine());
             CellsStream.Close();
 
-            Pictures = new Image[CellsCount];
-            for (int i = 0; i < CellsCount; ++i)
-                Pictures[i] = Image.FromFile(ImageDirectoryPath + "Cell" + i.ToString() + ".bmp");
+            mapImage = new Image[mapImageCount];
+            for (int i = 0; i < mapImageCount; ++i)
+                mapImage[i] = Image.FromFile(ImageDirectoryPath + "Cell" + i.ToString() + ".bmp");
 
             FinishImage = Image.FromFile(ImageDirectoryPath + "Brain.png");
             StartImage = Image.FromFile(ImageDirectoryPath + "Start.bmp");
@@ -66,16 +65,78 @@ namespace Maze.Classes
                 if (File.Exists(mapFileName))
                     EffectImages[i].Map = Image.FromFile(ImageDirectoryPath + "Effects\\Map" + i.ToString() + ".png");
             }
-
-
         }
 
-        public Image GetPictureByType(uint Type)
+        public static Image GetPictureByType(uint Type)
         {
-            if (Type >= CellsCount)
+            if (Type >= mapImageCount)
                 return null;
-            return Pictures[Type];
+            return mapImage[Type];
         }
-        
+
+        public static Image GetUnitImage(Unit unit)
+        {
+            // Separate method for Slug
+            if (unit.GetType() == ObjectType.Slug)
+                return GetSlugImage((Slug)unit);
+
+            // Do not draw Invisible unit
+            if (!unit.IsVisible())
+                return null;
+
+            switch (unit.GetUnitType())
+            {
+                case UnitTypes.Deimos:
+                    return DeimosImage;
+                case UnitTypes.Phobos:
+                    return PhobosImage;
+            }
+
+            // Else nothing to draw
+            return null;
+        }
+
+        public static Image GetSlugImage(Slug slug)
+        {
+            if (slug.IsAlive())
+                return SlugImage;
+            else
+                return SoulImage;
+        }
+
+        public static Image GetGridObjectImage(GridObject gridObject)
+        {
+            // Only Active objects are visible
+            if (!gridObject.IsActive())
+                return null;
+
+            switch (gridObject.GetGridObjectType())
+            {
+                case GridObjectType.Coin:
+                    return PictureManager.CoinImage;
+                case GridObjectType.Portal:
+                    return PictureManager.PortalImage;
+                case GridObjectType.Bonus:
+                    return PictureManager.EffectImages[((Bonus)gridObject).GetEffect()].Map;
+            }
+
+            // Else nothing to draw
+            return null;
+        }
+
+        public static Image GetObjectImage(Object obj)
+        {
+            switch (obj.GetType())
+            {
+                case ObjectType.Slug:
+                    return GetSlugImage((Slug)obj);
+                case ObjectType.Unit:
+                    return GetUnitImage((Unit)obj);
+                case ObjectType.GridObject:
+                    return GetGridObjectImage((GridObject)obj);
+                default:
+                    return null;
+            }
+        }
     }
 }

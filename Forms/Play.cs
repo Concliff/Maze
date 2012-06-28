@@ -33,7 +33,6 @@ namespace Maze.Forms
 
         //TimeControl SysTimer;         // Not implemented yet
 
-        PictureManager PictureMgr;
         FormInterface CurrentInterface;
 
         DateTime LastTickTime;
@@ -46,12 +45,6 @@ namespace Maze.Forms
             tempCount = 0;
             ProgramStartDateTime = DateTime.Now;
             LastTickTime = DateTime.Now;
-
-            // Load DataBase
-            DBStores.InitializeComponents();
-            DBStores.Load();
-
-            PictureMgr = new PictureManager();
 
             GamePaused = false;
             PlayStarted = false;

@@ -18,6 +18,13 @@ namespace Maze
 
         private void Program()
         {
+            // Load Datas
+            DBStores.InitializeComponents();
+            DBStores.Load();
+
+            PictureManager.InitializeComponents();
+            PictureManager.Load();
+
             CreatePlayForm();
             Application.Run(PlayForm);
             
