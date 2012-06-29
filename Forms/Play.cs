@@ -344,7 +344,7 @@ namespace Maze.Forms
                     Bonus newBonus = new Bonus(bonusGridGPS);
 
                     // Get Random effect
-                    BonusEffect eff = bonusEffects[Random.Int(bonusEffects.Count() - 1)];
+                    BonusEffect eff = bonusEffects[Random.Int(bonusEffects.Count())];
                     newBonus.SetEffect(eff);
                     bonusGenerateTimer = 5000;
                     // leave cycle
