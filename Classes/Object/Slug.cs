@@ -110,7 +110,7 @@ namespace Maze.Classes
                 if (downTime > 1000)    // not in motion over 5 seconds
                 {
                     downTime -= 1000;
-                    OozeEnergy += 1;
+                    OozeEnergy += IsAtRespawnLocation() ? 3 : 1;
                 }
             }
 
