@@ -155,31 +155,25 @@ namespace Maze.Classes
             if (Random.Int(100) <= 33)  // 33% chance to change direction
                 SelectNewDirection();
 
-            if (currentGridMap.CanMoveTo(currentDirection))
-            {
-                GPS nextGPS = Position.Location;
-                GridMap nextGridMap;
-
-                switch (currentDirection)
-                {
-                    case Directions.Up: --nextGPS.Y; break;
-                    case Directions.Down: ++nextGPS.Y; break;
-                    case Directions.Left: --nextGPS.X; break;
-                    case Directions.Right: ++nextGPS.X; break;
-                }
-
-                nextGridMap = GetWorldMap().GetGridMap(nextGPS);
-                if (nextGridMap.HasAttribute(GridMapAttributes.IsStart))
-                {
-                    SelectNewDirection(false);
-                }
-
-                return;
-            }
-            else
-            {
+            if (!currentGridMap.CanMoveTo(currentDirection))
                 SelectNewDirection();
+
+            // Deimos can not pass through the Start Point
+            // Check the next GridMap whether it is such block
+            GPS nextGPS = Position.Location;
+            GridMap nextGridMap;
+
+            switch (currentDirection)
+            {
+                case Directions.Up: --nextGPS.Y; break;
+                case Directions.Down: ++nextGPS.Y; break;
+                case Directions.Left: --nextGPS.X; break;
+                case Directions.Right: ++nextGPS.X; break;
             }
+
+            nextGridMap = GetWorldMap().GetGridMap(nextGPS);
+            if (nextGridMap.HasAttribute(GridMapAttributes.IsStart))
+                SelectNewDirection(false);
         }
 
         private void SelectNewDirection()
