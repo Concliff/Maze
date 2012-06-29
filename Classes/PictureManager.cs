@@ -25,10 +25,11 @@ namespace Maze.Classes
         public static Image SoulImage;
         public static Image SlimeImage;
         public static Image PortalImage;
+        public static EffectImage[] EffectImages;
 
         private static int mapImageCount;
         private static Image[] mapImage;           // Blocks Images
-        public static EffectImage[] EffectImages;
+        private static Image SlugInvisible;
         private static string ImageDirectoryPath = GlobalConstants.IMAGES_PATH;
 
         public static void InitializeComponents()
@@ -53,6 +54,7 @@ namespace Maze.Classes
             PhobosImage = Image.FromFile(ImageDirectoryPath + "Phobos.png");
             SlimeImage = Image.FromFile(ImageDirectoryPath + "Slime.png");
             SlugImage = Image.FromFile(ImageDirectoryPath + "Slug.png");
+            SlugInvisible = Image.FromFile(ImageDirectoryPath + "Slug_Invisible.png");
             SoulImage = Image.FromFile(ImageDirectoryPath + "Soul.png");
             PortalImage = Image.FromFile(ImageDirectoryPath + "Portal.png");
 
@@ -98,10 +100,12 @@ namespace Maze.Classes
 
         public static Image GetSlugImage(Slug slug)
         {
-            if (slug.IsAlive())
-                return SlugImage;
-            else
+            if (!slug.IsAlive())
                 return SoulImage;
+            if (!slug.IsVisible())
+                return SlugInvisible;
+
+            return SlugImage;
         }
 
         public static Image GetGridObjectImage(GridObject gridObject)
