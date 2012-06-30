@@ -80,25 +80,6 @@ namespace Maze.Classes
             switch (state)
             {
                 case PhobosStates.Chasing:
-                    MovementAction();
-                    List<Object> Objects = GetObjectsWithinRange(30);
-                    if (Objects != null && Objects.Count != 0)
-                    {
-                        foreach (Object obj in Objects)
-                        {
-                            if (obj.GetType() == ObjectType.Slug)
-                            {
-                                Unit unit = (Unit)obj;
-                                if (unit.IsAlive())
-                                {
-                                    unit.SetDeathState(DeathStates.Dead);
-                                    state = PhobosStates.ReturningHome;
-                                    return;
-                                }
-                            }
-                        }
-                    }
-                    break;
                 case PhobosStates.ReturningHome:
                     MovementAction();
                     break;
@@ -278,7 +259,7 @@ namespace Maze.Classes
 
         private void FindPath()
         {
-            if (!victim.IsAlive() || victim.IsAtRespawnLocation())
+            if (!victim.IsAlive() || victim.IsAtRespawnLocation() || !victim.IsVisible())
             {
                 state = PhobosStates.ReturningHome;
             }
