@@ -35,16 +35,14 @@ namespace Maze.Forms
             this.components = new System.ComponentModel.Container();
             this.SystemTimer = new System.Windows.Forms.Timer(this.components);
             this.label1 = new System.Windows.Forms.Label();
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
-            this.pictureBox2 = new System.Windows.Forms.PictureBox();
+            this.TopPanelPB = new System.Windows.Forms.PictureBox();
+            this.BottomPanelPB = new System.Windows.Forms.PictureBox();
             this.LeftPanelPB = new System.Windows.Forms.PictureBox();
             this.RightPanelPB = new System.Windows.Forms.PictureBox();
-            this.ScoresPB = new System.Windows.Forms.PictureBox();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.TopPanelPB)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.BottomPanelPB)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.LeftPanelPB)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.RightPanelPB)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ScoresPB)).BeginInit();
             this.SuspendLayout();
             // 
             // SystemTimer
@@ -60,24 +58,6 @@ namespace Maze.Forms
             this.label1.TabIndex = 2;
             this.label1.Text = "label1";
             // 
-            // pictureBox1
-            // 
-            this.pictureBox1.Location = new System.Drawing.Point(150, 0);
-            this.pictureBox1.Name = "pictureBox1"; 
-            this.pictureBox1.Size = new System.Drawing.Size(550, 60);
-            this.pictureBox1.BackColor = Color.Gray;
-            this.pictureBox1.TabIndex = 4;
-            this.pictureBox1.TabStop = false;
-            // 
-            // pictureBox2
-            // 
-            this.pictureBox2.Location = new System.Drawing.Point(150, 410);
-            this.pictureBox2.Name = "pictureBox2";
-            this.pictureBox2.Size = new System.Drawing.Size(550, 60);
-            this.pictureBox2.BackColor = Color.Gray;
-            this.pictureBox2.TabIndex = 5;
-            this.pictureBox2.TabStop = false;
-            // 
             // Play
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -88,11 +68,10 @@ namespace Maze.Forms
             this.Text = "Play";
             this.Load += new System.EventHandler(this.Play_Load);
             this.Paint += new System.Windows.Forms.PaintEventHandler(this.Play_Paint);
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.TopPanelPB)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.BottomPanelPB)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.LeftPanelPB)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.RightPanelPB)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ScoresPB)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -129,14 +108,6 @@ namespace Maze.Forms
             this.GridMapPB.Paint += new PaintEventHandler(GridMapPB_Paint);
 
             //
-            // ScoresPB
-            //
-            this.ScoresPB.Location = new System.Drawing.Point(30, 20);
-            this.ScoresPB.Name = "Total scores";
-            this.ScoresPB.Size = new System.Drawing.Size(100, 25);
-            this.ScoresPB.BackColor = Color.Gray;
-            this.ScoresPB.Paint += new PaintEventHandler(RightPanelPB_Paint);
-            //
             // RightPanelPB
             //
             this.RightPanelPB.Location = new System.Drawing.Point(700, 0);
@@ -156,6 +127,24 @@ namespace Maze.Forms
             this.LeftPanelPB.TabIndex = 6;
             this.LeftPanelPB.TabStop = false;
             this.LeftPanelPB.Paint += new PaintEventHandler(LeftPanelPB_Paint);
+            //
+            // TopPanelPB
+            //
+            this.TopPanelPB.Location = new System.Drawing.Point(150, 0);
+            this.TopPanelPB.Name = "pictureBox1";
+            this.TopPanelPB.Size = new System.Drawing.Size(550, 60);
+            this.TopPanelPB.BackColor = Color.Gray;
+            this.TopPanelPB.TabIndex = 4;
+            this.TopPanelPB.TabStop = false;
+            //
+            // BottomPanelPB
+            //
+            this.BottomPanelPB.Location = new System.Drawing.Point(150, 410);
+            this.BottomPanelPB.Name = "pictureBox2";
+            this.BottomPanelPB.Size = new System.Drawing.Size(550, 60);
+            this.BottomPanelPB.BackColor = Color.Gray;
+            this.BottomPanelPB.TabIndex = 5;
+            this.BottomPanelPB.TabStop = false;
 
             GridMapGraphic = new GridMapGraph[GlobalConstants.GRIDMAP_WIDTH, GlobalConstants.GRIDMAP_HEIGHT];
             for (int i = 0; i < GlobalConstants.GRIDMAP_WIDTH; ++i)
@@ -267,10 +256,9 @@ namespace Maze.Forms
         {
             // Add every control in the specific order
             this.Controls.Add(this.label1);
-            this.Controls.Add(this.pictureBox2);
-            this.Controls.Add(this.pictureBox1);
+            this.Controls.Add(this.BottomPanelPB);
+            this.Controls.Add(this.TopPanelPB);
             this.Controls.Add(this.RightPanelPB);
-            //this.Controls.Add(this.ScoresPB);
             this.Controls.Add(this.LeftPanelPB);
 
             //Menu
@@ -292,9 +280,8 @@ namespace Maze.Forms
         private System.Windows.Forms.PictureBox GridMapPB;
         private System.Windows.Forms.Timer SystemTimer;
         public  System.Windows.Forms.Label label1;
-        private PictureBox ScoresPB;
-        private PictureBox pictureBox1;
-        private PictureBox pictureBox2;
+        private PictureBox TopPanelPB;
+        private PictureBox BottomPanelPB;
         private PictureBox LeftPanelPB;
         private PictureBox RightPanelPB;
 
