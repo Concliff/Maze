@@ -128,6 +128,23 @@ namespace Maze.Classes
                 CalculateSpeedRate();
         }
 
+        private void RemoveEffect(EffectHolder effectHolder)
+        {
+            if (!effectList.Contains(effectHolder))
+                return;
+
+            // Save Type of removable effect
+            EffectTypes effectType = effectHolder.EffectInfo.EffectType;
+
+            if (effectList.Remove(effectHolder))
+            {
+                // Update Speed
+                if (effectType == EffectTypes.Snare ||
+                    effectType == EffectTypes.IncreaseSpeed)
+                    CalculateSpeedRate();
+            }
+        }
+
         public List<EffectEntry> GetEffectsByType(EffectTypes effectType)
         {
             List<EffectEntry> result = new List<EffectEntry>();
@@ -171,7 +188,16 @@ namespace Maze.Classes
         public bool IsAlive() { return deathState == DeathStates.Alive; }
         public virtual void SetDeathState(DeathStates deathState)
         {
+            if (deathState == DeathStates.Dead)
+            {
+                // Remove All Effects
+                int count = effectList.Count;
+                for (int i = 0; i < count; ++i)
+                    RemoveEffect(effectList[0]);
+            }
+
             this.deathState = deathState;
+
         }
 
         public bool IsAtRespawnLocation()
@@ -186,16 +212,7 @@ namespace Maze.Classes
             {
                 if (effectList[i].GetState() == EffectState.Expired)
                 {
-                    // Save Type of removable effect
-                    EffectTypes effectType = effectList[i].EffectInfo.EffectType;
-
-                    effectList.Remove(effectList[i]);
-
-                    // Update Speed
-                    if (effectType == EffectTypes.Snare ||
-                        effectType == EffectTypes.IncreaseSpeed)
-                        CalculateSpeedRate();
-
+                    RemoveEffect(effectList[i]);
                     continue;
                 }
 
