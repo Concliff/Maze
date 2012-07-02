@@ -26,17 +26,12 @@ namespace Maze.Classes
             currentGridMap = GetWorldMap().GetGridMap(currentGridGPS.Location);
         }
 
-        public override void UpdateState(int timeP)
+        public override void Use(Unit user)
         {
-            List<Unit> nearestUnits = ObjectSearcher.GetUnitsWithinRange(this, 10);
-            foreach (Unit unit in nearestUnits)
-            {
-                // ignore Slug
-                if (unit.GetType() != ObjectType.Slug)
-                    unit.CastEffect(ViscousSlime, unit);
-            }
+            if (user.GetType() != ObjectType.Slug)
+                user.CastEffect(ViscousSlime, user);
 
-            base.UpdateState(timeP);
+            base.Use(user);
         }
     }
 }

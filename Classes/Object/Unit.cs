@@ -90,14 +90,6 @@ namespace Maze.Classes
         {
             if (gridMapReached)
                 return;
-            // asd
-            List<GridObject> objects = GetGridObjectsWithinRange(GlobalConstants.GRIDMAP_BLOCK_HEIGHT / 2);
-
-            foreach (GridObject obj in objects)
-            {
-                if (obj.IsActive() && obj.HasFlag(GridObjectFlags.Usable))
-                    obj.Use(this);
-            }
 
             gridMapReached = true;
         }
@@ -218,6 +210,15 @@ namespace Maze.Classes
 
                 effectList[i].UpdateTime(timeP);
                 ++i;
+            }
+
+            // Check for the nearest GridObjects
+            List<GridObject> objects = GetGridObjectsWithinRange(30);
+
+            foreach (GridObject obj in objects)
+            {
+                if (obj.IsActive() && obj.HasFlag(GridObjectFlags.Usable))
+                    obj.Use(this);
             }
 
             base.UpdateState(timeP);
