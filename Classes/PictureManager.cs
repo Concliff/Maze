@@ -63,9 +63,15 @@ namespace Maze.Classes
             EffectImages[0].Map = Image.FromFile(ImageDirectoryPath + "Effects\\Hidden.png");
             for (int i = 1; i <= DBStores.EffectStore.Count; ++i)
             {
+                // Map(Bonus) Images
                 string mapFileName = ImageDirectoryPath + "Effects\\Map" + i.ToString() + ".png";
                 if (File.Exists(mapFileName))
-                    EffectImages[i].Map = Image.FromFile(ImageDirectoryPath + "Effects\\Map" + i.ToString() + ".png");
+                    EffectImages[i].Map = Image.FromFile(mapFileName);
+
+                // Aura(PlayForm) Images
+                string auraFileName = ImageDirectoryPath + "Effects\\Aura" + i.ToString() + ".png";
+                if (File.Exists(auraFileName))
+                    EffectImages[i].Aura = Image.FromFile(auraFileName);
             }
         }
 

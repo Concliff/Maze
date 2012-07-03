@@ -62,7 +62,7 @@ namespace Maze.Forms
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(850, 470);
+            this.ClientSize = new System.Drawing.Size(850, 530);
             this.DoubleBuffered = true;
             this.Name = "Play";
             this.Text = "Play";
@@ -101,7 +101,7 @@ namespace Maze.Forms
             // GridMapPB
             //
             this.GridMapPB = new System.Windows.Forms.PictureBox();
-            this.GridMapPB.Location = new System.Drawing.Point(150, 60);
+            this.GridMapPB.Location = new System.Drawing.Point(150, 90);
             this.GridMapPB.Name = "GridMapPB";
             this.GridMapPB.Size = new System.Drawing.Size(550, 350);
             this.GridMapPB.Visible = true;
@@ -112,7 +112,7 @@ namespace Maze.Forms
             //
             this.RightPanelPB.Location = new System.Drawing.Point(700, 0);
             this.RightPanelPB.Name = "Right Panel";
-            this.RightPanelPB.Size = new System.Drawing.Size(150, 470);
+            this.RightPanelPB.Size = new System.Drawing.Size(150, this.Size.Height);
             this.RightPanelPB.BackColor = Color.Gray;
             this.RightPanelPB.TabIndex = 7;
             this.RightPanelPB.TabStop = false;
@@ -122,7 +122,7 @@ namespace Maze.Forms
             //
             this.LeftPanelPB.Location = new System.Drawing.Point(0, 0);
             this.LeftPanelPB.Name = "pictureBox3";
-            this.LeftPanelPB.Size = new System.Drawing.Size(150, 470);
+            this.LeftPanelPB.Size = new System.Drawing.Size(150, this.Size.Height);
             this.LeftPanelPB.BackColor = Color.Gray;
             this.LeftPanelPB.TabIndex = 6;
             this.LeftPanelPB.TabStop = false;
@@ -132,19 +132,36 @@ namespace Maze.Forms
             //
             this.TopPanelPB.Location = new System.Drawing.Point(150, 0);
             this.TopPanelPB.Name = "pictureBox1";
-            this.TopPanelPB.Size = new System.Drawing.Size(550, 60);
+            this.TopPanelPB.Size = new System.Drawing.Size(550, 90);
             this.TopPanelPB.BackColor = Color.Gray;
             this.TopPanelPB.TabIndex = 4;
             this.TopPanelPB.TabStop = false;
             //
             // BottomPanelPB
             //
-            this.BottomPanelPB.Location = new System.Drawing.Point(150, 410);
+            this.BottomPanelPB.Location = new System.Drawing.Point(150, 440);
             this.BottomPanelPB.Name = "pictureBox2";
-            this.BottomPanelPB.Size = new System.Drawing.Size(550, 60);
+            this.BottomPanelPB.Size = new System.Drawing.Size(550, 90);
             this.BottomPanelPB.BackColor = Color.Gray;
             this.BottomPanelPB.TabIndex = 5;
             this.BottomPanelPB.TabStop = false;
+
+            this.AurasToolTip = new ToolTip();
+            this.AurasToolTip.AutoPopDelay = 20000;
+            this.AurasToolTip.InitialDelay = 50;
+            this.AurasToolTip.ReshowDelay = 500;
+
+            this.AuraIconPB = new PictureBox[5];
+            for (int i = 0; i < 5; ++i)
+            {
+                AuraIconPB[i] = new PictureBox();
+                AuraIconPB[i].Location = new Point(TopPanelPB.Location.X + TopPanelPB.Size.Width - 60 * (i + 1) - 50,
+                    TopPanelPB.Location.Y + 5);
+                AuraIconPB[i].Size = new Size(50, 80);
+                AuraIconPB[i].Paint += new PaintEventHandler(AuraIconPB_Paint);
+                AuraIconPB[i].BackColor = Color.Gray;
+                AuraIconPB[i].Hide();
+            }
 
             GridMapGraphic = new GridMapGraph[GlobalConstants.GRIDMAP_WIDTH, GlobalConstants.GRIDMAP_HEIGHT];
             for (int i = 0; i < GlobalConstants.GRIDMAP_WIDTH; ++i)
@@ -256,6 +273,9 @@ namespace Maze.Forms
         {
             // Add every control in the specific order
             this.Controls.Add(this.label1);
+
+            for (int i = 0; i < 5; ++i)
+                this.Controls.Add(this.AuraIconPB[i]);
             this.Controls.Add(this.BottomPanelPB);
             this.Controls.Add(this.TopPanelPB);
             this.Controls.Add(this.RightPanelPB);
@@ -286,6 +306,9 @@ namespace Maze.Forms
         private PictureBox RightPanelPB;
 
         private GridMapGraph[,] GridMapGraphic;
+
+        private PictureBox[] AuraIconPB;
+        private ToolTip AurasToolTip;
 
         // Menu objects
         private PictureBox MenuNewGamePB;

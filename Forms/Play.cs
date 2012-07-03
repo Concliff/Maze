@@ -40,6 +40,8 @@ namespace Maze.Forms
         private int bonusGenerateTimer;
         private BonusEffect[] bonusEffects;
 
+        private byte aurasCount;
+
         public Play()
         {
             tempCount = 0;
@@ -77,6 +79,37 @@ namespace Maze.Forms
                 new BonusEffect(6 , true),      // A Cap of Invisibility
             };
 
+            aurasCount = 0;
+        }
+
+        public void OnEffectApplied(EffectHolder effectHolder)
+        {
+            AuraIconPB[aurasCount].Tag = effectHolder;
+            AuraIconPB[aurasCount].Image = PictureManager.EffectImages[effectHolder.EffectInfo.ID].Aura;
+            AurasToolTip.SetToolTip(AuraIconPB[aurasCount], effectHolder.EffectInfo.EffectName + "\n"
+                + effectHolder.EffectInfo.Description);
+            AuraIconPB[aurasCount].Show();
+
+            ++aurasCount;
+        }
+
+        public void OnEffectRemoved(EffectHolder effectHolder)
+        {
+            for (int i = 0; i < aurasCount; ++i)
+            {
+                if (AuraIconPB[i].Tag == effectHolder)
+                {
+                    for (int j = i; j < aurasCount; ++j)
+                    {
+                        AuraIconPB[j].Tag = AuraIconPB[j + 1].Tag;
+                        AuraIconPB[j].Image = AuraIconPB[j + 1].Image;
+                        AurasToolTip.SetToolTip(AuraIconPB[j], AurasToolTip.GetToolTip(AuraIconPB[j + 1]));
+                    }
+                    --aurasCount;
+                    AuraIconPB[aurasCount].Hide();
+                    break;
+                }
+            }
         }
 
         ~Play()
@@ -293,6 +326,10 @@ namespace Maze.Forms
             this.RightPanelPB.Invalidate();
 
             this.LeftPanelPB.Invalidate();
+
+            //Repaing auras PB
+            for (int i = 0; i < aurasCount; ++i)
+                AuraIconPB[i].Invalidate();
 
             //this.SuspendLayout();
             // |------------------------>

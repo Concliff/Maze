@@ -42,6 +42,20 @@ namespace Maze.Forms
                 RebuildGraphMap(e.Graphics);
         }
 
+        private void AuraIconPB_Paint(object sender, PaintEventArgs e)
+        {
+            int durationInSeconds = ((EffectHolder)((PictureBox)sender).Tag).Duration / 1000;
+
+            // Alignment centre
+            int x;
+            if ((durationInSeconds) / 10 > 0)
+                x = 9;
+            else
+                x = 15;
+
+            e.Graphics.DrawString(durationInSeconds.ToString(), new Font("Arial", 16), new SolidBrush(Color.White), x, 50); 
+        }
+
         private void Play_Paint(object sender, PaintEventArgs e)
         {
             //RebuildGraphMap();

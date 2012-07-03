@@ -113,6 +113,8 @@ namespace Maze.Classes
                 }
 
             effectList.Add(newHolder);
+            if (GetType() == ObjectType.Slug)
+                World.GetPlayForm().OnEffectApplied(newHolder);
 
             // Update unit stats
             if (newHolder.EffectInfo.EffectType == EffectTypes.Snare ||
@@ -130,6 +132,9 @@ namespace Maze.Classes
 
             if (effectList.Remove(effectHolder))
             {
+                if (GetType() == ObjectType.Slug)
+                    World.GetPlayForm().OnEffectRemoved(effectHolder);
+
                 // Update Speed
                 if (effectType == EffectTypes.Snare ||
                     effectType == EffectTypes.IncreaseSpeed)

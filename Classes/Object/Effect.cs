@@ -121,6 +121,11 @@ namespace Maze.Classes
         private EffectState effectState;
 
         public EffectEntry EffectInfo;
+        public int Duration
+        {
+            get { return duration; }
+            private set { }
+        }
 
         public EffectHolder(EffectEntry effectEntry)
         {
