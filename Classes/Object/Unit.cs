@@ -109,7 +109,10 @@ namespace Maze.Classes
                 foreach (EffectHolder effect in effectList)
                 {
                     if (effect.EffectInfo.ID == newHolder.EffectInfo.ID)
+                    {
+                        effect.Refresh();
                         return;
+                    }
                 }
 
             effectList.Add(newHolder);

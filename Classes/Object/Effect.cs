@@ -156,6 +156,11 @@ namespace Maze.Classes
                 duration -= timeP;
         }
 
+        public void Refresh()
+        {
+            duration = EffectInfo.Duration;
+        }
+
         public EffectState GetState()
         {
             return effectState;
