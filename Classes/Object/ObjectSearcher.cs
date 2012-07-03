@@ -63,7 +63,7 @@ namespace Maze.Classes
             List<Unit> units = GetUnitsInArea(searcher.Position, rangeDistance, includeInvisible, includeDead);
 
             // exclude itself
-            if (searcher.GetType() == ObjectType.Unit)
+            if (searcher.GetType() == ObjectType.Unit || searcher.GetType() == ObjectType.Slug)
                 units.Remove((Unit)searcher);
 
             return units;
@@ -83,7 +83,9 @@ namespace Maze.Classes
 
             foreach (Object obj in objects)
             {
-                if (obj.GetType() == ObjectType.Unit)
+                if (obj.GetType() == ObjectType.Unit ||
+                    // In face Slug is Unit but with own ObjectType
+                    obj.GetType() == ObjectType.Slug)
                 {
                     Unit unit = (Unit)obj;
                     if (!unit.IsVisible() && !includeInvisible)
