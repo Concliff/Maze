@@ -383,7 +383,7 @@ namespace Maze.Forms
                     // Get Random effect
                     BonusEffect eff = bonusEffects[Random.Int(bonusEffects.Count())];
                     newBonus.SetEffect(eff);
-                    bonusGenerateTimer = 5000;
+                    bonusGenerateTimer = Random.Int(3000, 5000);
                     // leave cycle
                     break;
                 }
