@@ -168,21 +168,18 @@ namespace Maze.Classes
         {
             this.speedRate = this.baseSpeed;
 
-            int speedModifier = 0;
+            double speedModifier = 100;
             List<EffectEntry> speedEffects;
 
             speedEffects = GetEffectsByType(EffectTypes.Snare);
             foreach (EffectEntry effect in speedEffects)
-                speedModifier -= effect.Value;
+                speedModifier *= effect.Value / 100d;
 
-            this.speedRate += this.speedRate * speedModifier / 100d;
-
-            speedModifier = 0;
             speedEffects = GetEffectsByType(EffectTypes.IncreaseSpeed);
             foreach (EffectEntry effect in speedEffects)
-                speedModifier += effect.Value;
+                speedModifier *= effect.Value/100d + 1;
 
-            this.speedRate += this.speedRate * speedModifier / 100d;
+            this.speedRate *= speedModifier / 100d;
         }
 
         public bool IsAlive() { return deathState == DeathStates.Alive; }
