@@ -188,7 +188,13 @@ namespace Maze.Forms
                                 // Clean Form Controls
                                 GridMapPB.Invalidate();
                                 RightPanelPB.Invalidate();
-                            }
+                                LeftPanelPB.Invalidate();
+                                for (int i = 0; i < AuraIconPB.Count(); ++i)
+                                {
+                                    AuraIconPB[i].Hide();
+                                    AuraIconPB.Count();
+                                }
+                             }
 
                             MenuNewGamePB.Show();
                             MenuRandomGamePB.Show();
