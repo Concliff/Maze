@@ -189,11 +189,11 @@ namespace Maze.Forms
                                 GridMapPB.Invalidate();
                                 RightPanelPB.Invalidate();
                                 LeftPanelPB.Invalidate();
+
                                 for (int i = 0; i < AuraIconPB.Count(); ++i)
-                                {
                                     AuraIconPB[i].Hide();
-                                    AuraIconPB.Count();
-                                }
+
+                                aurasCount = 0;
                              }
 
                             MenuNewGamePB.Show();
