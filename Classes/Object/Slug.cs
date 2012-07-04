@@ -62,6 +62,9 @@ namespace Maze.Classes
             travelTime = 0;
             isInMotion = false;
 
+            objectSize.Width = GlobalConstants.PLAYER_SIZE_WIDTH;
+            objectSize.Height = GlobalConstants.PLAYER_SIZE_HEIGHT;
+
             SetBaseSpeed(0.7d);
 
         }
@@ -168,6 +171,7 @@ namespace Maze.Classes
                 return Position;
 
             // Define direction of motion
+            // TODO: improve the next stupid if..else..if
             if ((MoveType & (uint)Directions.Up) != 0)
                 this.currentDirection.First = Directions.Up;
             else if ((MoveType & (uint)Directions.Down) != 0)
@@ -178,6 +182,22 @@ namespace Maze.Classes
                 this.currentDirection.First = Directions.Right;
             else
                 this.currentDirection.First = Directions.None;
+
+            if (this.currentDirection.First == Directions.None)
+                return Position;
+
+            MoveType -= (uint)this.currentDirection.First;
+
+            if ((MoveType & (uint)Directions.Up) != 0)
+                this.currentDirection.Second = Directions.Up;
+            else if ((MoveType & (uint)Directions.Down) != 0)
+                this.currentDirection.Second = Directions.Down;
+            else if ((MoveType & (uint)Directions.Left) != 0)
+                this.currentDirection.Second = Directions.Left;
+            else if ((MoveType & (uint)Directions.Right) != 0)
+                this.currentDirection.Second = Directions.Right;
+            else
+                this.currentDirection.Second = Directions.None;
 
             // Find a point in currectDirection + searchingStep
             GridGPS searchingPoint = Position;
@@ -242,7 +262,7 @@ namespace Maze.Classes
                 ++movementStep;
                 stepRemainder -= 1;
             }
-
+            /*
             // New position coords
             int NewX, NewY;
             NewX = Position.X + (movementStep *
@@ -317,15 +337,12 @@ namespace Maze.Classes
             }
             else
                 Position.Y = NewY;
+            */
 
+            MoveToDirection(movementStep, currentDirection.First);
+            MoveToDirection(movementStep, currentDirection.Second);
             isInMotion = true;
 
-            // Check whether player moved into block (account block border)
-            if ((Position.X <= GlobalConstants.GRIDMAP_BLOCK_WIDTH - GlobalConstants.GRIDMAP_BORDER_PX) &&
-                (Position.X >= GlobalConstants.GRIDMAP_BORDER_PX) &&
-                (Position.Y <= GlobalConstants.GRIDMAP_BLOCK_HEIGHT - GlobalConstants.GRIDMAP_BORDER_PX) &&
-                (Position.Y >= GlobalConstants.GRIDMAP_BORDER_PX))
-                ReachedGridMap();
             return Position;
         }
 

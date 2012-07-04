@@ -112,61 +112,6 @@ namespace Maze.Classes
             MoveToDirection(movementStep, currentDirection.First);
             MoveToDirection(movementStep, currentDirection.Second);
 
-            if ((Position.X <= GlobalConstants.GRIDMAP_BLOCK_WIDTH / 2 + movementStep / 2) &&
-                (Position.X >= GlobalConstants.GRIDMAP_BLOCK_WIDTH / 2 - movementStep / 2) &&
-                (Position.Y <= GlobalConstants.GRIDMAP_BLOCK_HEIGHT / 2 + movementStep / 2) &&
-                (Position.Y >= GlobalConstants.GRIDMAP_BLOCK_HEIGHT / 2 - movementStep / 2))
-                ReachedGridMap();
-
-        }
-
-        // TODO: make this method as Unit method for all kind of units
-        private void MoveToDirection(int movementStep, Directions direction)
-        {
-            switch (direction)
-            {
-                case Directions.Up:
-                    {
-                        Position.Y -= movementStep;
-                        if (Position.Y < 0)
-                        {
-                            Position.Y += GlobalConstants.GRIDMAP_BLOCK_HEIGHT;
-                            ChangeGPSDueDirection(1, Directions.Up);
-                        }
-
-                        break;
-                    }
-                case Directions.Down:
-                    {
-                        Position.Y += movementStep;
-                        if (Position.Y > GlobalConstants.GRIDMAP_BLOCK_HEIGHT)
-                        {
-                            Position.Y -= GlobalConstants.GRIDMAP_BLOCK_HEIGHT;
-                            ChangeGPSDueDirection(1, Directions.Down);
-                        }
-                        break;
-                    }
-                case Directions.Left:
-                    {
-                        Position.X -= movementStep;
-                        if (Position.X < 0)
-                        {
-                            Position.X += GlobalConstants.GRIDMAP_BLOCK_WIDTH;
-                            ChangeGPSDueDirection(1, Directions.Left);
-                        }
-                        break;
-                    }
-                case Directions.Right:
-                    {
-                        Position.X += movementStep;
-                        if (Position.X > GlobalConstants.GRIDMAP_BLOCK_HEIGHT)
-                        {
-                            Position.X -= GlobalConstants.GRIDMAP_BLOCK_HEIGHT;
-                            ChangeGPSDueDirection(1, Directions.Right);
-                        }
-                        break;
-                    }
-            }
         }
 
         protected override void ReachedGridMap()
@@ -263,18 +208,6 @@ namespace Maze.Classes
                     else
                         nextGridMap = pathFinder.Path[index];
                 }
-            }
-        }
-
-        private Directions GetOppositeDirection(Directions Direction)
-        {
-            switch (Direction)
-            {
-                case Directions.Left: return Directions.Right;
-                case Directions.Right: return Directions.Left;
-                case Directions.Down: return Directions.Up;
-                case Directions.Up: return Directions.Down;
-                default: return Directions.None;
             }
         }
     }

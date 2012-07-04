@@ -119,10 +119,17 @@ namespace Maze.Classes
     }
     public class Object
     {
+        protected struct ModelSize
+        {
+            public int Width;
+            public int Height;
+        };
+
         protected uint GUID;
         protected ObjectType objectType;
         protected ObjectState objectState;
         protected GridMap currentGridMap;
+        protected ModelSize objectSize;
 
         public GridGPS Position;
 
@@ -139,6 +146,9 @@ namespace Maze.Classes
             Position.X = 0;
             Position.Y = 0;
             Position.BlockID = 0;
+
+            objectSize.Width = 0;
+            objectSize.Height = 0;
 
             currentGridMap.Initialize();
 
@@ -174,6 +184,33 @@ namespace Maze.Classes
                     + Math.Pow(this.Position.Y - target.Position.Y + (this.Position.Location.Y - target.Position.Location.Y) * GlobalConstants.GRIDMAP_BLOCK_HEIGHT, 2));
 
             return distance;
+        }
+
+        /// <summary>
+        /// Set Position.X and Position.Y considering object model size and current GridMap block
+        /// </summary>
+        protected void NormalizePosition()
+        {
+            int lowerXBound = GlobalConstants.GRIDMAP_BORDER_PX + objectSize.Width / 2;
+            int upperXBound = GlobalConstants.GRIDMAP_BLOCK_WIDTH - lowerXBound;
+            int lowerYBound = GlobalConstants.GRIDMAP_BORDER_PX + objectSize.Height / 2;
+            int upperYBound = GlobalConstants.GRIDMAP_BLOCK_HEIGHT - lowerYBound;
+
+            if (Position.X < lowerXBound)
+                if (!currentGridMap.CanMoveTo(Directions.Left))
+                    Position.X = lowerXBound;
+
+            if (Position.X > upperXBound)
+                if (!currentGridMap.CanMoveTo(Directions.Right))
+                    Position.X = upperXBound;
+
+            if (Position.Y < lowerYBound)
+                if (!currentGridMap.CanMoveTo(Directions.Up))
+                    Position.Y = lowerYBound;
+
+            if (Position.Y > upperYBound)
+                if (!currentGridMap.CanMoveTo(Directions.Down))
+                    Position.Y = upperYBound;
         }
 
         public uint GetGUID() { return GUID; }
