@@ -16,23 +16,12 @@ namespace Maze.Classes
             DestinationReached,    // Reached final destination
         };
 
-        private enum SubDirections
-        {
-            None,
-            LeftUp,
-            LeftDown,
-            RightUp,
-            RightDown,
-        };
-
         private const int PATHFINDING_TIME = 3000;
 
         private int pathFindingTimer;
         private PathFinder pathFinder;
         private Unit victim;
         private PhobosStates state;
-
-        private SubDirections subDirection;
 
         public Phobos(GPS respawnLocation)
         {
@@ -46,8 +35,6 @@ namespace Maze.Classes
             Position.Y = 25;
             Position.BlockID = GetWorldMap().GetGridMap(Position.Location).ID;
 
-            isInMotion = false;
-            currentDirection = Directions.None;
             pathFinder = new PathFinder();
 
             currentGridMap = GetWorldMap().GetGridMap(Position.Location);
@@ -122,11 +109,24 @@ namespace Maze.Classes
             if (!pathFinder.Path.Contains(currentGridMap))
                 FindPath();
 
-            switch (currentDirection)
+            MoveToDirection(movementStep, currentDirection.First);
+            MoveToDirection(movementStep, currentDirection.Second);
+
+            if ((Position.X <= GlobalConstants.GRIDMAP_BLOCK_WIDTH / 2 + movementStep / 2) &&
+                (Position.X >= GlobalConstants.GRIDMAP_BLOCK_WIDTH / 2 - movementStep / 2) &&
+                (Position.Y <= GlobalConstants.GRIDMAP_BLOCK_HEIGHT / 2 + movementStep / 2) &&
+                (Position.Y >= GlobalConstants.GRIDMAP_BLOCK_HEIGHT / 2 - movementStep / 2))
+                ReachedGridMap();
+
+        }
+
+        // TODO: make this method as Unit method for all kind of units
+        private void MoveToDirection(int movementStep, Directions direction)
+        {
+            switch (direction)
             {
                 case Directions.Up:
                     {
-                        Position.X = 25;
                         Position.Y -= movementStep;
                         if (Position.Y < 0)
                         {
@@ -138,7 +138,6 @@ namespace Maze.Classes
                     }
                 case Directions.Down:
                     {
-                        Position.X = 25;
                         Position.Y += movementStep;
                         if (Position.Y > GlobalConstants.GRIDMAP_BLOCK_HEIGHT)
                         {
@@ -149,7 +148,6 @@ namespace Maze.Classes
                     }
                 case Directions.Left:
                     {
-                        Position.Y = 25;
                         Position.X -= movementStep;
                         if (Position.X < 0)
                         {
@@ -160,7 +158,6 @@ namespace Maze.Classes
                     }
                 case Directions.Right:
                     {
-                        Position.Y = 25;
                         Position.X += movementStep;
                         if (Position.X > GlobalConstants.GRIDMAP_BLOCK_HEIGHT)
                         {
@@ -169,83 +166,7 @@ namespace Maze.Classes
                         }
                         break;
                     }
-
             }
-
-            switch (subDirection)
-            {
-                case SubDirections.LeftDown:
-                    {
-                        Position.X -= movementStep;
-                        Position.Y += movementStep;
-                        if (Position.X < 0)
-                        {
-                            Position.X += GlobalConstants.GRIDMAP_BLOCK_HEIGHT;
-                            ChangeGPSDueDirection(1, Directions.Left);
-                        }
-                        if (Position.Y > GlobalConstants.GRIDMAP_BLOCK_HEIGHT)
-                        {
-                            Position.Y -= GlobalConstants.GRIDMAP_BLOCK_HEIGHT;
-                            ChangeGPSDueDirection(1, Directions.Down);
-                        }
-                        break;
-                    }
-                case SubDirections.LeftUp:
-                    {
-                        Position.X -= movementStep;
-                        Position.Y -= movementStep;
-                        if (Position.Y < 0)
-                        {
-                            Position.Y += GlobalConstants.GRIDMAP_BLOCK_HEIGHT;
-                            ChangeGPSDueDirection(1, Directions.Up);
-                        }
-                        if (Position.X < 0)
-                        {
-                            Position.X += GlobalConstants.GRIDMAP_BLOCK_HEIGHT;
-                            ChangeGPSDueDirection(1, Directions.Left);
-                        }
-                        break;
-                    }
-                case SubDirections.RightDown:
-                    {
-                        Position.X += movementStep;
-                        Position.Y += movementStep;
-                        if (Position.X > GlobalConstants.GRIDMAP_BLOCK_HEIGHT)
-                        {
-                            Position.X -= GlobalConstants.GRIDMAP_BLOCK_WIDTH;
-                            ChangeGPSDueDirection(1, Directions.Right);
-                        }
-                        if (Position.Y > GlobalConstants.GRIDMAP_BLOCK_HEIGHT)
-                        {
-                            Position.Y -= GlobalConstants.GRIDMAP_BLOCK_WIDTH;
-                            ChangeGPSDueDirection(1, Directions.Down);
-                        }
-                        break;
-                    }
-                case SubDirections.RightUp:
-                    {
-                        Position.X += movementStep;
-                        Position.Y -= movementStep;
-                        if (Position.X > GlobalConstants.GRIDMAP_BLOCK_HEIGHT)
-                        {
-                            Position.X -= GlobalConstants.GRIDMAP_BLOCK_HEIGHT;
-                            ChangeGPSDueDirection(1, Directions.Right);
-                        }
-                        if (Position.Y < 0)
-                        {
-                            Position.Y += GlobalConstants.GRIDMAP_BLOCK_HEIGHT;
-                            ChangeGPSDueDirection(1, Directions.Up);
-                        }
-                        break;
-                    }
-            }
-
-            if ((Position.X <= GlobalConstants.GRIDMAP_BLOCK_WIDTH / 2 + movementStep / 2) &&
-                (Position.X >= GlobalConstants.GRIDMAP_BLOCK_WIDTH / 2 - movementStep / 2) &&
-                (Position.Y <= GlobalConstants.GRIDMAP_BLOCK_HEIGHT / 2 + movementStep / 2) &&
-                (Position.Y >= GlobalConstants.GRIDMAP_BLOCK_HEIGHT / 2 - movementStep / 2))
-                ReachedGridMap();
-
         }
 
         protected override void ReachedGridMap()
@@ -297,35 +218,45 @@ namespace Maze.Classes
                         {
                             case -1:
                                 if (shiftX == -1)
-                                    subDirection = SubDirections.LeftDown;
+                                {
+                                    currentDirection.First = Directions.Left;
+                                    currentDirection.Second = Directions.Down;
+                                }
                                 else
-                                    subDirection = SubDirections.RightUp;
-                                currentDirection = Directions.None;
-                                break;
+                                {
+                                    currentDirection.First = Directions.Right;
+                                    currentDirection.Second = Directions.Up;
+                                }
+                                 break;
                             case 0:
                                 switch (shiftX)
                                 {
                                     case -1:
-                                        currentDirection = Directions.Left;
+                                        currentDirection.First = Directions.Left;
                                         break;
                                     case 0:
                                         if (shiftY == -1)
-                                            currentDirection = Directions.Up;
+                                            currentDirection.First = Directions.Up;
                                         else
-                                            currentDirection = Directions.Down;
+                                            currentDirection.First = Directions.Down;
                                         break;
                                     case 1:
-                                        currentDirection = Directions.Right;
+                                        currentDirection.First = Directions.Right;
                                         break;
                                 }
-                                subDirection = SubDirections.None;
+                                currentDirection.Second = Directions.None;
                                 break;
                             case 1:
                                 if (shiftX == 1)
-                                    subDirection = SubDirections.RightDown;
+                                {
+                                    currentDirection.First = Directions.Right;
+                                    currentDirection.Second = Directions.Down;
+                                }
                                 else
-                                    subDirection = SubDirections.LeftUp;
-                                currentDirection = Directions.None;
+                                {
+                                    currentDirection.First = Directions.Left;
+                                    currentDirection.Second = Directions.Up;
+                                }
                                 break;
                         }
                     }

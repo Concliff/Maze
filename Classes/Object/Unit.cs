@@ -20,6 +20,12 @@ namespace Maze.Classes
         Dead,
     };
 
+    public struct Direction
+    {
+        public Directions First;
+        public Directions Second;
+    };
+
     public class Unit : Object
     {
         protected bool gridMapReached;
@@ -32,7 +38,7 @@ namespace Maze.Classes
         protected List<EffectHolder> effectList;
 
         protected bool isInMotion;
-        protected Directions currentDirection;
+        protected Direction currentDirection;
 
         public Unit()
         {
@@ -48,6 +54,9 @@ namespace Maze.Classes
             speedRate = baseSpeed;
             stepRemainder = 0;
             effectList = new List<EffectHolder>();
+
+            currentDirection.First = Directions.None;
+            currentDirection.Second = Directions.None;
         }
 
         public UnitTypes GetUnitType() { return unitType; }

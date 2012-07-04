@@ -169,15 +169,15 @@ namespace Maze.Classes
 
             // Define direction of motion
             if ((MoveType & (uint)Directions.Up) != 0)
-                this.currentDirection = Directions.Up;
+                this.currentDirection.First = Directions.Up;
             else if ((MoveType & (uint)Directions.Down) != 0)
-                this.currentDirection = Directions.Down;
+                this.currentDirection.First = Directions.Down;
             else if ((MoveType & (uint)Directions.Left) != 0)
-                this.currentDirection = Directions.Left;
+                this.currentDirection.First = Directions.Left;
             else if ((MoveType & (uint)Directions.Right) != 0)
-                this.currentDirection = Directions.Right;
+                this.currentDirection.First = Directions.Right;
             else
-                this.currentDirection = Directions.None;
+                this.currentDirection.First = Directions.None;
 
             // Find a point in currectDirection + searchingStep
             GridGPS searchingPoint = Position;
@@ -186,7 +186,7 @@ namespace Maze.Classes
             bool slimePersist = false;
             double slimeSpeedRate = GetSpeedRate();
 
-            switch (currentDirection)
+            switch (currentDirection.First)
             {
                 case Directions.Right:
                     searchingPoint.X = Position.X + searchingStep;
