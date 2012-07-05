@@ -16,6 +16,7 @@ namespace Maze.Classes
         SlimeDuration   = 4,
         Root            = 5,
         Invisibility    = 6,
+        MoveReverse     = 7,
     };
 
     public enum EffectTargets : byte

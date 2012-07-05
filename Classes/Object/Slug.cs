@@ -263,6 +263,12 @@ namespace Maze.Classes
                 stepRemainder -= 1;
             }
 
+            if (GetEffectsByType(EffectTypes.MoveReverse).Count > 0)
+            {
+                this.currentDirection.First = GetOppositeDirection(this.currentDirection.First);
+                this.currentDirection.Second = GetOppositeDirection(this.currentDirection.Second);
+            }
+
             MoveToDirection(movementStep, currentDirection.First);
             MoveToDirection(movementStep, currentDirection.Second);
             isInMotion = true;

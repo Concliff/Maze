@@ -74,13 +74,17 @@ namespace Maze.Forms
             // Define bonus effects
             bonusEffects = new BonusEffect[]
             {
+                // Open Bonuses
                 new BonusEffect(2 , true),      // Sprint
                 new BonusEffect(3 , true),      // Icy Wind
                 new BonusEffect(5 , true),      // Thickener
                 new BonusEffect(6 , true),      // A Cap of Invisibility
+
+                // Hidden Bonuses
                 new BonusEffect(2 , false),      // Sprint
                 new BonusEffect(5 , false),      // Thickener
                 new BonusEffect(6 , false),      // A Cap of Invisibility
+                new BonusEffect(7 , false),      // Mind Inverter
             };
 
             aurasCount = 0;
