@@ -41,6 +41,7 @@ namespace Maze.Forms
         private BonusEffect[] bonusEffects;
 
         private byte aurasCount;
+        private byte spellsCount;
 
         public Play()
         {
@@ -77,9 +78,13 @@ namespace Maze.Forms
                 new BonusEffect(3 , true),      // Icy Wind
                 new BonusEffect(5 , true),      // Thickener
                 new BonusEffect(6 , true),      // A Cap of Invisibility
+                new BonusEffect(2 , false),      // Sprint
+                new BonusEffect(5 , false),      // Thickener
+                new BonusEffect(6 , false),      // A Cap of Invisibility
             };
 
             aurasCount = 0;
+            spellsCount = 0;
         }
 
         public void OnEffectApplied(EffectHolder effectHolder)
@@ -91,6 +96,31 @@ namespace Maze.Forms
             AuraIconPB[aurasCount].Show();
 
             ++aurasCount;
+        }
+
+        public void AddSpell(EffectEntry effectEntry)
+        {
+            bool isExist = false;
+            for (int i = 0; i < spellsCount; ++i)
+            {
+                EffectEntry spellEntry = (EffectEntry)SpellBarPB[i].Tag;
+                if (effectEntry.ID == spellEntry.ID)
+                {
+                    isExist = true;
+                    break;
+                }
+            }
+            if(!isExist || spellsCount == 0)
+                OnSpellAdded(effectEntry);
+        }
+
+        public void OnSpellAdded(EffectEntry effectEntry)
+        {
+            SpellBarPB[spellsCount].Tag = effectEntry;
+            SpellBarPB[spellsCount].Image = PictureManager.EffectImages[effectEntry.ID].Aura;
+            SpellBarPB[spellsCount].Show();
+
+            ++spellsCount;
         }
 
         public void OnEffectRemoved(EffectHolder effectHolder)
@@ -107,6 +137,23 @@ namespace Maze.Forms
                     }
                     --aurasCount;
                     AuraIconPB[aurasCount].Hide();
+                    break;
+                }
+            }
+        }
+
+        public void OnSpellCasting(EffectEntry effectEntry)
+        {
+            for (int i = 0; i < spellsCount; ++i)
+            {
+                if (effectEntry.Equals(SpellBarPB[i].Tag))
+                {
+                    for (int j = i; j < spellsCount; ++j)
+                    {
+                        SpellBarPB[j].Tag = SpellBarPB[j + 1].Tag;
+                        SpellBarPB[j].Image = SpellBarPB[j + 1].Image;
+                    }
+                    --spellsCount;
                     break;
                 }
             }
@@ -194,6 +241,10 @@ namespace Maze.Forms
                                     AuraIconPB[i].Hide();
 
                                 aurasCount = 0;
+
+                                for (int i = 0; i < SpellBarPB.Count(); ++i)
+                                    SpellBarPB[i].Show();
+                                spellsCount = 0;
                              }
 
                             MenuNewGamePB.Show();
@@ -298,6 +349,8 @@ namespace Maze.Forms
             if (!PlayStarted)
                 return;
 
+            int usedSpellNumber = 0;
+
             // Get last pressed Key
             switch (KeyMgr.ExtractKeyPressed())
             {
@@ -311,7 +364,25 @@ namespace Maze.Forms
                         SetInterface(FormInterface.Play);
                     }
                     break;
+
+                case Keys.D1:
+                    usedSpellNumber = 1;
+                    break;
+                case Keys.D2:
+                    usedSpellNumber = 2;
+                    break;
+                case Keys.D3:
+                    usedSpellNumber = 3;
+                    break;
+                case Keys.D4:
+                    usedSpellNumber = 4;
+                    break;
+                case Keys.D5:
+                    usedSpellNumber = 5;
+                    break;
             }
+            if (usedSpellNumber > 0 && usedSpellNumber <= spellsCount)
+                UseSpell(usedSpellNumber);
 
             if (GamePaused)
                 return;
@@ -391,6 +462,7 @@ namespace Maze.Forms
                     newBonus.SetEffect(eff);
                     bonusGenerateTimer = Random.Int(3000, 5000);
                     // leave cycle
+
                     break;
                 }
             }
@@ -401,6 +473,12 @@ namespace Maze.Forms
             GridMapPB.Invalidate();
         }
 
+        private void UseSpell(int spellNumber)
+        {
+            EffectEntry effectEntry = (EffectEntry)SpellBarPB[spellNumber-1].Tag;
+            GetPlayer().CastEffect(effectEntry.ID, GetPlayer());
+            OnSpellCasting(effectEntry);
+        }
 
         /// <summary>
         /// PlayForm Moving Handler

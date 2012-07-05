@@ -305,5 +305,20 @@ namespace Maze.Classes
         public void AddPoints(int points) { this.score += points; }
 
         public int GetCollectedCoinsCount() { return this.collectedCoinsCount; }
+
+        public void CollectHiddenBonus(ushort effectID)
+        {
+            EffectEntry effectEntry = DBStores.EffectStore[effectID];
+            if(effectEntry.HasAttribute(EffectAttributes.CanBeSpell))
+            {
+                World.GetPlayForm().AddSpell(effectEntry);
+            }
+            else
+            {
+                Effect effect = new Effect(effectEntry, this, this);
+                effect.Cast();
+            }
+        }
+
     }
 }

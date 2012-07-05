@@ -21,6 +21,7 @@ namespace Maze.Classes
     {
         private BonusEffect bonusEffect;
 
+
         public Bonus(GridGPS currentGridGPS)
         {
             Position = currentGridGPS;
@@ -49,10 +50,20 @@ namespace Maze.Classes
 
         public override void Use(Unit user)
         {
-            user.CastEffect(bonusEffect.EffectID, user);
+            if (!bonusEffect.IsOpen)
+            {
+
+                if (user.GetType() == ObjectType.Slug)
+                    ((Slug)user).CollectHiddenBonus(bonusEffect.EffectID);
+                else
+                    return;
+            }
+            else
+            {
+                user.CastEffect(bonusEffect.EffectID, user);
+            }
 
             base.Use(user);
         }
-
     }
 }

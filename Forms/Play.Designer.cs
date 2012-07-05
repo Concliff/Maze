@@ -163,6 +163,18 @@ namespace Maze.Forms
                 AuraIconPB[i].Hide();
             }
 
+            this.SpellBarPB = new PictureBox[5];
+            for (int i = 0; i < 5; ++i)
+            {
+                SpellBarPB[i] = new PictureBox();
+                SpellBarPB[i].Location = new Point(BottomPanelPB.Location.X + 60 * (i + 1),
+                    BottomPanelPB.Location.Y + 10);
+                SpellBarPB[i].Size = new Size(50, 50);
+                //SpellBarPB[i].Paint += new PaintEventHandler(BonusIconPB_Paint);
+                SpellBarPB[i].BackColor = Color.Gray;
+                SpellBarPB[i].Show();
+            }
+
             GridMapGraphic = new GridMapGraph[GlobalConstants.GRIDMAP_WIDTH, GlobalConstants.GRIDMAP_HEIGHT];
             for (int i = 0; i < GlobalConstants.GRIDMAP_WIDTH; ++i)
                 for (int j = 0; j < GlobalConstants.GRIDMAP_HEIGHT; ++j)
@@ -273,7 +285,8 @@ namespace Maze.Forms
         {
             // Add every control in the specific order
             this.Controls.Add(this.label1);
-
+            for (int i = 0; i < 5; ++i)
+                this.Controls.Add(this.SpellBarPB[i]);
             for (int i = 0; i < 5; ++i)
                 this.Controls.Add(this.AuraIconPB[i]);
             this.Controls.Add(this.BottomPanelPB);
@@ -308,6 +321,7 @@ namespace Maze.Forms
         private GridMapGraph[,] GridMapGraphic;
 
         private PictureBox[] AuraIconPB;
+        private PictureBox[] SpellBarPB;
         private ToolTip AurasToolTip;
 
         // Menu objects

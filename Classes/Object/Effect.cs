@@ -30,6 +30,7 @@ namespace Maze.Classes
     {
         None                = 0,
         OnlySlug            = 0x001,    // Applies only on Slug
+        CanBeSpell          = 0x002,    // Allows to appear at SpellBar
     };
 
     public enum EffectState
