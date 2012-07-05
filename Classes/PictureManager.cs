@@ -20,7 +20,7 @@ namespace Maze.Classes
         public static Image FinishImage;
         public static Image DeimosImage;
         public static Image PhobosImage;
-        public static Image CoinImage;
+        public static Image DropImage;
         public static Image SlugImage;
         public static Image SoulImage;
         public static Image SlimeImage;
@@ -49,7 +49,7 @@ namespace Maze.Classes
 
             FinishImage = Image.FromFile(ImageDirectoryPath + "Brain.png");
             StartImage = Image.FromFile(ImageDirectoryPath + "Start.bmp");
-            CoinImage = Image.FromFile(ImageDirectoryPath + "Coin.bmp");
+            DropImage = Image.FromFile(ImageDirectoryPath + "Drop.png");
             DeimosImage = Image.FromFile(ImageDirectoryPath + "Deimos.png");
             PhobosImage = Image.FromFile(ImageDirectoryPath + "Phobos.png");
             SlimeImage = Image.FromFile(ImageDirectoryPath + "Slime.png");
@@ -122,8 +122,8 @@ namespace Maze.Classes
 
             switch (gridObject.GetGridObjectType())
             {
-                case GridObjectType.Coin:
-                    return PictureManager.CoinImage;
+                case GridObjectType.OozeDrop:
+                    return PictureManager.DropImage;
                 case GridObjectType.Portal:
                     return PictureManager.PortalImage;
                 case GridObjectType.Bonus:

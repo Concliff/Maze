@@ -153,10 +153,10 @@ namespace MapEditor.Forms
                         gGraphic.DrawImage(PictureManager.FinishImage, x + 5, y + 5, PictureManager.FinishImage.Width, PictureManager.FinishImage.Height);
                     }
 
-                    // Draw Coin
-                    if (Block.HasAttribute(GridMapAttributes.HasCoin))
+                    // Draw Ooze Drop
+                    if (Block.HasAttribute(GridMapAttributes.HasDrop))
                     {
-                        gGraphic.DrawImage(PictureManager.CoinImage, x + 15, y + 10, 20, 30);
+                        gGraphic.DrawImage(PictureManager.DropImage, x + 15, y + 10, 20, 30);
                     }
 
                     // Portal

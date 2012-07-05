@@ -5,15 +5,15 @@ using System.Text;
 
 namespace Maze.Classes
 {
-    public class Coin : GridObject
+    public class OozeDrop : GridObject
     {
-        public Coin()
+        public OozeDrop()
         {
-            gridObjectType = GridObjectType.Coin;
+            gridObjectType = GridObjectType.OozeDrop;
             SetFlag(GridObjectFlags.Disposable);
         }
 
-        public Coin(GridMap gridMap)
+        public OozeDrop(GridMap gridMap)
             : this()
         {
             Position.Location = gridMap.Location;
@@ -24,7 +24,7 @@ namespace Maze.Classes
             if (!IsActive() || user.GetType() != ObjectType.Slug)
                 return;
 
-            ((Slug)user).CollectCoin(this);
+            ((Slug)user).CollectDrop(this);
 
             base.Use(user);
         }

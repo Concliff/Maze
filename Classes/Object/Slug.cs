@@ -11,7 +11,7 @@ namespace Maze.Classes
         private bool FinishReached;
         private int ressurectTimer;
         private int score;
-        private int collectedCoinsCount;    // at current level
+        private int collectedDropsCount;    // at current level
 
         // ooze
         public const int MaxOozeEnergy = 100;
@@ -55,7 +55,7 @@ namespace Maze.Classes
             ressurectTimer = 3000;
 
             score = 0;
-            collectedCoinsCount = 0;
+            collectedDropsCount = 0;
 
             oozeEnergy = MaxOozeEnergy;
             downTime = 0;
@@ -294,15 +294,16 @@ namespace Maze.Classes
             base.ReachedGridMap();
 
             if (currentGridMap.HasAttribute(GridMapAttributes.IsFinish) &&
-                GetWorldMap().CoinsRemain() == 0)
+                GetWorldMap().DropsRemain() == 0)
                 FinishReached = true;
         }
 
-        public void CollectCoin(Coin coin)
+        public void CollectDrop(OozeDrop drop)
         {
             AddPoints(10);
-            GetWorldMap().CollectCoin(coin);
-            ++collectedCoinsCount;
+            OozeEnergy += 10;
+            GetWorldMap().CollectDrop(drop);
+            ++collectedDropsCount;
         }
 
         public bool IsFinished() { return FinishReached; }
@@ -310,7 +311,7 @@ namespace Maze.Classes
         public int GetScore() { return score; }
         public void AddPoints(int points) { this.score += points; }
 
-        public int GetCollectedCoinsCount() { return this.collectedCoinsCount; }
+        public int GetCollectedDropsCount() { return this.collectedDropsCount; }
 
         public void CollectHiddenBonus(ushort effectID)
         {

@@ -49,7 +49,7 @@ namespace MapEditor.Forms
             // Attributes
             StartCheckBox.Checked   = Block.HasAttribute(GridMapAttributes.IsStart);
             FinishCheckBox.Checked  = Block.HasAttribute(GridMapAttributes.IsFinish);
-            CoinCheckBox.Checked    = Block.HasAttribute(GridMapAttributes.HasCoin);
+            DropCheckBox.Checked    = Block.HasAttribute(GridMapAttributes.HasDrop);
 
             // Options
             PortalCheckBox.Checked = Block.HasOption(GridMapOptions.Portal);
@@ -76,7 +76,7 @@ namespace MapEditor.Forms
             NewBlock.Attribute = 0;
             if (StartCheckBox.Checked)  NewBlock.Attribute += (uint)GridMapAttributes.IsStart;
             if (FinishCheckBox.Checked) NewBlock.Attribute += (uint)GridMapAttributes.IsFinish;
-            if (CoinCheckBox.Checked)   NewBlock.Attribute += (uint)GridMapAttributes.HasCoin;
+            if (DropCheckBox.Checked) NewBlock.Attribute += (uint)GridMapAttributes.HasDrop;
 
             NewBlock.Option = 0;
             if (PortalCheckBox.Checked) NewBlock.Option += (uint)GridMapOptions.Portal;

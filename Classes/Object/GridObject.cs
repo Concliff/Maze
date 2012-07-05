@@ -8,7 +8,7 @@ namespace Maze.Classes
     public enum GridObjectType
     {
         GridObject,
-        Coin,
+        OozeDrop,
         Portal,
         Bomb,
         Slime,

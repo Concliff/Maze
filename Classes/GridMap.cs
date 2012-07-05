@@ -83,7 +83,7 @@ namespace Maze.Classes
     public class Map
     {
         private List<GridMap> MapBlocks;    // Array of GridMap block of current map
-        private int[] coinsCount;            // Coins per level on map
+        private int[] dropsCount;            // Ooze Drops per level on map
         private string[] MapNameList;       // Names of All downloaded maps
         private List<GPS> StartPoint;
         private List<GPS> FinishPoint;
@@ -166,22 +166,22 @@ namespace Maze.Classes
             FinishPoint.Add(generator.FinishPoint.Location);
 
             SetLevelCount(1);
-            coinsCount = new int[GetLevelCount()];
-            // Generate Coins
-            // Every 15th block should have a coin
-            int coinsCounter = MapBlocks.Count / 15;
+            dropsCount = new int[GetLevelCount()];
+            // Generate Drops
+            // Every 15th block should have a drop
+            int dropsCounter = MapBlocks.Count / 15;
 
-            int currentCointsCount = 0;
-            while (currentCointsCount < coinsCounter)
+            int currentDropsCount = 0;
+            while (currentDropsCount < dropsCounter)
             {
                 GridMap block = MapBlocks[Random.Int(MapBlocks.Count)];
-                if (block.HasAttribute(GridMapAttributes.HasCoin) ||
+                if (block.HasAttribute(GridMapAttributes.HasDrop) ||
                     block.HasAttribute(GridMapAttributes.IsStart) ||
                     block.HasAttribute(GridMapAttributes.IsFinish))
                     continue;
 
-                block.Attribute += (uint)GridMapAttributes.HasCoin;
-                ++currentCointsCount;
+                block.Attribute += (uint)GridMapAttributes.HasDrop;
+                ++currentDropsCount;
                 ReplaceGridMap(block);
             }            
         }
@@ -248,7 +248,7 @@ namespace Maze.Classes
             }
             GridMapStream.Close();
             SetLevelCount(levelIndicator);
-            coinsCount = new int[GetLevelCount()];
+            dropsCount = new int[GetLevelCount()];
         }
 
         private void SaveToFile()
@@ -282,8 +282,8 @@ namespace Maze.Classes
         {
             foreach (GridMap block in MapBlocks)
             {
-                if (block.HasAttribute(GridMapAttributes.HasCoin))
-                    // Create Deimos at Coin Location
+                if (block.HasAttribute(GridMapAttributes.HasDrop))
+                    // Create Deimos at Ooze Drop Location
                     new Deimos(block.Location);
             }
 
@@ -295,10 +295,10 @@ namespace Maze.Classes
         {
             foreach (GridMap block in MapBlocks)
             {
-                if (block.HasAttribute(GridMapAttributes.HasCoin))
+                if (block.HasAttribute(GridMapAttributes.HasDrop))
                 {
-                    new Coin(block);
-                    ++coinsCount[block.Location.Level];
+                    new OozeDrop(block);
+                    ++dropsCount[block.Location.Level];
                 }
 
                 if (block.HasOption(GridMapOptions.Portal))
@@ -401,11 +401,11 @@ namespace Maze.Classes
             return false;
         }
 
-        public int CoinsRemain() { return coinsCount[GetLevel()]; }
+        public int DropsRemain() { return dropsCount[GetLevel()]; }
 
-        public void CollectCoin(Coin coin)
+        public void CollectDrop(OozeDrop drop)
         {
-            --coinsCount[GetLevel()];
+            --dropsCount[GetLevel()];
         }
     }
 }

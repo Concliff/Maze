@@ -13,7 +13,7 @@ namespace Maze.Forms
                 return;
 
             e.Graphics.DrawString("Time: " + (ProgramTime.Seconds + ProgramTime.Minutes * 60).ToString(), new Font("Arial", 14), new SolidBrush(Color.White), 10, 30);
-            e.Graphics.DrawString("Coins x " + GetWorldMap().CoinsRemain().ToString(),
+            e.Graphics.DrawString("Drops x " + GetWorldMap().DropsRemain().ToString(),
                 new Font("Arial", 14), new SolidBrush(Color.White), 10, 50);
             e.Graphics.DrawString("Total scores: " + player.GetScore(), new Font("Arial", 12), new SolidBrush(Color.White), 10, 70);
         }

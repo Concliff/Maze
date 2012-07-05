@@ -68,7 +68,7 @@
     <Compile Include="Classes\Object\Bonus.cs" />
     <Compile Include="Classes\PathFinder.cs" />
     <Compile Include="Classes\BinaryOperations.cs" />
-    <Compile Include="Classes\Object\Coin.cs" />
+    <Compile Include="Classes\Object\OozeDrop.cs" />
     <Compile Include="Classes\Defines.cs" />
     <Compile Include="Classes\Object\Deimos.cs" />
     <Compile Include="Classes\GlobalConstants.cs" />

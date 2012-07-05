@@ -64,7 +64,7 @@
             this.RightCheckBox = new System.Windows.Forms.CheckBox();
             this.StartCheckBox = new System.Windows.Forms.CheckBox();
             this.FinishCheckBox = new System.Windows.Forms.CheckBox();
-            this.CoinCheckBox = new System.Windows.Forms.CheckBox();
+            this.DropCheckBox = new System.Windows.Forms.CheckBox();
 
             // Attributes
             this.CancelButton = new System.Windows.Forms.Button();
@@ -116,7 +116,7 @@
             RightCheckBox.Location = new System.Drawing.Point(120, 210);
             StartCheckBox.Location = new System.Drawing.Point(200, 190);
             FinishCheckBox.Location = new System.Drawing.Point(200, 220);
-            CoinCheckBox.Location = new System.Drawing.Point(200, 250);
+            DropCheckBox.Location = new System.Drawing.Point(200, 250);
 
             OptionValueLabel.Location = new System.Drawing.Point(300, 30);
             OptionValueLabel.AutoSize = true;
@@ -155,7 +155,7 @@
             RightCheckBox.Text = "Right";
             StartCheckBox.Text = "Start";
             FinishCheckBox.Text = "Finish";
-            CoinCheckBox.Text = "Coin";
+            DropCheckBox.Text = "Drop";
             OptionValueLabel.Text = "Option Value";
             PortalCheckBox.Text = "Portal";
             ConfirmButton.Text = "Replace";
@@ -182,7 +182,7 @@
             this.Controls.Add(this.RightCheckBox);
             this.Controls.Add(this.StartCheckBox);
             this.Controls.Add(this.FinishCheckBox);
-            this.Controls.Add(this.CoinCheckBox);
+            this.Controls.Add(this.DropCheckBox);
 
             this.Controls.Add(this.OptionValueLabel);
             this.Controls.Add(this.OptionValueTextBox);
@@ -216,7 +216,7 @@
         // Attributes
         private System.Windows.Forms.CheckBox StartCheckBox;
         private System.Windows.Forms.CheckBox FinishCheckBox;
-        private System.Windows.Forms.CheckBox CoinCheckBox;
+        private System.Windows.Forms.CheckBox DropCheckBox;
 
         // Options
         private System.Windows.Forms.Label OptionValueLabel;

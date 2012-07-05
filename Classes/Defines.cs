@@ -18,7 +18,7 @@ namespace Maze.Classes
     {
         IsStart     = 0x001,
         IsFinish    = 0x002,
-        HasCoin     = 0x004,
+        HasDrop     = 0x004,
         Attribute4  = 0x008,
         Attribute5  = 0x010,
         Attribute6  = 0x020,
