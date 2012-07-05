@@ -385,7 +385,7 @@ namespace Maze.Forms
                     usedSpellNumber = 5;
                     break;
             }
-            if (usedSpellNumber > 0 && usedSpellNumber <= spellsCount)
+            if (player.IsAlive() && usedSpellNumber > 0 && usedSpellNumber <= spellsCount)
                 UseSpell(usedSpellNumber);
 
             if (GamePaused)
@@ -480,7 +480,7 @@ namespace Maze.Forms
         private void UseSpell(int spellNumber)
         {
             EffectEntry effectEntry = (EffectEntry)SpellBarPB[spellNumber-1].Tag;
-            GetPlayer().CastEffect(effectEntry.ID, GetPlayer());
+            player.CastEffect(effectEntry.ID, player);
             OnSpellCasting(effectEntry);
         }
 
