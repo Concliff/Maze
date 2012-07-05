@@ -74,8 +74,6 @@
     <Compile Include="Classes\PathFinder.cs" />
     <Compile Include="Classes\BinaryOperations.cs" />
     <Compile Include="Classes\Object\Coin.cs" />
-    <Compile Include="Classes\CPathFinding.cs" />
-    <Compile Include="Classes\CWayMap.cs" />
     <Compile Include="Classes\Defines.cs" />
     <Compile Include="Classes\Object\Deimos.cs" />
     <Compile Include="Classes\GlobalConstants.cs" />
@@ -85,7 +83,6 @@
     <Compile Include="Classes\Object\GridObject.cs" />
     <Compile Include="Classes\Object\ObjectSearcher.cs" />
     <Compile Include="Classes\Object\Object.cs" />
-    <Compile Include="Classes\WorkDBF.cs" />
     <Compile Include="Classes\Object\Phobos.cs" />
     <Compile Include="Classes\Object\Portal.cs" />
     <Compile Include="Classes\Object\Slime.cs" />
