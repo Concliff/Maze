@@ -41,6 +41,7 @@ namespace Maze.Classes
         {
             Name = "Noname";
             objectType = ObjectType.Slug;
+            unitType = UnitTypes.Slug;
             respawnLocation = GetWorldMap().GetStartPoint();
 
             // Set Start Location
@@ -84,6 +85,7 @@ namespace Maze.Classes
                     SetDeathState(DeathStates.Dead);
                     return;
                 }
+
             }
 
             if (!IsAlive())
@@ -199,6 +201,12 @@ namespace Maze.Classes
             else
                 this.currentDirection.Second = Directions.None;
 
+            if (GetEffectsByType(EffectTypes.MoveReverse).Count > 0)
+            {
+                this.currentDirection.First = GetOppositeDirection(this.currentDirection.First);
+                this.currentDirection.Second = GetOppositeDirection(this.currentDirection.Second);
+            }
+
             // Find a point in currectDirection + searchingStep
             GridGPS searchingPoint = Position;
             int searchingStep = 10;
@@ -255,6 +263,8 @@ namespace Maze.Classes
             new Slime(Position);
 
             double movementStepD = GlobalConstants.MOVEMENT_STEP_PX * slimeSpeedRate;
+            if (this.currentDirection.Second != Directions.None)
+                movementStepD = Math.Sqrt(2 * movementStepD);
             int movementStep = (int)(movementStepD);
             stepRemainder += movementStepD - movementStep;
             if (stepRemainder > 1d)
@@ -263,14 +273,7 @@ namespace Maze.Classes
                 stepRemainder -= 1;
             }
 
-            if (GetEffectsByType(EffectTypes.MoveReverse).Count > 0)
-            {
-                this.currentDirection.First = GetOppositeDirection(this.currentDirection.First);
-                this.currentDirection.Second = GetOppositeDirection(this.currentDirection.Second);
-            }
-
-            MoveToDirection(movementStep, currentDirection.First);
-            MoveToDirection(movementStep, currentDirection.Second);
+            MoveToDirection(movementStep, currentDirection);
             isInMotion = true;
 
             return Position;

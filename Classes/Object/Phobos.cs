@@ -96,7 +96,13 @@ namespace Maze.Classes
             if (GetEffectsByType(EffectTypes.Root).Count != 0)
                 return;
 
+            // Generate Path if located at unknown grid
+            if (!pathFinder.Path.Contains(currentGridMap))
+                FindPath();
+
             double movementStepD = GlobalConstants.MOVEMENT_STEP_PX * this.speedRate;
+            if (this.currentDirection.Second != Directions.None)
+                movementStepD = Math.Sqrt(2 * movementStepD);
             int movementStep = (int)(movementStepD);
             stepRemainder += movementStepD - movementStep;
             if (stepRemainder > 1d)
@@ -105,12 +111,7 @@ namespace Maze.Classes
                 stepRemainder -= 1;
             }
 
-            // Generate Path if located at unknown grid
-            if (!pathFinder.Path.Contains(currentGridMap))
-                FindPath();
-
-            MoveToDirection(movementStep, currentDirection.First);
-            MoveToDirection(movementStep, currentDirection.Second);
+            MoveToDirection(movementStep, currentDirection);
 
         }
 
@@ -118,6 +119,8 @@ namespace Maze.Classes
         {
             FindPath();
 
+            Position.X = 25;
+            Position.Y = 25;
             // TODO: Define state PhobosStates.DestinationReached
 
             base.ReachedGridMap();

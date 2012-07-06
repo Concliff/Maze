@@ -12,6 +12,7 @@ namespace Maze.Classes
         Unit,
         Deimos,
         Phobos,
+        Slug,
     };
 
     public enum DeathStates
@@ -206,58 +207,60 @@ namespace Maze.Classes
 
         }
 
-        protected void MoveToDirection(int movementStep, Directions direction)
+        protected void MoveToDirection(int movementStep, Direction direction)
         {
-            switch (direction)
-            {
-                case Directions.Up:
-                    {
-                        Position.Y -= movementStep;
-                        if (Position.Y < 0)
+            for (int i = 0; i < 2; ++i)
+                switch (i == 0 ? direction.First : direction.Second)
+                {
+                    case Directions.Up:
                         {
-                            Position.Y += GlobalConstants.GRIDMAP_BLOCK_HEIGHT;
-                            ChangeGPSDueDirection(1, Directions.Up);
-                        }
+                            Position.Y -= movementStep;
+                            if (Position.Y < 0)
+                            {
+                                Position.Y += GlobalConstants.GRIDMAP_BLOCK_HEIGHT;
+                                ChangeGPSDueDirection(1, Directions.Up);
+                            }
 
-                        break;
-                    }
-                case Directions.Down:
-                    {
-                        Position.Y += movementStep;
-                        if (Position.Y > GlobalConstants.GRIDMAP_BLOCK_HEIGHT)
-                        {
-                            Position.Y -= GlobalConstants.GRIDMAP_BLOCK_HEIGHT;
-                            ChangeGPSDueDirection(1, Directions.Down);
+                            break;
                         }
-                        break;
-                    }
-                case Directions.Left:
-                    {
-                        Position.X -= movementStep;
-                        if (Position.X < 0)
+                    case Directions.Down:
                         {
-                            Position.X += GlobalConstants.GRIDMAP_BLOCK_WIDTH;
-                            ChangeGPSDueDirection(1, Directions.Left);
+                            Position.Y += movementStep;
+                            if (Position.Y > GlobalConstants.GRIDMAP_BLOCK_HEIGHT)
+                            {
+                                Position.Y -= GlobalConstants.GRIDMAP_BLOCK_HEIGHT;
+                                ChangeGPSDueDirection(1, Directions.Down);
+                            }
+                            break;
                         }
-                        break;
-                    }
-                case Directions.Right:
-                    {
-                        Position.X += movementStep;
-                        if (Position.X > GlobalConstants.GRIDMAP_BLOCK_HEIGHT)
+                    case Directions.Left:
                         {
-                            Position.X -= GlobalConstants.GRIDMAP_BLOCK_HEIGHT;
-                            ChangeGPSDueDirection(1, Directions.Right);
+                            Position.X -= movementStep;
+                            if (Position.X < 0)
+                            {
+                                Position.X += GlobalConstants.GRIDMAP_BLOCK_WIDTH;
+                                ChangeGPSDueDirection(1, Directions.Left);
+                            }
+                            break;
                         }
-                        break;
-                    }
-            }
+                    case Directions.Right:
+                        {
+                            Position.X += movementStep;
+                            if (Position.X > GlobalConstants.GRIDMAP_BLOCK_HEIGHT)
+                            {
+                                Position.X -= GlobalConstants.GRIDMAP_BLOCK_HEIGHT;
+                                ChangeGPSDueDirection(1, Directions.Right);
+                            }
+                            break;
+                        }
+                }
 
             // Check whether a unit moved into the block (account block border)
             if ((Position.X <= GlobalConstants.GRIDMAP_BLOCK_WIDTH / 2 + movementStep / 2) &&
                  (Position.X >= GlobalConstants.GRIDMAP_BLOCK_WIDTH / 2 - movementStep / 2) &&
                  (Position.Y <= GlobalConstants.GRIDMAP_BLOCK_HEIGHT / 2 + movementStep / 2) &&
-                 (Position.Y >= GlobalConstants.GRIDMAP_BLOCK_HEIGHT / 2 - movementStep / 2))
+                 (Position.Y >= GlobalConstants.GRIDMAP_BLOCK_HEIGHT / 2 - movementStep / 2) &&
+                !this.gridMapReached)
                 ReachedGridMap();
 
             NormalizePosition();

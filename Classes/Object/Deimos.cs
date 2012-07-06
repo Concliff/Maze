@@ -92,13 +92,15 @@ namespace Maze.Classes
                 stepRemainder -= 1;
             }
 
-            MoveToDirection(movementStep, currentDirection.First);
-
+            MoveToDirection(movementStep, currentDirection);
         }
 
         protected override void ReachedGridMap()
         {
             base.ReachedGridMap();
+
+            Position.X = 25;
+            Position.Y = 25;
 
             if (Random.Int(100) <= 33)  // 33% chance to change direction
                 SelectNewDirection();
