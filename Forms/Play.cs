@@ -484,6 +484,21 @@ namespace Maze.Forms
             OnSpellCasting(effectEntry);
         }
 
+        private void SpellBarPB_MouseClick(object sender, MouseEventArgs e)
+        {
+            if (((PictureBox)sender).Tag == null)
+                return;
+
+            EffectEntry effectEntry = (EffectEntry)((PictureBox)sender).Tag;
+
+            for (int i = 0; i < spellsCount; ++i)
+                if (effectEntry.Equals((EffectEntry)SpellBarPB[i].Tag) && player.IsAlive())
+                {
+                    UseSpell(i+1);
+                    break;
+                }
+        }
+
         /// <summary>
         /// PlayForm Moving Handler
         /// </summary>

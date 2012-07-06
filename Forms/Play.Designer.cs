@@ -172,6 +172,7 @@ namespace Maze.Forms
                 SpellBarPB[i].Size = new Size(50, 50);
                 //SpellBarPB[i].Paint += new PaintEventHandler(BonusIconPB_Paint);
                 SpellBarPB[i].BackColor = Color.Gray;
+                SpellBarPB[i].MouseClick += new MouseEventHandler(SpellBarPB_MouseClick);
                 SpellBarPB[i].Show();
             }
 
