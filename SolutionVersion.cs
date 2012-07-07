@@ -6,12 +6,12 @@ using System.Text;
 
 namespace Maze
 {
-    class SolutionVersion
+    public static class SolutionVersion
     {
         private const uint Major    = 0;
         private const uint Minor    = 6;
         private const uint Build    = 0;
-        private const uint Revision = 189;
+        private const uint Revision = 190;
 
 
         public static string GetVersion()

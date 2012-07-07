@@ -5,13 +5,9 @@ using System.Text;
 
 namespace Maze
 {
-    public class Random
+    public static class Random
     {
         private static System.Random random;
-
-        private Random()
-        {
-        }
 
         public static void Initialize()
         {

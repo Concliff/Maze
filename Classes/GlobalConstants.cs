@@ -5,25 +5,25 @@ using System.Text;
 
 namespace Maze.Classes
 {
-    public class GlobalConstants
+    public static class GlobalConstants
     {
-        public static int TIMER_TICK_IN_MS      = 20;    
+        public const int TIMER_TICK_IN_MS      = 20;
 
         // Movement, GridMap
-        public static int MOVEMENT_STEP_PX = 5;
-        public static int GRIDMAP_BORDER_PX = 4;
-        public static int GRIDMAP_BLOCK_HEIGHT = 50;
-        public static int GRIDMAP_BLOCK_WIDTH = 50;
-        public static int GRIDMAP_WIDTH = 13;
-        public static int GRIDMAP_HEIGHT = 9;
+        public const int MOVEMENT_STEP_PX = 5;
+        public const int GRIDMAP_BORDER_PX = 4;
+        public const int GRIDMAP_BLOCK_HEIGHT = 50;
+        public const int GRIDMAP_BLOCK_WIDTH = 50;
+        public const int GRIDMAP_WIDTH = 13;
+        public const int GRIDMAP_HEIGHT = 9;
 
         // Files && Directories
-        public static string MAPS_PATH = "Data\\Maps\\";
-        public static string IMAGES_PATH = "Data\\Images\\";
+        public const string MAPS_PATH = "Data\\Maps\\";
+        public const string IMAGES_PATH = "Data\\Images\\";
 
         // Player
-        public static int PLAYER_SIZE_WIDTH = 32;
-        public static int PLAYER_SIZE_HEIGHT = 37;
+        public const int PLAYER_SIZE_WIDTH = 32;
+        public const int PLAYER_SIZE_HEIGHT = 37;
 
     }
 }

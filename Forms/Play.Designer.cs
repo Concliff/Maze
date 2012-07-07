@@ -21,6 +21,9 @@ namespace Maze.Forms
             {
                 components.Dispose();
             }
+
+            SystemTimer.Stop();
+
             base.Dispose(disposing);
         }
 
@@ -77,10 +80,6 @@ namespace Maze.Forms
         }
 
         #endregion
-
-        //////////////
-        private string ImageDirectoryPath = GlobalConstants.IMAGES_PATH;
-        //////////////
 
         private void CustomInitialize()
         {

@@ -163,11 +163,6 @@ namespace Maze.Forms
             }
         }
 
-        ~Play()
-        {
-            SystemTimer.Stop();
-        }
-
         #region Play Form Events
 
         private void Play_Load(object sender, EventArgs e)

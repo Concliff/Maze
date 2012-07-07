@@ -18,6 +18,9 @@ namespace Maze
 
         private void Program()
         {
+            //Initialize Utilities
+            Random.Initialize();
+
             // Load Datas
             DBStores.InitializeComponents();
             DBStores.Load();
