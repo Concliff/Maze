@@ -29,6 +29,9 @@ namespace Maze.Classes
             EffectStore.Insert(0, new EffectEntry());
             while ((row = effectStream.ReadLine()) != null)
             {
+                if (row == string.Empty)
+                    continue;
+
                 string[] entryStruct = new string[13];
                 entryStruct = row.Split('|');
 

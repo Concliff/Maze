@@ -13,12 +13,19 @@ namespace Maze.Classes
         Deimos,
         Phobos,
         Slug,
+        SlugClone,
     };
 
     public enum DeathStates
     {
         Alive,
         Dead,
+    };
+
+    public enum UnitFlags
+    {
+        None            = 0,
+        CanNotBeKilled  = 0x001,
     };
 
     public struct Direction
@@ -35,6 +42,7 @@ namespace Maze.Classes
         protected double speedRate; // Current speed(+effects)
         protected double stepRemainder; // Due to conversion from double(speedRate) to int(Coords)
         protected GPS respawnLocation;
+        protected int respawnTimer;
         protected UnitTypes unitType;
         protected List<EffectHolder> effectList;
 
@@ -58,6 +66,8 @@ namespace Maze.Classes
 
             currentDirection.First = Directions.None;
             currentDirection.Second = Directions.None;
+
+            respawnTimer = 3000;
         }
 
         public UnitTypes GetUnitType() { return unitType; }
@@ -126,7 +136,7 @@ namespace Maze.Classes
                 }
 
             effectList.Add(newHolder);
-            if (GetType() == ObjectType.Slug)
+            if (GetUnitType() == UnitTypes.Slug)
                 World.GetPlayForm().OnEffectApplied(newHolder);
 
             // Update unit stats
@@ -145,7 +155,7 @@ namespace Maze.Classes
 
             if (effectList.Remove(effectHolder))
             {
-                if (GetType() == ObjectType.Slug)
+                if (GetUnitType() == UnitTypes.Slug)
                     World.GetPlayForm().OnEffectRemoved(effectHolder);
 
                 // Update Speed
@@ -201,10 +211,36 @@ namespace Maze.Classes
                 int count = effectList.Count;
                 for (int i = 0; i < count; ++i)
                     RemoveEffect(effectList[0]);
+
             }
 
             this.deathState = deathState;
 
+        }
+
+        public bool KillUnit(Unit victim)
+        {
+            // TODO:
+            // units that can not be killed
+
+            victim.SetDeathState(DeathStates.Dead);
+
+            // TODO:
+            // Kind of reward for the killer
+
+            return true;
+        }
+
+        protected void Respawn()
+        {
+            // Return to start location
+            Position.Location = respawnLocation;
+            Position.X = 25;
+            Position.Y = 25;
+            currentGridMap = GetWorldMap().GetGridMap(Position.Location);
+            Position.BlockID = currentGridMap.ID;
+
+            SetDeathState(DeathStates.Alive);
         }
 
         protected void MoveToDirection(int movementStep, Direction direction)
@@ -285,6 +321,19 @@ namespace Maze.Classes
 
         public override void UpdateState(int timeP)
         {
+            if (deathState == DeathStates.Dead)
+            {
+                if (respawnTimer < 0)
+                {
+                    Respawn();
+                    respawnTimer = 3000;
+                }
+                else
+                    respawnTimer -= timeP;
+            }
+
+
+
             // Update unit effects
             for (int i = 0; i < effectList.Count;)
             {

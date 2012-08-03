@@ -88,8 +88,8 @@ namespace Maze.Classes
             if (unit.GetType() == ObjectType.Slug)
                 return GetSlugImage((Slug)unit);
 
-            // Do not draw Invisible unit
-            if (!unit.IsVisible())
+            // Do not draw Invisible and Dead units
+            if (!unit.IsVisible() || !unit.IsAlive())
                 return null;
 
             switch (unit.GetUnitType())

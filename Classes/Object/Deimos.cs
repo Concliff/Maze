@@ -39,6 +39,10 @@ namespace Maze.Classes
 
         public override void StartMotion()
         {
+            // Already started
+            if (isInMotion)
+                return;
+
             isInMotion = true;
             
             // find the first allowed direction
@@ -74,6 +78,16 @@ namespace Maze.Classes
         }
 
         public void StopMotion() { isInMotion = false; }
+
+        public override void SetDeathState(DeathStates deathState)
+        {
+            if (deathState == DeathStates.Dead)
+                StopMotion();
+            else
+                StartMotion();
+
+            base.SetDeathState(deathState);
+        }
 
         public void MovementAction()
         {

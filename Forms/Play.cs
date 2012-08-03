@@ -85,6 +85,7 @@ namespace Maze.Forms
                 new BonusEffect(5 , false),      // Thickener
                 new BonusEffect(6 , false),      // A Cap of Invisibility
                 new BonusEffect(7 , false),      // Mind Inverter
+                new BonusEffect(8 , false),      // Slimy Clone
             };
 
             aurasCount = 0;
@@ -123,6 +124,8 @@ namespace Maze.Forms
             SpellBarPB[spellsCount].Tag = effectEntry;
             SpellBarPB[spellsCount].Image = PictureManager.EffectImages[effectEntry.ID].Aura;
             SpellBarPB[spellsCount].Show();
+            AurasToolTip.SetToolTip(SpellBarPB[spellsCount], effectEntry.EffectName + "\n"
+                + effectEntry.Description);
 
             ++spellsCount;
         }
@@ -156,6 +159,7 @@ namespace Maze.Forms
                     {
                         SpellBarPB[j].Tag = SpellBarPB[j + 1].Tag;
                         SpellBarPB[j].Image = SpellBarPB[j + 1].Image;
+                        AurasToolTip.SetToolTip(SpellBarPB[j], AurasToolTip.GetToolTip(SpellBarPB[j + 1]));
                     }
                     --spellsCount;
                     break;

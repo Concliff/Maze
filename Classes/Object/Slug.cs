@@ -9,7 +9,6 @@ namespace Maze.Classes
     {
         private String Name;
         private bool FinishReached;
-        private int ressurectTimer;
         private int score;
         private int collectedDropsCount;    // at current level
 
@@ -53,7 +52,7 @@ namespace Maze.Classes
             currentGridMap = GetWorldMap().GetGridMap(Position.Location);
 
             FinishReached = false;
-            ressurectTimer = 3000;
+            respawnTimer = 3000;
 
             score = 0;
             collectedDropsCount = 0;
@@ -80,22 +79,13 @@ namespace Maze.Classes
             if (!FinishReached && IsAlive() && IsVisible())
             {
                 List<Unit> Units = GetUnitsWithinRange(30);
-                if (Units != null && Units.Count != 0)
-                {
-                    SetDeathState(DeathStates.Dead);
-                    return;
-                }
+                foreach (Unit unit in Units)
+                    if (unit.GetType() != ObjectType.Slug)
+                    {
+                        unit.KillUnit(this);
+                        return;
+                    }
 
-            }
-
-            if (!IsAlive())
-            {
-                if (ressurectTimer < timeP)
-                    Ressurect();
-                else
-                    ressurectTimer -= timeP;
-
-                return;
             }
 
             if (isInMotion)
@@ -126,22 +116,10 @@ namespace Maze.Classes
         {
             if (deathState == DeathStates.Dead)
             {
-                ressurectTimer = 3000;
+                respawnTimer = 3000;
             }
 
             base.SetDeathState(deathState);
-        }
-
-        public void Ressurect()
-        {
-            // Return to start location
-            Position.Location = respawnLocation;
-            Position.X = 25;
-            Position.Y = 25;
-            currentGridMap = GetWorldMap().GetGridMap(Position.Location);
-            Position.BlockID = currentGridMap.ID;
-
-            SetDeathState(DeathStates.Alive);
         }
 
         public String GetName() { return Name; }
@@ -328,6 +306,11 @@ namespace Maze.Classes
                 Effect effect = new Effect(effectEntry, this, this);
                 effect.Cast();
             }
+        }
+
+        public void CreateClone()
+        {
+            new SlugClone(Position, this.currentDirection);
         }
 
     }

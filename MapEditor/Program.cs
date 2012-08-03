@@ -18,6 +18,10 @@ namespace MapEditor
         [STAThread]
         static void Main()
         {
+            // Load Datas
+            DBStores.InitializeComponents();
+            DBStores.Load();
+
             // Load Pictures
             PictureManager.InitializeComponents();
             PictureManager.Load();

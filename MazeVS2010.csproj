@@ -71,6 +71,7 @@
     <Compile Include="Classes\DBStores.cs" />
     <Compile Include="Classes\MazeGenerator.cs" />
     <Compile Include="Classes\Object\Bonus.cs" />
+    <Compile Include="Classes\Object\SlugClone.cs" />
     <Compile Include="Classes\PathFinder.cs" />
     <Compile Include="Classes\BinaryOperations.cs" />
     <Compile Include="Classes\Object\OozeDrop.cs" />

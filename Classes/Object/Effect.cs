@@ -17,6 +17,8 @@ namespace Maze.Classes
         Root            = 5,
         Invisibility    = 6,
         MoveReverse     = 7,
+        CreateClone     = 8,
+        InstantKill     = 9,
     };
 
     public enum EffectTargets : byte
@@ -32,6 +34,7 @@ namespace Maze.Classes
         None                = 0,
         OnlySlug            = 0x001,    // Applies only on Slug
         CanBeSpell          = 0x002,    // Allows to appear at SpellBar
+        NoAura              = 0x004,    // Effect doesn't apply any visible auras
     };
 
     public enum EffectState
@@ -68,25 +71,28 @@ namespace Maze.Classes
         private EffectEntry effectInfo;
         private Unit target;
         private Unit caster;
+        private List<Unit> targetsList;
 
         public Effect(EffectEntry effectEntry, Unit target, Unit caster)
         {
             this.effectInfo = effectEntry;
             this.target = target;
             this.caster = caster;
+
+            targetsList = new List<Unit>();
         }
 
         public void Cast()
         {
-            if (effectInfo.HasAttribute(EffectAttributes.OnlySlug) && target.GetType() != ObjectType.Slug)
-                return;
+            // Add current target
+            if (effectInfo.Targets == EffectTargets.None)
+                AddTarget(target);
 
-            EffectHolder effectHolder = new EffectHolder(effectInfo);
-
+            // Fill Targets List
             switch (effectInfo.Targets)
             {
                 case EffectTargets.Caster:
-                    caster.ApplyEffect(effectHolder);
+                    AddTarget(caster);
                     break;
                 case EffectTargets.NearestUnit:
                     List<Unit> unitsAround = ObjectSearcher.GetUnitsWithinRange(caster, effectInfo.Range);
@@ -100,7 +106,7 @@ namespace Maze.Classes
                     }
 
                     if (nearestUnit != null)
-                        nearestUnit.ApplyEffect(effectHolder);
+                        AddTarget(nearestUnit);
                     break;
                 case EffectTargets.AllEnemiesInArea:
                     List<Unit> enemiesAround = ObjectSearcher.GetUnitsWithinRange(caster, effectInfo.Range);
@@ -109,11 +115,66 @@ namespace Maze.Classes
                         if (unit.GetType() == caster.GetType())
                             continue;
 
-                        unit.ApplyEffect(effectHolder);
+                        AddTarget(unit);
                     }
                     break;
             }
 
+            if (targetsList.Count == 0)
+                return;
+
+            if (effectInfo.HasAttribute(EffectAttributes.NoAura))
+                ApplyEffect();
+            else
+                ApplyAura();
+
+        }
+        /// <summary>
+        /// Used when Effect dosn't have Aura
+        /// and therefore do not need to add EffectHolder to Unit
+        /// </summary>
+        private void ApplyEffect()
+        {
+            switch (effectInfo.EffectType)
+            {
+                case EffectTypes.CreateClone:
+                    if (caster.GetUnitType() != UnitTypes.Slug)
+                        break;
+                    Slug slug = (Slug)target;
+                    slug.CreateClone();
+                    break;
+                case EffectTypes.InstantKill:
+                    foreach (Unit unitTarget in targetsList)
+                        caster.KillUnit(unitTarget);
+                    break;
+            }
+        }
+
+        /// <summary>
+        /// Used when need to apply EffectHolder and make an Aura for Unit
+        /// </summary>
+        private void ApplyAura()
+        {
+            if (effectInfo.HasAttribute(EffectAttributes.OnlySlug) && target.GetType() != ObjectType.Slug)
+                return;
+
+            EffectHolder effectHolder = new EffectHolder(effectInfo);
+
+            foreach (Unit unitTarget in targetsList)
+                unitTarget.ApplyEffect(effectHolder);
+        }
+
+        private bool AddTarget(Unit target)
+        {
+            if (targetsList.Contains(target))
+            {
+                return false;
+            }
+            else
+            {
+                targetsList.Add(target);
+                return true;
+            }
         }
     }
 
