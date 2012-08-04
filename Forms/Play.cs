@@ -79,6 +79,9 @@ namespace Maze.Forms
                 new BonusEffect(3 , true),      // Icy Wind
                 new BonusEffect(5 , true),      // Thickener
                 new BonusEffect(6 , true),      // A Cap of Invisibility
+                new BonusEffect(10 , true),     // Replenishment
+                new BonusEffect(11 , true),     // Shield
+                new BonusEffect(12 , true),     // Smoke
 
                 // Hidden Bonuses
                 new BonusEffect(2 , false),      // Sprint

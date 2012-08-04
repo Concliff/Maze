@@ -88,7 +88,7 @@ namespace Maze.Classes
 
             }
 
-            if (isInMotion)
+            if (isInMotion && GetEffectsByType(EffectTypes.Replenishment).Count == 0)
             {
                 travelTime += timeP;
                 if (travelTime > 1000)    // 1 second of motion

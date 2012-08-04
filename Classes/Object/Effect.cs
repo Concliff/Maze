@@ -19,6 +19,9 @@ namespace Maze.Classes
         MoveReverse     = 7,
         CreateClone     = 8,
         InstantKill     = 9,
+        Replenishment   = 10,
+        Shield          = 11,
+        Smoke           = 12,
     };
 
     public enum EffectTargets : byte
