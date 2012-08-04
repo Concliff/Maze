@@ -147,7 +147,7 @@ namespace Maze.Classes
         {
             if (!IsAlive())
                 return Position;
-            if (GetEffectsByType(EffectTypes.Root).Count != 0)
+            if (HasEffectType(EffectTypes.Root))
                 return Position;
 
             // Define direction of motion
@@ -179,7 +179,7 @@ namespace Maze.Classes
             else
                 this.currentDirection.Second = Directions.None;
 
-            if (GetEffectsByType(EffectTypes.MoveReverse).Count > 0)
+            if (HasEffectType(EffectTypes.MoveReverse))
             {
                 this.currentDirection.First = GetOppositeDirection(this.currentDirection.First);
                 this.currentDirection.Second = GetOppositeDirection(this.currentDirection.Second);

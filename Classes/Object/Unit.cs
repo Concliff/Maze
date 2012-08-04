@@ -165,6 +165,11 @@ namespace Maze.Classes
             }
         }
 
+        public bool HasEffectType(EffectTypes effectType)
+        {
+            return GetEffectsByType(effectType).Count > 0;
+        }
+
         public List<EffectEntry> GetEffectsByType(EffectTypes effectType)
         {
             List<EffectEntry> result = new List<EffectEntry>();
@@ -363,7 +368,7 @@ namespace Maze.Classes
 
         public bool IsVisible()
         {
-            return (GetEffectsByType(EffectTypes.Invisibility).Count == 0);
+            return !HasEffectType(EffectTypes.Invisibility);
         }
     }
 }

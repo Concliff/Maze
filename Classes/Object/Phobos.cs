@@ -93,7 +93,7 @@ namespace Maze.Classes
         {
             if (!IsAlive())
                 return;
-            if (GetEffectsByType(EffectTypes.Root).Count != 0)
+            if (HasEffectType(EffectTypes.Root))
                 return;
 
             // Generate Path if located at unknown grid

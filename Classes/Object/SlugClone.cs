@@ -41,7 +41,7 @@ namespace Maze.Classes
 
         private void MovementAction()
         {
-            if (GetEffectsByType(EffectTypes.Root).Count != 0)
+            if (HasEffectType(EffectTypes.Root))
                 return;
 
             double movementStepD = GlobalConstants.MOVEMENT_STEP_PX * this.speedRate;

@@ -14,7 +14,7 @@ namespace Maze.Classes
         {
             gridObjectType = GridObjectType.Slime;
             SetFlag(GridObjectFlags.Temporal);
-            if (World.GetPlayForm().GetPlayer().GetEffectsByType(EffectTypes.SlimeDuration).Count > 0)
+            if (World.GetPlayForm().GetPlayer().HasEffectType(EffectTypes.SlimeDuration))
                 timeToLive = 5000;
             else
                 timeToLive = 3000;
