@@ -95,8 +95,10 @@ namespace Maze.Forms
             spellsCount = 0;
         }
 
-        public void OnEffectApplied(EffectHolder effectHolder)
+        public void OnEffectApplied(object sender, EffectEventArgs e)
         {
+            EffectHolder effectHolder = e.holder;
+
             AuraIconPB[aurasCount].Tag = effectHolder;
             AuraIconPB[aurasCount].Image = PictureManager.EffectImages[effectHolder.EffectInfo.ID].Aura;
             AurasToolTip.SetToolTip(AuraIconPB[aurasCount], effectHolder.EffectInfo.EffectName + "\n"
@@ -104,6 +106,27 @@ namespace Maze.Forms
             AuraIconPB[aurasCount].Show();
 
             ++aurasCount;
+        }
+
+        public void OnEffectRemoved(object sender, EffectEventArgs e)
+        {
+            EffectHolder effectHolder = e.holder;
+
+            for (int i = 0; i < aurasCount; ++i)
+            {
+                if (AuraIconPB[i].Tag == effectHolder)
+                {
+                    for (int j = i; j < aurasCount; ++j)
+                    {
+                        AuraIconPB[j].Tag = AuraIconPB[j + 1].Tag;
+                        AuraIconPB[j].Image = AuraIconPB[j + 1].Image;
+                        AurasToolTip.SetToolTip(AuraIconPB[j], AurasToolTip.GetToolTip(AuraIconPB[j + 1]));
+                    }
+                    --aurasCount;
+                    AuraIconPB[aurasCount].Hide();
+                    break;
+                }
+            }
         }
 
         public void AddSpell(EffectEntry effectEntry)
@@ -133,26 +156,7 @@ namespace Maze.Forms
             ++spellsCount;
         }
 
-        public void OnEffectRemoved(EffectHolder effectHolder)
-        {
-            for (int i = 0; i < aurasCount; ++i)
-            {
-                if (AuraIconPB[i].Tag == effectHolder)
-                {
-                    for (int j = i; j < aurasCount; ++j)
-                    {
-                        AuraIconPB[j].Tag = AuraIconPB[j + 1].Tag;
-                        AuraIconPB[j].Image = AuraIconPB[j + 1].Image;
-                        AurasToolTip.SetToolTip(AuraIconPB[j], AurasToolTip.GetToolTip(AuraIconPB[j + 1]));
-                    }
-                    --aurasCount;
-                    AuraIconPB[aurasCount].Hide();
-                    break;
-                }
-            }
-        }
-
-        public void OnSpellCasting(EffectEntry effectEntry)
+       public void OnSpellCasting(EffectEntry effectEntry)
         {
             for (int i = 0; i < spellsCount; ++i)
             {

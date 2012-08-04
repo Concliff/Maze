@@ -34,6 +34,116 @@ namespace Maze.Classes
         public Directions Second;
     };
 
+    public class EffectEventArgs : EventArgs
+    {
+        public EffectHolder holder;
+
+        public EffectEventArgs(EffectHolder holder)
+        {
+            this.holder = holder;
+        }
+    }
+
+    public class EffectCollection
+    {
+        private List<EffectHolder> effectList;
+        private Unit owner;
+
+        public delegate void EffectHandler(object sender, EffectEventArgs e);
+        public event EffectHandler EffectApplyEvent;
+        public event EffectHandler EffectRemoveEvent;
+
+        public int Count
+        {
+            get
+            {
+                return effectList.Count;
+            }
+        }
+
+        public EffectHolder this[int index]
+        {
+            get
+            {
+                return effectList[index];
+            }
+        }
+
+        public EffectCollection(Unit owner)
+        {
+            this.owner = owner;
+            effectList = new List<EffectHolder>();
+        }
+
+        public bool Add(EffectHolder holder)
+        {
+            // prevent applying double effect
+            if (effectList.Count > 0)
+                foreach (EffectHolder effect in effectList)
+                {
+                    if (effect.EffectInfo.ID == holder.EffectInfo.ID)
+                    {
+                        effect.Refresh();
+                        return true;
+                    }
+                }
+
+            effectList.Add(holder);
+
+            if (EffectApplyEvent != null)
+            {
+                EffectEventArgs e = new EffectEventArgs(holder);
+                EffectApplyEvent(owner, e);
+            }
+
+            return true;
+        }
+
+        public bool Remove(EffectHolder holder)
+        {
+
+            if (!effectList.Contains(holder))
+                return false;
+
+            // Save Type of removable effect
+            EffectTypes effectType = holder.EffectInfo.EffectType;
+
+            if (effectList.Remove(holder))
+            {
+                if (EffectRemoveEvent != null)
+                {
+                    EffectEventArgs e = new EffectEventArgs(holder);
+                    EffectRemoveEvent(owner, e);
+                }
+
+            }
+            return true;
+        }
+
+        public void RemoveAll()
+        {
+            while(effectList.Count > 0)
+            {
+                Remove(effectList[0]);
+            }
+        }
+
+        public void Update(int timeP)
+        {
+            for (int i = 0; i < effectList.Count; )
+            {
+                if (effectList[i].GetState() == EffectState.Expired)
+                {
+                    Remove(effectList[i]);
+                    continue;
+                }
+
+                effectList[i].UpdateTime(timeP);
+                ++i;
+            }
+        }
+
+    }
     public class Unit : Object
     {
         protected bool gridMapReached;
@@ -44,7 +154,7 @@ namespace Maze.Classes
         protected GPS respawnLocation;
         protected int respawnTimer;
         protected UnitTypes unitType;
-        protected List<EffectHolder> effectList;
+        protected EffectCollection effectList;
 
         protected bool isInMotion;
         protected Direction currentDirection;
@@ -62,12 +172,36 @@ namespace Maze.Classes
             baseSpeed = 1.0d;
             speedRate = baseSpeed;
             stepRemainder = 0;
-            effectList = new List<EffectHolder>();
+            effectList = new EffectCollection(this);
 
             currentDirection.First = Directions.None;
             currentDirection.Second = Directions.None;
 
             respawnTimer = 3000;
+
+            effectList.EffectApplyEvent += new EffectCollection.EffectHandler(OnEffectApplied);
+
+            effectList.EffectRemoveEvent += new EffectCollection.EffectHandler(OnEffectRemoved);
+        }
+
+        public void OnEffectApplied(object sender, EffectEventArgs e)
+        {
+            EffectHolder holder = e.holder;
+
+            // Update unit stats
+            if (holder.EffectInfo.EffectType == EffectTypes.Snare ||
+                holder.EffectInfo.EffectType == EffectTypes.IncreaseSpeed)
+                CalculateSpeedRate();
+        }
+
+        public void OnEffectRemoved(object sender, EffectEventArgs e)
+        {
+            EffectHolder holder = e.holder;
+
+            // Update unit stats
+            if (holder.EffectInfo.EffectType == EffectTypes.Snare ||
+                holder.EffectInfo.EffectType == EffectTypes.IncreaseSpeed)
+                CalculateSpeedRate();
         }
 
         public UnitTypes GetUnitType() { return unitType; }
@@ -124,45 +258,12 @@ namespace Maze.Classes
 
         public void ApplyEffect(EffectHolder newHolder)
         {
-            // prevent applying double effect
-            if (this.effectList.Count > 0)
-                foreach (EffectHolder effect in effectList)
-                {
-                    if (effect.EffectInfo.ID == newHolder.EffectInfo.ID)
-                    {
-                        effect.Refresh();
-                        return;
-                    }
-                }
-
             effectList.Add(newHolder);
-            if (GetUnitType() == UnitTypes.Slug)
-                World.GetPlayForm().OnEffectApplied(newHolder);
-
-            // Update unit stats
-            if (newHolder.EffectInfo.EffectType == EffectTypes.Snare ||
-                newHolder.EffectInfo.EffectType == EffectTypes.IncreaseSpeed)
-                CalculateSpeedRate();
         }
 
         private void RemoveEffect(EffectHolder effectHolder)
         {
-            if (!effectList.Contains(effectHolder))
-                return;
-
-            // Save Type of removable effect
-            EffectTypes effectType = effectHolder.EffectInfo.EffectType;
-
-            if (effectList.Remove(effectHolder))
-            {
-                if (GetUnitType() == UnitTypes.Slug)
-                    World.GetPlayForm().OnEffectRemoved(effectHolder);
-
-                // Update Speed
-                if (effectType == EffectTypes.Snare ||
-                    effectType == EffectTypes.IncreaseSpeed)
-                    CalculateSpeedRate();
-            }
+            effectList.Remove(effectHolder);
         }
 
         public bool HasEffectType(EffectTypes effectType)
@@ -173,10 +274,15 @@ namespace Maze.Classes
         public List<EffectEntry> GetEffectsByType(EffectTypes effectType)
         {
             List<EffectEntry> result = new List<EffectEntry>();
-            foreach (EffectHolder effect in effectList)
+            /*foreach (EffectHolder effect in effectList)
             {
                 if (effect.EffectInfo.EffectType == effectType)
                     result.Add(effect.EffectInfo);
+            }*/
+            for (int i = 0; i < effectList.Count; ++i)
+            {
+                if (effectList[i].EffectInfo.EffectType == effectType)
+                    result.Add(effectList[i].EffectInfo);
             }
             return result;
         }
@@ -213,9 +319,7 @@ namespace Maze.Classes
             if (deathState == DeathStates.Dead)
             {
                 // Remove All Effects
-                int count = effectList.Count;
-                for (int i = 0; i < count; ++i)
-                    RemoveEffect(effectList[0]);
+                effectList.RemoveAll();
 
             }
 
@@ -340,17 +444,7 @@ namespace Maze.Classes
 
 
             // Update unit effects
-            for (int i = 0; i < effectList.Count;)
-            {
-                if (effectList[i].GetState() == EffectState.Expired)
-                {
-                    RemoveEffect(effectList[i]);
-                    continue;
-                }
-
-                effectList[i].UpdateTime(timeP);
-                ++i;
-            }
+            effectList.Update(timeP);
 
             // Check for the nearest GridObjects
             List<GridObject> objects = GetGridObjectsWithinRange(30);

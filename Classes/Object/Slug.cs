@@ -67,6 +67,9 @@ namespace Maze.Classes
 
             SetBaseSpeed(0.7d);
 
+            effectList.EffectApplyEvent += new EffectCollection.EffectHandler(World.GetPlayForm().OnEffectApplied);
+
+            effectList.EffectRemoveEvent += new EffectCollection.EffectHandler(World.GetPlayForm().OnEffectRemoved);
         }
 
         public Slug(String name) : this()
