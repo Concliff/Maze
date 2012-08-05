@@ -22,8 +22,10 @@ namespace Maze.Classes
 
     public class ObjectContainer
     {
+        private bool isUpdating;    // safety check for multi access into container
         private List<Object> objects;
         private Stack<Object> objectsToRemove;
+        private Stack<Object> objectsToAdd;
         private Stack<uint> releasedGUIDs;
         public static uint GUIDCounter;
 
@@ -31,13 +33,18 @@ namespace Maze.Classes
         {
             objects = new List<Object>();
             objectsToRemove = new Stack<Object>();
+            objectsToAdd = new Stack<Object>();
             releasedGUIDs = new Stack<uint>();
             GUIDCounter = 0;
+            isUpdating = false;
         }
 
         public uint CreateObject(Object newObject)
         {
-            objects.Add(newObject);
+            if (isUpdating)
+                objectsToAdd.Push(newObject);
+            else
+                objects.Add(newObject);
 
             // Define GUID of the new object
             if (releasedGUIDs.Count > 0)
@@ -61,6 +68,11 @@ namespace Maze.Classes
 
         public void UpdateState(int timeP)
         {
+            isUpdating = true;
+
+            objects.AddRange(objectsToAdd);
+            objectsToAdd.Clear();
+
             // Update each object or add to Remove Stack
             foreach (Object objectF in objects)
             {
@@ -75,6 +87,8 @@ namespace Maze.Classes
             }
 
             RemoveTaggedObjects();
+
+            isUpdating = false;
         }
 
         private void RemoveTaggedObjects()
