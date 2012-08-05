@@ -13,6 +13,7 @@ namespace Maze.Classes
         Bomb,
         Slime,
         Bonus,
+        SmokeCloud,
     };
 
     public enum GridObjectState : byte
@@ -31,12 +32,19 @@ namespace Maze.Classes
         Temporal        = 0x010,        // Disappears after TTL
     };
 
+    public struct AreaEffect
+    {
+        public ushort ID;
+        public int Range;
+    }
+
     public class GridObject : Object
     {
         protected int timeToLive;
         protected int activationTime;
         protected int timeToActivate;
         protected bool recentlyUsed;
+        protected AreaEffect areaEffect;
 
         protected GridObjectState gridObjectState;
         protected GridObjectType gridObjectType;
@@ -103,6 +111,15 @@ namespace Maze.Classes
                     SetGridObjectState(GridObjectState.Active);
                 else
                     timeToActivate -= timeP;
+            }
+
+            if (HasFlag(GridObjectFlags.AreaEffect) && areaEffect.ID != 0)
+            {
+                List<Unit> units = GetUnitsWithinRange(areaEffect.Range);
+
+                foreach (Unit unit in units)
+                    unit.CastEffect(areaEffect.ID, unit);
+
             }
 
             base.UpdateState(timeP);

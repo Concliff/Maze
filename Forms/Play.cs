@@ -80,8 +80,7 @@ namespace Maze.Forms
                 new BonusEffect(5 , true),      // Thickener
                 new BonusEffect(6 , true),      // A Cap of Invisibility
                 new BonusEffect(10 , true),     // Replenishment
-                new BonusEffect(11 , true),     // Shield
-                new BonusEffect(12 , true),     // Smoke
+                //new BonusEffect(11 , true),     // Shield
 
                 // Hidden Bonuses
                 new BonusEffect(2 , false),      // Sprint
@@ -89,6 +88,7 @@ namespace Maze.Forms
                 new BonusEffect(6 , false),      // A Cap of Invisibility
                 new BonusEffect(7 , false),      // Mind Inverter
                 new BonusEffect(8 , false),      // Slimy Clone
+                new BonusEffect(12 , false),     // Smoke Bomb
             };
 
             aurasCount = 0;

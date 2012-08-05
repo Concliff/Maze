@@ -44,8 +44,13 @@ namespace Maze.Forms
 
         private void AuraIconPB_Paint(object sender, PaintEventArgs e)
         {
-            int durationInSeconds = ((EffectHolder)((PictureBox)sender).Tag).Duration / 1000;
+            EffectHolder holder = (EffectHolder)((PictureBox)sender).Tag;
+            int durationInSeconds = holder.Duration / 1000;
 
+            // Draw Aura Timer
+            // Skip if duration == -1 (One-tact effect)
+            if (holder.EffectInfo.Duration == -1)
+                return;
             // Alignment centre
             int x;
             if ((durationInSeconds) / 10 > 0)
@@ -173,7 +178,12 @@ namespace Maze.Forms
                             // Units
                             if (objectsOnMap[i].GetType() == ObjectType.Unit)
                             {
-                                objectImage = PictureManager.GetUnitImage((Unit)objectsOnMap[i]);
+                                Unit unit = (Unit)objectsOnMap[i];
+
+                                // Check Smoke Cloud
+                                // Draw objects with 'Smoke Cloud' effect if Slug also has it and vice versa
+                                if (!(player.HasEffectType(EffectTypes.SmokeCloud) ^ unit.HasEffectType(EffectTypes.SmokeCloud)))
+                                    objectImage = PictureManager.GetUnitImage(unit);
                             }
                             else
                                 continue;

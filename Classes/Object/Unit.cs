@@ -194,10 +194,12 @@ namespace Maze.Classes
 
             objectType = ObjectType.Unit;
             unitType = UnitTypes.Unit;
+
+            effectList = new EffectCollection(this);
+
             BaseSpeed = 1.0d;
             SpeedRate = BaseSpeed;
             stepRemainder = 0;
-            effectList = new EffectCollection(this);
 
             currentDirection.First = Directions.None;
             currentDirection.Second = Directions.None;

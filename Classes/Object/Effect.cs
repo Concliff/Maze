@@ -21,7 +21,8 @@ namespace Maze.Classes
         InstantKill     = 9,
         Replenishment   = 10,
         Shield          = 11,
-        Smoke           = 12,
+        SmokeBomb       = 12,
+        SmokeCloud      = 13,
     };
 
     public enum EffectTargets : byte
@@ -149,6 +150,10 @@ namespace Maze.Classes
                 case EffectTypes.InstantKill:
                     foreach (Unit unitTarget in targetsList)
                         caster.KillUnit(unitTarget);
+                    break;
+                case EffectTypes.SmokeBomb:
+                    // Create Smoke Cloud at caster position
+                    new SmokeCloud(caster.Position);
                     break;
             }
         }

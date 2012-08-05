@@ -25,6 +25,7 @@ namespace Maze.Classes
         public static Image SoulImage;
         public static Image SlimeImage;
         public static Image PortalImage;
+        public static Image SmokeCloud;
         public static EffectImage[] EffectImages;
 
         private static int mapImageCount;
@@ -57,6 +58,7 @@ namespace Maze.Classes
             SlugInvisible = Image.FromFile(ImageDirectoryPath + "Slug_Invisible.png");
             SoulImage = Image.FromFile(ImageDirectoryPath + "Soul.png");
             PortalImage = Image.FromFile(ImageDirectoryPath + "Portal.png");
+            SmokeCloud = Image.FromFile(ImageDirectoryPath + "SmokeCloud.png");
 
             // Load effects images
             EffectImages = new EffectImage[DBStores.EffectStore.Count + 1];
@@ -122,6 +124,8 @@ namespace Maze.Classes
 
             switch (gridObject.GetGridObjectType())
             {
+                case GridObjectType.SmokeCloud:
+                    return PictureManager.SmokeCloud;
                 case GridObjectType.OozeDrop:
                     return PictureManager.DropImage;
                 case GridObjectType.Portal:
