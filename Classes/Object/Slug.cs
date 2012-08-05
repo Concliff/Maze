@@ -65,7 +65,7 @@ namespace Maze.Classes
             objectSize.Width = GlobalConstants.PLAYER_SIZE_WIDTH;
             objectSize.Height = GlobalConstants.PLAYER_SIZE_HEIGHT;
 
-            SetBaseSpeed(0.7d);
+            BaseSpeed = 0.7d;
 
             effectList.EffectApplyEvent += new EffectCollection.EffectHandler(World.GetPlayForm().OnEffectApplied);
 
@@ -193,7 +193,7 @@ namespace Maze.Classes
             int searchingStep = 10;
             List<GridObject> slimeAround;
             bool slimePersist = false;
-            double slimeSpeedRate = GetSpeedRate();
+            double slimeSpeedRate = SpeedRate;
 
             switch (currentDirection.First)
             {

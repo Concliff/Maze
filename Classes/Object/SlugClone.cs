@@ -18,7 +18,7 @@ namespace Maze.Classes
             objectSize.Width = GlobalConstants.PLAYER_SIZE_WIDTH;
             objectSize.Height = GlobalConstants.PLAYER_SIZE_HEIGHT;
 
-            SetBaseSpeed(1.0d);
+            BaseSpeed = 1.0d;
         }
 
         public override void UpdateState(int timeP)
@@ -44,7 +44,7 @@ namespace Maze.Classes
             if (HasEffectType(EffectTypes.Root))
                 return;
 
-            double movementStepD = GlobalConstants.MOVEMENT_STEP_PX * this.speedRate;
+            double movementStepD = GlobalConstants.MOVEMENT_STEP_PX * SpeedRate;
             int movementStep = (int)(movementStepD);
             stepRemainder += movementStepD - movementStep;
             if (stepRemainder > 1d)

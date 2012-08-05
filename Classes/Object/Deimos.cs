@@ -97,7 +97,7 @@ namespace Maze.Classes
             if (HasEffectType(EffectTypes.Root))
                 return;
 
-            double movementStepD = GlobalConstants.MOVEMENT_STEP_PX * this.speedRate;
+            double movementStepD = GlobalConstants.MOVEMENT_STEP_PX * SpeedRate;
             int movementStep = (int)(movementStepD);
             stepRemainder += movementStepD - movementStep;
             if (stepRemainder > 1d)

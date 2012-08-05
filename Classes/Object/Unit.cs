@@ -149,7 +149,32 @@ namespace Maze.Classes
         protected bool gridMapReached;
         protected DeathStates deathState;
         protected double baseSpeed; // base speed of the Unit
+        public double BaseSpeed
+        {
+            get
+            {
+                return baseSpeed;
+            }
+            protected set
+            {
+                baseSpeed = value;
+                CalculateSpeedRate();
+            }
+        }
+
         protected double speedRate; // Current speed(+effects)
+        public double SpeedRate
+        {
+            get
+            {
+                return speedRate;
+            }
+            protected set
+            {
+                speedRate = value;
+            }
+        }
+
         protected double stepRemainder; // Due to conversion from double(speedRate) to int(Coords)
         protected GPS respawnLocation;
         protected int respawnTimer;
@@ -169,8 +194,8 @@ namespace Maze.Classes
 
             objectType = ObjectType.Unit;
             unitType = UnitTypes.Unit;
-            baseSpeed = 1.0d;
-            speedRate = baseSpeed;
+            BaseSpeed = 1.0d;
+            SpeedRate = BaseSpeed;
             stepRemainder = 0;
             effectList = new EffectCollection(this);
 
@@ -287,17 +312,9 @@ namespace Maze.Classes
             return result;
         }
 
-
-        public double GetSpeedRate() { return speedRate; }
-        public void SetBaseSpeed(double speed)
-        {
-            this.baseSpeed = speed;
-
-            CalculateSpeedRate();
-        }
         protected void CalculateSpeedRate()
         {
-            this.speedRate = this.baseSpeed;
+            SpeedRate = BaseSpeed;
 
             double speedModifier = 100;
             List<EffectEntry> speedEffects;
@@ -310,7 +327,7 @@ namespace Maze.Classes
             foreach (EffectEntry effect in speedEffects)
                 speedModifier *= effect.Value/100d + 1;
 
-            this.speedRate *= speedModifier / 100d;
+            SpeedRate *= speedModifier / 100d;
         }
 
         public bool IsAlive() { return deathState == DeathStates.Alive; }

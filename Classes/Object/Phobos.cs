@@ -42,7 +42,7 @@ namespace Maze.Classes
             pathFindingTimer = PATHFINDING_TIME;
             state = PhobosStates.None;
 
-            SetBaseSpeed(0.4d);
+            BaseSpeed = 0.4d;
         }
 
         public override void StartMotion()
@@ -100,7 +100,7 @@ namespace Maze.Classes
             if (!pathFinder.Path.Contains(currentGridMap))
                 FindPath();
 
-            double movementStepD = GlobalConstants.MOVEMENT_STEP_PX * this.speedRate;
+            double movementStepD = GlobalConstants.MOVEMENT_STEP_PX * SpeedRate;
             if (this.currentDirection.Second != Directions.None)
                 movementStepD = Math.Sqrt(2 * movementStepD);
             int movementStep = (int)(movementStepD);
