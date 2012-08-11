@@ -76,8 +76,10 @@ namespace Maze.Classes
 
             KeyPressed = e.KeyCode;
             lastKeyEventArgs = e;
-            keysDownList.Add(e.KeyCode);
-            ++KeysDownCount;
+
+            // Do not double add the same key
+            if (!keysDownList.Contains(e.KeyCode))
+                keysDownList.Add(e.KeyCode);
         }
 
         /// <summary>
