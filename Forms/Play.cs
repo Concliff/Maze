@@ -25,7 +25,7 @@ namespace Maze.Forms
 
         bool GamePaused;
         bool PlayStarted;
-        Slug player;
+
         int tempCount;
 
         DateTime ProgramStartDateTime;  // Contains Time when game was started
@@ -42,6 +42,12 @@ namespace Maze.Forms
 
         private byte aurasCount;
         private byte spellsCount;
+
+        public Slug Player
+        {
+            get;
+            private set;
+        }
 
         public Play()
         {
@@ -308,8 +314,11 @@ namespace Maze.Forms
 
                             CreateObjectContainer();
 
-                            player = new Slug();
+                            Player = new Slug();
+                            // Events
+                            Player.LocationChanged += new Maze.Classes.Object.PositionHandler(Player_OnLocationChanged);
 
+                            ProgramStartDateTime = DateTime.Now;
                             GetWorldMap().FillMapWithUnits(); // Add units to map
                             GetWorldMap().FillMapWithObjects();// Add objects
                             GetObjectContainer().StartMotion();
@@ -360,7 +369,6 @@ namespace Maze.Forms
                 return;
 
             int usedSpellNumber = 0;
-
             // Get last pressed Key
             switch (KeyMgr.ExtractKeyPressed())
             {
@@ -391,14 +399,10 @@ namespace Maze.Forms
                     usedSpellNumber = 5;
                     break;
             }
-            if (player.IsAlive() && usedSpellNumber > 0 && usedSpellNumber <= spellsCount)
+            if (Player.IsAlive() && usedSpellNumber > 0 && usedSpellNumber <= spellsCount)
                 UseSpell(usedSpellNumber);
 
             if (GamePaused)
-                return;
-
-            // return if a player reached finish block
-            if (player.IsFinished())
                 return;
 
             // Refresh game run-time
@@ -452,7 +456,7 @@ namespace Maze.Forms
                 // Try 10 times to find appropriate point
                 for (int i = 0; i < 10; ++i)
                 {
-                    bonusGridGPS = player.Position;
+                    bonusGridGPS = Player.Position;
                     short xDiff = (short)Random.Int(6);
                     short yDiff = (short)Random.Int(6);
                      bonusGridGPS.Location.X += xDiff - 3;
@@ -486,7 +490,7 @@ namespace Maze.Forms
         private void UseSpell(int spellNumber)
         {
             EffectEntry effectEntry = (EffectEntry)SpellBarPB[spellNumber-1].Tag;
-            player.CastEffect(effectEntry.ID, player);
+            Player.CastEffect(effectEntry.ID, Player);
             OnSpellCasting(effectEntry);
         }
 
@@ -498,7 +502,7 @@ namespace Maze.Forms
             EffectEntry effectEntry = (EffectEntry)((PictureBox)sender).Tag;
 
             for (int i = 0; i < spellsCount; ++i)
-                if (effectEntry.Equals((EffectEntry)SpellBarPB[i].Tag) && player.IsAlive())
+                if (effectEntry.Equals((EffectEntry)SpellBarPB[i].Tag) && Player.IsAlive())
                 {
                     UseSpell(i+1);
                     break;
@@ -516,13 +520,19 @@ namespace Maze.Forms
                 (MoveType & (uint)Directions.Right) == 0 && (MoveType & (uint)Directions.Left) == 0)
                 return;
 
-            if (!player.IsAlive())
+            if (!Player.IsAlive())
                 return;
 
-            player.MovementAction(MoveType);
+            Player.MovementAction(MoveType);
+        }
 
-            if (player.IsFinished())
+        private void Player_OnLocationChanged(object sender, PositionEventArgs e)
+        {
+            // Check finish point
+            if (GetWorldMap().DropsRemain == 0 &&
+                GetWorldMap().GetGridMap(Player.Position.BlockID).HasAttribute(GridMapAttributes.IsFinish))
             {
+
                 if (GetWorldMap().IsRandom())
                 {
                     // Regenerate Map and Objects
@@ -545,14 +555,14 @@ namespace Maze.Forms
                         GetWorldMap().SetMap(currentMap, currentLevel);
                 }
 
-                player.LevelChanged();
-                player.AddPoints(30);
+                Player.LevelChanged();
+                Player.AddPoints(30);
             }
         }
 
         public Slug GetPlayer()
         {
-            return player;
+            return Player;
         }
     }
 }

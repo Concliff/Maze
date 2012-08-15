@@ -8,7 +8,6 @@ namespace Maze.Classes
     public class Slug : Unit
     {
         private String Name;
-        private bool FinishReached;
         private int score;
         private int collectedDropsCount;    // at current level
 
@@ -44,14 +43,8 @@ namespace Maze.Classes
             respawnLocation = GetWorldMap().GetStartPoint();
 
             // Set Start Location
-            Position.Location = respawnLocation;
-            Position.X = 25;
-            Position.Y = 25;
-            Position.BlockID = GetWorldMap().GetGridMap(Position.Location).ID;
+            Position = new GridGPS(respawnLocation, 25, 25);
 
-            currentGridMap = GetWorldMap().GetGridMap(Position.Location);
-
-            FinishReached = false;
             respawnTimer = 3000;
 
             score = 0;
@@ -79,7 +72,7 @@ namespace Maze.Classes
 
         public override void UpdateState(int timeP)
         {
-            if (!FinishReached && IsAlive() && IsVisible())
+            if (IsAlive() && IsVisible())
             {
                 List<Unit> Units = GetUnitsWithinRange(30);
                 foreach (Unit unit in Units)
@@ -263,23 +256,7 @@ namespace Maze.Classes
         public void LevelChanged()
         {
             respawnLocation = GetWorldMap().GetStartPoint();
-            Position.Location = respawnLocation;
-            Position.X = 25;
-            Position.Y = 25;
-            currentGridMap = GetWorldMap().GetGridMap(Position.Location);
-            FinishReached = false;
-        }
-
-        /// <summary>
-        /// Called when player moved to the next block
-        /// </summary>
-        protected override void ReachedGridMap()
-        {
-            base.ReachedGridMap();
-
-            if (currentGridMap.HasAttribute(GridMapAttributes.IsFinish) &&
-                GetWorldMap().DropsRemain() == 0)
-                FinishReached = true;
+            Position = new GridGPS(respawnLocation, 25, 25);
         }
 
         public void CollectDrop(OozeDrop drop)
@@ -289,8 +266,6 @@ namespace Maze.Classes
             GetWorldMap().CollectDrop(drop);
             ++collectedDropsCount;
         }
-
-        public bool IsFinished() { return FinishReached; }
 
         public int GetScore() { return score; }
         public void AddPoints(int points) { this.score += points; }
