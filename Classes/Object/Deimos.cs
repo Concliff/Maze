@@ -11,22 +11,20 @@ namespace Maze.Classes
         public Deimos()
         {
             unitType = UnitTypes.Deimos;
-            respawnLocation = GetWorldMap().GetFinishPoint();
-            Position.Location = respawnLocation;
-            Position.X = 25;
-            Position.Y = 25;
-            Position.BlockID = GetWorldMap().GetGridMap(Position.Location).ID;
+
+            Position = new GridGPS(respawnLocation, 25, 25);
+
             isInMotion = false;
 
-            currentGridMap = GetWorldMap().GetGridMap(Position.Location);
+            //currentGridMap = GetWorldMap().GetGridMap(Position.Location);
         }
 
         public Deimos(GPS respawnLocation)
             : this()
         {
             this.respawnLocation = respawnLocation;
-            Position.Location = respawnLocation;
-            currentGridMap = GetWorldMap().GetGridMap(Position.Location);
+
+            Position = new GridGPS(respawnLocation, 25, 25);
         }
 
         public override void UpdateState(int timeP)
@@ -109,12 +107,22 @@ namespace Maze.Classes
             MoveToDirection(movementStep, currentDirection);
         }
 
-        protected override void ReachedGridMap()
+        protected override void OnPositionChanged(object sender, PositionEventArgs e)
         {
-            base.ReachedGridMap();
+            if (!this.isInMotion)
+                return;
+            // HACK: Ignore if not the center of the block
+            int movementStep = (int)(GlobalConstants.MOVEMENT_STEP_PX * SpeedRate) + 1;
+            if (!(Position.X >= GlobalConstants.GRIDMAP_BLOCK_WIDTH / 2 - movementStep / 2 &&
+                Position.X <= GlobalConstants.GRIDMAP_BLOCK_WIDTH / 2 + movementStep / 2 &&
+                Position.Y >= GlobalConstants.GRIDMAP_BLOCK_HEIGHT / 2 - movementStep / 2 &&
+                Position.Y <= GlobalConstants.GRIDMAP_BLOCK_HEIGHT / 2 + movementStep / 2 &&
+                !this.gridMapReached))
+                return;
 
-            Position.X = 25;
-            Position.Y = 25;
+            this.gridMapReached = true;
+
+            Position = new GridGPS(Position, 25, 25);
 
             if (Random.Int(100) <= 33)  // 33% chance to change direction
                 SelectNewDirection();

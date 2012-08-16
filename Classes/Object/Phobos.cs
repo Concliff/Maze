@@ -30,10 +30,7 @@ namespace Maze.Classes
 
             this.respawnLocation = respawnLocation;
 
-            Position.Location = respawnLocation;
-            Position.X = 25;
-            Position.Y = 25;
-            Position.BlockID = GetWorldMap().GetGridMap(Position.Location).ID;
+            Position = new GridGPS(respawnLocation, 25, 25);
 
             pathFinder = new PathFinder();
 
@@ -115,19 +112,33 @@ namespace Maze.Classes
 
         }
 
-        protected override void ReachedGridMap()
+        protected override void OnPositionChanged(object sender, PositionEventArgs e)
         {
+            if (state != PhobosStates.Chasing && state != PhobosStates.ReturningHome)
+                return;
+
+            // HACK: Ignore if not the center of the block
+            int movementStep = (int)(GlobalConstants.MOVEMENT_STEP_PX * SpeedRate) + 1;
+            if (!(Position.X >= GlobalConstants.GRIDMAP_BLOCK_WIDTH / 2 - movementStep / 2 &&
+                Position.X <= GlobalConstants.GRIDMAP_BLOCK_WIDTH / 2 + movementStep / 2 &&
+                Position.Y >= GlobalConstants.GRIDMAP_BLOCK_HEIGHT / 2 - movementStep / 2 &&
+                Position.Y <= GlobalConstants.GRIDMAP_BLOCK_HEIGHT / 2 + movementStep / 2 &&
+                !this.gridMapReached))
+                return;
+
+            Position = new GridGPS(Position, 25, 25);
+            this.gridMapReached = true;
             FindPath();
 
-            Position.X = 25;
-            Position.Y = 25;
             // TODO: Define state PhobosStates.DestinationReached
 
-            base.ReachedGridMap();
         }
 
         private void FindPath()
         {
+            if (victim == null)
+                return;
+
             if (!victim.IsAlive() || victim.IsAtRespawnLocation() || !victim.IsVisible())
             {
                 state = PhobosStates.ReturningHome;

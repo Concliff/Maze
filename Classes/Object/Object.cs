@@ -131,6 +131,17 @@ namespace Maze.Classes
             RemoveTaggedObjects();
         }
     }
+
+    public class PositionEventArgs : EventArgs
+    {
+        public GridGPS NewPosition;
+
+        public PositionEventArgs(GridGPS position)
+        {
+            NewPosition = position;
+        }
+    }
+
     public class Object
     {
         protected struct ModelSize
@@ -145,24 +156,81 @@ namespace Maze.Classes
         protected GridMap currentGridMap;
         protected ModelSize objectSize;
 
-        public GridGPS Position;
+        private GridGPS pr_position;
+
+        public GridGPS Position
+        {
+            get
+            {
+                return pr_position;
+            }
+            protected set
+            {
+                if (pr_position.Equals(value))
+                    return;
+
+                GridGPS newPosition = value;
+                bool locationChanged = false;
+
+                // Coordinates are out of bound of the cell
+                // Change Location
+
+                if (newPosition.X < 0)
+                {
+                    newPosition.Location.X -= 1;
+                    newPosition.X += GlobalConstants.GRIDMAP_BLOCK_WIDTH;
+                }
+                else if (newPosition.X > GlobalConstants.GRIDMAP_BLOCK_WIDTH)
+                {
+                    newPosition.Location.X += 1;
+                    newPosition.X -= GlobalConstants.GRIDMAP_BLOCK_WIDTH;
+                }
+
+                if (newPosition.Y < 0)
+                {
+                    newPosition.Location.Y -= 1;
+                    newPosition.Y += GlobalConstants.GRIDMAP_BLOCK_HEIGHT;
+                }
+                else if (newPosition.Y > GlobalConstants.GRIDMAP_BLOCK_HEIGHT)
+                {
+                    newPosition.Location.Y += 1;
+                    newPosition.Y -= GlobalConstants.GRIDMAP_BLOCK_HEIGHT;
+                }
+
+                if (newPosition.Location != pr_position.Location)
+                {
+                    locationChanged = true;
+                    currentGridMap = GetWorldMap().GetGridMap(newPosition.Location);
+                    newPosition.BlockID = currentGridMap.ID;
+                }
+
+                // Fix Position, including object bounds and map border
+                newPosition = NormalizePosition(newPosition);
+
+                // Apply new Position
+                pr_position = newPosition;
+
+                // Call events
+                if (PositionChanged != null)
+                    PositionChanged(this, new PositionEventArgs(pr_position));
+
+                if (locationChanged && LocationChanged != null)
+                    LocationChanged(this, new PositionEventArgs(pr_position));
+            }
+        }
+
+        public delegate void PositionHandler(object sender, PositionEventArgs e);
+        public event PositionHandler PositionChanged;
+        public event PositionHandler LocationChanged;
 
         public Object()
         {
             objectType = ObjectType.Object;
             objectState = ObjectState.Default;
 
-            //Initialize Position by default values
-            Position.Location.X = 0;
-            Position.Location.Y = 0;
-            Position.Location.Z = 0;
-            Position.Location.Level = 0;
-            Position.X = 0;
-            Position.Y = 0;
-            Position.BlockID = 0;
-
-            objectSize.Width = 0;
-            objectSize.Height = 0;
+            // Initialize Position by default values
+            // Seems not needed
+            // All uninitialized values is auto-initialized by 0
 
             currentGridMap.Initialize();
 
@@ -203,28 +271,32 @@ namespace Maze.Classes
         /// <summary>
         /// Set Position.X and Position.Y considering object model size and current GridMap block
         /// </summary>
-        protected void NormalizePosition()
+        protected GridGPS NormalizePosition(GridGPS position)
         {
+            GridMap gridMap = GetWorldMap().GetGridMap(position.Location);
+
             int lowerXBound = GlobalConstants.GRIDMAP_BORDER_PX + objectSize.Width / 2;
             int upperXBound = GlobalConstants.GRIDMAP_BLOCK_WIDTH - lowerXBound;
             int lowerYBound = GlobalConstants.GRIDMAP_BORDER_PX + objectSize.Height / 2;
             int upperYBound = GlobalConstants.GRIDMAP_BLOCK_HEIGHT - lowerYBound;
 
-            if (Position.X < lowerXBound)
-                if (!currentGridMap.CanMoveTo(Directions.Left))
-                    Position.X = lowerXBound;
+            if (position.X < lowerXBound)
+                if (!gridMap.CanMoveTo(Directions.Left))
+                    position.X = lowerXBound;
 
-            if (Position.X > upperXBound)
-                if (!currentGridMap.CanMoveTo(Directions.Right))
-                    Position.X = upperXBound;
+            if (position.X > upperXBound)
+                if (!gridMap.CanMoveTo(Directions.Right))
+                    position.X = upperXBound;
 
-            if (Position.Y < lowerYBound)
-                if (!currentGridMap.CanMoveTo(Directions.Up))
-                    Position.Y = lowerYBound;
+            if (position.Y < lowerYBound)
+                if (!gridMap.CanMoveTo(Directions.Up))
+                    position.Y = lowerYBound;
 
-            if (Position.Y > upperYBound)
-                if (!currentGridMap.CanMoveTo(Directions.Down))
-                    Position.Y = upperYBound;
+            if (position.Y > upperYBound)
+                if (!gridMap.CanMoveTo(Directions.Down))
+                    position.Y = upperYBound;
+
+            return position;
         }
 
         public uint GetGUID() { return GUID; }

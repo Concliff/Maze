@@ -209,6 +209,10 @@ namespace Maze.Classes
             effectList.EffectApplyEvent += new EffectCollection.EffectHandler(OnEffectApplied);
 
             effectList.EffectRemoveEvent += new EffectCollection.EffectHandler(OnEffectRemoved);
+
+            PositionChanged += new PositionHandler(OnPositionChanged);
+
+            LocationChanged += new PositionHandler(OnLocationChanged);
         }
 
         public void OnEffectApplied(object sender, EffectEventArgs e)
@@ -238,13 +242,16 @@ namespace Maze.Classes
         /// </summary>
         protected void ChangeGPSDueDirection(int BlockPassCount, Directions Direction)
         {
+            GridGPS newPosition = Position;
             switch (Direction)
             {
-                case Directions.Up: Position.Location.Y -= BlockPassCount; break;
-                case Directions.Down: Position.Location.Y += BlockPassCount; break;
-                case Directions.Left: Position.Location.X -= BlockPassCount; break;
-                case Directions.Right: Position.Location.X += BlockPassCount; break;
+                case Directions.Up: newPosition.Location.Y -= BlockPassCount; break;
+                case Directions.Down: newPosition.Location.Y += BlockPassCount; break;
+                case Directions.Left: newPosition.Location.X -= BlockPassCount; break;
+                case Directions.Right: newPosition.Location.X += BlockPassCount; break;
             }
+
+            Position = newPosition;
 
             currentGridMap = GetWorldMap().GetGridMap(Position.Location);
             gridMapReached = false;
@@ -252,11 +259,7 @@ namespace Maze.Classes
 
         public void TeleportTo(GridMap destinationGridMap)
         {
-            currentGridMap = destinationGridMap;
-            Position.Location = destinationGridMap.Location;
-            Position.X = 25;
-            Position.Y = 25;
-            Position.BlockID = destinationGridMap.ID;
+            Position = new GridGPS(destinationGridMap.Location, 25, 25);
 
             ReachedGridMap();
         }
@@ -267,7 +270,7 @@ namespace Maze.Classes
             TeleportTo(destinationGridMap);
         }
 
-        protected virtual void ReachedGridMap()
+        public virtual void ReachedGridMap()
         {
             if (gridMapReached)
                 return;
@@ -362,72 +365,33 @@ namespace Maze.Classes
         protected void Respawn()
         {
             // Return to start location
-            Position.Location = respawnLocation;
-            Position.X = 25;
-            Position.Y = 25;
-            currentGridMap = GetWorldMap().GetGridMap(Position.Location);
-            Position.BlockID = currentGridMap.ID;
+            Position = new GridGPS(respawnLocation, 25, 25);
 
             SetDeathState(DeathStates.Alive);
         }
 
         protected void MoveToDirection(int movementStep, Direction direction)
         {
+            GridGPS newPosition = Position;
+
             for (int i = 0; i < 2; ++i)
                 switch (i == 0 ? direction.First : direction.Second)
                 {
                     case Directions.Up:
-                        {
-                            Position.Y -= movementStep;
-                            if (Position.Y < 0)
-                            {
-                                Position.Y += GlobalConstants.GRIDMAP_BLOCK_HEIGHT;
-                                ChangeGPSDueDirection(1, Directions.Up);
-                            }
-
-                            break;
-                        }
+                        newPosition.Y -= movementStep;
+                        break;
                     case Directions.Down:
-                        {
-                            Position.Y += movementStep;
-                            if (Position.Y > GlobalConstants.GRIDMAP_BLOCK_HEIGHT)
-                            {
-                                Position.Y -= GlobalConstants.GRIDMAP_BLOCK_HEIGHT;
-                                ChangeGPSDueDirection(1, Directions.Down);
-                            }
-                            break;
-                        }
+                        newPosition.Y += movementStep;
+                        break;
                     case Directions.Left:
-                        {
-                            Position.X -= movementStep;
-                            if (Position.X < 0)
-                            {
-                                Position.X += GlobalConstants.GRIDMAP_BLOCK_WIDTH;
-                                ChangeGPSDueDirection(1, Directions.Left);
-                            }
-                            break;
-                        }
+                        newPosition.X -= movementStep;
+                        break;
                     case Directions.Right:
-                        {
-                            Position.X += movementStep;
-                            if (Position.X > GlobalConstants.GRIDMAP_BLOCK_HEIGHT)
-                            {
-                                Position.X -= GlobalConstants.GRIDMAP_BLOCK_HEIGHT;
-                                ChangeGPSDueDirection(1, Directions.Right);
-                            }
-                            break;
-                        }
+                        newPosition.X += movementStep;
+                        break;
                 }
 
-            // Check whether a unit moved into the block (account block border)
-            if ((Position.X <= GlobalConstants.GRIDMAP_BLOCK_WIDTH / 2 + movementStep / 2) &&
-                 (Position.X >= GlobalConstants.GRIDMAP_BLOCK_WIDTH / 2 - movementStep / 2) &&
-                 (Position.Y <= GlobalConstants.GRIDMAP_BLOCK_HEIGHT / 2 + movementStep / 2) &&
-                 (Position.Y >= GlobalConstants.GRIDMAP_BLOCK_HEIGHT / 2 - movementStep / 2) &&
-                !this.gridMapReached)
-                ReachedGridMap();
-
-            NormalizePosition();
+            Position = newPosition;
         }
 
         protected Directions GetOppositeDirection(Directions Direction)
@@ -482,6 +446,22 @@ namespace Maze.Classes
         public bool IsVisible()
         {
             return !HasEffectType(EffectTypes.Invisibility);
+        }
+
+        protected virtual void OnPositionChanged(object sender, PositionEventArgs e)
+        {/*
+            // GridMap reaching
+            if (Position.X > GlobalConstants.GRIDMAP_BORDER_PX &&
+                Position.X < GlobalConstants.GRIDMAP_BLOCK_WIDTH - GlobalConstants.GRIDMAP_BORDER_PX &&
+                Position.Y > GlobalConstants.GRIDMAP_BORDER_PX &&
+                Position.Y < GlobalConstants.GRIDMAP_BLOCK_HEIGHT - GlobalConstants.GRIDMAP_BORDER_PX &&
+                !this.gridMapReached)
+                ReachedGridMap();*/
+        }
+
+        private void OnLocationChanged(object sender, PositionEventArgs e)
+        {
+            this.gridMapReached = false;
         }
     }
 }

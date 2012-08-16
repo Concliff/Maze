@@ -13,9 +13,9 @@ namespace Maze.Forms
                 return;
 
             e.Graphics.DrawString("Time: " + (ProgramTime.Seconds + ProgramTime.Minutes * 60).ToString(), new Font("Arial", 14), new SolidBrush(Color.White), 10, 30);
-            e.Graphics.DrawString("Drops x " + GetWorldMap().DropsRemain().ToString(),
+            e.Graphics.DrawString("Drops x " + GetWorldMap().DropsRemain.ToString(),
                 new Font("Arial", 14), new SolidBrush(Color.White), 10, 50);
-            e.Graphics.DrawString("Total scores: " + player.GetScore(), new Font("Arial", 12), new SolidBrush(Color.White), 10, 70);
+            e.Graphics.DrawString("Total scores: " + Player.GetScore(), new Font("Arial", 12), new SolidBrush(Color.White), 10, 70);
         }
 
 
@@ -24,7 +24,7 @@ namespace Maze.Forms
             if (!PlayStarted)
                 return;
 
-            int playerOozePercent = player.OozeEnergy * 100 / Slug.MaxOozeEnergy;
+            int playerOozePercent = Player.OozeEnergy * 100 / Slug.MaxOozeEnergy;
             Brush emptyBrush = new SolidBrush(Color.Black);
             Brush filledBrush = new SolidBrush(Color.Green);
             Rectangle oozeBar = new Rectangle(20, 100, 100, 30);
@@ -32,7 +32,7 @@ namespace Maze.Forms
 
             e.Graphics.FillRectangle(emptyBrush, oozeBar);
             e.Graphics.FillRectangle(filledBrush, oozeAmount);
-            e.Graphics.DrawString(player.OozeEnergy.ToString(), new Font("Arial", 14), new SolidBrush(Color.White), 50, 105);
+            e.Graphics.DrawString(Player.OozeEnergy.ToString(), new Font("Arial", 14), new SolidBrush(Color.White), 50, 105);
         }
 
         void GridMapPB_Paint(object sender, PaintEventArgs e)
@@ -106,12 +106,12 @@ namespace Maze.Forms
                 {
                     // Calculated location point for every block
                     int x, y;
-                    x = /*GridMapPB.Location.X*/ +(i - 1) * GlobalConstants.GRIDMAP_BLOCK_WIDTH - (player.Position.X - 25);
-                    y = /*GridMapPB.Location.Y*/ +(j - 1) * GlobalConstants.GRIDMAP_BLOCK_HEIGHT - (player.Position.Y - 25);
-                    PBLocation.X = player.Position.Location.X + i - GlobalConstants.GRIDMAP_WIDTH / 2;
-                    PBLocation.Y = player.Position.Location.Y + j - GlobalConstants.GRIDMAP_HEIGHT / 2;
-                    PBLocation.Z = player.Position.Location.Z;
-                    PBLocation.Level = player.Position.Location.Level;
+                    x = /*GridMapPB.Location.X*/ +(i - 1) * GlobalConstants.GRIDMAP_BLOCK_WIDTH - (Player.Position.X - 25);
+                    y = /*GridMapPB.Location.Y*/ +(j - 1) * GlobalConstants.GRIDMAP_BLOCK_HEIGHT - (Player.Position.Y - 25);
+                    PBLocation.X = Player.Position.Location.X + i - GlobalConstants.GRIDMAP_WIDTH / 2;
+                    PBLocation.Y = Player.Position.Location.Y + j - GlobalConstants.GRIDMAP_HEIGHT / 2;
+                    PBLocation.Z = Player.Position.Location.Z;
+                    PBLocation.Level = Player.Position.Location.Level;
                     Block = GetWorldMap().GetGridMap(PBLocation);
 
                     this.GridMapGraphic[i, j].Block = Block;
@@ -182,7 +182,7 @@ namespace Maze.Forms
 
                                 // Check Smoke Cloud
                                 // Draw objects with 'Smoke Cloud' effect if Slug also has it and vice versa
-                                if (!(player.HasEffectType(EffectTypes.SmokeCloud) ^ unit.HasEffectType(EffectTypes.SmokeCloud)))
+                                if (!(Player.HasEffectType(EffectTypes.SmokeCloud) ^ unit.HasEffectType(EffectTypes.SmokeCloud)))
                                     objectImage = PictureManager.GetUnitImage(unit);
                             }
                             else
@@ -200,10 +200,10 @@ namespace Maze.Forms
                     if (objectImage == null)
                         continue;
 
-                    int xCoord = GridMapPB.Size.Width / 2 - ((player.Position.Location.X - objectsOnMap[i].Position.Location.X) *
-                            GlobalConstants.GRIDMAP_BLOCK_WIDTH + player.Position.X - objectsOnMap[i].Position.X) - objectImage.Size.Width / 2;
-                    int yCoord = GridMapPB.Size.Height / 2 - ((player.Position.Location.Y - objectsOnMap[i].Position.Location.Y) *
-                            GlobalConstants.GRIDMAP_BLOCK_HEIGHT + player.Position.Y - objectsOnMap[i].Position.Y) - objectImage.Size.Height / 2;
+                    int xCoord = GridMapPB.Size.Width / 2 - ((Player.Position.Location.X - objectsOnMap[i].Position.Location.X) *
+                            GlobalConstants.GRIDMAP_BLOCK_WIDTH + Player.Position.X - objectsOnMap[i].Position.X) - objectImage.Size.Width / 2;
+                    int yCoord = GridMapPB.Size.Height / 2 - ((Player.Position.Location.Y - objectsOnMap[i].Position.Location.Y) *
+                            GlobalConstants.GRIDMAP_BLOCK_HEIGHT + Player.Position.Y - objectsOnMap[i].Position.Y) - objectImage.Size.Height / 2;
 
                     gGridMapBP.DrawImage(objectImage, xCoord, yCoord,
                         objectImage.Size.Width, objectImage.Size.Height);

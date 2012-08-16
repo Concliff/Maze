@@ -57,7 +57,7 @@ namespace Maze.Classes
 
         }
 
-        protected override void ReachedGridMap()
+        public override void ReachedGridMap()
         {
             base.ReachedGridMap();
 

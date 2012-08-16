@@ -56,6 +56,16 @@ namespace Maze.Classes
         public int Y;
         public int Z;
         public int Level;
+
+        public static bool operator ==(GPS a, GPS b)
+        {
+            return (a.X == b.X && a.Y == b.Y && a.Z == b.Z && a.Level == b.Level);
+        }
+
+        public static bool operator !=(GPS a, GPS b)
+        {
+            return !(a == b);
+        }
     };
 
     // Location on current Block
@@ -65,6 +75,29 @@ namespace Maze.Classes
         public int X;
         public int Y;
         public int BlockID;
+
+        // Some constructors for the simplified initialization
+
+        /// <summary>
+        /// Initialize with Custom LOcation and X, Y block coords
+        /// </summary>
+        public GridGPS(GPS Location, int X, int Y)
+        {
+            this.Location = Location;
+            this.X = X;
+            this.Y = Y;
+            this.BlockID = Maze.Forms.Play.GetWorldMap().GetGridMap(this.Location).ID;
+        }
+
+        /// <summary>
+        /// Initialize by copying Position with custom X and Y coords
+        /// </summary>
+        public GridGPS(GridGPS Position, int X, int Y)
+        {
+            this = Position;
+            this.X = X;
+            this.Y = Y;
+        }
     };
 
     // Not yet implemented
@@ -95,6 +128,14 @@ namespace Maze.Classes
         private int levelCount;
         private string MapDirectoryPath = GlobalConstants.MAPS_PATH;
         private bool isRandom;
+
+        public int DropsRemain
+        {
+            get
+            {
+                return dropsCount[GetLevel()];
+            }
+        }
 
         public Map()
         {
@@ -400,8 +441,6 @@ namespace Maze.Classes
 
             return false;
         }
-
-        public int DropsRemain() { return dropsCount[GetLevel()]; }
 
         public void CollectDrop(OozeDrop drop)
         {
