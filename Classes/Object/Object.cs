@@ -211,11 +211,13 @@ namespace Maze.Classes
                 pr_position = newPosition;
 
                 // Call events
+                if (locationChanged && LocationChanged != null)
+                    LocationChanged(this, new PositionEventArgs(pr_position));
+
                 if (PositionChanged != null)
                     PositionChanged(this, new PositionEventArgs(pr_position));
 
-                if (locationChanged && LocationChanged != null)
-                    LocationChanged(this, new PositionEventArgs(pr_position));
+
             }
         }
 
