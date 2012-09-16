@@ -10,7 +10,7 @@ namespace Maze.Classes
         public const int TIMER_TICK_IN_MS      = 20;
 
         // Movement, GridMap
-        public const int MOVEMENT_STEP_PX = 5;
+        public const int MOVEMENT_STEP_PX = 4;
         public const int GRIDMAP_BORDER_PX = 4;
         public const int GRIDMAP_BLOCK_HEIGHT = 50;
         public const int GRIDMAP_BLOCK_WIDTH = 50;
