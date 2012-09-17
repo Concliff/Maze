@@ -17,6 +17,8 @@ namespace EffectEditor
 
         public int AttributeValues;
 
+        private int tabIndex;
+
         private Maze.Classes.EffectEntry effectInfo;
 
         Attributes attrForm;
@@ -37,6 +39,8 @@ namespace EffectEditor
             attrForm = new Attributes(this);
 
             effectInfo = new Maze.Classes.EffectEntry();
+
+            tabIndex = 1;
         }
 
         private void EffectIDsLoad()
@@ -221,37 +225,47 @@ namespace EffectEditor
 
         private void tabControl1_Selected(object sender, EventArgs e)
         {
+            if (this.tabIndex == 2)
+                return;
+
             if (this.tabControl1.SelectedTab == tabPage2)
             {
-                cmbTargets.Items.Clear();
-                cmbType.Items.Clear();
+                this.tabIndex = 2;
 
-                TargetsLoad();
-                TypesLoad();
-
-                txtEffectID.Text = Maze.Classes.DBStores.EffectStore.Count.ToString();
-                txtAttributes.Text = "0";
-                cmbTargets.SelectedItem = "None";
-                cmbType.SelectedItem = "None";
-                txtValue.Text = "0";
-
-                if (chbOneTact.Checked == true)
-                {
-                    txtDuration.Text = "-1";
-                    txtDuration.Enabled = false;
-                }
-                else
-                {
-                    txtDuration.Text = "0";
-                    txtDuration.Enabled = true;
-                }
-
-                txtRange.Text = "0";
-                txtND1.Text = "0";
-                txtND2.Text = "0";
-                txtND3.Text = "0";
-                txtND4.Text = "0";
+                CleanAll();
             }
+        }
+
+        private void CleanAll()
+        {
+            cmbTargets.Items.Clear();
+            cmbType.Items.Clear();
+
+            TargetsLoad();
+            TypesLoad();
+
+            txtEffectID.Text = Maze.Classes.DBStores.EffectStore.Count.ToString();
+            txtAttributes.Text = "0";
+            cmbTargets.SelectedItem = "None";
+            cmbType.SelectedItem = "None";
+            txtValue.Text = "0";
+
+            if (chbOneTact.Checked == true)
+            {
+                txtDuration.Text = "-1";
+                txtDuration.Enabled = false;
+            }
+            else
+            {
+                txtDuration.Text = "0";
+                txtDuration.Enabled = true;
+            }
+
+            txtRange.Text = "0";
+            txtND1.Text = "0";
+            txtND2.Text = "0";
+            txtND3.Text = "0";
+            txtND4.Text = "0";
         }
 
         private void cmbAttributes_SelectedIndexChanged(object sender, EventArgs e)
@@ -323,6 +337,46 @@ namespace EffectEditor
                 txtDuration.Enabled = true;
                 txtDuration.Text = "0";
             }
+        }
+
+        private void btnClean_Click(object sender, EventArgs e)
+        {
+            CleanAll();
+
+            txtEffectName.Text = "";
+            txtDescription.Text = "";
+            txtSummary.Text = "";
+        }
+
+        void txtValue_KeyPress(object sender, System.Windows.Forms.KeyPressEventArgs e)
+        {
+            CheckIsDigit(e);
+        }
+
+        private void txtDuration_KeyPress(object sender, System.Windows.Forms.KeyPressEventArgs e)
+        {
+            CheckIsDigit(e);
+        }
+
+        void txtRange_KeyPress(object sender, System.Windows.Forms.KeyPressEventArgs e)
+        {
+            CheckIsDigit(e);
+        }
+
+        private void CheckIsDigit(System.Windows.Forms.KeyPressEventArgs e)
+        {
+            if (System.Char.IsLetter(e.KeyChar))
+                e.Handled = true;
+        }
+
+        private void btnRefresh_Click(object sender, EventArgs e)
+        {
+            int a = 6;
+            // Reinitialize EffectStore
+            Maze.Classes.DBStores.InitializeComponents();
+            Maze.Classes.DBStores.Load();
+            cmbInfoID.Items.Clear();
+            EffectIDsLoad();
         }
     }
 }

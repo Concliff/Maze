@@ -35,6 +35,7 @@
             this.txtEffectInfo = new System.Windows.Forms.TextBox();
             this.cmbInfoID = new System.Windows.Forms.ComboBox();
             this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.btnClean = new System.Windows.Forms.Button();
             this.chbOneTact = new System.Windows.Forms.CheckBox();
             this.txtAttributes = new System.Windows.Forms.TextBox();
             this.lblAura = new System.Windows.Forms.Label();
@@ -75,6 +76,7 @@
             this.txtDescription = new System.Windows.Forms.TextBox();
             this.txtEffectID = new System.Windows.Forms.TextBox();
             this.folderBrowserDialog1 = new System.Windows.Forms.FolderBrowserDialog();
+            this.btnRefresh = new System.Windows.Forms.Button();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.ptbAura)).BeginInit();
@@ -97,6 +99,7 @@
             //
             // tabPage1
             //
+            this.tabPage1.Controls.Add(this.btnRefresh);
             this.tabPage1.Controls.Add(this.ptbAura);
             this.tabPage1.Controls.Add(this.ptbMap);
             this.tabPage1.Controls.Add(this.txtEffectInfo);
@@ -114,7 +117,7 @@
             this.ptbAura.Location = new System.Drawing.Point(596, 159);
             this.ptbAura.Name = "ptbAura";
             this.ptbAura.Size = new System.Drawing.Size(60, 60);
-            this.ptbAura.TabIndex = 6;
+            this.ptbAura.TabIndex = 0;
             this.ptbAura.TabStop = false;
             //
             // ptbMap
@@ -122,7 +125,7 @@
             this.ptbMap.Location = new System.Drawing.Point(488, 159);
             this.ptbMap.Name = "ptbMap";
             this.ptbMap.Size = new System.Drawing.Size(60, 60);
-            this.ptbMap.TabIndex = 5;
+            this.ptbMap.TabIndex = 1;
             this.ptbMap.TabStop = false;
             //
             // txtEffectInfo
@@ -143,6 +146,7 @@
             //
             // tabPage2
             //
+            this.tabPage2.Controls.Add(this.btnClean);
             this.tabPage2.Controls.Add(this.chbOneTact);
             this.tabPage2.Controls.Add(this.txtAttributes);
             this.tabPage2.Controls.Add(this.lblAura);
@@ -190,23 +194,34 @@
             this.tabPage2.Text = "New effect";
             this.tabPage2.UseVisualStyleBackColor = true;
             //
+            // btnClean
+            //
+            this.btnClean.Location = new System.Drawing.Point(237, 307);
+            this.btnClean.Name = "btnClean";
+            this.btnClean.Size = new System.Drawing.Size(75, 26);
+            this.btnClean.TabIndex = 17;
+            this.btnClean.Text = "Clean";
+            this.btnClean.UseVisualStyleBackColor = true;
+            this.btnClean.Click += new System.EventHandler(this.btnClean_Click);
+            //
             // chbOneTact
             //
             this.chbOneTact.AutoSize = true;
             this.chbOneTact.Location = new System.Drawing.Point(165, 240);
             this.chbOneTact.Name = "chbOneTact";
             this.chbOneTact.Size = new System.Drawing.Size(67, 17);
-            this.chbOneTact.TabIndex = 39;
+            this.chbOneTact.TabIndex = 4;
             this.chbOneTact.Text = "One-tact";
             this.chbOneTact.UseVisualStyleBackColor = true;
             this.chbOneTact.CheckedChanged += new System.EventHandler(this.chbOneTact_CheckedChanged);
             //
             // txtAttributes
             //
+            this.txtAttributes.Enabled = false;
             this.txtAttributes.Location = new System.Drawing.Point(76, 132);
             this.txtAttributes.Name = "txtAttributes";
             this.txtAttributes.Size = new System.Drawing.Size(144, 20);
-            this.txtAttributes.TabIndex = 38;
+            this.txtAttributes.TabIndex = 18;
             //
             // lblAura
             //
@@ -214,7 +229,7 @@
             this.lblAura.Location = new System.Drawing.Point(277, 223);
             this.lblAura.Name = "lblAura";
             this.lblAura.Size = new System.Drawing.Size(29, 13);
-            this.lblAura.TabIndex = 37;
+            this.lblAura.TabIndex = 19;
             this.lblAura.Text = "Aura";
             //
             // lablMap
@@ -223,7 +238,7 @@
             this.lablMap.Location = new System.Drawing.Point(277, 166);
             this.lablMap.Name = "lablMap";
             this.lablMap.Size = new System.Drawing.Size(28, 13);
-            this.lablMap.TabIndex = 36;
+            this.lablMap.TabIndex = 20;
             this.lablMap.Text = "Map";
             //
             // ptbUploadedAura
@@ -231,7 +246,7 @@
             this.ptbUploadedAura.Location = new System.Drawing.Point(595, 201);
             this.ptbUploadedAura.Name = "ptbUploadedAura";
             this.ptbUploadedAura.Size = new System.Drawing.Size(50, 50);
-            this.ptbUploadedAura.TabIndex = 35;
+            this.ptbUploadedAura.TabIndex = 21;
             this.ptbUploadedAura.TabStop = false;
             //
             // ptbUploadedMap
@@ -239,7 +254,7 @@
             this.ptbUploadedMap.Location = new System.Drawing.Point(595, 146);
             this.ptbUploadedMap.Name = "ptbUploadedMap";
             this.ptbUploadedMap.Size = new System.Drawing.Size(40, 40);
-            this.ptbUploadedMap.TabIndex = 34;
+            this.ptbUploadedMap.TabIndex = 22;
             this.ptbUploadedMap.TabStop = false;
             //
             // btnSelectAura
@@ -247,7 +262,7 @@
             this.btnSelectAura.Location = new System.Drawing.Point(458, 220);
             this.btnSelectAura.Name = "btnSelectAura";
             this.btnSelectAura.Size = new System.Drawing.Size(89, 23);
-            this.btnSelectAura.TabIndex = 33;
+            this.btnSelectAura.TabIndex = 13;
             this.btnSelectAura.Text = "Upload";
             this.btnSelectAura.UseVisualStyleBackColor = true;
             this.btnSelectAura.Click += new System.EventHandler(this.btnSelectAura_Click);
@@ -257,14 +272,14 @@
             this.txtAura.Location = new System.Drawing.Point(312, 223);
             this.txtAura.Name = "txtAura";
             this.txtAura.Size = new System.Drawing.Size(140, 20);
-            this.txtAura.TabIndex = 32;
+            this.txtAura.TabIndex = 12;
             //
             // btnSelectMap
             //
             this.btnSelectMap.Location = new System.Drawing.Point(458, 163);
             this.btnSelectMap.Name = "btnSelectMap";
             this.btnSelectMap.Size = new System.Drawing.Size(89, 23);
-            this.btnSelectMap.TabIndex = 31;
+            this.btnSelectMap.TabIndex = 11;
             this.btnSelectMap.Text = "Upload";
             this.btnSelectMap.UseVisualStyleBackColor = true;
             this.btnSelectMap.Click += new System.EventHandler(this.btnSelectMap_Click);
@@ -274,14 +289,14 @@
             this.txtMap.Location = new System.Drawing.Point(312, 166);
             this.txtMap.Name = "txtMap";
             this.txtMap.Size = new System.Drawing.Size(140, 20);
-            this.txtMap.TabIndex = 30;
+            this.txtMap.TabIndex = 10;
             //
             // btnCopy
             //
             this.btnCopy.Location = new System.Drawing.Point(585, 259);
             this.btnCopy.Name = "btnCopy";
             this.btnCopy.Size = new System.Drawing.Size(89, 23);
-            this.btnCopy.TabIndex = 29;
+            this.btnCopy.TabIndex = 16;
             this.btnCopy.Text = "Copy";
             this.btnCopy.UseVisualStyleBackColor = true;
             this.btnCopy.Click += new System.EventHandler(this.btnCopy_Click);
@@ -291,7 +306,7 @@
             this.btnCreateString.Location = new System.Drawing.Point(482, 259);
             this.btnCreateString.Name = "btnCreateString";
             this.btnCreateString.Size = new System.Drawing.Size(89, 23);
-            this.btnCreateString.TabIndex = 28;
+            this.btnCreateString.TabIndex = 14;
             this.btnCreateString.Text = "Create string";
             this.btnCreateString.UseVisualStyleBackColor = true;
             this.btnCreateString.Click += new System.EventHandler(this.btnCreateString_Click);
@@ -302,7 +317,7 @@
             this.txtSummary.Multiline = true;
             this.txtSummary.Name = "txtSummary";
             this.txtSummary.Size = new System.Drawing.Size(320, 57);
-            this.txtSummary.TabIndex = 27;
+            this.txtSummary.TabIndex = 15;
             //
             // lblEffectName
             //
@@ -310,7 +325,7 @@
             this.lblEffectName.Location = new System.Drawing.Point(10, 39);
             this.lblEffectName.Name = "lblEffectName";
             this.lblEffectName.Size = new System.Drawing.Size(64, 13);
-            this.lblEffectName.TabIndex = 26;
+            this.lblEffectName.TabIndex = 23;
             this.lblEffectName.Text = "Effect name";
             //
             // txtEffectName
@@ -318,7 +333,7 @@
             this.txtEffectName.Location = new System.Drawing.Point(76, 39);
             this.txtEffectName.Name = "txtEffectName";
             this.txtEffectName.Size = new System.Drawing.Size(144, 20);
-            this.txtEffectName.TabIndex = 25;
+            this.txtEffectName.TabIndex = 1;
             //
             // lblND4
             //
@@ -335,7 +350,7 @@
             this.lblND3.Location = new System.Drawing.Point(557, 62);
             this.lblND3.Name = "lblND3";
             this.lblND3.Size = new System.Drawing.Size(29, 13);
-            this.lblND3.TabIndex = 23;
+            this.lblND3.TabIndex = 25;
             this.lblND3.Text = "ND3";
             //
             // lblND2
@@ -344,7 +359,7 @@
             this.lblND2.Location = new System.Drawing.Point(557, 36);
             this.lblND2.Name = "lblND2";
             this.lblND2.Size = new System.Drawing.Size(29, 13);
-            this.lblND2.TabIndex = 22;
+            this.lblND2.TabIndex = 26;
             this.lblND2.Text = "ND2";
             //
             // lbl
@@ -353,7 +368,7 @@
             this.lbl.Location = new System.Drawing.Point(557, 10);
             this.lbl.Name = "lbl";
             this.lbl.Size = new System.Drawing.Size(29, 13);
-            this.lbl.TabIndex = 21;
+            this.lbl.TabIndex = 27;
             this.lbl.Text = "ND1";
             //
             // lblRange
@@ -362,7 +377,7 @@
             this.lblRange.Location = new System.Drawing.Point(10, 271);
             this.lblRange.Name = "lblRange";
             this.lblRange.Size = new System.Drawing.Size(39, 13);
-            this.lblRange.TabIndex = 20;
+            this.lblRange.TabIndex = 28;
             this.lblRange.Text = "Range";
             //
             // lblDuration
@@ -371,7 +386,7 @@
             this.lblDuration.Location = new System.Drawing.Point(10, 238);
             this.lblDuration.Name = "lblDuration";
             this.lblDuration.Size = new System.Drawing.Size(47, 13);
-            this.lblDuration.TabIndex = 19;
+            this.lblDuration.TabIndex = 29;
             this.lblDuration.Text = "Duration";
             //
             // lblValue
@@ -380,7 +395,7 @@
             this.lblValue.Location = new System.Drawing.Point(10, 212);
             this.lblValue.Name = "lblValue";
             this.lblValue.Size = new System.Drawing.Size(34, 13);
-            this.lblValue.TabIndex = 18;
+            this.lblValue.TabIndex = 30;
             this.lblValue.Text = "Value";
             //
             // lblType
@@ -389,7 +404,7 @@
             this.lblType.Location = new System.Drawing.Point(10, 185);
             this.lblType.Name = "lblType";
             this.lblType.Size = new System.Drawing.Size(31, 13);
-            this.lblType.TabIndex = 17;
+            this.lblType.TabIndex = 31;
             this.lblType.Text = "Type";
             //
             // lblTargets
@@ -398,7 +413,7 @@
             this.lblTargets.Location = new System.Drawing.Point(10, 158);
             this.lblTargets.Name = "lblTargets";
             this.lblTargets.Size = new System.Drawing.Size(43, 13);
-            this.lblTargets.TabIndex = 16;
+            this.lblTargets.TabIndex = 32;
             this.lblTargets.Text = "Targets";
             //
             // lblAttributes
@@ -407,7 +422,7 @@
             this.lblAttributes.Location = new System.Drawing.Point(10, 134);
             this.lblAttributes.Name = "lblAttributes";
             this.lblAttributes.Size = new System.Drawing.Size(51, 13);
-            this.lblAttributes.TabIndex = 15;
+            this.lblAttributes.TabIndex = 33;
             this.lblAttributes.Text = "Attributes";
             //
             // lblDescription
@@ -416,7 +431,7 @@
             this.lblDescription.Location = new System.Drawing.Point(10, 65);
             this.lblDescription.Name = "lblDescription";
             this.lblDescription.Size = new System.Drawing.Size(60, 13);
-            this.lblDescription.TabIndex = 14;
+            this.lblDescription.TabIndex = 34;
             this.lblDescription.Text = "Description";
             //
             // lblEffectID
@@ -425,7 +440,7 @@
             this.lblEffectID.Location = new System.Drawing.Point(10, 20);
             this.lblEffectID.Name = "lblEffectID";
             this.lblEffectID.Size = new System.Drawing.Size(18, 13);
-            this.lblEffectID.TabIndex = 13;
+            this.lblEffectID.TabIndex = 35;
             this.lblEffectID.Text = "ID";
             //
             // txtND4
@@ -433,49 +448,49 @@
             this.txtND4.Location = new System.Drawing.Point(623, 88);
             this.txtND4.Name = "txtND4";
             this.txtND4.Size = new System.Drawing.Size(51, 20);
-            this.txtND4.TabIndex = 12;
+            this.txtND4.TabIndex = 9;
             //
             // txtND3
             //
             this.txtND3.Location = new System.Drawing.Point(623, 62);
             this.txtND3.Name = "txtND3";
             this.txtND3.Size = new System.Drawing.Size(51, 20);
-            this.txtND3.TabIndex = 11;
+            this.txtND3.TabIndex = 8;
             //
             // txtND2
             //
             this.txtND2.Location = new System.Drawing.Point(623, 36);
             this.txtND2.Name = "txtND2";
             this.txtND2.Size = new System.Drawing.Size(51, 20);
-            this.txtND2.TabIndex = 10;
+            this.txtND2.TabIndex = 7;
             //
             // txtND1
             //
             this.txtND1.Location = new System.Drawing.Point(623, 10);
             this.txtND1.Name = "txtND1";
             this.txtND1.Size = new System.Drawing.Size(51, 20);
-            this.txtND1.TabIndex = 9;
+            this.txtND1.TabIndex = 6;
             //
             // txtRange
             //
             this.txtRange.Location = new System.Drawing.Point(76, 264);
             this.txtRange.Name = "txtRange";
             this.txtRange.Size = new System.Drawing.Size(144, 20);
-            this.txtRange.TabIndex = 8;
+            this.txtRange.TabIndex = 5;
             //
             // txtDuration
             //
             this.txtDuration.Location = new System.Drawing.Point(76, 238);
             this.txtDuration.Name = "txtDuration";
             this.txtDuration.Size = new System.Drawing.Size(68, 20);
-            this.txtDuration.TabIndex = 7;
+            this.txtDuration.TabIndex = 4;
             //
             // txtValue
             //
             this.txtValue.Location = new System.Drawing.Point(76, 212);
             this.txtValue.Name = "txtValue";
             this.txtValue.Size = new System.Drawing.Size(144, 20);
-            this.txtValue.TabIndex = 6;
+            this.txtValue.TabIndex = 3;
             //
             // cmbType
             //
@@ -483,7 +498,7 @@
             this.cmbType.Location = new System.Drawing.Point(76, 185);
             this.cmbType.Name = "cmbType";
             this.cmbType.Size = new System.Drawing.Size(144, 21);
-            this.cmbType.TabIndex = 5;
+            this.cmbType.TabIndex = 36;
             //
             // cmbTargets
             //
@@ -491,14 +506,14 @@
             this.cmbTargets.Location = new System.Drawing.Point(76, 158);
             this.cmbTargets.Name = "cmbTargets";
             this.cmbTargets.Size = new System.Drawing.Size(144, 21);
-            this.cmbTargets.TabIndex = 4;
+            this.cmbTargets.TabIndex = 37;
             //
             // btnAddAttributes
             //
             this.btnAddAttributes.Location = new System.Drawing.Point(237, 131);
             this.btnAddAttributes.Name = "btnAddAttributes";
             this.btnAddAttributes.Size = new System.Drawing.Size(68, 23);
-            this.btnAddAttributes.TabIndex = 3;
+            this.btnAddAttributes.TabIndex = 38;
             this.btnAddAttributes.Text = "Edit";
             this.btnAddAttributes.UseVisualStyleBackColor = true;
             this.btnAddAttributes.Click += new System.EventHandler(this.btnAddAttributes_Click);
@@ -509,7 +524,7 @@
             this.txtDescription.Multiline = true;
             this.txtDescription.Name = "txtDescription";
             this.txtDescription.Size = new System.Drawing.Size(187, 60);
-            this.txtDescription.TabIndex = 1;
+            this.txtDescription.TabIndex = 2;
             //
             // txtEffectID
             //
@@ -521,6 +536,17 @@
             // folderBrowserDialog1
             //
             this.folderBrowserDialog1.RootFolder = System.Environment.SpecialFolder.MyComputer;
+            //
+            // btnRefresh
+            //
+            this.btnRefresh.Location = new System.Drawing.Point(499, 46);
+            this.btnRefresh.Name = "btnRefresh";
+            this.btnRefresh.Size = new System.Drawing.Size(75, 23);
+            this.btnRefresh.TabIndex = 5;
+            this.btnRefresh.TabStop = false;
+            this.btnRefresh.Text = "Refresh";
+            this.btnRefresh.UseVisualStyleBackColor = true;
+            this.btnRefresh.Click += new System.EventHandler(this.btnRefresh_Click);
             //
             // EffectEditor
             //
@@ -593,5 +619,7 @@
 
         private System.Windows.Forms.TextBox txtAttributes;
         private System.Windows.Forms.CheckBox chbOneTact;
+        private System.Windows.Forms.Button btnClean;
+        private System.Windows.Forms.Button btnRefresh;
     }
 }
