@@ -53,6 +53,8 @@ namespace Maze.Classes
 
                 EffectStore.Insert(entry.ID, entry);
             }
+
+            effectStream.Close();
         }
     }
 }
