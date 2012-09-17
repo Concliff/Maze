@@ -257,6 +257,77 @@ namespace Maze.Classes
             gridMapReached = false;
         }
 
+        /// <summary>
+        /// Moves(Teleport) Unit on current direction
+        /// </summary>
+        /// <param name="distance">Distance in pixels</param>
+        public void JumpThroughDistance(int distance)
+        {
+            // TODO:
+            // 1. Add diagonal checking
+            // 2. Improve current method
+
+            bool isDiagonal = false;
+            if (this.currentDirection.Second != Directions.None)
+            {
+                isDiagonal = true;
+                distance = (int)Math.Sqrt(distance);
+            }
+
+            GridGPS newPosition = Position;
+            GridGPS intermidiatePosition = Position;
+
+            switch (this.currentDirection.First)
+            {
+                case Directions.Down:
+                    while (distance >= GlobalConstants.GRIDMAP_BLOCK_HEIGHT)
+                    {
+                        intermidiatePosition.Location.Y++;
+                        GridMap interimPoint = GetWorldMap().GetGridMap(intermidiatePosition.Location);
+                        if (interimPoint.ID != -1)
+                            newPosition = intermidiatePosition;
+
+                        distance -= GlobalConstants.GRIDMAP_BLOCK_HEIGHT;
+                    }
+                    break;
+                case Directions.Up:
+                    while (distance >= GlobalConstants.GRIDMAP_BLOCK_HEIGHT)
+                    {
+                        intermidiatePosition.Location.Y--;
+                        GridMap interimPoint = GetWorldMap().GetGridMap(intermidiatePosition.Location);
+                        if (interimPoint.ID != -1)
+                            newPosition = intermidiatePosition;
+
+                        distance -= GlobalConstants.GRIDMAP_BLOCK_HEIGHT;
+                    }
+                    break;
+                case Directions.Left:
+                    while (distance >= GlobalConstants.GRIDMAP_BLOCK_HEIGHT)
+                    {
+                        intermidiatePosition.Location.X--;
+                        GridMap interimPoint = GetWorldMap().GetGridMap(intermidiatePosition.Location);
+                        if (interimPoint.ID != -1)
+                            newPosition = intermidiatePosition;
+
+                        distance -= GlobalConstants.GRIDMAP_BLOCK_HEIGHT;
+                    }
+                    break;
+                case Directions.Right:
+                    while (distance >= GlobalConstants.GRIDMAP_BLOCK_HEIGHT)
+                    {
+                        intermidiatePosition.Location.X++;
+                        GridMap interimPoint = GetWorldMap().GetGridMap(intermidiatePosition.Location);
+                        if (interimPoint.ID != -1)
+                            newPosition = intermidiatePosition;
+
+                        distance -= GlobalConstants.GRIDMAP_BLOCK_HEIGHT;
+                    }
+                    break;
+            }
+
+            Position = newPosition;
+        }
+
         public void TeleportTo(GridMap destinationGridMap)
         {
             Position = new GridGPS(destinationGridMap.Location, 25, 25);

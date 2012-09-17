@@ -95,6 +95,7 @@ namespace Maze.Forms
                 new BonusEffect(7 , false),      // Mind Inverter
                 new BonusEffect(8 , false),      // Slimy Clone
                 new BonusEffect(12 , false),     // Smoke Bomb
+                new BonusEffect(14 , false),     // Magical Leap
             };
 
             aurasCount = 0;

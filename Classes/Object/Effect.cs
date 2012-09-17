@@ -23,6 +23,7 @@ namespace Maze.Classes
         Shield          = 11,
         SmokeBomb       = 12,
         SmokeCloud      = 13,
+        JumpThrough     = 14,
     };
 
     public enum EffectTargets : byte
@@ -154,6 +155,9 @@ namespace Maze.Classes
                 case EffectTypes.SmokeBomb:
                     // Create Smoke Cloud at caster position
                     new SmokeCloud(caster.Position);
+                    break;
+                case EffectTypes.JumpThrough:
+                    caster.JumpThroughDistance(effectInfo.Range);
                     break;
             }
         }
