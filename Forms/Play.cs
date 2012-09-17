@@ -440,9 +440,13 @@ namespace Maze.Forms
                 switch (KeyMgr.KeyDown(counter))
                 {
                     // Catch moving keys
+                    case Keys.Up:
                     case Keys.W: MoveType += (uint)Directions.Up; break;
+                    case Keys.Left:
                     case Keys.A: MoveType += (uint)Directions.Left; break;
+                    case Keys.Down:
                     case Keys.S: MoveType += (uint)Directions.Down; break;
+                    case Keys.Right:
                     case Keys.D: MoveType += (uint)Directions.Right; break;
                 }
 
