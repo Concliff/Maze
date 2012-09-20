@@ -254,14 +254,7 @@ namespace Maze.Forms
                                 RightPanelPB.Invalidate();
                                 LeftPanelPB.Invalidate();
 
-                                for (int i = 0; i < AuraIconPB.Count(); ++i)
-                                    AuraIconPB[i].Hide();
-
-                                aurasCount = 0;
-
-                                for (int i = 0; i < SpellBarPB.Count(); ++i)
-                                    SpellBarPB[i].Show();
-                                spellsCount = 0;
+                                ClearPlayerAurasAndSpells();
                              }
 
                             MenuNewGamePB.Show();
@@ -360,6 +353,18 @@ namespace Maze.Forms
                     }
             }
             MenuRandomGamePB.Invalidate();
+        }
+
+        private void ClearPlayerAurasAndSpells()
+        {
+            for (int i = 0; i < AuraIconPB.Count(); ++i)
+                AuraIconPB[i].Hide();
+
+            aurasCount = 0;
+
+            for (int i = 0; i < SpellBarPB.Count(); ++i)
+                SpellBarPB[i].Hide();
+            spellsCount = 0;
         }
 
         #endregion
@@ -561,6 +566,7 @@ namespace Maze.Forms
 
                 Player.LevelChanged();
                 Player.AddPoints(30);
+                ClearPlayerAurasAndSpells();
             }
         }
 
