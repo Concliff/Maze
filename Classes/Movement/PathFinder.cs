@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Maze.Classes
 {
-    class PathFinder
+    public class PathFinder : MovementGenerator
     {
         public struct CellParam
         {
@@ -13,7 +13,7 @@ namespace Maze.Classes
             public int MID; // Master cell
             public int G;   // Moving cost from the start piont to the current one
             public int H;   // Moving cost from the current point to the final one
-            public int F;   // F= G + H
+            public int F;   // F = G + H
 
             public void InitializeCell()
             {
@@ -27,7 +27,7 @@ namespace Maze.Classes
 
         private List<CellParam> openList;
         private List<CellParam> closeList;
-        public List<GridMap> Path;
+
 
         GridMap Block;
 
@@ -36,14 +36,17 @@ namespace Maze.Classes
             openList = new List<CellParam>();
             closeList = new List<CellParam>();
             Path = new List<GridMap>();
-
-            Map currentMap = GetWorldMap();
         }
 
         public PathFinder(GridMap StartPoint, GridMap FinishPoint)
             : this()
         {
             GeneratePath(StartPoint, FinishPoint);
+        }
+
+        public override bool ProcessMovement()
+        {
+            return false;
         }
 
         private bool SearchInList(List<CellParam> List, CellParam Element)
@@ -87,7 +90,7 @@ namespace Maze.Classes
             {
                 if (Cell.ID == List[i].ID)
                 {
-                    Block = GetWorldMap().GetGridMap(List[i].ID);
+                    Block = WorldMap.GetGridMap(List[i].ID);
                     break;
                 }
             }
@@ -107,7 +110,7 @@ namespace Maze.Classes
             return defaultElement;
         }
 
-        public void GeneratePath(GridMap StartPoint, GridMap FinalPoint)
+        public override void GeneratePath()
         {
             CellParam currentCell = new CellParam();
             CellParam finalCell = new CellParam();
@@ -116,21 +119,22 @@ namespace Maze.Classes
             openList = new List<CellParam>();
             closeList = new List<CellParam>();
 
+            // return empty Way at points on different levels OR
+            // start and final points were not defined
+            if (startPoint.Location.Level != finalPoint.Location.Level ||
+                startPoint.ID == 0 && finalPoint.ID == 0)
+                return;
 
             currentCell.InitializeCell();
             finalCell.InitializeCell();
 
-            currentCell.ID = StartPoint.ID;
+            currentCell.ID = startPoint.ID;
             openList.Add(currentCell);
 
-            finalCell.ID = FinalPoint.ID;
+            finalCell.ID = finalPoint.ID;
             openList.Add(finalCell);
 
-            // return empty Way at points on different levels
-            if (StartPoint.Location.Level != FinalPoint.Location.Level)
-                return;
-
-            while (currentCell.ID != FinalPoint.ID)
+            while (currentCell.ID != finalPoint.ID)
             {
                 Block = FindCell(openList, currentCell);
                 FindNeighbors(Block, finalCell);
@@ -185,7 +189,7 @@ namespace Maze.Classes
                         location.X = Block.Location.X + i;
                         location.Y = Block.Location.Y + j;
                         location.Level = Block.Location.Level;
-                        if (GetWorldMap().GetGridMap(location).Type != 16)
+                        if (WorldMap.GetGridMap(location).Type != 16)
                         {
                             bool flag = false;
 
@@ -201,9 +205,9 @@ namespace Maze.Classes
 
                                         // Check cell's passability
                                         if ((Block.CanMoveTo(Directions.Down) &&
-                                            GetWorldMap().GetGridMap(locDown).CanMoveTo(Directions.Left)) &&
+                                            WorldMap.GetGridMap(locDown).CanMoveTo(Directions.Left)) &&
                                             (Block.CanMoveTo(Directions.Left) &&
-                                            GetWorldMap().GetGridMap(locLeft).CanMoveTo(Directions.Down)))
+                                            WorldMap.GetGridMap(locLeft).CanMoveTo(Directions.Down)))
                                         {
                                             flag = true;
                                         }
@@ -216,9 +220,9 @@ namespace Maze.Classes
                                         locRight.X++;
 
                                         if ((Block.CanMoveTo(Directions.Up) &&
-                                            GetWorldMap().GetGridMap(locUp).CanMoveTo(Directions.Right)) &&
+                                            WorldMap.GetGridMap(locUp).CanMoveTo(Directions.Right)) &&
                                             (Block.CanMoveTo(Directions.Right) &&
-                                            GetWorldMap().GetGridMap(locRight).CanMoveTo(Directions.Up)))
+                                            WorldMap.GetGridMap(locRight).CanMoveTo(Directions.Up)))
                                         {
                                             flag = true;
                                         }
@@ -233,9 +237,9 @@ namespace Maze.Classes
                                         locLeft.X--;
 
                                         if ((Block.CanMoveTo(Directions.Left) &&
-                                            GetWorldMap().GetGridMap(locLeft).CanMoveTo(Directions.Up)) &&
+                                            WorldMap.GetGridMap(locLeft).CanMoveTo(Directions.Up)) &&
                                             (Block.CanMoveTo(Directions.Up) &&
-                                            GetWorldMap().GetGridMap(locUp).CanMoveTo(Directions.Left)))
+                                            WorldMap.GetGridMap(locUp).CanMoveTo(Directions.Left)))
                                         {
                                             flag = true;
                                         }
@@ -248,9 +252,9 @@ namespace Maze.Classes
                                         locRight.X++;
 
                                         if ((Block.CanMoveTo(Directions.Down) &&
-                                            GetWorldMap().GetGridMap(locDown).CanMoveTo(Directions.Right)) &&
+                                            WorldMap.GetGridMap(locDown).CanMoveTo(Directions.Right)) &&
                                             (Block.CanMoveTo(Directions.Right) &&
-                                            GetWorldMap().GetGridMap(locRight).CanMoveTo(Directions.Down)))
+                                            WorldMap.GetGridMap(locRight).CanMoveTo(Directions.Down)))
                                         {
                                             flag = true;
                                         }
@@ -279,7 +283,7 @@ namespace Maze.Classes
                             if (flag)
                             {
                                 CellParam Cell = new CellParam();
-                                Cell.ID = GetWorldMap().GetGridMap(location).ID;
+                                Cell.ID = WorldMap.GetGridMap(location).ID;
                                 Cell.MID = Block.ID;
                                 if (i == 0 || j == 0)
                                     Cell.G = currentCell.G + 10;    // Vertical or horizontal movement
@@ -344,11 +348,6 @@ namespace Maze.Classes
                 }
             }
             return Cell;
-        }
-
-        public Map GetWorldMap()
-        {
-            return Maze.Forms.Play.GetWorldMap();
         }
     }
 }
