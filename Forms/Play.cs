@@ -284,7 +284,7 @@ namespace Maze.Forms
                         if (Show)
                         {
                             // Create Map and units
-                           // CreateworldMap;               // Create Map
+                            worldMap.Reset();
                             worldMap.SetMap(0);
 
                             SetInterface(FormInterface.Play);
@@ -541,7 +541,6 @@ namespace Maze.Forms
                 if (worldMap.IsRandom())
                 {
                     // Regenerate Map and Objects
-                    //CreateworldMap;               // Create New Map
                     worldMap.GenerateRandomMap();
 
                     GetObjectContainer().ClearEnvironment();

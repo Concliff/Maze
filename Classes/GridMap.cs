@@ -202,6 +202,12 @@ namespace Maze.Classes
                 SaveToFile();
         }
 
+        public void Reset()
+        {
+            MapBlocks = null;
+            this.BlocksCount = 0;
+        }
+
         public int GetLevel() { return currentLevel; }
         public int GetMap() { return currentMapIndex; }
         public int GetLevelCount() { return levelCount; }
@@ -278,6 +284,7 @@ namespace Maze.Classes
 
         private void LoadFromFile(string MapFileName)
         {
+            this.isRandom = false;
             MapBlocks = new List<GridMap>();
             StartPoint = new List<GPS>();
             FinishPoint = new List<GPS>();
