@@ -124,7 +124,7 @@ namespace MapEditor.Forms
             else if (levelUpDown.Value > 100)
                 levelUpDown.Value = 100;
 
-            Program.WorldMap.SetMap(Program.WorldMap.GetMap(), (int)levelUpDown.Value);
+            Map.WorldMap.SetMap(Map.WorldMap.GetMap(), (int)levelUpDown.Value);
             oPlayer.Position.Location.Level = (int)levelUpDown.Value;
 
             this.Focus();

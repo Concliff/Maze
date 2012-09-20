@@ -239,7 +239,7 @@ namespace Maze.Classes
             GUID = Play.GetObjectContainer().CreateObject(this);
         }
 
-        protected Map GetWorldMap() { return Play.GetWorldMap(); }
+        protected Map GetWorldMap() { return Map.WorldMap; }
 
         new public ObjectType GetType() { return objectType; }
 

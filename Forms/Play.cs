@@ -284,8 +284,8 @@ namespace Maze.Forms
                         if (Show)
                         {
                             // Create Map and units
-                            CreateWorldMap();               // Create Map
-                            GetWorldMap().SetMap(0);
+                           // CreateworldMap;               // Create Map
+                            worldMap.SetMap(0);
 
                             SetInterface(FormInterface.Play);
                         }
@@ -297,8 +297,8 @@ namespace Maze.Forms
                         if (Show)
                         {
                             // Create Map and units
-                            CreateWorldMap();               // Create Map
-                            GetWorldMap().GenerateRandomMap();
+                            //CreateworldMap;               // Create Map
+                            worldMap.GenerateRandomMap();
 
                             SetInterface(FormInterface.Play);
                         }
@@ -320,8 +320,8 @@ namespace Maze.Forms
                             Player.LocationChanged += new Maze.Classes.Object.PositionHandler(Player_OnLocationChanged);
 
                             ProgramStartDateTime = DateTime.Now;
-                            GetWorldMap().FillMapWithUnits(); // Add units to map
-                            GetWorldMap().FillMapWithObjects();// Add objects
+                            worldMap.FillMapWithUnits(); // Add units to map
+                            worldMap.FillMapWithObjects();// Add objects
                             GetObjectContainer().StartMotion();
 
                             SystemTimer.Start();
@@ -468,7 +468,7 @@ namespace Maze.Forms
                     bonusGridGPS.Location.Y += yDiff - 3;
 
                     // If current GPS doesn't have a map block
-                    if (GetWorldMap().GetGridMap(bonusGridGPS.Location).ID == -1)
+                    if (worldMap.GetGridMap(bonusGridGPS.Location).ID == -1)
                         continue;
                     // else
                     bonusGridGPS.X = Random.Int(30) + 10;
@@ -534,30 +534,30 @@ namespace Maze.Forms
         private void Player_OnLocationChanged(object sender, PositionEventArgs e)
         {
             // Check finish point
-            if (GetWorldMap().DropsRemain == 0 &&
-                GetWorldMap().GetGridMap(Player.Position.BlockID).HasAttribute(GridMapAttributes.IsFinish))
+            if (worldMap.DropsRemain == 0 &&
+                worldMap.GetGridMap(Player.Position.BlockID).HasAttribute(GridMapAttributes.IsFinish))
             {
 
-                if (GetWorldMap().IsRandom())
+                if (worldMap.IsRandom())
                 {
                     // Regenerate Map and Objects
-                    CreateWorldMap();               // Create New Map
-                    GetWorldMap().GenerateRandomMap();
+                    //CreateworldMap;               // Create New Map
+                    worldMap.GenerateRandomMap();
 
                     GetObjectContainer().ClearEnvironment();
 
-                    GetWorldMap().FillMapWithUnits();
-                    GetWorldMap().FillMapWithObjects();
+                    worldMap.FillMapWithUnits();
+                    worldMap.FillMapWithObjects();
                     GetObjectContainer().StartMotion();
                 }
                 else
                 {
                     // TODO: clear objects for past levels
-                    int currentMap = GetWorldMap().GetMap();
-                    int currentLevel = GetWorldMap().GetLevel();
+                    int currentMap = worldMap.GetMap();
+                    int currentLevel = worldMap.GetLevel();
 
-                    if (++currentLevel < GetWorldMap().GetLevelCount())
-                        GetWorldMap().SetMap(currentMap, currentLevel);
+                    if (++currentLevel < worldMap.GetLevelCount())
+                        worldMap.SetMap(currentMap, currentLevel);
                 }
 
                 Player.LevelChanged();

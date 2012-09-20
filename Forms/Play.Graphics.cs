@@ -13,7 +13,7 @@ namespace Maze.Forms
                 return;
 
             e.Graphics.DrawString("Time: " + (ProgramTime.Seconds + ProgramTime.Minutes * 60).ToString(), new Font("Arial", 14), new SolidBrush(Color.White), 10, 30);
-            e.Graphics.DrawString("Drops x " + GetWorldMap().DropsRemain.ToString(),
+            e.Graphics.DrawString("Drops x " + worldMap.DropsRemain.ToString(),
                 new Font("Arial", 14), new SolidBrush(Color.White), 10, 50);
             e.Graphics.DrawString("Total scores: " + Player.GetScore(), new Font("Arial", 12), new SolidBrush(Color.White), 10, 70);
         }
@@ -112,7 +112,7 @@ namespace Maze.Forms
                     PBLocation.Y = Player.Position.Location.Y + j - GlobalConstants.GRIDMAP_HEIGHT / 2;
                     PBLocation.Z = Player.Position.Location.Z;
                     PBLocation.Level = Player.Position.Location.Level;
-                    Block = GetWorldMap().GetGridMap(PBLocation);
+                    Block = worldMap.GetGridMap(PBLocation);
 
                     this.GridMapGraphic[i, j].Block = Block;
                     gGridMapBP.DrawImage(PictureManager.GetPictureByType(Block.Type), x, y, GlobalConstants.GRIDMAP_BLOCK_WIDTH, GlobalConstants.GRIDMAP_BLOCK_HEIGHT);

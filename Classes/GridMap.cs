@@ -86,7 +86,7 @@ namespace Maze.Classes
             this.Location = Location;
             this.X = X;
             this.Y = Y;
-            this.BlockID = Maze.Forms.Play.GetWorldMap().GetGridMap(this.Location).ID;
+            this.BlockID = Map.WorldMap.GetGridMap(this.Location).ID;
         }
 
         /// <summary>
@@ -115,6 +115,42 @@ namespace Maze.Classes
 
     public class Map
     {
+        //
+        // SINGLETON PART
+        //
+        #region singleton_part
+
+        /// <summary>
+        /// Singleton instance
+        /// </summary>
+        private static Map worldMap;
+
+        /// <summary>
+        /// Returns World Map instance
+        /// </summary>
+        public static Map WorldMap
+        {
+            get
+            {
+                if (worldMap == null)
+                    worldMap = new Map();
+
+                return worldMap;
+            }
+            private set { ;}
+        }
+
+        /// <summary>
+        /// Private constructor for hiding singleton instance
+        /// </summary>
+        private Map()
+        {
+            LoadMapNameList();
+        }
+
+        #endregion
+
+
         private List<GridMap> MapBlocks;    // Array of GridMap block of current map
         private int[] dropsCount;            // Ooze Drops per level on map
         private string[] MapNameList;       // Names of All downloaded maps
@@ -137,17 +173,9 @@ namespace Maze.Classes
             }
         }
 
-        public Map()
-        {
-            BlocksCount = 0;
-            LoadMapNameList();
-            GridMapChanged = false;
-            isRandom = false;
-            levelCount = 0;
-        }
-
         ~Map()
         {
+            /// Save changed Map blocks back into file (Not for random mode)
             if (GridMapChanged)
                 SaveToFile();
         }

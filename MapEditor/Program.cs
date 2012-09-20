@@ -10,7 +10,6 @@ namespace MapEditor
     static class Program
     {
         public static Editor EditorForm;
-        public static Map WorldMap;
 
         /// <summary>
         /// Главная точка входа для приложения.
@@ -26,8 +25,7 @@ namespace MapEditor
             PictureManager.InitializeComponents();
             PictureManager.Load();
 
-            WorldMap = new Map();
-            WorldMap.SetMap(0, 0);
+            Map.WorldMap.SetMap(0, 0);
 
             EditorForm = new Editor();
 

@@ -34,7 +34,7 @@ namespace MapEditor.Forms
             SystemTimer.Start();
 
             oPlayer = new VritualPlayer();
-            oPlayer.Position.Location = Program.WorldMap.GetStartPoint();
+            oPlayer.Position.Location = Map.WorldMap.GetStartPoint();
             oPlayer.Position.X = 25;
             oPlayer.Position.Y = 25;
 
@@ -61,18 +61,18 @@ namespace MapEditor.Forms
             switch (KeyMgr.ExtractKeyPressed())
             {
                 case Keys.PageUp:
-                    int nextLevel = Program.WorldMap.GetLevel();
+                    int nextLevel = Map.WorldMap.GetLevel();
                     ++nextLevel;
-                    Program.WorldMap.SetMap(Program.WorldMap.GetMap(), nextLevel);
+                    Map.WorldMap.SetMap(Map.WorldMap.GetMap(), nextLevel);
                     oPlayer.Position.Location.Level = nextLevel;
                     RebuildGraphMap();
                     break;
                 case Keys.PageDown:
-                    int previousLevel = Program.WorldMap.GetLevel();
+                    int previousLevel = Map.WorldMap.GetLevel();
                     --previousLevel;
                     if (previousLevel < 0)
                         previousLevel = 0;
-                    Program.WorldMap.SetMap(Program.WorldMap.GetMap(), previousLevel);
+                    Map.WorldMap.SetMap(Map.WorldMap.GetMap(), previousLevel);
                     oPlayer.Position.Location.Level = previousLevel;
                     RebuildGraphMap();
                     break;
@@ -135,7 +135,7 @@ namespace MapEditor.Forms
                     PBLocation.Y = oPlayer.Position.Location.Y + j - GlobalConstants.GRIDMAP_HEIGHT / 2;
                     PBLocation.Z = oPlayer.Position.Location.Z;
                     PBLocation.Level = oPlayer.Position.Location.Level;
-                    Block = Program.WorldMap.GetGridMap(PBLocation);
+                    Block = Map.WorldMap.GetGridMap(PBLocation);
 
                     this.GridMapGraphic[i, j].Block = Block;
 
@@ -187,7 +187,7 @@ namespace MapEditor.Forms
                 (this.PlayerPB.Location.Y + this.PlayerPB.Size.Height / 2 + FormTitleBarSize))) /
                 (double)GlobalConstants.GRIDMAP_BLOCK_HEIGHT);
 
-            GridMap Block = Program.WorldMap.GetGridMap(CursorGPS);
+            GridMap Block = Map.WorldMap.GetGridMap(CursorGPS);
 
             if (BlockEditForm == null)
                 BlockEditForm = new BlockEdit(Block);
@@ -202,7 +202,7 @@ namespace MapEditor.Forms
 
         void MapEditorFormClosing(object sender, FormClosingEventArgs e)
         {
-            Program.WorldMap.CloseCurrentMap();
+            Map.WorldMap.CloseCurrentMap();
         }
     }
 }

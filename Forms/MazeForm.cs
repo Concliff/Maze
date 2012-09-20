@@ -9,30 +9,26 @@ namespace Maze.Forms
     public partial class MazeForm : System.Windows.Forms.Form
     {
         private static ObjectContainer objectContainer;
-        private static Map worldMap;
+        private static Map WorldMap;
 
         public static int FormTitleBarSize = 28;
         public static int FormBorderBarSize = 7;
 
+        /// <summary>
+        /// Contains a reference to Map singleton instance
+        /// </summary>
+        protected Map worldMap;
+
         public MazeForm()
         {
-            CreateWorldMap();
             CreateObjectContainer();
-        }
 
-        protected void CreateWorldMap()
-        {
-            worldMap = new Map();
+            worldMap = Map.WorldMap;
         }
 
         protected void CreateObjectContainer()
         {
             objectContainer = new ObjectContainer();
-        }
-
-        public static Map GetWorldMap()
-        {
-            return worldMap;
         }
 
         public static ObjectContainer GetObjectContainer()
