@@ -23,7 +23,7 @@ namespace Maze.Classes
 
         // Player
         public const int PLAYER_SIZE_WIDTH = 32;
-        public const int PLAYER_SIZE_HEIGHT = 37;
+        public const int PLAYER_SIZE_HEIGHT = 32;
 
     }
 }
