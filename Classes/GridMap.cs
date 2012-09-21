@@ -258,7 +258,30 @@ namespace Maze.Classes
                 block.Attribute += (uint)GridMapAttributes.HasDrop;
                 ++currentDropsCount;
                 ReplaceGridMap(block);
-            }            
+            }
+
+            // Generate Portals
+            // Every 50th block
+            int portalCounter = MapBlocks.Count / 50;
+            int portalCount = 0;
+
+            while (portalCount < portalCounter)
+            {
+                GridMap portalBlock = MapBlocks[Random.Int(MapBlocks.Count)];
+                GridMap destinationBlock = MapBlocks[Random.Int(MapBlocks.Count)];
+
+                if (portalBlock.ID == destinationBlock.ID ||
+                    portalBlock.HasAttribute(GridMapAttributes.HasDrop) ||
+                    portalBlock.HasAttribute(GridMapAttributes.IsStart) ||
+                    portalBlock.HasAttribute(GridMapAttributes.IsFinish) ||
+                    destinationBlock.HasAttribute(GridMapAttributes.IsStart))
+                    continue;
+
+                portalBlock.Option += (uint)GridMapOptions.Portal;
+                portalBlock.OptionValue = destinationBlock.ID;
+                ++portalCount;
+                ReplaceGridMap(portalBlock);
+            }
         }
 
         public bool IsRandom()
