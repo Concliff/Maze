@@ -306,8 +306,6 @@ namespace Maze.Forms
                         {
                             PlayStarted = true;
 
-                            CreateObjectContainer();
-
                             Player = new Slug();
                             // Events
                             Player.LocationChanged += new Maze.Classes.Object.PositionHandler(Player_OnLocationChanged);
@@ -315,7 +313,7 @@ namespace Maze.Forms
                             ProgramStartDateTime = DateTime.Now;
                             worldMap.FillMapWithUnits(); // Add units to map
                             worldMap.FillMapWithObjects();// Add objects
-                            GetObjectContainer().StartMotion();
+                            objectContainer.StartMotion();
 
                             SystemTimer.Start();
                         }
@@ -416,7 +414,7 @@ namespace Maze.Forms
 
             // Call for Update every Unit
             int tickTime = DateTime.Now.Subtract(LastTickTime).Milliseconds;
-            GetObjectContainer().UpdateState(tickTime);
+            objectContainer.UpdateState(tickTime);
             LastTickTime = DateTime.Now;
 
             // Repaint Game stats panel
@@ -548,11 +546,11 @@ namespace Maze.Forms
                     // Regenerate Map and Objects
                     worldMap.GenerateRandomMap();
 
-                    GetObjectContainer().ClearEnvironment();
+                    objectContainer.ClearEnvironment();
 
                     worldMap.FillMapWithUnits();
                     worldMap.FillMapWithObjects();
-                    GetObjectContainer().StartMotion();
+                    objectContainer.StartMotion();
                 }
                 else
                 {

@@ -130,7 +130,7 @@ namespace Maze.Classes
                 {
                     SearchGPS.X = width;
                     SearchGPS.Y = height;
-                    objects.AddRange(Play.GetObjectContainer().GetAllObjectsByGPS(SearchGPS));
+                    objects.AddRange(ObjectContainer.Container.GetAllObjectsByGPS(SearchGPS));
                 }
 
             List<Object> result = new List<Object>();

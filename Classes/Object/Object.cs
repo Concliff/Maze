@@ -20,8 +20,23 @@ namespace Maze.Classes
         Removed,     // Waiting deletion form container
     }
 
-    public class ObjectContainer
+    public sealed class ObjectContainer
     {
+        // Singleton
+        private static ObjectContainer instance;
+
+        public static ObjectContainer Container
+        {
+            get
+            {
+                if (instance == null)
+                    instance = new ObjectContainer();
+
+                return instance;
+            }
+            private set { ;}
+        }
+
         private bool isUpdating;    // safety check for multi access into container
         private List<Object> objects;
         private Stack<Object> objectsToRemove;
@@ -29,7 +44,7 @@ namespace Maze.Classes
         private Stack<uint> releasedGUIDs;
         public static uint GUIDCounter;
 
-        public ObjectContainer()
+        private ObjectContainer()
         {
             objects = new List<Object>();
             objectsToRemove = new Stack<Object>();
@@ -236,7 +251,7 @@ namespace Maze.Classes
 
             currentGridMap.Initialize();
 
-            GUID = Play.GetObjectContainer().CreateObject(this);
+            GUID = ObjectContainer.Container.CreateObject(this);
         }
 
         protected Map GetWorldMap() { return Map.WorldMap; }

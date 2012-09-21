@@ -8,9 +8,6 @@ namespace Maze.Forms
 {
     public partial class MazeForm : System.Windows.Forms.Form
     {
-        private static ObjectContainer objectContainer;
-        private static Map WorldMap;
-
         public static int FormTitleBarSize = 28;
         public static int FormBorderBarSize = 7;
 
@@ -19,21 +16,16 @@ namespace Maze.Forms
         /// </summary>
         protected Map worldMap;
 
+        /// <summary>
+        /// Contains a reference to Object Container instance
+        /// </summary>
+        protected ObjectContainer objectContainer;
+
         public MazeForm()
         {
-            CreateObjectContainer();
+            objectContainer = ObjectContainer.Container;
 
             worldMap = Map.WorldMap;
-        }
-
-        protected void CreateObjectContainer()
-        {
-            objectContainer = new ObjectContainer();
-        }
-
-        public static ObjectContainer GetObjectContainer()
-        {
-            return objectContainer;
         }
     }
 }
