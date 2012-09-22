@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using Maze.Classes;
+using System.Diagnostics;
 
 namespace Maze.Forms
 {
@@ -28,14 +29,13 @@ namespace Maze.Forms
 
         int tempCount;
 
-        DateTime ProgramStartDateTime;  // Contains Time when game was started
-        TimeSpan ProgramTime;           // Contains game run-time
-
+        private Stopwatch time;
+        private long millisecondsPassed;
         //TimeControl SysTimer;         // Not implemented yet
 
         FormInterface CurrentInterface;
 
-        DateTime LastTickTime;
+        Stopwatch LastTickTime;
 
         private int bonusGenerateTimer;
         private BonusEffect[] bonusEffects;
@@ -52,8 +52,8 @@ namespace Maze.Forms
         public Play()
         {
             tempCount = 0;
-            ProgramStartDateTime = DateTime.Now;
-            LastTickTime = DateTime.Now;
+
+            time = new Stopwatch();
 
             GamePaused = false;
             PlayStarted = false;
@@ -242,6 +242,7 @@ namespace Maze.Forms
             {
                 case FormInterface.MainMenu:
                     {
+                        time.Reset();
                         if (Show)
                         {
                             if (PlayStarted)    // When paused
@@ -276,6 +277,7 @@ namespace Maze.Forms
                     {
                         if (Show)
                         {
+                            time.Start();
                             // Create Map and units
                             worldMap.Reset();
                             worldMap.SetMap(0);
@@ -289,6 +291,7 @@ namespace Maze.Forms
                     {
                         if (Show)
                         {
+                            time.Start();
                             // Create Map and units
                             //CreateworldMap;               // Create Map
                             worldMap.GenerateRandomMap();
@@ -301,16 +304,15 @@ namespace Maze.Forms
                     {
                         if (!Show)
                             break;
-
+                        time.Start();
                         if (!PlayStarted)                   // Start New Game
                         {
                             PlayStarted = true;
-
+                            millisecondsPassed = 0;
                             Player = new Slug();
                             // Events
                             Player.LocationChanged += new Maze.Classes.Object.PositionHandler(Player_OnLocationChanged);
 
-                            ProgramStartDateTime = DateTime.Now;
                             worldMap.FillMapWithUnits(); // Add units to map
                             worldMap.FillMapWithObjects();// Add objects
                             objectContainer.StartMotion();
@@ -328,6 +330,8 @@ namespace Maze.Forms
                     {
                         if (Show)
                         {
+                            time.Stop();
+
                             GamePaused = true;
                             PausePB.Show();
                             PauseResumePB.Show();
@@ -409,15 +413,14 @@ namespace Maze.Forms
             if (GamePaused)
                 return;
 
-            // Refresh game run-time
-            ProgramTime = DateTime.Now.Subtract(ProgramStartDateTime);
-
             // Call for Update every Unit
-            int tickTime = DateTime.Now.Subtract(LastTickTime).Milliseconds;
+            long currentElapsedMilliseconds = time.ElapsedMilliseconds;
+            int tickTime = (int)(currentElapsedMilliseconds - millisecondsPassed);
             objectContainer.UpdateState(tickTime);
-            LastTickTime = DateTime.Now;
 
-            // Repaint Game stats panel
+            millisecondsPassed = currentElapsedMilliseconds;
+
+            // Repaint Game stats panel+++++++++++++
             this.RightPanelPB.Invalidate();
 
             this.LeftPanelPB.Invalidate();

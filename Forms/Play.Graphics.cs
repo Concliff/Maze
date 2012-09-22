@@ -12,7 +12,7 @@ namespace Maze.Forms
             if (!PlayStarted)
                 return;
 
-            e.Graphics.DrawString("Time: " + (ProgramTime.Seconds + ProgramTime.Minutes * 60).ToString(), new Font("Arial", 14), new SolidBrush(Color.White), 10, 30);
+            e.Graphics.DrawString("Time: " + (time.ElapsedMilliseconds/1000).ToString(), new Font("Arial", 14), new SolidBrush(Color.White), 10, 30);
             e.Graphics.DrawString("Drops x " + worldMap.DropsRemain.ToString(),
                 new Font("Arial", 14), new SolidBrush(Color.White), 10, 50);
             e.Graphics.DrawString("Total scores: " + Player.GetScore(), new Font("Arial", 12), new SolidBrush(Color.White), 10, 70);
