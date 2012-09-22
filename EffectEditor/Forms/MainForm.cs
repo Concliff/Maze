@@ -371,7 +371,6 @@ namespace EffectEditor
 
         private void btnRefresh_Click(object sender, EventArgs e)
         {
-            int a = 6;
             // Reinitialize EffectStore
             Maze.Classes.DBStores.InitializeComponents();
             Maze.Classes.DBStores.Load();

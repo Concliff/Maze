@@ -35,8 +35,6 @@ namespace Maze.Forms
 
         FormInterface CurrentInterface;
 
-        Stopwatch LastTickTime;
-
         private int bonusGenerateTimer;
         private BonusEffect[] bonusEffects;
 
