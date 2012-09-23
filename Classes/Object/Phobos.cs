@@ -26,6 +26,7 @@ namespace Maze.Classes
         public Phobos(GPS respawnLocation)
         {
             unitType = UnitTypes.Phobos;
+            SetUnitFlags(UnitFlags.CanNotBeKilled);
             isInMotion = false;
 
             this.respawnLocation = respawnLocation;

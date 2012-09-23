@@ -179,6 +179,7 @@ namespace Maze.Classes
         protected GPS respawnLocation;
         protected int respawnTimer;
         protected UnitTypes unitType;
+        protected int unitFlags;
         protected EffectCollection effectList;
 
         protected bool isInMotion;
@@ -187,6 +188,7 @@ namespace Maze.Classes
         public Unit()
         {
             SetDeathState(DeathStates.Alive);
+            SetUnitFlags(UnitFlags.None);
             gridMapReached = true;
 
             respawnLocation.Level = respawnLocation.X =
@@ -236,6 +238,24 @@ namespace Maze.Classes
         }
 
         public UnitTypes GetUnitType() { return unitType; }
+
+        /// <summary>
+        /// Sets all specified flags if unit doesnt have it
+        /// </summary>
+        /// <param name="unitFlags"></param>
+        public void SetUnitFlags(params UnitFlags[] unitFlags)
+        {
+            for (int i = 0; i < unitFlags.Count(); ++i)
+            {
+                if (!HasUnitFlag(unitFlags[i]))
+                    this.unitFlags += (int)unitFlags[i];
+            }
+        }
+
+        public bool HasUnitFlag(UnitFlags unitFlag)
+        {
+            return ((uint)unitFlag & (uint)this.unitFlags) != 0;
+        }
 
         /// <summary>
         /// Change Unit's location by given block count in a given direction
@@ -422,8 +442,8 @@ namespace Maze.Classes
 
         public bool KillUnit(Unit victim)
         {
-            // TODO:
-            // units that can not be killed
+            if (victim.HasUnitFlag(UnitFlags.CanNotBeKilled))
+                return false;
 
             victim.SetDeathState(DeathStates.Dead);
 
