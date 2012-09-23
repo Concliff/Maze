@@ -90,6 +90,7 @@ namespace Maze.Forms
             this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.KeyMgr.EventKeyUp);
             this.Shown += new System.EventHandler(Play_Shown);
             this.VisibleChanged += new System.EventHandler(Play_VisibleChanged);
+            this.Deactivate += new System.EventHandler(this.KeyMgr.EventFormLostFocus);
 
             this.SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
             this.SetStyle(ControlStyles.AllPaintingInWmPaint, true);

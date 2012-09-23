@@ -109,5 +109,17 @@ namespace Maze.Classes
             KeyPressed = Keys.None;
             return KeyToReturn;
         }
+
+        /// <summary>
+        /// Clear All Keys
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        public void EventFormLostFocus(object sender, EventArgs e)
+        {
+            KeyPressed = Keys.None;
+            keysDownList.Clear();
+            lastKeyEventArgs = new KeyEventArgs(Keys.None);
+        }
     }
 }
