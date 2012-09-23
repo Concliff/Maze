@@ -53,17 +53,13 @@ namespace Maze.Classes
                 stepRemainder -= 1;
             }
 
+            GridGPS lastPosition = Position;
             MoveToDirection(movementStep, currentDirection);
 
-        }
-
-        public override void ReachedGridMap()
-        {
-            base.ReachedGridMap();
-
-            if (!currentGridMap.CanMoveTo(currentDirection.First))
-                SetDeathState(DeathStates.Dead);
-
+            // Kill Clone if it strikes a wall
+            // (means last Position == new Position after moving attempt
+            if (Position == lastPosition)
+                KillUnit(this);
         }
     }
 }
