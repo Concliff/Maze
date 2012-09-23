@@ -59,12 +59,46 @@ namespace Maze.Classes
 
         public static bool operator ==(GPS a, GPS b)
         {
+            if (a == null || b == null)
+                return false;
+
             return (a.X == b.X && a.Y == b.Y && a.Z == b.Z && a.Level == b.Level);
         }
 
         public static bool operator !=(GPS a, GPS b)
         {
             return !(a == b);
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (obj == null)
+                return false;
+
+            try
+            {
+                GPS p = (GPS)obj;
+            }
+            // Can not convert with any reason
+            catch
+            {
+                return false;
+            }
+
+            return this == (GPS)obj;
+        }
+
+        public bool Equals(GPS p)
+        {
+            if (p == null)
+                return false;
+
+            return this == p;
+        }
+
+        public override int GetHashCode()
+        {
+            return ((this.X ^ this.Y) + (this.Z ^ this.Level));
         }
     };
 
@@ -97,6 +131,50 @@ namespace Maze.Classes
             this = Position;
             this.X = X;
             this.Y = Y;
+        }
+
+        public static bool operator ==(GridGPS a, GridGPS b)
+        {
+            if (a == null || b == null)
+                return false;
+
+            return (a.Location == b.Location && a.X == b.X && a.Y == b.Y && a.BlockID == b.BlockID);
+        }
+
+        public static bool operator !=(GridGPS a, GridGPS b)
+        {
+            return !(a == b);
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (obj == null)
+                return false;
+
+            try
+            {
+                GridGPS p = (GridGPS)obj;
+            }
+            // Can not convert with any reason
+            catch
+            {
+                return false;
+            }
+
+            return this == (GridGPS)obj;
+        }
+
+        public bool Equals(GridGPS p)
+        {
+            if (p == null)
+                return false;
+
+            return this == p;
+        }
+
+        public override int GetHashCode()
+        {
+            return ((this.Location.GetHashCode() ^ this.X ^ this.Y) + this.BlockID);
         }
     };
 
