@@ -137,11 +137,15 @@ namespace Maze.Classes
         /// Remove all Object except Slug
         /// </summary>
         /// <param name="?"></param>
-        public void ClearEnvironment()
+        public void ClearEnvironment(bool isRemoveSlug)
         {
             foreach (Object objectF in objects)
-                if (objectF.GetType() != ObjectType.Slug)
-                    objectsToRemove.Push(objectF);
+            {
+                if (objectF.GetType() == ObjectType.Slug && !isRemoveSlug)
+                    continue;
+
+                objectsToRemove.Push(objectF);
+            }
 
             RemoveTaggedObjects();
         }

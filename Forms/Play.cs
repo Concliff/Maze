@@ -290,8 +290,9 @@ namespace Maze.Forms
                         if (Show)
                         {
                             time.Start();
+
                             // Create Map and units
-                            //CreateworldMap;               // Create Map
+
                             worldMap.GenerateRandomMap();
 
                             SetInterface(FormInterface.Play);
@@ -307,13 +308,15 @@ namespace Maze.Forms
                         {
                             PlayStarted = true;
                             millisecondsPassed = 0;
-                            Player = new Slug();
-                            // Events
-                            Player.LocationChanged += new Maze.Classes.Object.PositionHandler(Player_OnLocationChanged);
 
+                            objectContainer.ClearEnvironment(true); // Remove all old objects and units
+                            Player = new Slug();    // Create new Slug
                             worldMap.FillMapWithUnits(); // Add units to map
                             worldMap.FillMapWithObjects();// Add objects
                             objectContainer.StartMotion();
+
+                            // Events
+                            Player.LocationChanged += new Maze.Classes.Object.PositionHandler(Player_OnLocationChanged);
 
                             SystemTimer.Start();
                         }
@@ -547,7 +550,7 @@ namespace Maze.Forms
                     // Regenerate Map and Objects
                     worldMap.GenerateRandomMap();
 
-                    objectContainer.ClearEnvironment();
+                    objectContainer.ClearEnvironment(false);
 
                     worldMap.FillMapWithUnits();
                     worldMap.FillMapWithObjects();
