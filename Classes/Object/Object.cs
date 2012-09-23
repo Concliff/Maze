@@ -298,96 +298,20 @@ namespace Maze.Classes
             int upperYBound = GlobalConstants.GRIDMAP_BLOCK_HEIGHT - lowerYBound;
 
             if (position.X < lowerXBound)
-            {
                 if (!gridMap.CanMoveTo(Directions.Left))
                     position.X = lowerXBound;
-                // Additional check for neighbour cells
-                else if (position.Y < lowerYBound && gridMap.CanMoveTo(Directions.Up))
-                {
-                    GPS neighbourLocation = position.Location;
-                    neighbourLocation.Y--;
-
-                    if (!GetWorldMap().GetGridMap(neighbourLocation).CanMoveTo(Directions.Left))
-                        position.X = lowerXBound;
-                }
-                else if (position.Y > upperYBound && gridMap.CanMoveTo(Directions.Down))
-                {
-                    GPS neighbourLocation = position.Location;
-                    neighbourLocation.Y++;
-
-                    if (!GetWorldMap().GetGridMap(neighbourLocation).CanMoveTo(Directions.Left))
-                        position.X = lowerXBound;
-                }
-            }
 
             if (position.X > upperXBound)
-            {
                 if (!gridMap.CanMoveTo(Directions.Right))
                     position.X = upperXBound;
-                // Additional check for neighbour cells
-                else if (position.Y < lowerYBound && gridMap.CanMoveTo(Directions.Up))
-                {
-                    GPS neighbourLocation = position.Location;
-                    neighbourLocation.Y--;
-
-                    if (!GetWorldMap().GetGridMap(neighbourLocation).CanMoveTo(Directions.Right))
-                        position.X = upperXBound;
-                }
-                else if (position.Y > upperYBound && gridMap.CanMoveTo(Directions.Down))
-                {
-                    GPS neighbourLocation = position.Location;
-                    neighbourLocation.Y++;
-
-                    if (!GetWorldMap().GetGridMap(neighbourLocation).CanMoveTo(Directions.Right))
-                        position.X = upperXBound;
-                }
-            }
 
             if (position.Y < lowerYBound)
-            {
                 if (!gridMap.CanMoveTo(Directions.Up))
                     position.Y = lowerYBound;
-                // Additional check for neighbour cells
-                else if (position.X < lowerXBound)
-                {
-                    GPS neighbourLocation = position.Location;
-                    neighbourLocation.X--;
-
-                    if (!GetWorldMap().GetGridMap(neighbourLocation).CanMoveTo(Directions.Up))
-                        position.Y = lowerYBound;
-                }
-                else if (position.X > upperXBound)
-                {
-                    GPS neighbourLocation = position.Location;
-                    neighbourLocation.X++;
-
-                    if (!GetWorldMap().GetGridMap(neighbourLocation).CanMoveTo(Directions.Up))
-                        position.Y = lowerYBound;
-                }
-            }
 
             if (position.Y > upperYBound)
-            {
                 if (!gridMap.CanMoveTo(Directions.Down))
                     position.Y = upperYBound;
-                // Additional check for neighbour cells
-                else if (position.X < lowerXBound)
-                {
-                    GPS neighbourLocation = position.Location;
-                    neighbourLocation.X--;
-
-                    if (!GetWorldMap().GetGridMap(neighbourLocation).CanMoveTo(Directions.Down))
-                        position.Y = upperYBound;
-                }
-                else if (position.X > upperXBound)
-                {
-                    GPS neighbourLocation = position.Location;
-                    neighbourLocation.X++;
-
-                    if (!GetWorldMap().GetGridMap(neighbourLocation).CanMoveTo(Directions.Down))
-                        position.Y = upperYBound;
-                }
-            }
 
             return position;
         }
