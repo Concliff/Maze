@@ -31,7 +31,6 @@ namespace Maze.Forms
 
         private Stopwatch time;
         private long millisecondsPassed;
-        //TimeControl SysTimer;         // Not implemented yet
 
         FormInterface CurrentInterface;
 
@@ -67,8 +66,6 @@ namespace Maze.Forms
             
             // Visual is 11x7
             // Player grid is 7,5 (central)
-
-            //SysTimer = new TimeControl(this);
 
             //RebuildGraphMap();
             CurrentInterface = FormInterface.MainMenu;
