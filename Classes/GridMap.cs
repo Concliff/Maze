@@ -313,13 +313,9 @@ namespace Maze.Classes
             BlocksCount = 0;
         }
 
-        //public int GetLevel() { return pr_currentLevel; }
         public int GetMap() { return currentMapIndex; }
-        //public int GetLevelCount() { return pr_levelCount; }
 
         public void SetMap(int mapIndex) { SetMap(mapIndex, 0); }
-
-        //public void SetLevelCount(int levelCount) { this.levelCount = levelCount; }
 
         public void SetMap(int mapIndex, int level)
         {
@@ -536,11 +532,6 @@ namespace Maze.Classes
 
             return MapBlock;
         }
-
-        /*public int GetBlocksCount()
-        {
-            return blocksCount;
-        }*/
 
         public bool AddGridMap(GridMap NewGridMap)
         {

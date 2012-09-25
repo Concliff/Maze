@@ -17,7 +17,7 @@ namespace Maze.Classes
         public String Name
         {
             get { return pr_Name; }
-            private set { pr_Name = value; }
+            set { pr_Name = value; }
         }
 
         // ooze
@@ -126,9 +126,6 @@ namespace Maze.Classes
 
             base.SetDeathState(deathState);
         }
-
-        /*public String GetName() { return pr_Name; }
-        public void SetName(String name) { pr_Name = name; }*/
 
         public GridGPS CopyGridGPS()
         {
