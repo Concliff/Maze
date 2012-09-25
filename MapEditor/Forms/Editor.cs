@@ -61,14 +61,14 @@ namespace MapEditor.Forms
             switch (KeyMgr.ExtractKeyPressed())
             {
                 case Keys.PageUp:
-                    int nextLevel = Map.WorldMap.GetLevel();
+                    int nextLevel = Map.WorldMap.CurrentLevel;
                     ++nextLevel;
                     Map.WorldMap.SetMap(Map.WorldMap.GetMap(), nextLevel);
                     oPlayer.Position.Location.Level = nextLevel;
                     RebuildGraphMap();
                     break;
                 case Keys.PageDown:
-                    int previousLevel = Map.WorldMap.GetLevel();
+                    int previousLevel = Map.WorldMap.CurrentLevel;
                     --previousLevel;
                     if (previousLevel < 0)
                         previousLevel = 0;

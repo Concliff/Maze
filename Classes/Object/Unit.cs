@@ -132,7 +132,7 @@ namespace Maze.Classes
         {
             for (int i = 0; i < effectList.Count; )
             {
-                if (effectList[i].GetState() == EffectState.Expired)
+                if (effectList[i].EffectState == EffectState.Expired)
                 {
                     Remove(effectList[i]);
                     continue;
@@ -178,12 +178,21 @@ namespace Maze.Classes
         protected double stepRemainder; // Due to conversion from double(speedRate) to int(Coords)
         protected GPS respawnLocation;
         protected int respawnTimer;
-        protected UnitTypes unitType;
+        protected UnitTypes pr_unitType;
         protected int unitFlags;
         protected EffectCollection effectList;
 
         protected bool isInMotion;
         protected Direction currentDirection;
+
+        /// <summary>
+        /// Determines the type of the unit
+        /// </summary>
+        public UnitTypes UnitType
+        {
+            get { return pr_unitType; }
+            set { pr_unitType = value; }
+        }
 
         public Unit()
         {
@@ -195,7 +204,7 @@ namespace Maze.Classes
                 respawnLocation.Y = respawnLocation.Z = 0;
 
             objectType = ObjectType.Unit;
-            unitType = UnitTypes.Unit;
+            UnitType = UnitTypes.Unit;
 
             effectList = new EffectCollection(this);
 
@@ -237,7 +246,7 @@ namespace Maze.Classes
                 CalculateSpeedRate();
         }
 
-        public UnitTypes GetUnitType() { return unitType; }
+        //public UnitTypes GetUnitType() { return pr_unitType; }
 
         /// <summary>
         /// Sets all specified flags if unit doesnt have it

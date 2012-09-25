@@ -53,7 +53,7 @@ namespace Maze.Classes
             if (!bonusEffect.IsOpen)
             {
 
-                if (user.GetUnitType() == UnitTypes.Slug)
+                if (user.UnitType == UnitTypes.Slug)
                     ((Slug)user).CollectHiddenBonus(bonusEffect.EffectID);
                 else
                     return;

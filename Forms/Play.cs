@@ -557,9 +557,9 @@ namespace Maze.Forms
                 {
                     // TODO: clear objects for past levels
                     int currentMap = worldMap.GetMap();
-                    int currentLevel = worldMap.GetLevel();
+                    int currentLevel = worldMap.CurrentLevel;
 
-                    if (++currentLevel < worldMap.GetLevelCount())
+                    if (++currentLevel < worldMap.LevelCount)
                         worldMap.SetMap(currentMap, currentLevel);
                 }
 
@@ -567,11 +567,6 @@ namespace Maze.Forms
                 Player.AddPoints(30);
                 ClearPlayerAurasAndSpells();
             }
-        }
-
-        public Slug GetPlayer()
-        {
-            return Player;
         }
     }
 }

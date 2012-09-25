@@ -234,12 +234,12 @@ namespace Maze.Classes
         private string[] MapNameList;       // Names of All downloaded maps
         private List<GPS> StartPoint;
         private List<GPS> FinishPoint;
-        private int BlocksCount;
+        private int pr_BlocksCount;
         private string CurrentMapName;
         private bool GridMapChanged;        // If map changed, it should be rewrited into mapFile
         private int currentMapIndex;
-        private int currentLevel;
-        private int levelCount;
+        private int pr_CurrentLevel;
+        private int pr_LevelCount;
         private string MapDirectoryPath = GlobalConstants.MAPS_PATH;
         private bool isRandom;
 
@@ -247,8 +247,35 @@ namespace Maze.Classes
         {
             get
             {
-                return dropsCount[GetLevel()];
+                return dropsCount[CurrentLevel];
             }
+        }
+
+        /// <summary>
+        /// Gets the number of the current level
+        /// </summary>
+        public int CurrentLevel
+        {
+            get { return pr_CurrentLevel; }
+            private set { pr_CurrentLevel = value;}
+        }
+
+        /// <summary>
+        /// Gets the number of levels of current map
+        /// </summary>
+        public int LevelCount
+        {
+            get { return pr_LevelCount; }
+            private set { pr_LevelCount = value; }
+        }
+
+        /// <summary>
+        /// Gets the number of blocks of current map
+        /// </summary>
+        public int BlocksCount
+        {
+            get { return pr_BlocksCount; }
+            private set { pr_BlocksCount = value; }
         }
 
         ~Map()
@@ -283,16 +310,16 @@ namespace Maze.Classes
         public void Reset()
         {
             MapBlocks = null;
-            this.BlocksCount = 0;
+            BlocksCount = 0;
         }
 
-        public int GetLevel() { return currentLevel; }
+        //public int GetLevel() { return pr_currentLevel; }
         public int GetMap() { return currentMapIndex; }
-        public int GetLevelCount() { return levelCount; }
+        //public int GetLevelCount() { return pr_levelCount; }
 
         public void SetMap(int mapIndex) { SetMap(mapIndex, 0); }
 
-        public void SetLevelCount(int levelCount) { this.levelCount = levelCount; }
+        //public void SetLevelCount(int levelCount) { this.levelCount = levelCount; }
 
         public void SetMap(int mapIndex, int level)
         {
@@ -301,14 +328,14 @@ namespace Maze.Classes
             else
                 currentMapIndex = mapIndex;
 
-            currentLevel = level;
+            CurrentLevel = level;
         }
 
         public void GenerateRandomMap()
         {
             isRandom = true;
             currentMapIndex = 0;
-            currentLevel = 0;
+            CurrentLevel = 0;
 
             MazeGenerator generator = new MazeGenerator();
             MapBlocks = generator.Generate(0);
@@ -318,8 +345,8 @@ namespace Maze.Classes
             StartPoint.Add(generator.StartPoint.Location);
             FinishPoint.Add(generator.FinishPoint.Location);
 
-            SetLevelCount(1);
-            dropsCount = new int[GetLevelCount()];
+            LevelCount = 1;
+            dropsCount = new int[LevelCount];
             // Generate Drops
             // Every 15th block should have a drop
             int dropsCounter = MapBlocks.Count / 15;
@@ -424,8 +451,8 @@ namespace Maze.Classes
                     FinishPoint.Insert(GridMapStruct.Location.Level, GridMapStruct.Location);
             }
             GridMapStream.Close();
-            SetLevelCount(levelIndicator);
-            dropsCount = new int[GetLevelCount()];
+            LevelCount = levelIndicator;
+            dropsCount = new int[LevelCount];
         }
 
         private void SaveToFile()
@@ -465,7 +492,7 @@ namespace Maze.Classes
             }
 
             // Test-created monsters
-            new Phobos(FinishPoint[GetLevel()]);
+            new Phobos(FinishPoint[CurrentLevel]);
         }
 
         internal void FillMapWithObjects()
@@ -510,10 +537,10 @@ namespace Maze.Classes
             return MapBlock;
         }
 
-        public int GetBlocksCount()
+        /*public int GetBlocksCount()
         {
-            return BlocksCount;
-        }
+            return blocksCount;
+        }*/
 
         public bool AddGridMap(GridMap NewGridMap)
         {
@@ -555,17 +582,17 @@ namespace Maze.Classes
         public GPS GetStartPoint()
         {
             GPS result = new GPS();
-            result.Level = currentLevel;
-            if (currentLevel < GetLevelCount())
-                result = StartPoint[currentLevel];
+            result.Level = CurrentLevel;
+            if (CurrentLevel < LevelCount)
+                result = StartPoint[CurrentLevel];
             return result;
         }
         public GPS GetFinishPoint()
         {
             GPS result = new GPS();
-            result.Level = currentLevel;
-            if (currentLevel <= FinishPoint.Count)
-                result = FinishPoint[currentLevel];
+            result.Level = CurrentLevel;
+            if (CurrentLevel <= FinishPoint.Count)
+                result = FinishPoint[CurrentLevel];
             return result;
         }
 
@@ -580,7 +607,7 @@ namespace Maze.Classes
 
         public void CollectDrop(OozeDrop drop)
         {
-            --dropsCount[GetLevel()];
+            --dropsCount[CurrentLevel];
         }
     }
 }

@@ -7,9 +7,18 @@ namespace Maze.Classes
 {
     public class Slug : Unit
     {
-        private String Name;
+        private String pr_Name;
         private int score;
         private int collectedDropsCount;    // at current level
+
+        /// <summary>
+        /// Returns player's name
+        /// </summary>
+        public String Name
+        {
+            get { return pr_Name; }
+            private set { pr_Name = value; }
+        }
 
         // ooze
         public const int MaxOozeEnergy = 100;
@@ -39,7 +48,7 @@ namespace Maze.Classes
         {
             Name = "Noname";
             objectType = ObjectType.Slug;
-            unitType = UnitTypes.Slug;
+            UnitType = UnitTypes.Slug;
             respawnLocation = GetWorldMap().GetStartPoint();
 
             // Set Start Location
@@ -60,9 +69,9 @@ namespace Maze.Classes
 
             BaseSpeed = 0.7d;
 
-            effectList.EffectApplyEvent += new EffectCollection.EffectHandler(World.GetPlayForm().OnEffectApplied);
+            effectList.EffectApplyEvent += new EffectCollection.EffectHandler(World.PlayForm.OnEffectApplied);
 
-            effectList.EffectRemoveEvent += new EffectCollection.EffectHandler(World.GetPlayForm().OnEffectRemoved);
+            effectList.EffectRemoveEvent += new EffectCollection.EffectHandler(World.PlayForm.OnEffectRemoved);
         }
 
         public Slug(String name) : this()
@@ -118,8 +127,8 @@ namespace Maze.Classes
             base.SetDeathState(deathState);
         }
 
-        public String GetName() { return Name; }
-        public void SetName(String name) { Name = name; }
+        /*public String GetName() { return pr_Name; }
+        public void SetName(String name) { pr_Name = name; }*/
 
         public GridGPS CopyGridGPS()
         {
@@ -277,7 +286,7 @@ namespace Maze.Classes
             EffectEntry effectEntry = DBStores.EffectStore[effectID];
             if(effectEntry.HasAttribute(EffectAttributes.CanBeSpell))
             {
-                World.GetPlayForm().AddSpell(effectEntry);
+                World.PlayForm.AddSpell(effectEntry);
             }
             else
             {

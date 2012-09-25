@@ -30,7 +30,7 @@ namespace MapEditor.Forms
             // Add new or chage exsist MapBlock
             if (Block.ID == -1)
             {
-                BlockIDTextBox.Text = Map.WorldMap.GetBlocksCount().ToString();
+                BlockIDTextBox.Text = Map.WorldMap.BlocksCount.ToString();
                 ConfirmButton.Text = "Add";
                 DeleteButton.Hide();
             }

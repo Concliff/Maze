@@ -143,7 +143,7 @@ namespace Maze.Classes
             switch (effectInfo.EffectType)
             {
                 case EffectTypes.CreateClone:
-                    if (caster.GetUnitType() != UnitTypes.Slug)
+                    if (caster.UnitType != UnitTypes.Slug)
                         break;
                     Slug slug = (Slug)target;
                     slug.CreateClone();
@@ -192,54 +192,61 @@ namespace Maze.Classes
 
     public class EffectHolder
     {
-        private int duration;
-        private EffectState effectState;
+        private int pr_Duration;
+        private EffectState pr_EffectState;
+
+        /// <summary>
+        /// Gets state of the effect
+        /// </summary>
+        public EffectState EffectState
+        {
+            get { return pr_EffectState; }
+            private set { pr_EffectState = value;}
+        }
 
         public EffectEntry EffectInfo;
+
+        /// <summary>
+        /// Returns the duration of the effect
+        /// </summary>
         public int Duration
         {
-            get { return duration; }
-            private set { }
+            get { return pr_Duration; }
+            private set { ;}
         }
 
         public EffectHolder(EffectEntry effectEntry)
         {
             this.EffectInfo = effectEntry;
-            this.duration = effectEntry.Duration;
+            this.pr_Duration = effectEntry.Duration;
 
-            effectState = EffectState.Applied;
+            EffectState = EffectState.Applied;
         }
 
         public void UpdateTime(int timeP)
         {
-            if (effectState == EffectState.Applied)
+            if (EffectState == EffectState.Applied)
             {
-                effectState = EffectState.Updated;
+                EffectState = EffectState.Updated;
                 return;
             }
 
             if (EffectInfo.Duration == -1)   // One-Tact effect
             {
-                effectState = EffectState.Expired;
+                EffectState = EffectState.Expired;
                 return;
             }
-            else if (duration < timeP)
+            else if (pr_Duration < timeP)
             {
-                effectState = EffectState.Expired;
+                EffectState = EffectState.Expired;
             }
             else
-                duration -= timeP;
+                pr_Duration -= timeP;
         }
 
         public void Refresh()
         {
-            duration = EffectInfo.Duration;
+            pr_Duration = EffectInfo.Duration;
         }
-
-        public EffectState GetState()
-        {
-            return effectState;
-        }
-
     }
 }

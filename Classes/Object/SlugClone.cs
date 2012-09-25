@@ -9,7 +9,7 @@ namespace Maze.Classes
     {
         public SlugClone(GridGPS position, Direction currentDirection)
         {
-            unitType = UnitTypes.SlugClone;
+            UnitType = UnitTypes.SlugClone;
 
             Position = position;
             this.currentGridMap = GetWorldMap().GetGridMap(Position.Location);

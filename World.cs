@@ -9,8 +9,17 @@ namespace Maze
 {
     public class World
     {
-        private static Play PlayForm;
-        
+        private static Play pr_PlayForm;
+
+        /// <summary>
+        /// Returns current play form
+        /// </summary>
+        public static Play PlayForm
+        {
+            get { return pr_PlayForm; }
+            private set { ;}
+        }
+
         public World()
         {
             Program();
@@ -29,18 +38,13 @@ namespace Maze
             PictureManager.Load();
 
             CreatePlayForm();
-            Application.Run(PlayForm);
+            Application.Run(pr_PlayForm);
             
-        }
-
-        public static Play GetPlayForm()
-        {
-            return PlayForm;
         }
 
         public static void CreatePlayForm()
         {
-            PlayForm = new Play();
+            pr_PlayForm = new Play();
         }
 
     }

@@ -25,7 +25,7 @@ namespace Maze.Classes
 
         public Phobos(GPS respawnLocation)
         {
-            unitType = UnitTypes.Phobos;
+            UnitType = UnitTypes.Phobos;
             SetUnitFlags(UnitFlags.CanNotBeKilled);
             isInMotion = false;
 
@@ -45,7 +45,7 @@ namespace Maze.Classes
 
         public override void StartMotion()
         {
-            victim = World.GetPlayForm().GetPlayer();
+            victim = World.PlayForm.Player;
 
             if (victim == null)
             {

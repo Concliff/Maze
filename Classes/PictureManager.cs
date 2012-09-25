@@ -94,7 +94,7 @@ namespace Maze.Classes
             if (!unit.IsVisible() || !unit.IsAlive())
                 return null;
 
-            switch (unit.GetUnitType())
+            switch (unit.UnitType)
             {
                 case UnitTypes.Deimos:
                     return DeimosImage;

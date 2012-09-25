@@ -10,7 +10,7 @@ namespace Maze.Classes
 
         public Deimos()
         {
-            unitType = UnitTypes.Deimos;
+            UnitType = UnitTypes.Deimos;
 
             Position = new GridGPS(respawnLocation, 25, 25);
 
