@@ -87,9 +87,19 @@ namespace Maze.Classes
 
                 if (newPosition.Location != pr_position.Location)
                 {
-                    locationChanged = true;
-                    currentGridMap = GetWorldMap().GetGridMap(newPosition.Location);
-                    newPosition.BlockID = currentGridMap.ID;
+                    // HACK:
+                    // Do not enter the nonexistent block
+                    // Need revert after NormalizePosition rework
+                    GridMap newGridMap = GetWorldMap().GetGridMap(newPosition.Location);
+
+                    if (newGridMap.ID != -1)
+                    {
+                        currentGridMap = newGridMap;
+                        newPosition.BlockID = currentGridMap.ID;
+                        locationChanged = true;
+                    }
+                    else
+                        newPosition = pr_position;
                 }
 
                 // Fix Position, including object bounds and map border
