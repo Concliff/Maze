@@ -46,33 +46,6 @@ namespace Maze.Classes
             // find the first allowed direction
             if (currentDirection.First == Directions.None)
                 SelectNewDirection();
-
-            // Selecting with random might be failed
-            // Recheck the availability of all four directions
-            if (currentDirection.First == Directions.None)
-            {
-                if (currentGridMap.CanMoveTo(Directions.Up))
-                {
-                    currentDirection.First = Directions.Up;
-                    return;
-                }
-                else if (currentGridMap.CanMoveTo(Directions.Left))
-                {
-                    currentDirection.First = Directions.Left;
-                    return;
-                }
-                else if (currentGridMap.CanMoveTo(Directions.Down))
-                {
-                    currentDirection.First = Directions.Down;
-                    return;
-                }
-                else if (currentGridMap.CanMoveTo(Directions.Right))
-                {
-                    currentDirection.First = Directions.Right;
-                    return;
-                }
-            }
-
         }
 
         public void StopMotion() { isInMotion = false; }
@@ -184,6 +157,32 @@ namespace Maze.Classes
                 currentDirection.First = GetOppositeDirection(currentDirection.First);
             else
                 currentDirection.First = Directions.None;
+
+            // Selecting with random might be failed
+            // Recheck the availability of all four directions
+            if (currentDirection.First == Directions.None)
+            {
+                if (currentGridMap.CanMoveTo(Directions.Up))
+                {
+                    currentDirection.First = Directions.Up;
+                    return;
+                }
+                else if (currentGridMap.CanMoveTo(Directions.Left))
+                {
+                    currentDirection.First = Directions.Left;
+                    return;
+                }
+                else if (currentGridMap.CanMoveTo(Directions.Down))
+                {
+                    currentDirection.First = Directions.Down;
+                    return;
+                }
+                else if (currentGridMap.CanMoveTo(Directions.Right))
+                {
+                    currentDirection.First = Directions.Right;
+                    return;
+                }
+            }
         }
     }
 }
