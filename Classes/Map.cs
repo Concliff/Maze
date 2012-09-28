@@ -273,11 +273,9 @@ namespace Maze.Classes
 
             StreamWriter GridMapStream = new StreamWriter(MapDirectoryPath + CurrentMapName + ".map", false);
             string GridMapString;
-            GridMap Block;
 
-            for (int i = 0; i < BlocksCount; ++i)
+            foreach(GridMap Block in MapBlocks)
             {
-                Block = GetGridMap(i);
                 GridMapString = Block.ID.ToString() + " "
                     + Block.Location.X.ToString() + " "
                     + Block.Location.Y.ToString() + " "
