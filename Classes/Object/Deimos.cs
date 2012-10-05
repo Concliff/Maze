@@ -44,8 +44,7 @@ namespace Maze.Classes
             isInMotion = true;
             
             // find the first allowed direction
-            if (currentDirection.First == Directions.None)
-                SelectNewDirection();
+            SelectNewDirection();
         }
 
         public void StopMotion() { isInMotion = false; }
