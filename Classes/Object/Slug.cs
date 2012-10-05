@@ -239,8 +239,7 @@ namespace Maze.Classes
             if (slimePersist)
                 slimeSpeedRate += 0.5;
 
-            //create slime at old position
-            new Slime(Position);
+            GridGPS previousPosition = Position;
 
             double movementStepD = GlobalConstants.MOVEMENT_STEP_PX * slimeSpeedRate;
             if (this.currentDirection.Second != Directions.None)
@@ -254,7 +253,20 @@ namespace Maze.Classes
             }
 
             MoveToDirection(movementStep, currentDirection);
-            isInMotion = true;
+
+            // Check movement occurrence
+            if (previousPosition != Position)
+            {
+                this.isInMotion = true;
+
+                //create slime at old position
+                new Slime(Position);
+            }
+            else
+            {
+                this.isInMotion = false;
+            }
+
 
             return Position;
         }
