@@ -69,6 +69,10 @@ namespace Maze.Classes
 
             BaseSpeed = 0.7d;
 
+        }
+
+        public void HookEvents()
+        {
             effectList.EffectApplyEvent += new EffectCollection.EffectHandler(World.PlayForm.OnEffectApplied);
 
             effectList.EffectRemoveEvent += new EffectCollection.EffectHandler(World.PlayForm.OnEffectRemoved);

@@ -308,6 +308,7 @@ namespace Maze.Forms
 
                             objectContainer.ClearEnvironment(true); // Remove all old objects and units
                             Player = new Slug();    // Create new Slug
+                            Player.HookEvents();
                             worldMap.FillMapWithUnits(); // Add units to map
                             worldMap.FillMapWithObjects();// Add objects
                             objectContainer.StartMotion();
