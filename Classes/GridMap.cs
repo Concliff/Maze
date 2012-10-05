@@ -106,6 +106,32 @@ namespace Maze.Classes
     public struct GridGPS
     {
         public GPS Location;
+        public GPS Absolute
+        {
+            get
+            {
+                GPS absolute = new GPS();
+
+                absolute.X = Location.X * GlobalConstants.GRIDMAP_BLOCK_WIDTH + X;
+                absolute.Y = Location.Y * GlobalConstants.GRIDMAP_BLOCK_HEIGHT + Y;
+                absolute.Z = Location.Z;
+                absolute.Level = Location.Level;
+
+                return absolute;
+            }
+            set
+            {
+                Location.X = value.X / GlobalConstants.GRIDMAP_BLOCK_WIDTH;
+                Location.Y = value.Y / GlobalConstants.GRIDMAP_BLOCK_HEIGHT;
+                Location.Z = value.Z;
+                Location.Level = value.Level;
+
+                X = value.X - Location.X * GlobalConstants.GRIDMAP_BLOCK_WIDTH;
+                Y = value.Y - Location.Y * GlobalConstants.GRIDMAP_BLOCK_HEIGHT;
+
+                BlockID = Map.WorldMap.GetGridMap(this.Location).ID;
+            }
+        }
         public int X;
         public int Y;
         public int BlockID;
