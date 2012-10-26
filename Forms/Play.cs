@@ -13,6 +13,8 @@ namespace Maze.Forms
 {
     public partial class Play : MazeForm
     {
+        public static int MAX_SPELLS_COUNT = 5;
+
         private enum FormInterface
         {
             MainMenu,
@@ -38,7 +40,6 @@ namespace Maze.Forms
         private BonusEffect[] bonusEffects;
 
         private byte aurasCount;
-        private byte spellsCount;
 
         public Slug Player
         {
@@ -94,7 +95,6 @@ namespace Maze.Forms
             };
 
             aurasCount = 0;
-            spellsCount = 0;
         }
 
         public void OnEffectApplied(object sender, EffectEventArgs e)
@@ -134,45 +134,26 @@ namespace Maze.Forms
         public void AddSpell(EffectEntry effectEntry)
         {
             bool isExist = false;
-            for (int i = 0; i < spellsCount; ++i)
+            int firstFree = -1;
+            for (int i = 0; i < MAX_SPELLS_COUNT; ++i)
             {
-                EffectEntry spellEntry = (EffectEntry)SpellBarPB[i].Tag;
-                if (effectEntry.ID == spellEntry.ID)
+                if (firstFree == -1 && SpellBarPB[i].RelatedEffect.ID == 0)
+                    firstFree = i;
+
+                if (effectEntry.ID == SpellBarPB[i].RelatedEffect.ID)
                 {
                     isExist = true;
-                    break;
                 }
             }
-            if(!isExist || spellsCount == 0)
-                OnSpellAdded(effectEntry);
-        }
 
-        public void OnSpellAdded(EffectEntry effectEntry)
-        {
-            SpellBarPB[spellsCount].Tag = effectEntry;
-            SpellBarPB[spellsCount].Image = PictureManager.EffectImages[effectEntry.ID].Aura;
-            SpellBarPB[spellsCount].Show();
-            AurasToolTip.SetToolTip(SpellBarPB[spellsCount], effectEntry.EffectName + "\n"
-                + effectEntry.Description);
-
-            ++spellsCount;
-        }
-
-       public void OnSpellCasting(EffectEntry effectEntry)
-        {
-            for (int i = 0; i < spellsCount; ++i)
+            if (!isExist && firstFree != -1)
             {
-                if (effectEntry.Equals(SpellBarPB[i].Tag))
-                {
-                    for (int j = i; j < spellsCount; ++j)
-                    {
-                        SpellBarPB[j].Tag = SpellBarPB[j + 1].Tag;
-                        SpellBarPB[j].Image = SpellBarPB[j + 1].Image;
-                        AurasToolTip.SetToolTip(SpellBarPB[j], AurasToolTip.GetToolTip(SpellBarPB[j + 1]));
-                    }
-                    --spellsCount;
-                    break;
-                }
+
+                SpellBarPB[firstFree].RelatedEffect = effectEntry;
+                SpellBarPB[firstFree].Image = PictureManager.EffectImages[effectEntry.ID].Aura;
+                SpellBarPB[firstFree].Show();
+                AurasToolTip.SetToolTip(SpellBarPB[firstFree], effectEntry.EffectName + "\n"
+                    + effectEntry.Description);
             }
         }
 
@@ -365,7 +346,6 @@ namespace Maze.Forms
 
             for (int i = 0; i < SpellBarPB.Count(); ++i)
                 SpellBarPB[i].Hide();
-            spellsCount = 0;
         }
 
         #endregion
@@ -406,7 +386,7 @@ namespace Maze.Forms
                     usedSpellNumber = 5;
                     break;
             }
-            if (Player.IsAlive() && usedSpellNumber > 0 && usedSpellNumber <= spellsCount)
+            if (Player.IsAlive() && usedSpellNumber > 0)
                 UseSpell(usedSpellNumber);
 
             if (GamePaused)
@@ -499,24 +479,29 @@ namespace Maze.Forms
 
         private void UseSpell(int spellNumber)
         {
-            EffectEntry effectEntry = (EffectEntry)SpellBarPB[spellNumber-1].Tag;
+            EffectEntry effectEntry = SpellBarPB[spellNumber - 1].RelatedEffect;
+            if (effectEntry.ID == 0)
+                return;
+
             Player.CastEffect(effectEntry.ID, Player);
-            OnSpellCasting(effectEntry);
+
+            if (!SpellBarPB[spellNumber - 1].IsPermanentSpell)
+            {
+                // Hide the PictureBox
+                SpellBarPB[spellNumber - 1].RelatedEffect = new EffectEntry();
+                SpellBarPB[spellNumber - 1].Hide();
+            }
         }
 
         private void SpellBarPB_MouseClick(object sender, MouseEventArgs e)
         {
-            if (((PictureBox)sender).Tag == null)
+            SpellBarPictureBox clickedSpellPB = (SpellBarPictureBox)sender;
+
+            // No effect is linked
+            if (clickedSpellPB.RelatedEffect.ID == 0)
                 return;
 
-            EffectEntry effectEntry = (EffectEntry)((PictureBox)sender).Tag;
-
-            for (int i = 0; i < spellsCount; ++i)
-                if (effectEntry.Equals((EffectEntry)SpellBarPB[i].Tag) && Player.IsAlive())
-                {
-                    UseSpell(i+1);
-                    break;
-                }
+            UseSpell(clickedSpellPB.SpellNumber);
         }
 
         /// <summary>

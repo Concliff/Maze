@@ -93,6 +93,9 @@
     <Compile Include="Classes\PictureManager.cs" />
     <Compile Include="Classes\Object\Slug.cs" />
     <Compile Include="Classes\Object\Unit.cs" />
+    <Compile Include="Forms\CustomControls.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Forms\MazeForm.cs">
       <SubType>Form</SubType>
     </Compile>
