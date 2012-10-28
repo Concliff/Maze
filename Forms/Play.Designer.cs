@@ -170,7 +170,6 @@ namespace Maze.Forms
                 SpellBarPB[i].Location = new Point(BottomPanelPB.Location.X + 60 * (i + 1),
                     BottomPanelPB.Location.Y + 10);
                 SpellBarPB[i].Size = new Size(50, 50);
-                //SpellBarPB[i].Paint += new PaintEventHandler(BonusIconPB_Paint);
                 SpellBarPB[i].BackColor = Color.Gray;
                 SpellBarPB[i].MouseClick += new MouseEventHandler(SpellBarPB_MouseClick);
                 SpellBarPB[i].Hide();

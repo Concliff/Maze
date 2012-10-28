@@ -61,6 +61,13 @@ namespace Maze.Forms
             e.Graphics.DrawString(durationInSeconds.ToString(), new Font("Arial", 16), new SolidBrush(Color.White), x, 50); 
         }
 
+        private void SpellBarPB_Paint(object sender, PaintEventArgs e)
+        {
+            SpellBarPictureBox paintedSpellPB = (SpellBarPictureBox)sender;
+            e.Graphics.DrawString(paintedSpellPB.SpellNumber.ToString(), new Font("Arial", 14, FontStyle.Bold), new SolidBrush(Color.White), 35, -2);
+            e.Graphics.DrawString(paintedSpellPB.SpellNumber.ToString(), new Font("Arial", 12, FontStyle.Bold), new SolidBrush(Color.Red), 36, 0);
+        }
+
         private void Play_Paint(object sender, PaintEventArgs e)
         {
             //RebuildGraphMap();

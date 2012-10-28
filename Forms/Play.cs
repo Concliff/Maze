@@ -154,6 +154,8 @@ namespace Maze.Forms
                 SpellBarPB[firstFree].Show();
                 AurasToolTip.SetToolTip(SpellBarPB[firstFree], effectEntry.EffectName + "\n"
                     + effectEntry.Description);
+
+                SpellBarPB[firstFree].Paint += new PaintEventHandler(SpellBarPB_Paint);
             }
         }
 
