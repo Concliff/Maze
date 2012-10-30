@@ -101,7 +101,7 @@ namespace Maze.Forms
         {
             EffectHolder effectHolder = e.holder;
 
-            if(effectHolder.EffectInfo.HasAttribute(EffectAttributes.HiddenAura)
+            if(effectHolder.EffectInfo.HasAttribute(EffectAttributes.HiddenAura))
                 return;
 
             AuraIconPB[aurasCount].Tag = effectHolder;
