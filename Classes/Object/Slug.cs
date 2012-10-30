@@ -69,6 +69,8 @@ namespace Maze.Classes
 
             BaseSpeed = 0.7d;
 
+            this.motionMaster = new ManualMovement(this);
+
         }
 
         public void HookEvents()
@@ -118,6 +120,8 @@ namespace Maze.Classes
                 }
             }
 
+            MovementAction(timeP);
+
             base.UpdateState(timeP);
         }
 
@@ -131,74 +135,27 @@ namespace Maze.Classes
             base.SetDeathState(deathState);
         }
 
-        public GridGPS CopyGridGPS()
-        {
-            GridGPS Copy = new GridGPS();
-            // Create Copy of Player's GPS (not refference)
-            Copy.Location.X = Position.Location.X;
-            Copy.Location.Y = Position.Location.Y;
-            Copy.Location.Z = Position.Location.Z;
-            Copy.Location.Level = Position.Location.Level;
-            Copy.X = Position.X;
-            Copy.Y = Position.Y;
-            Copy.BlockID = Position.BlockID;
-            return Copy;
-        }
-
         /// <summary>
         /// Player Moving Handler
         /// </summary>
         /// <param name="MoveType">Flags of direction</param>
-        public GridGPS MovementAction(uint MoveType)
+        private void MovementAction(int timeP)
         {
             if (!IsAlive())
-                return Position;
+                return;
+
             if (HasEffectType(EffectTypes.Root))
-                return Position;
+                return;
 
-            // Define direction of motion
-            // TODO: improve the next stupid if..else..if
-            if ((MoveType & (uint)Directions.Up) != 0)
-                this.currentDirection.First = Directions.Up;
-            else if ((MoveType & (uint)Directions.Down) != 0)
-                this.currentDirection.First = Directions.Down;
-            else if ((MoveType & (uint)Directions.Left) != 0)
-                this.currentDirection.First = Directions.Left;
-            else if ((MoveType & (uint)Directions.Right) != 0)
-                this.currentDirection.First = Directions.Right;
-            else
-                this.currentDirection.First = Directions.None;
-
-            if (this.currentDirection.First == Directions.None)
-                return Position;
-
-            MoveType -= (uint)this.currentDirection.First;
-
-            if ((MoveType & (uint)Directions.Up) != 0)
-                this.currentDirection.Second = Directions.Up;
-            else if ((MoveType & (uint)Directions.Down) != 0)
-                this.currentDirection.Second = Directions.Down;
-            else if ((MoveType & (uint)Directions.Left) != 0)
-                this.currentDirection.Second = Directions.Left;
-            else if ((MoveType & (uint)Directions.Right) != 0)
-                this.currentDirection.Second = Directions.Right;
-            else
-                this.currentDirection.Second = Directions.None;
-
-            if (HasEffectType(EffectTypes.MoveReverse))
-            {
-                this.currentDirection.First = GetOppositeDirection(this.currentDirection.First);
-                this.currentDirection.Second = GetOppositeDirection(this.currentDirection.Second);
-            }
+            GridGPS previousPosition = Position;
 
             // Find a point in currectDirection + searchingStep
             GridGPS searchingPoint = Position;
             int searchingStep = 10;
             List<GridObject> slimeAround;
             bool slimePersist = false;
-            double slimeSpeedRate = SpeedRate;
 
-            switch (currentDirection.First)
+            switch (this.motionMaster.CurrentDirection.First)
             {
                 case Directions.Right:
                     searchingPoint.X = Position.X + searchingStep;
@@ -233,30 +190,18 @@ namespace Maze.Classes
                     }
                     break;
             }
+
             slimeAround = ObjectSearcher.GetGridObjectsInArea(searchingPoint, searchingStep);
             foreach (GridObject slime in slimeAround)
             {
                 if (slime.GetGridObjectType() == GridObjectType.Slime)
                     slimePersist = true;
             }
-            // Increase speed by 0.5
+            // Increase speed with an Effect "Viscous Slime - Slug"
             if (slimePersist)
-                slimeSpeedRate += 0.5;
+                CastEffect(15, this);
 
-            GridGPS previousPosition = Position;
-
-            double movementStepD = GlobalConstants.MOVEMENT_STEP_PX * slimeSpeedRate;
-            if (this.currentDirection.Second != Directions.None)
-                movementStepD = Math.Sqrt(2 * movementStepD);
-            int movementStep = (int)(movementStepD);
-            stepRemainder += movementStepD - movementStep;
-            if (stepRemainder > 1d)
-            {
-                ++movementStep;
-                stepRemainder -= 1;
-            }
-
-            MoveToDirection(movementStep, currentDirection);
+            this.motionMaster.UpdateState(timeP);
 
             // Check movement occurrence
             if (previousPosition != Position)
@@ -264,15 +209,12 @@ namespace Maze.Classes
                 this.isInMotion = true;
 
                 //create slime at old position
-                new Slime(Position);
+                new Slime(previousPosition);
             }
             else
             {
                 this.isInMotion = false;
             }
-
-
-            return Position;
         }
 
         public void LevelChanged()
@@ -310,7 +252,7 @@ namespace Maze.Classes
 
         public void CreateClone()
         {
-            new SlugClone(Position, this.currentDirection);
+            new SlugClone(Position, this.motionMaster.CurrentDirection);
         }
 
     }

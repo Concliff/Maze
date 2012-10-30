@@ -309,7 +309,7 @@ namespace Maze.Forms
 
         }
 
-        private KeyManager KeyMgr;
+        public KeyManager KeyMgr;
         private System.Windows.Forms.PictureBox GridMapPB;
         private System.Windows.Forms.Timer SystemTimer;
         public  System.Windows.Forms.Label label1;

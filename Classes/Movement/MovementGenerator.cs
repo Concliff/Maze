@@ -13,60 +13,63 @@ namespace Maze.Classes
         PathFinder,     // Searching for the path between start and finish points
     }
 
-    public abstract class MovementGenerator
+    public abstract class MovementGenerator : Movement
     {
+        protected bool gridMapReached;
         protected MovementGeneratorType generatorType;
-        protected GridMap startPoint;
-        protected GridMap finalPoint;
+        protected Unit unit;
 
-        public List<GridMap> Path;
-        public Map WorldMap;
-
-        public MovementGenerator()
+        public MovementGenerator(Unit unit)
         {
+            this.unit = unit;
             generatorType = MovementGeneratorType.None;
-            Path = new List<GridMap>();
-            WorldMap = Map.WorldMap;
+
+            this.unit.PositionChanged += OnPositionChanged;
+            this.unit.LocationChanged += OnLocationChanged;
         }
 
-        public abstract void GeneratePath();
+        /// <summary>
+        /// Updates the motion processing by one step.
+        /// </summary>
+        /// <returns>New Unit Position</returns>
+        public abstract void UpdateState(int timeP);
 
-        public void GeneratePath(GridMap startPoint, GridMap finalPoint)
-        {
-            SetStartFinish(startPoint, finalPoint);
-            GeneratePath();
-        }
-
-        public abstract bool ProcessMovement();
-
-        public void SetStartFinish(GridMap startPoint, GridMap finalPoint)
-        {
-            this.startPoint = startPoint;
-            this.finalPoint = finalPoint;
-        }
-
-        public virtual new MovementGeneratorType GetType()
+        public new MovementGeneratorType GetType()
         {
             return generatorType;
         }
 
+        protected void MoveToDirection(int movementStep, Movement.Direction direction)
+        {
+            GridGPS newPosition = this.unit.Position;
+
+            for (int i = 0; i < 2; ++i)
+                switch (i == 0 ? direction.First : direction.Second)
+                {
+                    case Directions.Up:
+                        newPosition.Y -= movementStep;
+                        break;
+                    case Directions.Down:
+                        newPosition.Y += movementStep;
+                        break;
+                    case Directions.Left:
+                        newPosition.X -= movementStep;
+                        break;
+                    case Directions.Right:
+                        newPosition.X += movementStep;
+                        break;
+                }
+
+            this.unit.Position = newPosition;
+        }
+
+        protected virtual void OnPositionChanged(object sender, PositionEventArgs e) { ;}
+
+        protected virtual void OnLocationChanged(object sender, PositionEventArgs e)
+        {
+            this.gridMapReached = false;
+        }
+
     }
 
-    public class ManualMovement : MovementGenerator
-    {
-        public ManualMovement()
-        {
-            generatorType = MovementGeneratorType.Manual;
-        }
-
-        public override bool ProcessMovement()
-        {
-            return false;
-        }
-
-        public override void GeneratePath()
-        {
-            
-        }
-    }
 }

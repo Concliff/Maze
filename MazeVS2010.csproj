@@ -70,6 +70,10 @@
   <ItemGroup>
     <Compile Include="Classes\DBStores.cs" />
     <Compile Include="Classes\MazeGenerator.cs" />
+    <Compile Include="Classes\Movement\ChasingMovement.cs" />
+    <Compile Include="Classes\Movement\CustomMovement.cs" />
+    <Compile Include="Classes\Movement\ManualMovement.cs" />
+    <Compile Include="Classes\Movement\Movement.cs" />
     <Compile Include="Classes\Movement\MovementGenerator.cs" />
     <Compile Include="Classes\Movement\PathFinder.cs" />
     <Compile Include="Classes\Movement\RandomMovementGenerator.cs" />

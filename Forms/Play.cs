@@ -422,25 +422,6 @@ namespace Maze.Forms
             // |
             // | Y
             //
-            // Moving
-            uint MoveType = (uint)Directions.None;
-
-            // Review all the keys are currently down
-            for (int counter = 0; counter < KeyMgr.KeysDownCount; ++counter)
-                switch (KeyMgr.KeyDown(counter))
-                {
-                    // Catch moving keys
-                    case Keys.Up:
-                    case Keys.W: MoveType += (uint)Directions.Up; break;
-                    case Keys.Left:
-                    case Keys.A: MoveType += (uint)Directions.Left; break;
-                    case Keys.Down:
-                    case Keys.S: MoveType += (uint)Directions.Down; break;
-                    case Keys.Right:
-                    case Keys.D: MoveType += (uint)Directions.Right; break;
-                }
-
-            MovementAction(MoveType);
 
             // Generate Bonus
             if (bonusGenerateTimer <= 0)
@@ -507,23 +488,6 @@ namespace Maze.Forms
                 return;
 
             UseSpell(clickedSpellPB.SpellNumber);
-        }
-
-        /// <summary>
-        /// PlayForm Moving Handler
-        /// </summary>
-        /// <param name="MoveType">Flags of direction</param>
-        private void MovementAction(uint MoveType)
-        {
-            // Check if moving occurs
-            if ((MoveType & (uint)Directions.Up) == 0 && (MoveType & (uint)Directions.Down) == 0 &&
-                (MoveType & (uint)Directions.Right) == 0 && (MoveType & (uint)Directions.Left) == 0)
-                return;
-
-            if (!Player.IsAlive())
-                return;
-
-            Player.MovementAction(MoveType);
         }
 
         private void Player_OnLocationChanged(object sender, PositionEventArgs e)

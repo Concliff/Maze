@@ -52,7 +52,7 @@ namespace Maze.Classes
             {
                 return pr_position;
             }
-            protected set
+            set
             {
                 if (pr_position.Equals(value))
                     return;

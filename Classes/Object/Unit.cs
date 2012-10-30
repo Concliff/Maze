@@ -28,12 +28,6 @@ namespace Maze.Classes
         CanNotBeKilled  = 0x001,
     };
 
-    public struct Direction
-    {
-        public Directions First;
-        public Directions Second;
-    };
-
     public class EffectEventArgs : EventArgs
     {
         public EffectHolder holder;
@@ -177,13 +171,25 @@ namespace Maze.Classes
 
         protected double stepRemainder; // Due to conversion from double(speedRate) to int(Coords)
         protected GPS respawnLocation;
+        public GPS Home
+        {
+            get
+            {
+                return this.respawnLocation;
+            }
+            protected set
+            {
+                this.respawnLocation = value;
+            }
+        }
+
         protected int respawnTimer;
         protected UnitTypes pr_unitType;
         protected int unitFlags;
         protected EffectCollection effectList;
 
         protected bool isInMotion;
-        protected Direction currentDirection;
+        protected MovementGenerator motionMaster;
 
         /// <summary>
         /// Determines the type of the unit
@@ -211,9 +217,6 @@ namespace Maze.Classes
             BaseSpeed = 1.0d;
             SpeedRate = BaseSpeed;
             stepRemainder = 0;
-
-            currentDirection.First = Directions.None;
-            currentDirection.Second = Directions.None;
 
             respawnTimer = 3000;
 
@@ -292,12 +295,14 @@ namespace Maze.Classes
         /// <param name="distance">Distance in pixels</param>
         public void JumpThroughDistance(int distance)
         {
+            if (this.motionMaster == null)
+                return;
             // TODO:
             // 1. Add diagonal checking
             // 2. Improve current method
 
             bool isDiagonal = false;
-            if (this.currentDirection.Second != Directions.None)
+            if (this.motionMaster.CurrentDirection.Second != Directions.None)
             {
                 isDiagonal = true;
                 distance = (int)Math.Sqrt(distance);
@@ -306,7 +311,7 @@ namespace Maze.Classes
             GridGPS newPosition = Position;
             GridGPS intermidiatePosition = Position;
 
-            switch (this.currentDirection.First)
+            switch (this.motionMaster.CurrentDirection.First)
             {
                 case Directions.Down:
                     while (distance >= GlobalConstants.GRIDMAP_BLOCK_HEIGHT)
@@ -468,42 +473,6 @@ namespace Maze.Classes
             Position = new GridGPS(respawnLocation, 25, 25);
 
             SetDeathState(DeathStates.Alive);
-        }
-
-        protected void MoveToDirection(int movementStep, Direction direction)
-        {
-            GridGPS newPosition = Position;
-
-            for (int i = 0; i < 2; ++i)
-                switch (i == 0 ? direction.First : direction.Second)
-                {
-                    case Directions.Up:
-                        newPosition.Y -= movementStep;
-                        break;
-                    case Directions.Down:
-                        newPosition.Y += movementStep;
-                        break;
-                    case Directions.Left:
-                        newPosition.X -= movementStep;
-                        break;
-                    case Directions.Right:
-                        newPosition.X += movementStep;
-                        break;
-                }
-
-            Position = newPosition;
-        }
-
-        protected Directions GetOppositeDirection(Directions Direction)
-        {
-            switch (Direction)
-            {
-                case Directions.Left: return Directions.Right;
-                case Directions.Right: return Directions.Left;
-                case Directions.Down: return Directions.Up;
-                case Directions.Up: return Directions.Down;
-                default: return Directions.None;
-            }
         }
 
         public bool IsAtRespawnLocation()

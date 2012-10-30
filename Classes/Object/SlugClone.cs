@@ -7,16 +7,18 @@ namespace Maze.Classes
 {
     public class SlugClone : Slug
     {
-        public SlugClone(GridGPS position, Direction currentDirection)
+        public SlugClone(GridGPS position, Movement.Direction currentDirection)
         {
             UnitType = UnitTypes.SlugClone;
 
             Position = position;
             this.currentGridMap = GetWorldMap().GetGridMap(Position.Location);
-            this.currentDirection = currentDirection;
 
             objectSize.Width = GlobalConstants.PLAYER_SIZE_WIDTH;
             objectSize.Height = GlobalConstants.PLAYER_SIZE_HEIGHT;
+
+            this.motionMaster = new CustomMovement(this);
+            ((CustomMovement)this.motionMaster).SetDirection(currentDirection);
 
             BaseSpeed = 1.0d;
         }
@@ -24,7 +26,17 @@ namespace Maze.Classes
         public override void UpdateState(int timeP)
         {
             // Always in motion
-            MovementAction();
+            if (!HasEffectType(EffectTypes.Root))
+            {
+                GridGPS previousPosition = Position;
+
+                this.motionMaster.UpdateState(timeP);
+
+                if (Position == previousPosition)
+                    KillUnit(this);
+
+                return;
+            }
             
             base.UpdateState(timeP);
         }
@@ -37,29 +49,6 @@ namespace Maze.Classes
                 CastEffect(9, this);
                 SetObjectState(ObjectState.Removed);
             }
-        }
-
-        private void MovementAction()
-        {
-            if (HasEffectType(EffectTypes.Root))
-                return;
-
-            double movementStepD = GlobalConstants.MOVEMENT_STEP_PX * SpeedRate;
-            int movementStep = (int)(movementStepD);
-            stepRemainder += movementStepD - movementStep;
-            if (stepRemainder > 1d)
-            {
-                ++movementStep;
-                stepRemainder -= 1;
-            }
-
-            GridGPS lastPosition = Position;
-            MoveToDirection(movementStep, currentDirection);
-
-            // Kill Clone if it strikes a wall
-            // (means last Position == new Position after moving attempt
-            if (Position == lastPosition)
-                KillUnit(this);
         }
     }
 }

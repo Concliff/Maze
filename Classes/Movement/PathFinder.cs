@@ -5,9 +5,9 @@ using System.Text;
 
 namespace Maze.Classes
 {
-    public class PathFinder : MovementGenerator
+    public class PathFinder
     {
-        public struct CellParam
+        private struct CellParam
         {
             public int ID;  // Cell's number in grid
             public int MID; // Master cell
@@ -27,9 +27,11 @@ namespace Maze.Classes
 
         private List<CellParam> openList;
         private List<CellParam> closeList;
+        private GridMap startPoint;
+        private GridMap finalPoint;
 
-
-        GridMap Block;
+        public List<GridMap> Path;
+        public Map WorldMap = Map.WorldMap;
 
         public PathFinder()
         {
@@ -38,15 +40,10 @@ namespace Maze.Classes
             Path = new List<GridMap>();
         }
 
-        public PathFinder(GridMap StartPoint, GridMap FinishPoint)
+        public PathFinder(GridMap startPoint, GridMap finishPoint)
             : this()
         {
-            GeneratePath(StartPoint, FinishPoint);
-        }
-
-        public override bool ProcessMovement()
-        {
-            return false;
+            GeneratePath(startPoint, finishPoint);
         }
 
         private bool SearchInList(List<CellParam> List, CellParam Element)
@@ -110,8 +107,11 @@ namespace Maze.Classes
             return defaultElement;
         }
 
-        public override void GeneratePath()
+        public void GeneratePath(GridMap startPoint, GridMap finishPoint)
         {
+            this.startPoint = startPoint;
+            this.finalPoint = finishPoint;
+
             CellParam currentCell = new CellParam();
             CellParam finalCell = new CellParam();
             List<CellParam> bannedList = new List<CellParam>();
@@ -121,8 +121,8 @@ namespace Maze.Classes
 
             // return empty Way at points on different levels OR
             // start and final points were not defined
-            if (startPoint.Location.Level != finalPoint.Location.Level ||
-                startPoint.ID == 0 && finalPoint.ID == 0)
+            if (this.startPoint.Location.Level != this.finalPoint.Location.Level ||
+                this.startPoint.ID == 0 && this.finalPoint.ID == 0)
                 return;
 
             currentCell.InitializeCell();
@@ -134,10 +134,10 @@ namespace Maze.Classes
             finalCell.ID = finalPoint.ID;
             openList.Add(finalCell);
 
-            while (currentCell.ID != finalPoint.ID)
+            while (currentCell.ID != this.finalPoint.ID)
             {
-                Block = FindCell(openList, currentCell);
-                FindNeighbors(Block, finalCell);
+                GridMap block = FindCell(openList, currentCell);
+                FindNeighbors(block, finalCell);
 
                 CellParam CellWithMinF = currentCell;
                 if (!SearchInList(closeList, finalCell))
