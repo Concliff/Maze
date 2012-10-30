@@ -101,6 +101,9 @@ namespace Maze.Forms
         {
             EffectHolder effectHolder = e.holder;
 
+            if(effectHolder.EffectInfo.HasAttribute(EffectAttributes.HiddenAura)
+                return;
+
             AuraIconPB[aurasCount].Tag = effectHolder;
             AuraIconPB[aurasCount].Image = PictureManager.EffectImages[effectHolder.EffectInfo.ID].Aura;
             AurasToolTip.SetToolTip(AuraIconPB[aurasCount], effectHolder.EffectInfo.EffectName + "\n"

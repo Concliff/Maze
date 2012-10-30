@@ -40,6 +40,7 @@ namespace Maze.Classes
         OnlySlug            = 0x001,    // Applies only on Slug
         CanBeSpell          = 0x002,    // Allows to appear at SpellBar
         NoAura              = 0x004,    // Effect doesn't apply any visible auras
+        HiddenAura          = 0x008,    // Aura doesn't show
     };
 
     public enum EffectState
