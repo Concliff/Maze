@@ -43,6 +43,8 @@ namespace Maze.Classes
 
         public override void Use(Unit user)
         {
+            if (!user.IsVisible())
+                return;
             user.TeleportTo(destinationGridMap);
 
             base.Use(user);
