@@ -99,6 +99,8 @@ namespace EffectEditor
             txtEffectInfo.AppendText(entry.Description + Environment.NewLine);
             txtEffectInfo.AppendText("------------------------------------------------" + Environment.NewLine);
 
+            txtEffectInfo.AppendText("Effect type - " + entry.EffectType.ToString() + Environment.NewLine);
+
             txtEffectInfo.AppendText("Attributes = ");
 
             byte[] binaryArray = GetBinaryArray(entry.Attributes);
@@ -375,7 +377,11 @@ namespace EffectEditor
             Maze.Classes.DBStores.InitializeComponents();
             Maze.Classes.DBStores.Load();
             cmbInfoID.Items.Clear();
+            txtEffectInfo.Clear();
+            ptbMap.Image = null;
+            ptbAura.Image = null;
             EffectIDsLoad();
         }
+
     }
 }
