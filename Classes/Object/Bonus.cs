@@ -50,6 +50,9 @@ namespace Maze.Classes
 
         public override void Use(Unit user)
         {
+            if (!user.IsVisible() || !user.IsAlive())
+                return;
+
             if (!bonusEffect.IsOpen)
             {
 
