@@ -350,7 +350,10 @@ namespace Maze.Forms
             aurasCount = 0;
 
             for (int i = 0; i < SpellBarPB.Count(); ++i)
+            {
+                SpellBarPB[i].RelatedEffect = new EffectEntry();
                 SpellBarPB[i].Hide();
+            }
         }
 
         #endregion
