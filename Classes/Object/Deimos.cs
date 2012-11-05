@@ -12,7 +12,7 @@ namespace Maze.Classes
         {
             UnitType = UnitTypes.Deimos;
 
-            Position = new GridGPS(respawnLocation, 25, 25);
+            Position = new GridGPS(Home, 25, 25);
 
             isInMotion = false;
 
@@ -24,9 +24,9 @@ namespace Maze.Classes
         public Deimos(GPS respawnLocation)
             : this()
         {
-            this.respawnLocation = respawnLocation;
+            Home = respawnLocation;
 
-            Position = new GridGPS(respawnLocation, 25, 25);
+            Position = new GridGPS(Home, 25, 25);
         }
 
         public override void UpdateState(int timeP)

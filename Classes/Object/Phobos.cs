@@ -13,7 +13,7 @@ namespace Maze.Classes
             SetUnitFlags(UnitFlags.CanNotBeKilled);
             isInMotion = false;
 
-            this.respawnLocation = respawnLocation;
+            Home = respawnLocation;
 
             Position = new GridGPS(respawnLocation, 25, 25);
 

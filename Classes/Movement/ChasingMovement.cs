@@ -83,7 +83,7 @@ namespace Maze.Classes
             if (this.victim == null)
                 return;
 
-            if (!this.victim.IsAlive() || this.victim.IsAtRespawnLocation() || !this.victim.IsVisible())
+            if (!this.victim.IsAlive() || this.victim.IsAtHome || !this.victim.IsVisible())
             {
                 state = MotionStates.ReturningHome;
             }

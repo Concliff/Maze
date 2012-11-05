@@ -49,10 +49,10 @@ namespace Maze.Classes
             Name = "Noname";
             objectType = ObjectType.Slug;
             UnitType = UnitTypes.Slug;
-            respawnLocation = GetWorldMap().GetStartPoint();
+            Home = GetWorldMap().GetStartPoint();
 
             // Set Start Location
-            Position = new GridGPS(respawnLocation, 25, 25);
+            Position = new GridGPS(Home, 25, 25);
 
             respawnTimer = 3000;
 
@@ -116,7 +116,7 @@ namespace Maze.Classes
                 if (downTime > 1000)    // not in motion over 5 seconds
                 {
                     downTime -= 1000;
-                    OozeEnergy += IsAtRespawnLocation() ? 3 : 1;
+                    OozeEnergy += IsAtHome ? 3 : 1;
                 }
             }
 
@@ -219,8 +219,8 @@ namespace Maze.Classes
 
         public void LevelChanged()
         {
-            respawnLocation = GetWorldMap().GetStartPoint();
-            Position = new GridGPS(respawnLocation, 25, 25);
+            Home = GetWorldMap().GetStartPoint();
+            Position = new GridGPS(Home, 25, 25);
         }
 
         public void CollectDrop(OozeDrop drop)

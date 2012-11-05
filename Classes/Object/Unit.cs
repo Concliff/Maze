@@ -183,6 +183,17 @@ namespace Maze.Classes
             }
         }
 
+        /// <summary>
+        /// Gets a value indicating whether a Unit is located at its respawn Point
+        /// </summary>
+        public bool IsAtHome
+        {
+            get
+            {
+                return currentGridMap.Location.Equals(Home);
+            }
+        }
+
         protected int respawnTimer;
         protected UnitTypes pr_unitType;
         protected int unitFlags;
@@ -206,8 +217,7 @@ namespace Maze.Classes
             SetUnitFlags(UnitFlags.None);
             gridMapReached = true;
 
-            respawnLocation.Level = respawnLocation.X =
-                respawnLocation.Y = respawnLocation.Z = 0;
+            this.respawnLocation = new GPS();
 
             objectType = ObjectType.Unit;
             UnitType = UnitTypes.Unit;
@@ -470,15 +480,12 @@ namespace Maze.Classes
         protected void Respawn()
         {
             // Return to start location
-            Position = new GridGPS(respawnLocation, 25, 25);
+            Position = new GridGPS(Home, 25, 25);
 
             SetDeathState(DeathStates.Alive);
         }
 
-        public bool IsAtRespawnLocation()
-        {
-            return currentGridMap.Location.Equals(respawnLocation);
-        }
+
 
         public override void UpdateState(int timeP)
         {
