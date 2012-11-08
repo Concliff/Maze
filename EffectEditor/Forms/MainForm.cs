@@ -52,17 +52,6 @@ namespace EffectEditor
             }
         }
 
-        /*private void AttributesLoad()
-        {
-            mbAttributes.Items.Add(Enum.GetName(typeof(Maze.Classes.EffectAttributes), 0));
-
-            for (int i = 1, j = 1; j < Enum.GetNames(typeof(Maze.Classes.EffectAttributes)).Length; i *= 2, ++j)
-            {
-                cmbAttributes.Items.Add(Enum.GetName(typeof(Maze.Classes.EffectAttributes), i));
-            }
-
-        }*/
-
         private void TargetsLoad()
         {
             for (int i = 0; i < Enum.GetNames(typeof(Maze.Classes.EffectTargets)).Length; ++i)
@@ -99,7 +88,8 @@ namespace EffectEditor
             txtEffectInfo.AppendText(entry.Description + Environment.NewLine);
             txtEffectInfo.AppendText("------------------------------------------------" + Environment.NewLine);
 
-            txtEffectInfo.AppendText("Effect type - " + entry.EffectType.ToString() + Environment.NewLine);
+            txtEffectInfo.AppendText("Effect type = " + ((int)entry.EffectType).ToString() + " (" +
+                entry.EffectType.ToString() + ")" + Environment.NewLine + Environment.NewLine);
 
             txtEffectInfo.AppendText("Attributes = ");
 
@@ -132,7 +122,12 @@ namespace EffectEditor
                     Enum.GetName(typeof(Maze.Classes.EffectTargets), entry.Targets) + ")" + Environment.NewLine + Environment.NewLine);
 
             txtEffectInfo.AppendText("Value = " + entry.Value.ToString() + Environment.NewLine + Environment.NewLine);
-            txtEffectInfo.AppendText("Duration = " + entry.Duration.ToString() + Environment.NewLine + Environment.NewLine);
+
+            if((int)entry.Duration == -1)
+                txtEffectInfo.AppendText("Duration = " + entry.Duration.ToString() + " (OneTact)" + Environment.NewLine + Environment.NewLine);
+            else
+                txtEffectInfo.AppendText("Duration = " + entry.Duration.ToString() + Environment.NewLine + Environment.NewLine);
+
             for (int i = 1; i < 5; ++i)
                 txtEffectInfo.AppendText("ND" + i.ToString() + " = 0\n" + Environment.NewLine);
 
@@ -247,7 +242,7 @@ namespace EffectEditor
             TypesLoad();
 
             txtEffectID.Text = Maze.Classes.DBStores.EffectStore.Count.ToString();
-            txtAttributes.Text = "0";
+            txtAttributes.Text = "0x000";
             cmbTargets.SelectedItem = "None";
             cmbType.SelectedItem = "None";
             txtValue.Text = "0";
@@ -270,13 +265,10 @@ namespace EffectEditor
             txtND4.Text = "0";
         }
 
-        private void cmbAttributes_SelectedIndexChanged(object sender, EventArgs e)
-        {
-
-        }
-
         private void btnAddAttributes_Click(object sender, EventArgs e)
         {
+            if (attrForm.IsDisposed)
+                attrForm = new Attributes(this);
             attrForm.Show();
 
             attrForm.CheckAttributes(GetBinaryArray(AttributeValues));
@@ -344,7 +336,9 @@ namespace EffectEditor
         private void btnClean_Click(object sender, EventArgs e)
         {
             CleanAll();
-
+            AttributeValues = 0;
+            attrForm.attributesValue = 0;
+            attrForm.UncheckAllAttributes();
             txtEffectName.Text = "";
             txtDescription.Text = "";
             txtSummary.Text = "";
@@ -371,17 +365,15 @@ namespace EffectEditor
                 e.Handled = true;
         }
 
-        private void btnRefresh_Click(object sender, EventArgs e)
+        private void btnReload_Click(object sender, EventArgs e)
         {
             // Reinitialize EffectStore
             Maze.Classes.DBStores.InitializeComponents();
             Maze.Classes.DBStores.Load();
+            object currentEffectId = cmbInfoID.SelectedItem;
             cmbInfoID.Items.Clear();
-            txtEffectInfo.Clear();
-            ptbMap.Image = null;
-            ptbAura.Image = null;
             EffectIDsLoad();
+            cmbInfoID.SelectedItem = currentEffectId;
         }
-
     }
 }

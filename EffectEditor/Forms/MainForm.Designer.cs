@@ -30,6 +30,7 @@
         {
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.btnReload = new System.Windows.Forms.Button();
             this.ptbAura = new System.Windows.Forms.PictureBox();
             this.ptbMap = new System.Windows.Forms.PictureBox();
             this.txtEffectInfo = new System.Windows.Forms.TextBox();
@@ -76,7 +77,6 @@
             this.txtDescription = new System.Windows.Forms.TextBox();
             this.txtEffectID = new System.Windows.Forms.TextBox();
             this.folderBrowserDialog1 = new System.Windows.Forms.FolderBrowserDialog();
-            this.btnRefresh = new System.Windows.Forms.Button();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.ptbAura)).BeginInit();
@@ -99,7 +99,7 @@
             //
             // tabPage1
             //
-            this.tabPage1.Controls.Add(this.btnRefresh);
+            this.tabPage1.Controls.Add(this.btnReload);
             this.tabPage1.Controls.Add(this.ptbAura);
             this.tabPage1.Controls.Add(this.ptbMap);
             this.tabPage1.Controls.Add(this.txtEffectInfo);
@@ -111,6 +111,17 @@
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Info";
             this.tabPage1.UseVisualStyleBackColor = true;
+            //
+            // btnReload
+            //
+            this.btnReload.Location = new System.Drawing.Point(499, 46);
+            this.btnReload.Name = "btnReload";
+            this.btnReload.Size = new System.Drawing.Size(75, 23);
+            this.btnReload.TabIndex = 5;
+            this.btnReload.TabStop = false;
+            this.btnReload.Text = "Reload";
+            this.btnReload.UseVisualStyleBackColor = true;
+            this.btnReload.Click += new System.EventHandler(this.btnReload_Click);
             //
             // ptbAura
             //
@@ -537,17 +548,6 @@
             //
             this.folderBrowserDialog1.RootFolder = System.Environment.SpecialFolder.MyComputer;
             //
-            // btnRefresh
-            //
-            this.btnRefresh.Location = new System.Drawing.Point(499, 46);
-            this.btnRefresh.Name = "btnRefresh";
-            this.btnRefresh.Size = new System.Drawing.Size(75, 23);
-            this.btnRefresh.TabIndex = 5;
-            this.btnRefresh.TabStop = false;
-            this.btnRefresh.Text = "Refresh";
-            this.btnRefresh.UseVisualStyleBackColor = true;
-            this.btnRefresh.Click += new System.EventHandler(this.btnRefresh_Click);
-            //
             // EffectEditor
             //
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -620,6 +620,6 @@
         private System.Windows.Forms.TextBox txtAttributes;
         private System.Windows.Forms.CheckBox chbOneTact;
         private System.Windows.Forms.Button btnClean;
-        private System.Windows.Forms.Button btnRefresh;
+        private System.Windows.Forms.Button btnReload;
     }
 }

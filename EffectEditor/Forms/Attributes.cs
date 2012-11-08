@@ -36,7 +36,7 @@ namespace EffectEditor
             AttributesLoad();
 
             clbAttributes.CheckOnClick = true;
-            attrValue = owner.AttributeValues;
+            attributesValue = owner.AttributeValues;
 
         }
 
@@ -50,18 +50,18 @@ namespace EffectEditor
 
         private void btnOK_Click(object sender, EventArgs e)
         {
-            attrValue = 0;
+            attributesValue = 0;
             for (int i = 0; i < clbAttributes.CheckedItems.Count; ++i)
             {
                 if (FindAttribute((string)clbAttributes.CheckedItems[i]) == -1)
                     continue;
 
-                attrValue += FindAttribute((string)clbAttributes.CheckedItems[i]);
+                attributesValue += FindAttribute((string)clbAttributes.CheckedItems[i]);
             }
 
-            owner.AttributeValues = attrValue;
+            owner.AttributeValues = attributesValue;
 
-            owner.SetAttributeValue(attrValue);
+            owner.SetAttributeValue(attributesValue);
 
             this.Hide();
         }
@@ -78,6 +78,12 @@ namespace EffectEditor
                 if (attributes[i] == 1)
                     clbAttributes.SetItemChecked(i, true);
             }
+        }
+
+        public void UncheckAllAttributes()
+        {
+            for(int i = 0; i < clbAttributes.Items.Count; ++i)
+                clbAttributes.SetItemChecked(i, false);
         }
 
         private void btnCancel_Click(object sender, EventArgs e)
