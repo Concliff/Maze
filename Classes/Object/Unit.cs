@@ -140,7 +140,6 @@ namespace Maze.Classes
     }
     public class Unit : Object
     {
-        protected bool gridMapReached;
         protected DeathStates deathState;
         protected double baseSpeed; // base speed of the Unit
         public double BaseSpeed
@@ -215,7 +214,6 @@ namespace Maze.Classes
         {
             SetDeathState(DeathStates.Alive);
             SetUnitFlags(UnitFlags.None);
-            gridMapReached = true;
 
             this.respawnLocation = new GPS();
 
@@ -233,10 +231,6 @@ namespace Maze.Classes
             effectList.EffectApplyEvent += new EffectCollection.EffectHandler(OnEffectApplied);
 
             effectList.EffectRemoveEvent += new EffectCollection.EffectHandler(OnEffectRemoved);
-
-            PositionChanged += new PositionHandler(OnPositionChanged);
-
-            LocationChanged += new PositionHandler(OnLocationChanged);
         }
 
         public void OnEffectApplied(object sender, EffectEventArgs e)
@@ -277,26 +271,6 @@ namespace Maze.Classes
         public bool HasUnitFlag(UnitFlags unitFlag)
         {
             return ((uint)unitFlag & (uint)this.unitFlags) != 0;
-        }
-
-        /// <summary>
-        /// Change Unit's location by given block count in a given direction
-        /// </summary>
-        protected void ChangeGPSDueDirection(int BlockPassCount, Directions Direction)
-        {
-            GridGPS newPosition = Position;
-            switch (Direction)
-            {
-                case Directions.Up: newPosition.Location.Y -= BlockPassCount; break;
-                case Directions.Down: newPosition.Location.Y += BlockPassCount; break;
-                case Directions.Left: newPosition.Location.X -= BlockPassCount; break;
-                case Directions.Right: newPosition.Location.X += BlockPassCount; break;
-            }
-
-            Position = newPosition;
-
-            currentGridMap = GetWorldMap().GetGridMap(Position.Location);
-            gridMapReached = false;
         }
 
         /// <summary>
@@ -375,8 +349,6 @@ namespace Maze.Classes
         public void TeleportTo(GridMap destinationGridMap)
         {
             Position = new GridGPS(destinationGridMap.Location, 25, 25);
-
-            ReachedGridMap();
         }
 
         public void TeleportTo(GPS destinationGPS)
@@ -385,13 +357,6 @@ namespace Maze.Classes
             TeleportTo(destinationGridMap);
         }
 
-        public virtual void ReachedGridMap()
-        {
-            if (gridMapReached)
-                return;
-
-            gridMapReached = true;
-        }
 
         public void CastEffect(ushort effectID, Unit target)
         {
@@ -522,22 +487,6 @@ namespace Maze.Classes
         public bool IsVisible()
         {
             return !HasEffectType(EffectTypes.Invisibility);
-        }
-
-        protected virtual void OnPositionChanged(object sender, PositionEventArgs e)
-        {/*
-            // GridMap reaching
-            if (Position.X > GlobalConstants.GRIDMAP_BORDER_PX &&
-                Position.X < GlobalConstants.GRIDMAP_BLOCK_WIDTH - GlobalConstants.GRIDMAP_BORDER_PX &&
-                Position.Y > GlobalConstants.GRIDMAP_BORDER_PX &&
-                Position.Y < GlobalConstants.GRIDMAP_BLOCK_HEIGHT - GlobalConstants.GRIDMAP_BORDER_PX &&
-                !this.gridMapReached)
-                ReachedGridMap();*/
-        }
-
-        private void OnLocationChanged(object sender, PositionEventArgs e)
-        {
-            this.gridMapReached = false;
         }
     }
 }
