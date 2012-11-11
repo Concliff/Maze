@@ -134,32 +134,68 @@ namespace Maze.Forms
             }
         }
 
-        public void AddSpell(EffectEntry effectEntry)
+        /// <summary>
+        /// Add new Spell into spell bar. If Spell Slot value is set and that slot is occupied, Spell is replaced.
+        /// </summary>
+        /// <param name="effectEntry">related EffectEntry of the spell</param>
+        /// <param name="isPermanent">Is Spell Permanent or Disposable</param>
+        /// <param name="spellSlotNumber">Spell slot on spell bar</param>
+        public void AddSpell(EffectEntry effectEntry, bool isPermanent = false, int spellSlotNumber = -1)
         {
+            // Check the validity of the input parameters
+            if (spellSlotNumber < -1 || spellSlotNumber >= MAX_SPELLS_COUNT)
+                return;
+
+            int spellSlot = spellSlotNumber;
             bool isExist = false;
-            int firstFree = -1;
-            for (int i = 0; i < MAX_SPELLS_COUNT; ++i)
-            {
-                if (firstFree == -1 && SpellBarPB[i].RelatedEffect.ID == 0)
-                    firstFree = i;
 
-                if (effectEntry.ID == SpellBarPB[i].RelatedEffect.ID)
+            // Find first free slot
+            if (spellSlot == -1)
+            {
+                int firstFree = -1;
+                for (int i = 0; i < MAX_SPELLS_COUNT; ++i)
                 {
-                    isExist = true;
+                    if (firstFree == -1 && SpellBarPB[i].RelatedEffect.ID == 0)
+                        firstFree = i;
+
+                    // Can not exist two Permanent/Disposable spells at the same time
+                    if (effectEntry.ID == SpellBarPB[i].RelatedEffect.ID && isPermanent == SpellBarPB[i].IsPermanentSpell)
+                    {
+                        isExist = true;
+                    }
                 }
+
+                spellSlot = firstFree;
             }
 
-            if (!isExist && firstFree != -1)
+            if (!isExist && spellSlot != -1)
             {
 
-                SpellBarPB[firstFree].RelatedEffect = effectEntry;
-                SpellBarPB[firstFree].Image = PictureManager.EffectImages[effectEntry.ID].Aura;
-                SpellBarPB[firstFree].Show();
-                AurasToolTip.SetToolTip(SpellBarPB[firstFree], effectEntry.EffectName + "\n"
+                SpellBarPB[spellSlot].RelatedEffect = effectEntry;
+                SpellBarPB[spellSlot].Image = PictureManager.EffectImages[effectEntry.ID].Aura;
+                SpellBarPB[spellSlot].IsPermanentSpell = isPermanent;
+                SpellBarPB[spellSlot].Show();
+                AurasToolTip.SetToolTip(SpellBarPB[spellSlot], effectEntry.EffectName + "\n"
                     + effectEntry.Description);
-
-                SpellBarPB[firstFree].Paint += new PaintEventHandler(SpellBarPB_Paint);
             }
+        }
+
+        public bool RemoveSpell(int spellSlot)
+        {
+            // Valid spell slot
+            if (spellSlot < 0 || spellSlot >= MAX_SPELLS_COUNT)
+                return false;
+
+            // Effect exists
+            if (SpellBarPB[spellSlot].RelatedEffect.ID == 0)
+                return false;
+
+            // Reset & Hide the PictureBox
+            SpellBarPB[spellSlot].RelatedEffect = new EffectEntry();
+            SpellBarPB[spellSlot].IsPermanentSpell = false;
+            SpellBarPB[spellSlot].Hide();
+
+            return true;
         }
 
         #region Play Form Events
@@ -351,8 +387,7 @@ namespace Maze.Forms
 
             for (int i = 0; i < SpellBarPB.Count(); ++i)
             {
-                SpellBarPB[i].RelatedEffect = new EffectEntry();
-                SpellBarPB[i].Hide();
+                RemoveSpell(i);
             }
         }
 
@@ -475,11 +510,7 @@ namespace Maze.Forms
             Player.CastEffect(effectEntry.ID, Player);
 
             if (!SpellBarPB[spellNumber - 1].IsPermanentSpell)
-            {
-                // Hide the PictureBox
-                SpellBarPB[spellNumber - 1].RelatedEffect = new EffectEntry();
-                SpellBarPB[spellNumber - 1].Hide();
-            }
+                RemoveSpell(spellNumber - 1);
         }
 
         private void SpellBarPB_MouseClick(object sender, MouseEventArgs e)

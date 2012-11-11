@@ -173,6 +173,7 @@ namespace Maze.Forms
                 SpellBarPB[i].BackColor = Color.Gray;
                 SpellBarPB[i].MouseClick += new MouseEventHandler(SpellBarPB_MouseClick);
                 SpellBarPB[i].Hide();
+                SpellBarPB[i].Paint += new PaintEventHandler(SpellBarPB_Paint);
             }
 
             GridMapGraphic = new GridMapGraph[GlobalConstants.GRIDMAP_WIDTH, GlobalConstants.GRIDMAP_HEIGHT];
