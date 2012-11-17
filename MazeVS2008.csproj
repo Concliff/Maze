@@ -63,6 +63,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Custom\CollectionID.cs" />
     <Compile Include="Classes\DBStores.cs" />
     <Compile Include="Classes\MazeGenerator.cs" />
     <Compile Include="Classes\Movement\MovementGenerator.cs" />
