@@ -24,7 +24,8 @@ namespace Maze.Custom
             }
             set
             {
-                dictionary[id] = value;
+                if (value.Equals(defaultValue)) RemoveValue(id);
+                else dictionary[id] = value;
             }
         }
 
@@ -39,7 +40,7 @@ namespace Maze.Custom
             defaultValue = defValue;
         }
 
-        public int GetIDs(ref int[] ids)
+        public int GetIDs(out int[] ids)
         {
             ids = dictionary.Keys.ToArray();
             return ids.Count();
@@ -56,23 +57,23 @@ namespace Maze.Custom
         /// <summary>
         /// Get key value and remove it from the dictionary
         /// </summary>
-        /// <param name="index">Key in the dictionary</param>
+        /// <param name="id">Key in the dictionary</param>
         /// <returns></returns>
-        public T ExtractValue(int index)
+        public T ExtractValue(int id)
         {
-            T val = this[index];
-            RemoveValue(index);
+            T val = this[id];
+            RemoveValue(id);
             return val;
         }
 
         /// <summary>
         /// Remove the key-value pair from the dictionary
         /// </summary>
-        /// <param name="index">Key in the dictionary</param>
+        /// <param name="id">Key in the dictionary</param>
         /// <returns></returns>
-        public bool RemoveValue(int index)
+        public bool RemoveValue(int id)
         {
-            if (dictionary.Remove(index))
+            if (dictionary.Remove(id))
                 return true;
             return false;
         }
@@ -83,9 +84,9 @@ namespace Maze.Custom
         }
 
         public CollectionEnum<T> GetEnumerator()
-    {
-        return new CollectionEnum<T>(dictionary);
-    }
+        {
+            return new CollectionEnum<T>(dictionary);
+        }
     }
 
     public class CollectionEnum<T> : IEnumerator
