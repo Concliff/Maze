@@ -48,7 +48,7 @@ namespace EffectEditor
             foreach (Maze.Classes.EffectEntry entry in Maze.Classes.DBStores.EffectStore)
             {
                 if(entry.ID != 0)
-                    cmbInfoID.Items.Add(entry.ID);
+                    cmbInfoID.Items.Add(entry.ID + " - " + entry.EffectName);
             }
         }
 
@@ -76,7 +76,7 @@ namespace EffectEditor
             ptbAura.Image = null;
             ptbAura.Invalidate();
 
-            int selectedValue = System.Convert.ToInt32(cmbInfoID.Text);
+            int selectedValue = System.Convert.ToInt32(cmbInfoID.Text.Split(' ')[0]);
 
             if (selectedValue < 1 && selectedValue > Maze.Classes.DBStores.EffectStore.Count)
                 return;
