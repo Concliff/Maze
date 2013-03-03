@@ -39,8 +39,8 @@ namespace Maze.Classes
         None                = 0,
         OnlySlug            = 0x001,    // Applies only on Slug
         CanBeSpell          = 0x002,    // Allows to appear at SpellBar
-        NoAura              = 0x004,    // Effect doesn't apply any visible auras
-        HiddenAura          = 0x008,    // Aura doesn't show
+        HasAura             = 0x004,    // Effect applies any visible auras
+        HiddenAura          = 0x008,    // Aura do not displayed
     };
 
     public enum EffectState
@@ -129,10 +129,10 @@ namespace Maze.Classes
             if (targetsList.Count == 0)
                 return;
 
-            if (effectInfo.HasAttribute(EffectAttributes.NoAura))
-                ApplyEffect();
-            else
+            if (effectInfo.HasAttribute(EffectAttributes.HasAura))
                 ApplyAura();
+            else
+                ApplyEffect();
 
         }
         /// <summary>
