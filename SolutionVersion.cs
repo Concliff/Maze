@@ -10,7 +10,7 @@ namespace Maze
     {
         private const uint Major    = 0;
         private const uint Minor    = 7;
-        private const uint Build    = 0;
+        private const uint Build    = 7;
         private const uint Revision = 247;
 
 
