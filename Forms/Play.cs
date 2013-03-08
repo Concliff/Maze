@@ -402,6 +402,7 @@ namespace Maze.Forms
             // Get last pressed Key
             switch (KeyMgr.ExtractKeyPressed())
             {
+                // Switch Play/Pause game mode
                 case Keys.Escape:
                     if (CurrentInterface == FormInterface.Play)
                     {
@@ -413,6 +414,7 @@ namespace Maze.Forms
                     }
                     break;
 
+                // Digit Keys (Spell using)
                 case Keys.D1:
                     usedSpellNumber = 1;
                     break;
@@ -435,14 +437,16 @@ namespace Maze.Forms
             if (GamePaused)
                 return;
 
-            // Call for Update every Unit
+            // Calculate actual past time since last timer tick
             long currentElapsedMilliseconds = time.ElapsedMilliseconds;
             int tickTime = (int)(currentElapsedMilliseconds - millisecondsPassed);
+
+            // Update every object on map
             objectContainer.UpdateState(tickTime);
 
             millisecondsPassed = currentElapsedMilliseconds;
 
-            // Repaint Game stats panel+++++++++++++
+            // Repaint Game stats panel
             this.RightPanelPB.Invalidate();
 
             this.LeftPanelPB.Invalidate();
@@ -473,13 +477,14 @@ namespace Maze.Forms
                     bonusGridGPS = Player.Position;
                     short xDiff = (short)Random.Int(6);
                     short yDiff = (short)Random.Int(6);
-                     bonusGridGPS.Location.X += xDiff - 3;
+                    bonusGridGPS.Location.X += xDiff - 3;
                     bonusGridGPS.Location.Y += yDiff - 3;
 
                     // If current GPS doesn't have a map block
                     if (worldMap.GetGridMap(bonusGridGPS.Location).ID == -1)
                         continue;
-                    // else
+
+                    // else generate Bonus object
                     bonusGridGPS.X = Random.Int(30) + 10;
                     bonusGridGPS.Y = Random.Int(30) + 10;
 
@@ -488,11 +493,12 @@ namespace Maze.Forms
                     // Get Random effect
                     BonusEffect eff = bonusEffects[Random.Int(bonusEffects.Count())];
                     newBonus.SetEffect(eff);
-                    bonusGenerateTimer = Random.Int(3000, 5000);
-                    // leave cycle
 
+                    // leave cycle
                     break;
                 }
+
+                bonusGenerateTimer = Random.Int(3000, 5000);
             }
             else
                 bonusGenerateTimer -= tickTime;
@@ -530,7 +536,7 @@ namespace Maze.Forms
             if (worldMap.DropsRemain == 0 &&
                 worldMap.GetGridMap(Player.Position.BlockID).HasAttribute(GridMapAttributes.IsFinish))
             {
-
+                // Random Map: regenerate level and create objects
                 if (worldMap.IsRandom())
                 {
                     // Regenerate Map and Objects
@@ -542,6 +548,7 @@ namespace Maze.Forms
                     worldMap.FillMapWithObjects();
                     objectContainer.StartMotion();
                 }
+                // Normal Game: Set next Map level
                 else
                 {
                     // TODO: clear objects for past levels

@@ -49,15 +49,15 @@ namespace Maze.Classes
         private string[] MapNameList;       // Names of All downloaded maps
         private List<GPS> StartPoint;
         private List<GPS> FinishPoint;
-        private int pr_BlocksCount;
         private string CurrentMapName;
         private bool GridMapChanged;        // If map changed, it should be rewrited into mapFile
         private int currentMapIndex;
-        private int pr_CurrentLevel;
-        private int pr_LevelCount;
         private string MapDirectoryPath = GlobalConstants.MAPS_PATH;
         private bool isRandom;
 
+        /// <summary>
+        /// Gets the count of non-collected Ooze drops on current level.
+        /// </summary>
         public int DropsRemain
         {
             get
@@ -66,8 +66,9 @@ namespace Maze.Classes
             }
         }
 
+        private int pr_CurrentLevel;
         /// <summary>
-        /// Gets the number of the current level
+        /// Gets the index number of the current level
         /// </summary>
         public int CurrentLevel
         {
@@ -75,6 +76,7 @@ namespace Maze.Classes
             private set { pr_CurrentLevel = value; }
         }
 
+        private int pr_LevelCount;
         /// <summary>
         /// Gets the number of levels of current map
         /// </summary>
@@ -84,6 +86,7 @@ namespace Maze.Classes
             private set { pr_LevelCount = value; }
         }
 
+        private int pr_BlocksCount;
         /// <summary>
         /// Gets the number of blocks of current map
         /// </summary>
@@ -128,6 +131,9 @@ namespace Maze.Classes
             BlocksCount = 0;
         }
 
+        /// <summary>
+        /// Returns current Map index.
+        /// </summary>
         public int GetMap() { return currentMapIndex; }
 
         public void SetMap(int mapIndex) { SetMap(mapIndex, 0); }
@@ -144,10 +150,11 @@ namespace Maze.Classes
 
         public void GenerateRandomMap()
         {
-            isRandom = true;
+            isRandom = true;  // Mark current Map as RandomMap
             currentMapIndex = 0;
             CurrentLevel = 0;
 
+            // Geneate GridMap blocks
             MazeGenerator generator = new MazeGenerator();
             MapBlocks = generator.Generate(0);
             BlocksCount = MapBlocks.Count;
@@ -158,10 +165,11 @@ namespace Maze.Classes
 
             LevelCount = 1;
             dropsCount = new int[LevelCount];
-            // Generate Drops
+            // Generate Drops Count
             // Every 15th block should have a drop
             int dropsCounter = MapBlocks.Count / 15;
 
+            // Generate Drops Location
             int currentDropsCount = 0;
             while (currentDropsCount < dropsCounter)
             {

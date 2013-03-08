@@ -9,7 +9,14 @@ namespace Maze.Classes
     {
         public struct Direction
         {
+            /// <summary>
+            ///  Main Direction. Used to unidirectional movement.
+            /// </summary>
             public Directions First;
+
+            /// <summary>
+            /// Secondary Direction. Used to define diagonal movement.
+            /// </summary>
             public Directions Second;
 
             public Direction(Directions first, Directions second)
@@ -23,11 +30,17 @@ namespace Maze.Classes
 
         };
 
+        /// <summary>
+        /// Fraction part after conversion from double(speedRate) to int(Coords)
+        /// </summary>
         protected double stepRemainder;
-        protected Direction pr_CurrentDirection;
 
         public Map WorldMap = Map.WorldMap;
 
+        protected Direction pr_CurrentDirection;
+        /// <summary>
+        /// Returns Direction that was after last movement action handling.
+        /// </summary>
         public Direction CurrentDirection
         {
             get

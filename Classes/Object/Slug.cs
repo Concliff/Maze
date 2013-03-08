@@ -7,10 +7,10 @@ namespace Maze.Classes
 {
     public class Slug : Unit
     {
-        private String pr_Name;
         private int score;
         private int collectedDropsCount;    // at current level
 
+        private String pr_Name;
         /// <summary>
         /// Returns player's name
         /// </summary>
@@ -22,27 +22,31 @@ namespace Maze.Classes
 
         // ooze
         public const int MaxOozeEnergy = 100;
+
+        private int pr_oozeEnergy;
+        /// <summary>
+        /// Gets or Sets Slug's Energy supply.
+        /// </summary>
         public int OozeEnergy
         {
-            get { return oozeEnergy;}
+            get { return pr_oozeEnergy;}
             set
             {
                 if (value > MaxOozeEnergy)
-                    oozeEnergy = MaxOozeEnergy;
+                    pr_oozeEnergy = MaxOozeEnergy;
                 else if (value <= 0)
                 {
-                    oozeEnergy = 0;
+                    pr_oozeEnergy = 0;
                     // Cast Deslimation when energy ends
                     CastEffect(4, this);
                 }
                 else
-                    oozeEnergy = value;
+                    pr_oozeEnergy = value;
             }
         }
 
-        private int oozeEnergy;
-        private int downTime;
-        private int travelTime;
+        private int downTime; // stand still time
+        private int travelTime; // in motion time
 
         public Slug()
         {
@@ -59,7 +63,7 @@ namespace Maze.Classes
             score = 0;
             collectedDropsCount = 0;
 
-            oozeEnergy = MaxOozeEnergy;
+            pr_oozeEnergy = MaxOozeEnergy;
             downTime = 0;
             travelTime = 0;
             isInMotion = false;
@@ -89,8 +93,11 @@ namespace Maze.Classes
         {
             if (IsAlive() && IsVisible())
             {
+                // Kill Slug in a collision with others Units
+                // Collision = any "hostile" Unit is passing by closer then 30
                 List<Unit> Units = GetUnitsWithinRange(30);
                 foreach (Unit unit in Units)
+                    // HACK: do not collide with SlugClone
                     if (unit.GetType() != ObjectType.Slug)
                     {
                         unit.KillUnit(this);
@@ -99,7 +106,9 @@ namespace Maze.Classes
 
             }
 
-            if (isInMotion && GetEffectsByType(EffectTypes.Replenishment).Count == 0)
+            // Slug is moving:
+            // take 2 OozeEnergy every second
+            if (isInMotion && GetEffectsByType(EffectTypes.Replenishment).Count == 0) // or id under Replenishment effect
             {
                 travelTime += timeP;
                 if (travelTime > 1000)    // 1 second of motion
@@ -110,10 +119,12 @@ namespace Maze.Classes
 
                 isInMotion = false;
             }
+            // Slug is standing still:
+            // give 1 (3 at Start Point) OozeEnergy every second
             else
             {
                 downTime += timeP;
-                if (downTime > 1000)    // not in motion over 5 seconds
+                if (downTime > 1000)    // not in motion over 1 seconds
                 {
                     downTime -= 1000;
                     OozeEnergy += IsAtHome ? 3 : 1;
@@ -150,6 +161,7 @@ namespace Maze.Classes
             GridGPS previousPosition = Position;
 
             // Find a point in currectDirection + searchingStep
+            // to determine whether Slug is affected by Slime speed-up boost
             GridGPS searchingPoint = Position;
             int searchingStep = 10;
             List<GridObject> slimeAround;
@@ -190,7 +202,7 @@ namespace Maze.Classes
                     }
                     break;
             }
-
+            // try to find any Slime around that point
             slimeAround = ObjectSearcher.GetGridObjectsInArea(searchingPoint, searchingStep);
             foreach (GridObject slime in slimeAround)
             {

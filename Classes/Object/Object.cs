@@ -16,8 +16,8 @@ namespace Maze.Classes
 
     public enum ObjectState
     {
-        Default,    // Setted by Default
-        Removed,     // Waiting deletion form container
+        Default,     // Setted by Default
+        Removed,     // Waiting for deletion from container
     }
 
     public class PositionEventArgs : EventArgs
@@ -45,7 +45,9 @@ namespace Maze.Classes
         protected ModelSize objectSize;
 
         private GridGPS pr_position;
-
+        /// <summary>
+        /// Gets or sets Object location on the Map.
+        /// </summary>
         public GridGPS Position
         {
             get
@@ -60,9 +62,8 @@ namespace Maze.Classes
                 GridGPS newPosition = value;
                 bool locationChanged = false;
 
-                // Coordinates are out of bound of the cell
-                // Change Location
-
+                // if coordinates are outside the cell
+                // then change Location
                 if (newPosition.X < 0)
                 {
                     newPosition.Location.X -= 1;
@@ -85,6 +86,7 @@ namespace Maze.Classes
                     newPosition.Y -= GlobalConstants.GRIDMAP_BLOCK_HEIGHT;
                 }
 
+                // Object moved to other GPS
                 if (newPosition.Location != pr_position.Location)
                 {
                     // HACK:
@@ -120,7 +122,14 @@ namespace Maze.Classes
         }
 
         public delegate void PositionHandler(object sender, PositionEventArgs e);
+        /// <summary>
+        /// Occurs when object changed its Location.
+        /// </summary>
+        
         public event PositionHandler PositionChanged;
+        /// <summary>
+        /// Occurs when object changed its GPS location, i.e moved to other GridMap block
+        /// </summary>
         public event PositionHandler LocationChanged;
 
         public Object()
@@ -160,6 +169,9 @@ namespace Maze.Classes
             return ObjectSearcher.GetUnitsWithinRange(this, rangeDistance, includeInvisible, includeDead);
         }
 
+        /// <summary>
+        /// Defines a linear distance to another Object.
+        /// </summary>
         public double GetDistance(Object target)
         {
             double distance = Math.Sqrt(Math.Pow(this.Position.X - target.Position.X + (this.Position.Location.X - target.Position.Location.X) * GlobalConstants.GRIDMAP_BLOCK_WIDTH, 2)

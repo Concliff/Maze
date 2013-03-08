@@ -138,6 +138,7 @@ namespace Maze.Classes
         }
 
     }
+
     public class Unit : Object
     {
         protected DeathStates deathState;
@@ -168,8 +169,10 @@ namespace Maze.Classes
             }
         }
 
-        protected double stepRemainder; // Due to conversion from double(speedRate) to int(Coords)
         protected GPS respawnLocation;
+        /// <summary>
+        /// Gets Respawn Location of the unit.
+        /// </summary>
         public GPS Home
         {
             get
@@ -224,7 +227,6 @@ namespace Maze.Classes
 
             BaseSpeed = 1.0d;
             SpeedRate = BaseSpeed;
-            stepRemainder = 0;
 
             respawnTimer = 3000;
 
