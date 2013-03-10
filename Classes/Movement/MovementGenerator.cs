@@ -19,10 +19,24 @@ namespace Maze.Classes
         protected MovementGeneratorType generatorType;
         protected Unit unit;
 
+        protected bool pr_IsInMotion;
+        public bool IsInMotion
+        {
+            get
+            {
+                return this.pr_IsInMotion;
+            }
+            protected set
+            {
+                pr_IsInMotion = value;
+            }
+        }
+
         public MovementGenerator(Unit unit)
         {
             this.unit = unit;
             generatorType = MovementGeneratorType.None;
+            IsInMotion = false;
 
             this.unit.PositionChanged += OnPositionChanged;
             this.unit.LocationChanged += OnLocationChanged;
@@ -37,6 +51,16 @@ namespace Maze.Classes
         public new MovementGeneratorType GetType()
         {
             return generatorType;
+        }
+
+        public void StartMotion()
+        {
+            IsInMotion = true;
+        }
+
+        public void StopMotion()
+        {
+            IsInMotion = false;
         }
 
         protected void MoveToDirection(int movementStep, Movement.Direction direction)

@@ -47,6 +47,7 @@ namespace Maze.Classes
 
         private int downTime; // stand still time
         private int travelTime; // in motion time
+        private bool isInMotion;
 
         public Slug()
         {
@@ -62,11 +63,11 @@ namespace Maze.Classes
 
             score = 0;
             collectedDropsCount = 0;
+            this.isInMotion = false;
 
             pr_oozeEnergy = MaxOozeEnergy;
             downTime = 0;
             travelTime = 0;
-            isInMotion = false;
 
             objectSize.Width = GlobalConstants.PLAYER_SIZE_WIDTH;
             objectSize.Height = GlobalConstants.PLAYER_SIZE_HEIGHT;
@@ -266,6 +267,8 @@ namespace Maze.Classes
         {
             new SlugClone(Position, this.motionMaster.CurrentDirection);
         }
+
+        //public void 
 
     }
 }

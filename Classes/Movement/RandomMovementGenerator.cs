@@ -15,6 +15,9 @@ namespace Maze.Classes
 
         public override void UpdateState(int timeP)
         {
+            if (!IsInMotion || this.unit.HasEffectType(EffectTypes.Root))
+                return;
+
             double movementStepD = GlobalConstants.MOVEMENT_STEP_PX * this.unit.SpeedRate;
             int movementStep = (int)(movementStepD);
             stepRemainder += movementStepD - movementStep;

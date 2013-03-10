@@ -35,6 +35,9 @@ namespace Maze.Classes
 
         public override void UpdateState(int timeP)
         {
+            if (!IsInMotion || this.unit.HasEffectType(EffectTypes.Root))
+                return;
+
             switch (state)
             {
                 case MotionStates.Chasing:

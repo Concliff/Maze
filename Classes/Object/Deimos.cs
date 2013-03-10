@@ -14,8 +14,6 @@ namespace Maze.Classes
 
             Position = new GridGPS(Home, 25, 25);
 
-            isInMotion = false;
-
             this.motionMaster = new RandomMovementGenerator(this);
 
             //currentGridMap = GetWorldMap().GetGridMap(Position.Location);
@@ -31,22 +29,10 @@ namespace Maze.Classes
 
         public override void UpdateState(int timeP)
         {
-            if (isInMotion & !HasEffectType(EffectTypes.Root))
-                this.motionMaster.UpdateState(timeP);
+            this.motionMaster.UpdateState(timeP);
 
             base.UpdateState(timeP);
         }
-
-        public override void StartMotion()
-        {
-            // Already started
-            if (isInMotion)
-                return;
-
-            isInMotion = true;
-        }
-
-        public void StopMotion() { isInMotion = false; }
 
         public override void SetDeathState(DeathStates deathState)
         {

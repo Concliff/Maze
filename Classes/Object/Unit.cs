@@ -201,7 +201,6 @@ namespace Maze.Classes
         protected int unitFlags;
         protected EffectCollection effectList;
 
-        protected bool isInMotion;
         protected MovementGenerator motionMaster;
 
         /// <summary>
@@ -484,7 +483,17 @@ namespace Maze.Classes
             base.UpdateState(timeP);
         }
 
-        public virtual void StartMotion() { }
+        public void StartMotion()
+        {
+            if (this.motionMaster != null)
+                this.motionMaster.StartMotion();
+        }
+
+        public void StopMotion()
+        {
+            if (this.motionMaster != null)
+                this.motionMaster.StopMotion();
+        }
 
         public bool IsVisible()
         {

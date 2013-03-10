@@ -11,7 +11,6 @@ namespace Maze.Classes
         {
             UnitType = UnitTypes.Phobos;
             SetUnitFlags(UnitFlags.CanNotBeKilled);
-            isInMotion = false;
 
             Home = respawnLocation;
 
@@ -26,20 +25,10 @@ namespace Maze.Classes
 
         public override void UpdateState(int timeP)
         {
-            // Nothing to do if is dead
-            if (this.isInMotion && !HasEffectType(EffectTypes.Root))
-                this.motionMaster.UpdateState(timeP);
+            this.motionMaster.UpdateState(timeP);
 
             base.UpdateState(timeP);
         }
-
-
-        public override void StartMotion()
-        {
-            this.isInMotion = true;
-        }
-
-        public void StopMotion() { isInMotion = false; }
 
     }
 }
