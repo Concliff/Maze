@@ -159,6 +159,14 @@ namespace Maze.Classes
             this.Y = Y;
         }
 
+        public double GetDistance(GridGPS point)
+        {
+            double distance = Math.Sqrt(Math.Pow(this.X - point.X + (this.Location.X - point.Location.X) * GlobalConstants.GRIDMAP_BLOCK_WIDTH, 2)
+                    + Math.Pow(this.Y - point.Y + (this.Location.Y - point.Location.Y) * GlobalConstants.GRIDMAP_BLOCK_HEIGHT, 2));
+
+            return distance;
+        }
+
         public static bool operator ==(GridGPS a, GridGPS b)
         {
             if (a == null || b == null)

@@ -174,10 +174,7 @@ namespace Maze.Classes
         /// </summary>
         public double GetDistance(Object target)
         {
-            double distance = Math.Sqrt(Math.Pow(this.Position.X - target.Position.X + (this.Position.Location.X - target.Position.Location.X) * GlobalConstants.GRIDMAP_BLOCK_WIDTH, 2)
-                    + Math.Pow(this.Position.Y - target.Position.Y + (this.Position.Location.Y - target.Position.Location.Y) * GlobalConstants.GRIDMAP_BLOCK_HEIGHT, 2));
-
-            return distance;
+            return this.Position.GetDistance(target.Position);
         }
 
         /// <summary>
