@@ -48,6 +48,7 @@ namespace Maze.Classes
         private int downTime; // stand still time
         private int travelTime; // in motion time
         private bool isInMotion;
+        private List<Unit> collidingUnits;
 
         public Slug()
         {
@@ -64,6 +65,7 @@ namespace Maze.Classes
             score = 0;
             collectedDropsCount = 0;
             this.isInMotion = false;
+            this.collidingUnits = new List<Unit>();
 
             pr_oozeEnergy = MaxOozeEnergy;
             downTime = 0;
@@ -97,12 +99,22 @@ namespace Maze.Classes
                 // Kill Slug in a collision with others Units
                 // Collision = any "hostile" Unit is passing by closer then 30
                 List<Unit> Units = GetUnitsWithinRange(30);
-                foreach (Unit unit in Units)
-                    // HACK: do not collide with SlugClone
-                    if (unit.GetType() != ObjectType.Slug)
+                if (Units.Count > 0)
+                {
+                    foreach (Unit unit in Units)
+                        if (!this.collidingUnits.Exists(p => p.GetGUID() == unit.GetGUID()))
+                        {
+                            OnUnitCollision(unit);
+                            OnUnitCollisionBegin(unit);
+                            this.collidingUnits.Add(unit);
+                        }
+                }
+                else
+                    if (collidingUnits.Count > 0)
                     {
-                        unit.KillUnit(this);
-                        return;
+                        foreach (Unit unit in this.collidingUnits)
+                            OnUnitCollisionEnd(unit);
+                        this.collidingUnits.Clear();
                     }
 
             }
@@ -268,7 +280,25 @@ namespace Maze.Classes
             new SlugClone(Position, this.motionMaster.CurrentDirection);
         }
 
-        //public void 
+        public void OnUnitCollisionBegin(Unit unit)
+        {
+
+        }
+
+        public void OnUnitCollisionEnd(Unit unit)
+        {
+
+        }
+
+        public void OnUnitCollision(Unit unit)
+        {
+            // HACK: do not collide with SlugClone
+            if (unit.GetType() != ObjectType.Slug)
+            {
+                unit.KillUnit(this);
+                return;
+            }
+        }
 
     }
 }
