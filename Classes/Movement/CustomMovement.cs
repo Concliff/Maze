@@ -24,7 +24,7 @@ namespace Maze.Classes
                 stepRemainder -= 1;
             }
 
-            MoveToDirection(movementStep, CurrentDirection);
+            Move(movementStep);
         }
 
         public void SetDirection(Direction direction)

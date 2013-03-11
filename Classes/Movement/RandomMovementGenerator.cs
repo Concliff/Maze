@@ -27,7 +27,7 @@ namespace Maze.Classes
                 stepRemainder -= 1;
             }
 
-            MoveToDirection(movementStep, CurrentDirection);
+            Move(movementStep);
         }
 
         private void SelectNewDirection()
@@ -95,20 +95,13 @@ namespace Maze.Classes
             }
         }
 
-        protected override void OnPositionChanged(object sender, PositionEventArgs e)
+        protected override void OnDestinationReached()
         {
-            // HACK: Ignore if not the center of the block
-            int movementStep = (int)(GlobalConstants.MOVEMENT_STEP_PX * this.unit.SpeedRate) + 1;
-            if (!(unit.Position.X >= GlobalConstants.GRIDMAP_BLOCK_WIDTH / 2 - movementStep / 2 &&
-                unit.Position.X <= GlobalConstants.GRIDMAP_BLOCK_WIDTH / 2 + movementStep / 2 &&
-                unit.Position.Y >= GlobalConstants.GRIDMAP_BLOCK_HEIGHT / 2 - movementStep / 2 &&
-                unit.Position.Y <= GlobalConstants.GRIDMAP_BLOCK_HEIGHT / 2 + movementStep / 2 &&
-                !this.gridMapReached))
-                return;
+            remainDistance = GlobalConstants.GRIDMAP_BLOCK_WIDTH;
 
             this.gridMapReached = true;
 
-            //unit.Position = new GridGPS(unit.Position, 25, 25);
+            unit.Position = new GridGPS(unit.Position, 25, 25);
 
             if (Random.Int(100) <= 33)  // 33% chance to change direction
                 SelectNewDirection();

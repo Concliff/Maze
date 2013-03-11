@@ -35,6 +35,8 @@ namespace Maze.Classes
         /// </summary>
         protected double stepRemainder;
 
+        protected double remainDistance; // Remain distance to the next block
+
         public Map WorldMap = Map.WorldMap;
 
         protected Direction pr_CurrentDirection;
@@ -51,6 +53,11 @@ namespace Maze.Classes
             {
                 pr_CurrentDirection = value;
             }
+        }
+
+        public Movement()
+        {
+            CurrentDirection = new Direction(Directions.None, Directions.None);
         }
 
         public static Directions GetOppositeDirection(Directions Direction)

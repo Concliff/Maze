@@ -38,7 +38,8 @@ namespace Maze.Classes
             generatorType = MovementGeneratorType.None;
             IsInMotion = false;
 
-            this.unit.PositionChanged += OnPositionChanged;
+            OnDestinationReached();
+
             this.unit.LocationChanged += OnLocationChanged;
         }
 
@@ -63,12 +64,12 @@ namespace Maze.Classes
             IsInMotion = false;
         }
 
-        protected void MoveToDirection(int movementStep, Movement.Direction direction)
+        protected void Move(int movementStep)
         {
             GridGPS newPosition = this.unit.Position;
 
             for (int i = 0; i < 2; ++i)
-                switch (i == 0 ? direction.First : direction.Second)
+                switch (i == 0 ? CurrentDirection.First : CurrentDirection.Second)
                 {
                     case Directions.Up:
                         newPosition.Y -= movementStep;
@@ -85,9 +86,16 @@ namespace Maze.Classes
                 }
 
             this.unit.Position = newPosition;
+
+            if (remainDistance > 0)
+            {
+                remainDistance -= movementStep;
+            }
+            else
+                OnDestinationReached();
         }
 
-        protected virtual void OnPositionChanged(object sender, PositionEventArgs e) { ;}
+        protected virtual void OnDestinationReached() { ;}
 
         protected virtual void OnLocationChanged(object sender, PositionEventArgs e)
         {
