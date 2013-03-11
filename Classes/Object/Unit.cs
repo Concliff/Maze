@@ -93,6 +93,11 @@ namespace Maze.Classes
             return true;
         }
 
+        public EffectHolder GetHolder(int effectId)
+        {
+            return this.effectList.Find(p => p.EffectInfo.ID == effectId);
+        }
+
         public bool Remove(EffectHolder holder)
         {
 
@@ -372,7 +377,7 @@ namespace Maze.Classes
             effectList.Add(newHolder);
         }
 
-        private void RemoveEffect(EffectHolder effectHolder)
+        protected void RemoveEffect(EffectHolder effectHolder)
         {
             effectList.Remove(effectHolder);
         }
