@@ -102,12 +102,14 @@ namespace Maze.Classes
                 if (Units.Count > 0)
                 {
                     foreach (Unit unit in Units)
+                    {
+                        OnUnitCollision(unit);
                         if (!this.collidingUnits.Exists(p => p.GetGUID() == unit.GetGUID()))
                         {
-                            OnUnitCollision(unit);
                             OnUnitCollisionBegin(unit);
                             this.collidingUnits.Add(unit);
                         }
+                    }
                 }
                 else
                     if (collidingUnits.Count > 0)
@@ -287,7 +289,12 @@ namespace Maze.Classes
 
         public void OnUnitCollisionEnd(Unit unit)
         {
-
+            if (this.HasEffectType(EffectTypes.Shield))
+            {
+                EffectHolder holder = this.effectList.GetHolder(11);
+                if (holder != null)
+                    RemoveEffect(holder);
+            }
         }
 
         public void OnUnitCollision(Unit unit)
@@ -295,8 +302,9 @@ namespace Maze.Classes
             // HACK: do not collide with SlugClone
             if (unit.GetType() != ObjectType.Slug)
             {
-                unit.KillUnit(this);
-                return;
+                // Do not kill with shield
+                if (!this.HasEffectType(EffectTypes.Shield))
+                    unit.KillUnit(this);
             }
         }
 
