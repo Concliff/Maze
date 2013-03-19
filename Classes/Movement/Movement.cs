@@ -35,8 +35,6 @@ namespace Maze.Classes
         /// </summary>
         protected double stepRemainder;
 
-        protected double remainDistance; // Remain distance to the next block
-
         public Map WorldMap = Map.WorldMap;
 
         protected Direction pr_CurrentDirection;

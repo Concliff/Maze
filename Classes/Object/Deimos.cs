@@ -25,6 +25,8 @@ namespace Maze.Classes
             Home = respawnLocation;
 
             Position = new GridGPS(Home, 25, 25);
+
+            this.motionMaster.DefineNextGPS(this.motionMaster.CurrentDirection);
         }
 
         public override void UpdateState(int timeP)

@@ -11,6 +11,7 @@ namespace Maze.Classes
             : base(unit)
         {
             this.generatorType = MovementGeneratorType.Random;
+            SelectNewDirection();
         }
 
         public override void UpdateState(int timeP)
@@ -97,8 +98,6 @@ namespace Maze.Classes
 
         protected override void OnDestinationReached()
         {
-            remainDistance = GlobalConstants.GRIDMAP_BLOCK_WIDTH;
-
             this.gridMapReached = true;
 
             unit.Position = new GridGPS(unit.Position, 25, 25);
@@ -111,20 +110,18 @@ namespace Maze.Classes
 
             // Deimos can not pass through the Start Point
             // Check the next GridMap whether it is such block
-            GPS nextGPS = unit.Position.Location;
+
             GridMap nextGridMap;
 
-            switch (CurrentDirection.First)
-            {
-                case Directions.Up: --nextGPS.Y; break;
-                case Directions.Down: ++nextGPS.Y; break;
-                case Directions.Left: --nextGPS.X; break;
-                case Directions.Right: ++nextGPS.X; break;
-            }
+            DefineNextGPS(CurrentDirection);
 
-            nextGridMap = WorldMap.GetGridMap(nextGPS);
+            nextGridMap = WorldMap.GetGridMap(nextGPS.Location);
             if (nextGridMap.HasAttribute(GridMapAttributes.IsStart))
+            {
                 SelectNewDirection(false);
+                DefineNextGPS(CurrentDirection);
+            }
         }
+
     }
 }

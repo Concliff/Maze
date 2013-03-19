@@ -32,13 +32,13 @@ namespace Maze.Classes
             }
         }
 
+        protected GridGPS nextGPS; // Next block to move in the current direction
+
         public MovementGenerator(Unit unit)
         {
             this.unit = unit;
             generatorType = MovementGeneratorType.None;
             IsInMotion = false;
-
-            OnDestinationReached();
 
             this.unit.LocationChanged += OnLocationChanged;
         }
@@ -68,6 +68,12 @@ namespace Maze.Classes
         {
             GridGPS newPosition = this.unit.Position;
 
+            if (newPosition.GetDistance(nextGPS) <= (double)movementStep / 2)
+            {
+                OnDestinationReached();
+                return;
+            }
+
             for (int i = 0; i < 2; ++i)
                 switch (i == 0 ? CurrentDirection.First : CurrentDirection.Second)
                 {
@@ -87,12 +93,6 @@ namespace Maze.Classes
 
             this.unit.Position = newPosition;
 
-            if (remainDistance > 0)
-            {
-                remainDistance -= movementStep;
-            }
-            else
-                OnDestinationReached();
         }
 
         protected virtual void OnDestinationReached() { ;}
@@ -102,6 +102,19 @@ namespace Maze.Classes
             this.gridMapReached = false;
         }
 
+        public GridGPS DefineNextGPS(Direction Currenetdirection)
+        {
+            nextGPS = new GridGPS(unit.Position, 25, 25);
+
+            switch (CurrentDirection.First)
+            {
+                case Directions.Up: --nextGPS.Location.Y; break;
+                case Directions.Down: ++nextGPS.Location.Y; break;
+                case Directions.Left: --nextGPS.Location.X; break;
+                case Directions.Right: ++nextGPS.Location.X; break;
+            }
+            return nextGPS;
+        }
     }
 
 }

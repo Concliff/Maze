@@ -10,8 +10,8 @@ namespace Maze
     {
         private const uint Major    = 0;
         private const uint Minor    = 7;
-        private const uint Build    = 15;
-        private const uint Revision = 255;
+        private const uint Build    = 16;
+        private const uint Revision = 256;
 
 
         public static string GetVersion()

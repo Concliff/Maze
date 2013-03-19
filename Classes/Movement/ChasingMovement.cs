@@ -162,11 +162,6 @@ namespace Maze.Classes
             if (state != MotionStates.Chasing && state != MotionStates.ReturningHome)
                 return;
 
-            if (CurrentDirection.Second != Directions.None)
-                remainDistance = Math.Sqrt(2) * GlobalConstants.GRIDMAP_BLOCK_WIDTH;
-            else remainDistance = GlobalConstants.GRIDMAP_BLOCK_WIDTH;
-
-
             // HACK: Ignore if not the center of the block
             int movementStep = (int)(GlobalConstants.MOVEMENT_STEP_PX * unit.SpeedRate) + 1;
             if (!(unit.Position.X >= GlobalConstants.GRIDMAP_BLOCK_WIDTH / 2 - movementStep / 2 &&
