@@ -12,19 +12,19 @@ namespace Maze.Classes
         {
             UnitType = UnitTypes.Deimos;
 
-            Position = new GridGPS(Home, 25, 25);
+            Position = new GPS(Home, 25, 25);
 
             this.motionMaster = new RandomMovementGenerator(this);
 
             //currentGridMap = GetWorldMap().GetGridMap(Position.Location);
         }
 
-        public Deimos(GPS respawnLocation)
+        public Deimos(GridLocation respawnLocation)
             : this()
         {
             Home = respawnLocation;
 
-            Position = new GridGPS(Home, 25, 25);
+            Position = new GPS(Home, 25, 25);
 
             this.motionMaster.DefineNextGPS(this.motionMaster.CurrentDirection);
         }

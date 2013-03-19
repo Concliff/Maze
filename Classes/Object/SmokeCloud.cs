@@ -9,7 +9,7 @@ namespace Maze.Classes
     {
         public static int SmokeDuration = 5000;
 
-        public SmokeCloud(GridGPS currentGridGPS)
+        public SmokeCloud(GPS currentGridGPS)
         {
             Position = currentGridGPS;
             currentGridMap = GetWorldMap().GetGridMap(currentGridGPS.Location);

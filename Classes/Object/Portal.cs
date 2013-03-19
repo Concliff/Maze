@@ -19,13 +19,13 @@ namespace Maze.Classes
         public Portal(GridMap position)
             : this()
         {
-            GridGPS startPosition = Position;
+            GPS startPosition = Position;
             startPosition.Location = position.Location;
             Position = startPosition;
             currentGridMap = position;
         }
 
-        public void SetDestination(GPS destinationGPS)
+        public void SetDestination(GridLocation destinationGPS)
         {
             GridMap destinationGridMap = GetWorldMap().GetGridMap(destinationGPS);
             SetDestination(destinationGridMap);

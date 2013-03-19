@@ -174,11 +174,11 @@ namespace Maze.Classes
             }
         }
 
-        protected GPS respawnLocation;
+        protected GridLocation respawnLocation;
         /// <summary>
         /// Gets Respawn Location of the unit.
         /// </summary>
-        public GPS Home
+        public GridLocation Home
         {
             get
             {
@@ -222,7 +222,7 @@ namespace Maze.Classes
             SetDeathState(DeathStates.Alive);
             SetUnitFlags(UnitFlags.None);
 
-            this.respawnLocation = new GPS();
+            this.respawnLocation = new GridLocation();
 
             objectType = ObjectType.Unit;
             UnitType = UnitTypes.Unit;
@@ -298,8 +298,8 @@ namespace Maze.Classes
                 distance = (int)Math.Sqrt(distance);
             }
 
-            GridGPS newPosition = Position;
-            GridGPS intermidiatePosition = Position;
+            GPS newPosition = Position;
+            GPS intermidiatePosition = Position;
 
             switch (this.motionMaster.CurrentDirection.First)
             {
@@ -354,10 +354,10 @@ namespace Maze.Classes
 
         public void TeleportTo(GridMap destinationGridMap)
         {
-            Position = new GridGPS(destinationGridMap.Location, 25, 25);
+            Position = new GPS(destinationGridMap.Location, 25, 25);
         }
 
-        public void TeleportTo(GPS destinationGPS)
+        public void TeleportTo(GridLocation destinationGPS)
         {
             GridMap destinationGridMap = GetWorldMap().GetGridMap(destinationGPS);
             TeleportTo(destinationGridMap);
@@ -451,7 +451,7 @@ namespace Maze.Classes
         protected void Respawn()
         {
             // Return to start location
-            Position = new GridGPS(Home, 25, 25);
+            Position = new GPS(Home, 25, 25);
 
             SetDeathState(DeathStates.Alive);
         }

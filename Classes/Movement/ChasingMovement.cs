@@ -108,7 +108,7 @@ namespace Maze.Classes
                 {
                     int index = this.pathFinder.Path.IndexOf(currentGridMap);
 
-                    GPS nextGPS = unit.Position.Location;
+                    GridLocation nextGPS = unit.Position.Location;
                     GridMap nextGridMap;
 
                     if (index > 0)
@@ -171,7 +171,7 @@ namespace Maze.Classes
                 !this.gridMapReached))
                 return;
 
-            unit.Position = new GridGPS(unit.Position, 25, 25);
+            unit.Position = new GPS(unit.Position, 25, 25);
             this.gridMapReached = true;
             FindPath();
 

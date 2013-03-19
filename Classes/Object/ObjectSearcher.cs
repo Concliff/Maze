@@ -8,9 +8,9 @@ namespace Maze.Classes
 {
     class ObjectSearcher
     {
-        private static GridGPS DefaultGridGPS(GPS location)
+        private static GPS DefaultGridGPS(GridLocation location)
         {
-            GridGPS gridGPS;
+            GPS gridGPS;
             gridGPS.Location = location;
             gridGPS.X = GlobalConstants.GRIDMAP_BLOCK_WIDTH / 2;
             gridGPS.Y = GlobalConstants.GRIDMAP_BLOCK_HEIGHT / 2;
@@ -30,12 +30,12 @@ namespace Maze.Classes
             return gridObjects;
         }
 
-        public static List<GridObject> GetGridObjectsInArea(GPS centralGPS, int radius)
+        public static List<GridObject> GetGridObjectsInArea(GridLocation centralGPS, int radius)
         {
             return GetGridObjectsInArea(DefaultGridGPS(centralGPS), radius);
         }
 
-        public static List<GridObject> GetGridObjectsInArea(GridGPS centralGridGPS, int radius)
+        public static List<GridObject> GetGridObjectsInArea(GPS centralGridGPS, int radius)
         {
             List<Object> objects = new List<Object>();
             objects = GetObjectsInArea(centralGridGPS, radius);
@@ -69,12 +69,12 @@ namespace Maze.Classes
             return units;
         }
 
-        public static List<Unit> GetUnitsInArea(GPS centralGPS, int radius, bool includeInvisible, bool includeDead)
+        public static List<Unit> GetUnitsInArea(GridLocation centralGPS, int radius, bool includeInvisible, bool includeDead)
         {
             return GetUnitsInArea(DefaultGridGPS(centralGPS), radius, includeInvisible, includeDead);
         }
 
-        public static List<Unit> GetUnitsInArea(GridGPS centralGridGPS, int radius, bool includeInvisible, bool includeDead)
+        public static List<Unit> GetUnitsInArea(GPS centralGridGPS, int radius, bool includeInvisible, bool includeDead)
         {
             List<Object> objects = new List<Object>();
             objects = GetObjectsInArea(centralGridGPS, radius);
@@ -109,15 +109,15 @@ namespace Maze.Classes
             return objects;
         }
 
-        public static List<Object> GetObjectsInArea(GPS centralGPS, int radius)
+        public static List<Object> GetObjectsInArea(GridLocation centralGPS, int radius)
         {
             return GetObjectsInArea(DefaultGridGPS(centralGPS), radius);
         }
 
-        public static List<Object> GetObjectsInArea(GridGPS centralGridGPS, int radius)
+        public static List<Object> GetObjectsInArea(GPS centralGridGPS, int radius)
         {
             List<Object> objects = new List<Object>();
-            GPS SearchGPS = centralGridGPS.Location;
+            GridLocation SearchGPS = centralGridGPS.Location;
 
             // How much grids use for search
             int GridToNorth = (int)Math.Ceiling(Math.Abs(centralGridGPS.Y - radius) * 1d / GlobalConstants.GRIDMAP_BLOCK_HEIGHT);

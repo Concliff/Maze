@@ -57,7 +57,7 @@ namespace Maze.Classes
             gridObjectType = GridObjectType.GridObject;
 
             // Always in center of GridMap
-            Position = new GridGPS(Position, 25, 25);
+            Position = new GPS(Position, 25, 25);
 
             // Flags by default
             SetFlag(GridObjectFlags.Usable);
@@ -66,7 +66,7 @@ namespace Maze.Classes
             recentlyUsed = false;
         }
 
-        public GPS GetLocation() { return Position.Location; }
+        public GridLocation GetLocation() { return Position.Location; }
 
         public GridObjectType GetGridObjectType() { return gridObjectType; }
 

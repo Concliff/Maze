@@ -61,7 +61,7 @@ namespace Maze.Classes
             return null;
         }
 
-        public List<Object> GetAllObjectsByGPS(GPS iGPS)
+        public List<Object> GetAllObjectsByGPS(GridLocation iGPS)
         {
             return objects.FindAll(p => p.Position.Location.Equals(iGPS));
         }

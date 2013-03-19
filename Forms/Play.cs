@@ -470,7 +470,7 @@ namespace Maze.Forms
             {
                 // Define location of the bonus
                 // in 3 Blocks radius range
-                GridGPS bonusGridGPS;
+                GPS bonusGridGPS;
                 // Try 10 times to find appropriate point
                 for (int i = 0; i < 10; ++i)
                 {

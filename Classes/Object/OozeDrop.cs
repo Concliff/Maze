@@ -16,7 +16,7 @@ namespace Maze.Classes
         public OozeDrop(GridMap gridMap)
             : this()
         {
-            GridGPS position = Position;
+            GPS position = Position;
             position.Location = gridMap.Location;
             Position = position;
             currentGridMap = gridMap;

@@ -102,7 +102,7 @@ namespace Maze.Forms
         /// </summary>
         private void RebuildGraphMap(Graphics gGridMapBP)
         {
-            GPS PBLocation = new GPS();
+            GridLocation PBLocation = new GridLocation();
             GridMap Block = new GridMap();
 
             List<Maze.Classes.Object> objectsOnMap = new List<Maze.Classes.Object>();

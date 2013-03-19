@@ -22,9 +22,9 @@ namespace Maze.Classes
 
     public class PositionEventArgs : EventArgs
     {
-        public GridGPS NewPosition;
+        public GPS NewPosition;
 
-        public PositionEventArgs(GridGPS position)
+        public PositionEventArgs(GPS position)
         {
             NewPosition = position;
         }
@@ -44,11 +44,11 @@ namespace Maze.Classes
         protected GridMap currentGridMap;
         protected ModelSize objectSize;
 
-        private GridGPS pr_position;
+        private GPS pr_position;
         /// <summary>
         /// Gets or sets Object location on the Map.
         /// </summary>
-        public GridGPS Position
+        public GPS Position
         {
             get
             {
@@ -59,7 +59,7 @@ namespace Maze.Classes
                 if (pr_position.Equals(value))
                     return;
 
-                GridGPS newPosition = value;
+                GPS newPosition = value;
                 bool locationChanged = false;
 
                 // if coordinates are outside the cell
@@ -180,7 +180,7 @@ namespace Maze.Classes
         /// <summary>
         /// Set Position.X and Position.Y considering object model size and current GridMap block
         /// </summary>
-        protected GridGPS NormalizePosition(GridGPS position)
+        protected GPS NormalizePosition(GPS position)
         {
             GridMap gridMap = GetWorldMap().GetGridMap(position.Location);
 

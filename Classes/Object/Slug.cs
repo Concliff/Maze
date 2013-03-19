@@ -58,7 +58,7 @@ namespace Maze.Classes
             Home = GetWorldMap().GetStartPoint();
 
             // Set Start Location
-            Position = new GridGPS(Home, 25, 25);
+            Position = new GPS(Home, 25, 25);
 
             respawnTimer = 3000;
 
@@ -173,11 +173,11 @@ namespace Maze.Classes
             if (HasEffectType(EffectTypes.Root))
                 return;
 
-            GridGPS previousPosition = Position;
+            GPS previousPosition = Position;
 
             // Find a point in currectDirection + searchingStep
             // to determine whether Slug is affected by Slime speed-up boost
-            GridGPS searchingPoint = Position;
+            GPS searchingPoint = Position;
             int searchingStep = 10;
             List<GridObject> slimeAround;
             bool slimePersist = false;
@@ -247,7 +247,7 @@ namespace Maze.Classes
         public void LevelChanged()
         {
             Home = GetWorldMap().GetStartPoint();
-            Position = new GridGPS(Home, 25, 25);
+            Position = new GPS(Home, 25, 25);
         }
 
         public void CollectDrop(OozeDrop drop)

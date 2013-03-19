@@ -7,7 +7,7 @@ namespace Maze.Classes
 {
     public class SlugClone : Slug
     {
-        public SlugClone(GridGPS position, Movement.Direction currentDirection)
+        public SlugClone(GPS position, Movement.Direction currentDirection)
         {
             UnitType = UnitTypes.SlugClone;
 
@@ -28,7 +28,7 @@ namespace Maze.Classes
             // Always in motion
             if (!HasEffectType(EffectTypes.Root))
             {
-                GridGPS previousPosition = Position;
+                GPS previousPosition = Position;
 
                 this.motionMaster.UpdateState(timeP);
 

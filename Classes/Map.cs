@@ -47,8 +47,8 @@ namespace Maze.Classes
         private List<GridMap> MapBlocks;    // Array of GridMap block of current map
         private int[] dropsCount;            // Ooze Drops per level on map
         private string[] MapNameList;       // Names of All downloaded maps
-        private List<GPS> StartPoint;
-        private List<GPS> FinishPoint;
+        private List<GridLocation> StartPoint;
+        private List<GridLocation> FinishPoint;
         private string CurrentMapName;
         private bool GridMapChanged;        // If map changed, it should be rewrited into mapFile
         private int currentMapIndex;
@@ -158,8 +158,8 @@ namespace Maze.Classes
             MazeGenerator generator = new MazeGenerator();
             MapBlocks = generator.Generate(0);
             BlocksCount = MapBlocks.Count;
-            StartPoint = new List<GPS>();
-            FinishPoint = new List<GPS>();
+            StartPoint = new List<GridLocation>();
+            FinishPoint = new List<GridLocation>();
             StartPoint.Add(generator.StartPoint.Location);
             FinishPoint.Add(generator.FinishPoint.Location);
 
@@ -233,8 +233,8 @@ namespace Maze.Classes
         {
             this.isRandom = false;
             MapBlocks = new List<GridMap>();
-            StartPoint = new List<GPS>();
-            FinishPoint = new List<GPS>();
+            StartPoint = new List<GridLocation>();
+            FinishPoint = new List<GridLocation>();
             CurrentMapName = MapFileName.Split('.')[0];
             int levelIndicator = 0;
 
@@ -341,7 +341,7 @@ namespace Maze.Classes
 
             return MapBlock;
         }
-        public GridMap GetGridMap(GPS BlockLocation)
+        public GridMap GetGridMap(GridLocation BlockLocation)
         {
             GridMap MapBlock = new GridMap();
             MapBlock.Initialize();// Initialize(MapBlock);
@@ -391,17 +391,17 @@ namespace Maze.Classes
             return MapNameList;
         }
 
-        public GPS GetStartPoint()
+        public GridLocation GetStartPoint()
         {
-            GPS result = new GPS();
+            GridLocation result = new GridLocation();
             result.Level = CurrentLevel;
             if (CurrentLevel < LevelCount)
                 result = StartPoint[CurrentLevel];
             return result;
         }
-        public GPS GetFinishPoint()
+        public GridLocation GetFinishPoint()
         {
-            GPS result = new GPS();
+            GridLocation result = new GridLocation();
             result.Level = CurrentLevel;
             if (CurrentLevel <= FinishPoint.Count)
                 result = FinishPoint[CurrentLevel];

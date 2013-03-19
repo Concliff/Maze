@@ -7,14 +7,14 @@ namespace Maze.Classes
 {
     public class Phobos : Unit
     {
-        public Phobos(GPS respawnLocation)
+        public Phobos(GridLocation respawnLocation)
         {
             UnitType = UnitTypes.Phobos;
             SetUnitFlags(UnitFlags.CanNotBeKilled);
 
             Home = respawnLocation;
 
-            Position = new GridGPS(respawnLocation, 25, 25);
+            Position = new GPS(respawnLocation, 25, 25);
 
             this.motionMaster = new ChasingMovement(this);
 

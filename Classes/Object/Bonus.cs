@@ -22,7 +22,7 @@ namespace Maze.Classes
         private BonusEffect bonusEffect;
 
 
-        public Bonus(GridGPS currentGridGPS)
+        public Bonus(GPS currentGridGPS)
         {
             Position = currentGridGPS;
             currentGridMap = GetWorldMap().GetGridMap(currentGridGPS.Location);

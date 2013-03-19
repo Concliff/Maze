@@ -19,7 +19,7 @@ namespace Maze.Classes
             else
                 timeToLive = 3000;
         }
-        public Slime(GridGPS currentGridGPS)
+        public Slime(GPS currentGridGPS)
             : this()
         {
             Position = currentGridGPS;

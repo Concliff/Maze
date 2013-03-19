@@ -12,7 +12,7 @@ namespace Maze.Classes
     {
         public int ID;
         //public int PictureID;
-        public GPS Location;
+        public GridLocation Location;
         public uint Type;
         public uint Attribute;
         public uint Option;
@@ -50,14 +50,14 @@ namespace Maze.Classes
         }
     };
 
-    public struct GPS
+    public struct GridLocation
     {
         public int X;
         public int Y;
         public int Z;
         public int Level;
 
-        public static bool operator ==(GPS a, GPS b)
+        public static bool operator ==(GridLocation a, GridLocation b)
         {
             if (a == null || b == null)
                 return false;
@@ -65,7 +65,7 @@ namespace Maze.Classes
             return (a.X == b.X && a.Y == b.Y && a.Z == b.Z && a.Level == b.Level);
         }
 
-        public static bool operator !=(GPS a, GPS b)
+        public static bool operator !=(GridLocation a, GridLocation b)
         {
             return !(a == b);
         }
@@ -77,7 +77,7 @@ namespace Maze.Classes
 
             try
             {
-                GPS p = (GPS)obj;
+                GridLocation p = (GridLocation)obj;
             }
             // Can not convert with any reason
             catch
@@ -85,10 +85,10 @@ namespace Maze.Classes
                 return false;
             }
 
-            return this == (GPS)obj;
+            return this == (GridLocation)obj;
         }
 
-        public bool Equals(GPS p)
+        public bool Equals(GridLocation p)
         {
             if (p == null)
                 return false;
@@ -103,14 +103,14 @@ namespace Maze.Classes
     };
 
     // Location on current Block
-    public struct GridGPS
+    public struct GPS
     {
-        public GPS Location;
-        public GPS Absolute
+        public GridLocation Location;
+        public GridLocation Absolute
         {
             get
             {
-                GPS absolute = new GPS();
+                GridLocation absolute = new GridLocation();
 
                 absolute.X = Location.X * GlobalConstants.GRIDMAP_BLOCK_WIDTH + X;
                 absolute.Y = Location.Y * GlobalConstants.GRIDMAP_BLOCK_HEIGHT + Y;
@@ -141,7 +141,7 @@ namespace Maze.Classes
         /// <summary>
         /// Initialize with Custom LOcation and X, Y block coords
         /// </summary>
-        public GridGPS(GPS Location, int X, int Y)
+        public GPS(GridLocation Location, int X, int Y)
         {
             this.Location = Location;
             this.X = X;
@@ -152,14 +152,14 @@ namespace Maze.Classes
         /// <summary>
         /// Initialize by copying Position with custom X and Y coords
         /// </summary>
-        public GridGPS(GridGPS Position, int X, int Y)
+        public GPS(GPS Position, int X, int Y)
         {
             this = Position;
             this.X = X;
             this.Y = Y;
         }
 
-        public double GetDistance(GridGPS point)
+        public double GetDistance(GPS point)
         {
             double distance = Math.Sqrt(Math.Pow(this.X - point.X + (this.Location.X - point.Location.X) * GlobalConstants.GRIDMAP_BLOCK_WIDTH, 2)
                     + Math.Pow(this.Y - point.Y + (this.Location.Y - point.Location.Y) * GlobalConstants.GRIDMAP_BLOCK_HEIGHT, 2));
@@ -167,7 +167,7 @@ namespace Maze.Classes
             return distance;
         }
 
-        public static bool operator ==(GridGPS a, GridGPS b)
+        public static bool operator ==(GPS a, GPS b)
         {
             if (a == null || b == null)
                 return false;
@@ -175,7 +175,7 @@ namespace Maze.Classes
             return (a.Location == b.Location && a.X == b.X && a.Y == b.Y && a.BlockID == b.BlockID);
         }
 
-        public static bool operator !=(GridGPS a, GridGPS b)
+        public static bool operator !=(GPS a, GPS b)
         {
             return !(a == b);
         }
@@ -187,7 +187,7 @@ namespace Maze.Classes
 
             try
             {
-                GridGPS p = (GridGPS)obj;
+                GPS p = (GPS)obj;
             }
             // Can not convert with any reason
             catch
@@ -195,10 +195,10 @@ namespace Maze.Classes
                 return false;
             }
 
-            return this == (GridGPS)obj;
+            return this == (GPS)obj;
         }
 
-        public bool Equals(GridGPS p)
+        public bool Equals(GPS p)
         {
             if (p == null)
                 return false;

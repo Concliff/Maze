@@ -185,7 +185,7 @@ namespace Maze.Classes
                 {
                     if (i != 0 || j != 0)
                     {
-                        GPS location = new GPS();
+                        GridLocation location = new GridLocation();
                         location.X = Block.Location.X + i;
                         location.Y = Block.Location.Y + j;
                         location.Level = Block.Location.Level;
@@ -198,9 +198,9 @@ namespace Maze.Classes
                                 case -1:
                                     if (i == -1)    // diagonal moving - left and down
                                     {
-                                        GPS locDown = Block.Location;
+                                        GridLocation locDown = Block.Location;
                                         locDown.Y++;
-                                        GPS locLeft = Block.Location;
+                                        GridLocation locLeft = Block.Location;
                                         locLeft.X--;
 
                                         // Check cell's passability
@@ -214,9 +214,9 @@ namespace Maze.Classes
                                     }
                                     else    // diagonal moving - right and up
                                     {
-                                        GPS locUp = Block.Location;
+                                        GridLocation locUp = Block.Location;
                                         locUp.Y--;
-                                        GPS locRight = Block.Location;
+                                        GridLocation locRight = Block.Location;
                                         locRight.X++;
 
                                         if ((Block.CanMoveTo(Directions.Up) &&
@@ -231,9 +231,9 @@ namespace Maze.Classes
                                 case 1:
                                     if (i == -1)    // diagonal moving - left and up
                                     {
-                                        GPS locUp = Block.Location;
+                                        GridLocation locUp = Block.Location;
                                         locUp.Y--;
-                                        GPS locLeft = Block.Location;
+                                        GridLocation locLeft = Block.Location;
                                         locLeft.X--;
 
                                         if ((Block.CanMoveTo(Directions.Left) &&
@@ -246,9 +246,9 @@ namespace Maze.Classes
                                     }
                                     else    // diagonal moving - right and down
                                     {
-                                        GPS locDown = Block.Location;
+                                        GridLocation locDown = Block.Location;
                                         locDown.Y++;
-                                        GPS locRight = Block.Location;
+                                        GridLocation locRight = Block.Location;
                                         locRight.X++;
 
                                         if ((Block.CanMoveTo(Directions.Down) &&

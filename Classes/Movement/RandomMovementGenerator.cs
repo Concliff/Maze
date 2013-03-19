@@ -100,7 +100,7 @@ namespace Maze.Classes
         {
             this.gridMapReached = true;
 
-            unit.Position = new GridGPS(unit.Position, 25, 25);
+            unit.Position = new GPS(unit.Position, 25, 25);
 
             if (Random.Int(100) <= 33)  // 33% chance to change direction
                 SelectNewDirection();

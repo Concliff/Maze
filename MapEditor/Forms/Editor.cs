@@ -16,7 +16,7 @@ namespace MapEditor.Forms
     {
         struct VritualPlayer
         {
-            public GridGPS Position;
+            public GPS Position;
         };
 
         private VritualPlayer oPlayer;
@@ -122,7 +122,7 @@ namespace MapEditor.Forms
             Graphics gGraphic;
             gGraphic = this.CreateGraphics();
             this.SuspendLayout();
-            GPS PBLocation = new GPS();
+            GridLocation PBLocation = new GridLocation();
             GridMap Block = new GridMap();
             // GridMapGraph
             for (int i = 0; i < GlobalConstants.GRIDMAP_WIDTH; ++i)
@@ -175,7 +175,7 @@ namespace MapEditor.Forms
 
         void BlockClick(object sender, System.EventArgs e)
         {
-            GPS CursorGPS = oPlayer.Position.Location;
+            GridLocation CursorGPS = oPlayer.Position.Location;
 
             // Calculate GPS of mouse click location by distance beetween player postion, 
             // form center point and MouseClick point
