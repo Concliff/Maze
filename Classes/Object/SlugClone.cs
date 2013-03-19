@@ -12,7 +12,7 @@ namespace Maze.Classes
             UnitType = UnitTypes.SlugClone;
 
             Position = position;
-            this.currentCell = GetWorldMap().GetCellsition.Location);
+            this.currentCell = GetWorldMap().GetCell(Position.Location);
 
             objectSize.Width = GlobalConstants.PLAYER_SIZE_WIDTH;
             objectSize.Height = GlobalConstants.PLAYER_SIZE_HEIGHT;
