@@ -59,7 +59,7 @@ namespace Maze.Forms
             InitializeComponent();
             CustomInitialize();
             AddControlsOrder();
-            CellPB.BackColor = Color.Gray;
+            GridMapPB.BackColor = Color.Gray;
             SystemTimer.Interval = GlobalConstants.TIMER_TICK_IN_MS; // 50 ms
 
             label1.Text = "0";
@@ -268,7 +268,7 @@ namespace Maze.Forms
                                 SystemTimer.Stop();
 
                                 // Clean Form Controls
-                                CellPB.Invalidate();
+                                GridMapPB.Invalidate();
                                 RightPanelPB.Invalidate();
                                 LeftPanelPB.Invalidate();
 
@@ -470,25 +470,25 @@ namespace Maze.Forms
             {
                 // Define location of the bonus
                 // in 3 Blocks radius range
-                GPS bonusGridGPS;
+                GPS bonusPosition;
                 // Try 10 times to find appropriate point
                 for (int i = 0; i < 10; ++i)
                 {
-                    bonusGridGPS = Player.Position;
+                    bonusPosition = Player.Position;
                     short xDiff = (short)Random.Int(6);
                     short yDiff = (short)Random.Int(6);
-                    bonusGridGPS.Location.X += xDiff - 3;
-                    bonusGridGPS.Location.Y += yDiff - 3;
+                    bonusPosition.Location.X += xDiff - 3;
+                    bonusPosition.Location.Y += yDiff - 3;
 
                     // If current GPS doesn't have a map block
-                    if (worldMap.GetCell(bonusGridGPS.Location).ID == -1)
+                    if (worldMap.GetCell(bonusPosition.Location).ID == -1)
                         continue;
 
                     // else generate Bonus object
-                    bonusGridGPS.X = Random.Int(30) + 10;
-                    bonusGridGPS.Y = Random.Int(30) + 10;
+                    bonusPosition.X = Random.Int(30) + 10;
+                    bonusPosition.Y = Random.Int(30) + 10;
 
-                    Bonus newBonus = new Bonus(bonusGridGPS);
+                    Bonus newBonus = new Bonus(bonusPosition);
 
                     // Get Random effect
                     BonusEffect eff = bonusEffects[Random.Int(bonusEffects.Count())];
@@ -504,7 +504,7 @@ namespace Maze.Forms
                 bonusGenerateTimer -= tickTime;
 
             // Redraw Form Map
-            CellPB.Invalidate();
+            GridMapPB.Invalidate();
         }
 
         private void UseSpell(int spellNumber)

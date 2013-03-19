@@ -22,10 +22,10 @@ namespace Maze.Classes
         private BonusEffect bonusEffect;
 
 
-        public Bonus(GPS currentGridGPS)
+        public Bonus(GPS currentPosition)
         {
-            Position = currentGridGPS;
-            currentCell = GetWorldMap().GetCell(currentGridGPS.Location);
+            Position = currentPosition;
+            currentCell = GetWorldMap().GetCell(currentPosition.Location);
 
             gridObjectType = GridObjectType.Bonus;
             SetFlag(GridObjectFlags.Temporal);

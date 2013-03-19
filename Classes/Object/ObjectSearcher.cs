@@ -8,15 +8,12 @@ namespace Maze.Classes
 {
     class ObjectSearcher
     {
-        private static GPS DefaultGridGPS(GridLocation location)
+        private static GPS DefaultGPS(GridLocation location)
         {
-            GPS gridGPS;
-            gridGPS.Location = location;
-            gridGPS.X = GlobalConstants.CELL_WIDTH / 2;
-            gridGPS.Y = GlobalConstants.CELL_HEIGHT / 2;
-            gridGPS.BlockID = 0;
+            GPS position = new GPS(location, GlobalConstants.CELL_WIDTH / 2, GlobalConstants.CELL_HEIGHT);
+            position.BlockID = 0;
 
-            return gridGPS;
+            return position;
         }
 
         public static List<GridObject> GetGridObjectsWithinRange(Object searcher, int rangeDistance)
@@ -30,15 +27,15 @@ namespace Maze.Classes
             return gridObjects;
         }
 
-        public static List<GridObject> GetGridObjectsInArea(GridLocation centralGPS, int radius)
+        public static List<GridObject> GetGridObjectsInArea(GridLocation centralLocation, int radius)
         {
-            return GetGridObjectsInArea(DefaultGridGPS(centralGPS), radius);
+            return GetGridObjectsInArea(DefaultGPS(centralLocation), radius);
         }
 
-        public static List<GridObject> GetGridObjectsInArea(GPS centralGridGPS, int radius)
+        public static List<GridObject> GetGridObjectsInArea(GPS centralPosition, int radius)
         {
             List<Object> objects = new List<Object>();
-            objects = GetObjectsInArea(centralGridGPS, radius);
+            objects = GetObjectsInArea(centralPosition, radius);
 
             List<GridObject> result = new List<GridObject>();
 
@@ -69,15 +66,15 @@ namespace Maze.Classes
             return units;
         }
 
-        public static List<Unit> GetUnitsInArea(GridLocation centralGPS, int radius, bool includeInvisible, bool includeDead)
+        public static List<Unit> GetUnitsInArea(GridLocation centralLocation, int radius, bool includeInvisible, bool includeDead)
         {
-            return GetUnitsInArea(DefaultGridGPS(centralGPS), radius, includeInvisible, includeDead);
+            return GetUnitsInArea(DefaultGPS(centralLocation), radius, includeInvisible, includeDead);
         }
 
-        public static List<Unit> GetUnitsInArea(GPS centralGridGPS, int radius, bool includeInvisible, bool includeDead)
+        public static List<Unit> GetUnitsInArea(GPS centralPosition, int radius, bool includeInvisible, bool includeDead)
         {
             List<Object> objects = new List<Object>();
-            objects = GetObjectsInArea(centralGridGPS, radius);
+            objects = GetObjectsInArea(centralPosition, radius);
 
             List<Unit> result = new List<Unit>();
 
@@ -109,28 +106,28 @@ namespace Maze.Classes
             return objects;
         }
 
-        public static List<Object> GetObjectsInArea(GridLocation centralGPS, int radius)
+        public static List<Object> GetObjectsInArea(GridLocation centralLocation, int radius)
         {
-            return GetObjectsInArea(DefaultGridGPS(centralGPS), radius);
+            return GetObjectsInArea(DefaultGPS(centralLocation), radius);
         }
 
-        public static List<Object> GetObjectsInArea(GPS centralGridGPS, int radius)
+        public static List<Object> GetObjectsInArea(GPS centralPosition, int radius)
         {
             List<Object> objects = new List<Object>();
-            GridLocation SearchGPS = centralGridGPS.Location;
+            GridLocation searchLocation = centralPosition.Location;
 
-            // How much grids use for search
-            int GridToNorth = (int)Math.Ceiling(Math.Abs(centralGridGPS.Y - radius) * 1d / GlobalConstants.CELL_HEIGHT);
-            int GridToSouth = (int)Math.Floor(Math.Abs(centralGridGPS.Y + radius) * 1d / GlobalConstants.CELL_HEIGHT);
-            int GridToWest = (int)Math.Ceiling(Math.Abs(centralGridGPS.X - radius) * 1d / GlobalConstants.CELL_WIDTH);
-            int GridToEast = (int)Math.Floor(Math.Abs(centralGridGPS.X + radius) * 1d / GlobalConstants.CELL_WIDTH);
+            // How much cells use for search
+            int cellsToNorth = (int)Math.Ceiling(Math.Abs(centralPosition.Y - radius) * 1d / GlobalConstants.CELL_HEIGHT);
+            int cellsToSouth = (int)Math.Floor(Math.Abs(centralPosition.Y + radius) * 1d / GlobalConstants.CELL_HEIGHT);
+            int cellsToWest = (int)Math.Ceiling(Math.Abs(centralPosition.X - radius) * 1d / GlobalConstants.CELL_WIDTH);
+            int cellsToEast = (int)Math.Floor(Math.Abs(centralPosition.X + radius) * 1d / GlobalConstants.CELL_WIDTH);
 
-            for (int width = centralGridGPS.Location.X - GridToWest; width <= centralGridGPS.Location.X + GridToEast; ++width)
-                for (int height = centralGridGPS.Location.Y - GridToNorth; height <= centralGridGPS.Location.Y + GridToSouth; ++height)
+            for (int width = centralPosition.Location.X - cellsToWest; width <= centralPosition.Location.X + cellsToEast; ++width)
+                for (int height = centralPosition.Location.Y - cellsToNorth; height <= centralPosition.Location.Y + cellsToSouth; ++height)
                 {
-                    SearchGPS.X = width;
-                    SearchGPS.Y = height;
-                    objects.AddRange(ObjectContainer.Container.GetAllObjectsByGPS(SearchGPS));
+                    searchLocation.X = width;
+                    searchLocation.Y = height;
+                    objects.AddRange(ObjectContainer.Container.GetAllObjectsByGPS(searchLocation));
                 }
 
             List<Object> result = new List<Object>();
@@ -138,8 +135,8 @@ namespace Maze.Classes
             foreach (Object obj in objects)
             {
                 // Calculate actual distance
-                if (Math.Sqrt(Math.Pow(centralGridGPS.X - obj.Position.X + (centralGridGPS.Location.X - obj.Position.Location.X) * GlobalConstants.CELL_WIDTH, 2)
-                    + Math.Pow(centralGridGPS.Y - obj.Position.Y + (centralGridGPS.Location.Y - obj.Position.Location.Y) * GlobalConstants.CELL_HEIGHT, 2)) < radius)
+                if (Math.Sqrt(Math.Pow(centralPosition.X - obj.Position.X + (centralPosition.Location.X - obj.Position.Location.X) * GlobalConstants.CELL_WIDTH, 2)
+                    + Math.Pow(centralPosition.Y - obj.Position.Y + (centralPosition.Location.Y - obj.Position.Location.Y) * GlobalConstants.CELL_HEIGHT, 2)) < radius)
                 {
                     result.Add(obj);
                 }

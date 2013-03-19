@@ -207,9 +207,9 @@ namespace Maze.Forms
                     if (objectImage == null)
                         continue;
 
-                    int xCoord = CellPB.Size.Width / 2 - ((Player.Position.Location.X - objectsOnMap[i].Position.Location.X) *
+                    int xCoord = GridMapPB.Size.Width / 2 - ((Player.Position.Location.X - objectsOnMap[i].Position.Location.X) *
                             GlobalConstants.CELL_WIDTH + Player.Position.X - objectsOnMap[i].Position.X) - objectImage.Size.Width / 2;
-                    int yCoord = CellPB.Size.Height / 2 - ((Player.Position.Location.Y - objectsOnMap[i].Position.Location.Y) *
+                    int yCoord = GridMapPB.Size.Height / 2 - ((Player.Position.Location.Y - objectsOnMap[i].Position.Location.Y) *
                             GlobalConstants.CELL_HEIGHT + Player.Position.Y - objectsOnMap[i].Position.Y) - objectImage.Size.Height / 2;
 
                     gCellBP.DrawImage(objectImage, xCoord, yCoord,
