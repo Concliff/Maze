@@ -16,7 +16,7 @@ namespace Maze.Classes
 
             this.motionMaster = new RandomMovementGenerator(this);
 
-            //currentGridMap = GetWorldMap().GetGridMap(Position.Location);
+            //currentCell = GetWorldMap().GetCell(Position.Location);
         }
 
         public Deimos(GridLocation respawnLocation)

@@ -8,7 +8,7 @@ using System.Drawing;
 
 namespace Maze.Classes
 {
-    public struct GridMap
+    public struct Cell
     {
         public int ID;
         //public int PictureID;
@@ -34,12 +34,12 @@ namespace Maze.Classes
             ND4 = 0;
         }
 
-        public bool HasAttribute(GridMapAttributes attribute)
+        public bool HasAttribute(CellAttributes attribute)
         {
             return (Attribute & (uint)attribute) != 0;
         }
 
-        public bool HasOption(GridMapOptions option)
+        public bool HasOption(CellOptions option)
         {
             return (Option & (uint)option) != 0;
         }
@@ -112,8 +112,8 @@ namespace Maze.Classes
             {
                 GridLocation absolute = new GridLocation();
 
-                absolute.X = Location.X * GlobalConstants.GRIDMAP_BLOCK_WIDTH + X;
-                absolute.Y = Location.Y * GlobalConstants.GRIDMAP_BLOCK_HEIGHT + Y;
+                absolute.X = Location.X * GlobalConstants.CELL_WIDTH + X;
+                absolute.Y = Location.Y * GlobalConstants.CELL_HEIGHT + Y;
                 absolute.Z = Location.Z;
                 absolute.Level = Location.Level;
 
@@ -121,15 +121,15 @@ namespace Maze.Classes
             }
             set
             {
-                Location.X = value.X / GlobalConstants.GRIDMAP_BLOCK_WIDTH;
-                Location.Y = value.Y / GlobalConstants.GRIDMAP_BLOCK_HEIGHT;
+                Location.X = value.X / GlobalConstants.CELL_WIDTH;
+                Location.Y = value.Y / GlobalConstants.CELL_HEIGHT;
                 Location.Z = value.Z;
                 Location.Level = value.Level;
 
-                X = value.X - Location.X * GlobalConstants.GRIDMAP_BLOCK_WIDTH;
-                Y = value.Y - Location.Y * GlobalConstants.GRIDMAP_BLOCK_HEIGHT;
+                X = value.X - Location.X * GlobalConstants.CELL_WIDTH;
+                Y = value.Y - Location.Y * GlobalConstants.CELL_HEIGHT;
 
-                BlockID = Map.WorldMap.GetGridMap(this.Location).ID;
+                BlockID = Map.WorldMap.GetCell(this.Location).ID;
             }
         }
         public int X;
@@ -146,7 +146,7 @@ namespace Maze.Classes
             this.Location = Location;
             this.X = X;
             this.Y = Y;
-            this.BlockID = Map.WorldMap.GetGridMap(this.Location).ID;
+            this.BlockID = Map.WorldMap.GetCell(this.Location).ID;
         }
 
         /// <summary>
@@ -161,8 +161,8 @@ namespace Maze.Classes
 
         public double GetDistance(GPS point)
         {
-            double distance = Math.Sqrt(Math.Pow(this.X - point.X + (this.Location.X - point.Location.X) * GlobalConstants.GRIDMAP_BLOCK_WIDTH, 2)
-                    + Math.Pow(this.Y - point.Y + (this.Location.Y - point.Location.Y) * GlobalConstants.GRIDMAP_BLOCK_HEIGHT, 2));
+            double distance = Math.Sqrt(Math.Pow(this.X - point.X + (this.Location.X - point.Location.X) * GlobalConstants.CELL_WIDTH, 2)
+                    + Math.Pow(this.Y - point.Y + (this.Location.Y - point.Location.Y) * GlobalConstants.CELL_HEIGHT, 2));
 
             return distance;
         }
@@ -219,9 +219,9 @@ namespace Maze.Classes
         public Image PictureImage;
     };
 
-    public struct GridMapGraph
+    public struct CellGraph
     {
         public Graphics Graphic;
-        public GridMap Block;
+        public Cell Block;
     }
 }

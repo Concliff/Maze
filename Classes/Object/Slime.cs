@@ -23,7 +23,7 @@ namespace Maze.Classes
             : this()
         {
             Position = currentGridGPS;
-            currentGridMap = GetWorldMap().GetGridMap(currentGridGPS.Location);
+            currentCell = GetWorldMap().GetCell(currentGridGPS.Location);
         }
 
         public override void Use(Unit user)

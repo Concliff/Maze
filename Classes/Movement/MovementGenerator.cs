@@ -15,7 +15,7 @@ namespace Maze.Classes
 
     public abstract class MovementGenerator : Movement
     {
-        protected bool gridMapReached;
+        protected bool cellReached;
         protected MovementGeneratorType generatorType;
         protected Unit unit;
 
@@ -99,7 +99,7 @@ namespace Maze.Classes
 
         protected virtual void OnLocationChanged(object sender, PositionEventArgs e)
         {
-            this.gridMapReached = false;
+            this.cellReached = false;
         }
 
         public GPS DefineNextGPS(Direction Currenetdirection)

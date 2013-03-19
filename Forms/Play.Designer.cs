@@ -98,14 +98,14 @@ namespace Maze.Forms
 
 
             //
-            // GridMapPB
+            // CellPB
             //
-            this.GridMapPB = new System.Windows.Forms.PictureBox();
-            this.GridMapPB.Location = new System.Drawing.Point(150, 90);
-            this.GridMapPB.Name = "GridMapPB";
-            this.GridMapPB.Size = new System.Drawing.Size(550, 350);
-            this.GridMapPB.Visible = true;
-            this.GridMapPB.Paint += new PaintEventHandler(GridMapPB_Paint);
+            this.CellPB = new System.Windows.Forms.PictureBox();
+            this.CellPB.Location = new System.Drawing.Point(150, 90);
+            this.CellPB.Name = "CellPB";
+            this.CellPB.Size = new System.Drawing.Size(550, 350);
+            this.CellPB.Visible = true;
+            this.CellPB.Paint += new PaintEventHandler(CellPB_Paint);
 
             //
             // RightPanelPB
@@ -176,12 +176,12 @@ namespace Maze.Forms
                 SpellBarPB[i].Paint += new PaintEventHandler(SpellBarPB_Paint);
             }
 
-            GridMapGraphic = new GridMapGraph[GlobalConstants.GRIDMAP_WIDTH, GlobalConstants.GRIDMAP_HEIGHT];
+            CellGraphic = new CellGraph[GlobalConstants.GRIDMAP_WIDTH, GlobalConstants.GRIDMAP_HEIGHT];
             for (int i = 0; i < GlobalConstants.GRIDMAP_WIDTH; ++i)
                 for (int j = 0; j < GlobalConstants.GRIDMAP_HEIGHT; ++j)
                 {
-                    GridMapGraphic[i, j] = new GridMapGraph();
-                    //GridMapGraphic[i, j].Graphic = Graphics.FromHwnd(this.GridMapPB.Handle);
+                    CellGraphic[i, j] = new CellGraph();
+                    //CellGraphic[i, j].Graphic = Graphics.FromHwnd(this.CellPB.Handle);
                 }
 
             ////
@@ -248,33 +248,33 @@ namespace Maze.Forms
                 PauseResumePB.Size = PauseMainMenuPB.Size = new Size(150, 30);
             PausePB.Size = new Size(200, 200);
 
-            PausePB.Location = new Point(GridMapPB.Location.X + GridMapPB.Size.Width / 2 - PausePB.Size.Width / 2,
-                GridMapPB.Location.Y + GridMapPB.Size.Height / 2 - PausePB.Size.Height / 2);
+            PausePB.Location = new Point(CellPB.Location.X + CellPB.Size.Width / 2 - PausePB.Size.Width / 2,
+                CellPB.Location.Y + CellPB.Size.Height / 2 - PausePB.Size.Height / 2);
 
             // Pause Menu Location
             PauseResumePB.Location =
-                new Point(GridMapPB.Location.X + GridMapPB.Size.Width / 2 - PauseResumePB.Size.Width / 2, GridMapPB.Location.Y + GridMapPB.Size.Height / 2 - 30);
+                new Point(CellPB.Location.X + CellPB.Size.Width / 2 - PauseResumePB.Size.Width / 2, CellPB.Location.Y + CellPB.Size.Height / 2 - 30);
 
             PauseMainMenuPB.Location =
-                new Point(GridMapPB.Location.X + GridMapPB.Size.Width / 2 - PauseMainMenuPB.Size.Width / 2, GridMapPB.Location.Y + GridMapPB.Size.Height / 2);
+                new Point(CellPB.Location.X + CellPB.Size.Width / 2 - PauseMainMenuPB.Size.Width / 2, CellPB.Location.Y + CellPB.Size.Height / 2);
 
             byte MenuItemIterator;
             // Main menu Location
             MenuItemIterator = 1;
             MenuNewGamePB.Location =
-                new Point(GridMapPB.Location.X + GridMapPB.Size.Width / 2 - MenuNewGamePB.Size.Width / 2, GridMapPB.Location.Y + 40 * MenuItemIterator);
+                new Point(CellPB.Location.X + CellPB.Size.Width / 2 - MenuNewGamePB.Size.Width / 2, CellPB.Location.Y + 40 * MenuItemIterator);
 
             MenuItemIterator = 2;
             MenuRandomGamePB.Location =
-                new Point(GridMapPB.Location.X + GridMapPB.Size.Width / 2 - MenuRandomGamePB.Size.Width / 2, GridMapPB.Location.Y + 40 * MenuItemIterator);
+                new Point(CellPB.Location.X + CellPB.Size.Width / 2 - MenuRandomGamePB.Size.Width / 2, CellPB.Location.Y + 40 * MenuItemIterator);
 
             MenuItemIterator = 3;
             MenuHighScoresPB.Location =
-                new Point(GridMapPB.Location.X + GridMapPB.Size.Width / 2 - MenuHighScoresPB.Size.Width / 2, GridMapPB.Location.Y + 40 * MenuItemIterator);
+                new Point(CellPB.Location.X + CellPB.Size.Width / 2 - MenuHighScoresPB.Size.Width / 2, CellPB.Location.Y + 40 * MenuItemIterator);
 
             MenuItemIterator = 4;
             MenuQuitPB.Location =
-                new Point(GridMapPB.Location.X + GridMapPB.Size.Width / 2 - MenuQuitPB.Size.Width / 2, GridMapPB.Location.Y + 40 * MenuItemIterator);
+                new Point(CellPB.Location.X + CellPB.Size.Width / 2 - MenuQuitPB.Size.Width / 2, CellPB.Location.Y + 40 * MenuItemIterator);
 
             MenuFont = new Font("Arial", 16);
             MenuUnselectedBrush = new SolidBrush(Color.White);
@@ -305,13 +305,13 @@ namespace Maze.Forms
 
             // need rework layot reapointing for PausePB
             //this.Controls.Add(this.PausePB);
-            this.Controls.Add(this.GridMapPB);
+            this.Controls.Add(this.CellPB);
 
 
         }
 
         public KeyManager KeyMgr;
-        private System.Windows.Forms.PictureBox GridMapPB;
+        private System.Windows.Forms.PictureBox CellPB;
         private System.Windows.Forms.Timer SystemTimer;
         public  System.Windows.Forms.Label label1;
         private PictureBox TopPanelPB;
@@ -319,7 +319,7 @@ namespace Maze.Forms
         private PictureBox LeftPanelPB;
         private PictureBox RightPanelPB;
 
-        private GridMapGraph[,] GridMapGraphic;
+        private CellGraph[,] CellGraphic;
 
         private PictureBox[] AuraIconPB;
         private SpellBarPictureBox[] SpellBarPB;

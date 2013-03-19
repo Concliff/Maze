@@ -13,13 +13,13 @@ namespace Maze.Classes
             SetFlag(GridObjectFlags.Disposable);
         }
 
-        public OozeDrop(GridMap gridMap)
+        public OozeDrop(Cell cell)
             : this()
         {
             GPS position = Position;
-            position.Location = gridMap.Location;
+            position.Location = cell.Location;
             Position = position;
-            currentGridMap = gridMap;
+            currentCell = cell;
         }
         public override void Use(Unit user)
         {

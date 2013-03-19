@@ -186,9 +186,9 @@ namespace Maze.Classes
             {
                 case Directions.Right:
                     searchingPoint.X = Position.X + searchingStep;
-                    if (searchingPoint.X > GlobalConstants.GRIDMAP_BLOCK_WIDTH)
+                    if (searchingPoint.X > GlobalConstants.CELL_WIDTH)
                     {
-                        searchingPoint.X -= GlobalConstants.GRIDMAP_BLOCK_WIDTH;
+                        searchingPoint.X -= GlobalConstants.CELL_WIDTH;
                         ++searchingPoint.Location.X;
                     }
                     break;
@@ -196,7 +196,7 @@ namespace Maze.Classes
                     searchingPoint.X = Position.X - searchingStep;
                     if (searchingPoint.X < 0)
                     {
-                        searchingPoint.X -= GlobalConstants.GRIDMAP_BLOCK_WIDTH;
+                        searchingPoint.X -= GlobalConstants.CELL_WIDTH;
                         --searchingPoint.Location.X;
                     }
                     break;
@@ -204,15 +204,15 @@ namespace Maze.Classes
                     searchingPoint.Y = Position.Y - searchingStep;
                     if (searchingPoint.Y < 0)
                     {
-                        searchingPoint.Y += GlobalConstants.GRIDMAP_BLOCK_HEIGHT;
+                        searchingPoint.Y += GlobalConstants.CELL_HEIGHT;
                         --searchingPoint.Location.Y;
                     }
                     break;
                 case Directions.Down:
                     searchingPoint.Y = Position.Y + searchingStep;
-                    if (searchingPoint.Y > GlobalConstants.GRIDMAP_BLOCK_HEIGHT)
+                    if (searchingPoint.Y > GlobalConstants.CELL_HEIGHT)
                     {
-                        searchingPoint.Y -= GlobalConstants.GRIDMAP_BLOCK_HEIGHT;
+                        searchingPoint.Y -= GlobalConstants.CELL_HEIGHT;
                         ++searchingPoint.Location.Y;
                     }
                     break;

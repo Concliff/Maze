@@ -14,7 +14,7 @@ namespace Maze.Classes
         None    = 0x010,
     };
 
-    public enum GridMapAttributes : uint
+    public enum CellAttributes : uint
     {
         IsStart     = 0x001,
         IsFinish    = 0x002,
@@ -28,7 +28,7 @@ namespace Maze.Classes
         Attribute10 = 0x200,
     };
 
-    public enum GridMapOptions : uint
+    public enum CellOptions : uint
     {
         Portal = 0x001,
         Option2,

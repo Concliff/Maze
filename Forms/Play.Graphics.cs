@@ -35,7 +35,7 @@ namespace Maze.Forms
             e.Graphics.DrawString(Player.OozeEnergy.ToString(), new Font("Arial", 14), new SolidBrush(Color.White), 50, 105);
         }
 
-        void GridMapPB_Paint(object sender, PaintEventArgs e)
+        void CellPB_Paint(object sender, PaintEventArgs e)
         {
             // Only when game is started
             if (PlayStarted)
@@ -100,41 +100,41 @@ namespace Maze.Forms
         /// RePaint PlayForm map pictures.
         /// Include images of the player, blocks and objects on a block
         /// </summary>
-        private void RebuildGraphMap(Graphics gGridMapBP)
+        private void RebuildGraphMap(Graphics gCellBP)
         {
             GridLocation PBLocation = new GridLocation();
-            GridMap Block = new GridMap();
+            Cell Block = new Cell();
 
             List<Maze.Classes.Object> objectsOnMap = new List<Maze.Classes.Object>();
 
-            // GridMapGraph
+            // CellGraph
             for (int i = 0; i < GlobalConstants.GRIDMAP_WIDTH; ++i)
                 for (int j = 0; j < GlobalConstants.GRIDMAP_HEIGHT; ++j)
                 {
                     // Calculated location point for every block
                     int x, y;
-                    x = /*GridMapPB.Location.X*/ +(i - 1) * GlobalConstants.GRIDMAP_BLOCK_WIDTH - (Player.Position.X - 25);
-                    y = /*GridMapPB.Location.Y*/ +(j - 1) * GlobalConstants.GRIDMAP_BLOCK_HEIGHT - (Player.Position.Y - 25);
+                    x = /*CellPB.Location.X*/ +(i - 1) * GlobalConstants.CELL_WIDTH - (Player.Position.X - 25);
+                    y = /*CellPB.Location.Y*/ +(j - 1) * GlobalConstants.CELL_HEIGHT - (Player.Position.Y - 25);
                     PBLocation.X = Player.Position.Location.X + i - GlobalConstants.GRIDMAP_WIDTH / 2;
                     PBLocation.Y = Player.Position.Location.Y + j - GlobalConstants.GRIDMAP_HEIGHT / 2;
                     PBLocation.Z = Player.Position.Location.Z;
                     PBLocation.Level = Player.Position.Location.Level;
-                    Block = worldMap.GetGridMap(PBLocation);
+                    Block = worldMap.GetCell(PBLocation);
 
-                    this.GridMapGraphic[i, j].Block = Block;
-                    gGridMapBP.DrawImage(PictureManager.GetPictureByType(Block.Type), x, y, GlobalConstants.GRIDMAP_BLOCK_WIDTH, GlobalConstants.GRIDMAP_BLOCK_HEIGHT);
+                    this.CellGraphic[i, j].Block = Block;
+                    gCellBP.DrawImage(PictureManager.GetPictureByType(Block.Type), x, y, GlobalConstants.CELL_WIDTH, GlobalConstants.CELL_HEIGHT);
 
 
                     // Draw Start Block
-                    if (Block.HasAttribute(GridMapAttributes.IsStart))
+                    if (Block.HasAttribute(CellAttributes.IsStart))
                     {
-                        gGridMapBP.DrawImage(PictureManager.StartImage, x + 5, y + 5, 40, 40);
+                        gCellBP.DrawImage(PictureManager.StartImage, x + 5, y + 5, 40, 40);
                     }
 
                     // Draw Finish Block
-                    if (Block.HasAttribute(GridMapAttributes.IsFinish))
+                    if (Block.HasAttribute(CellAttributes.IsFinish))
                     {
-                        gGridMapBP.DrawImage(PictureManager.FinishImage, x + 5, y + 5, 40, 40);
+                        gCellBP.DrawImage(PictureManager.FinishImage, x + 5, y + 5, 40, 40);
                     }
 
                     // Include all objects in this grid
@@ -207,12 +207,12 @@ namespace Maze.Forms
                     if (objectImage == null)
                         continue;
 
-                    int xCoord = GridMapPB.Size.Width / 2 - ((Player.Position.Location.X - objectsOnMap[i].Position.Location.X) *
-                            GlobalConstants.GRIDMAP_BLOCK_WIDTH + Player.Position.X - objectsOnMap[i].Position.X) - objectImage.Size.Width / 2;
-                    int yCoord = GridMapPB.Size.Height / 2 - ((Player.Position.Location.Y - objectsOnMap[i].Position.Location.Y) *
-                            GlobalConstants.GRIDMAP_BLOCK_HEIGHT + Player.Position.Y - objectsOnMap[i].Position.Y) - objectImage.Size.Height / 2;
+                    int xCoord = CellPB.Size.Width / 2 - ((Player.Position.Location.X - objectsOnMap[i].Position.Location.X) *
+                            GlobalConstants.CELL_WIDTH + Player.Position.X - objectsOnMap[i].Position.X) - objectImage.Size.Width / 2;
+                    int yCoord = CellPB.Size.Height / 2 - ((Player.Position.Location.Y - objectsOnMap[i].Position.Location.Y) *
+                            GlobalConstants.CELL_HEIGHT + Player.Position.Y - objectsOnMap[i].Position.Y) - objectImage.Size.Height / 2;
 
-                    gGridMapBP.DrawImage(objectImage, xCoord, yCoord,
+                    gCellBP.DrawImage(objectImage, xCoord, yCoord,
                         objectImage.Size.Width, objectImage.Size.Height);
                 }
         }

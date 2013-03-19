@@ -28,8 +28,8 @@ namespace Maze.Classes
             pathFindingTimer = PATHFINDING_TIME;
             this.state = MotionStates.None;
             victim = World.PlayForm.Player;
-            pathFinder = new PathFinder(WorldMap.GetGridMap(this.unit.Position.Location),
-                WorldMap.GetGridMap(this.victim.Position.Location));
+            pathFinder = new PathFinder(WorldMap.GetCell(this.unit.Position.Location),
+                WorldMap.GetCell(this.victim.Position.Location));
             FindPath();
         }
 
@@ -61,7 +61,7 @@ namespace Maze.Classes
         private void MovementAction()
         {
             // Generate Path if located at unknown grid
-            if (!this.pathFinder.Path.Contains(WorldMap.GetGridMap(unit.Position.Location)))
+            if (!this.pathFinder.Path.Contains(WorldMap.GetCell(unit.Position.Location)))
                 FindPath();
 
             double movementStepD = GlobalConstants.MOVEMENT_STEP_PX * this.unit.SpeedRate;
@@ -80,7 +80,7 @@ namespace Maze.Classes
 
         private void FindPath()
         {
-            GridMap currentGridMap = WorldMap.GetGridMap(unit.Position.Location);
+            Cell currentCell = WorldMap.GetCell(unit.Position.Location);
 
             if (this.victim == null)
                 return;
@@ -94,8 +94,8 @@ namespace Maze.Classes
 
             bool isHome = state == MotionStates.ReturningHome;
 
-            this.pathFinder.GeneratePath(currentGridMap,
-                isHome ? WorldMap.GetGridMap(unit.Home) : WorldMap.GetGridMap(this.victim.Position.Location));
+            this.pathFinder.GeneratePath(currentCell,
+                isHome ? WorldMap.GetCell(unit.Home) : WorldMap.GetCell(this.victim.Position.Location));
             if (this.pathFinder.Path.Count == 0)
             {
                 state = MotionStates.StandingBy;
@@ -104,19 +104,19 @@ namespace Maze.Classes
             {
                 state = isHome ? MotionStates.ReturningHome : MotionStates.Chasing;
 
-                if (this.pathFinder.Path.Contains(currentGridMap))
+                if (this.pathFinder.Path.Contains(currentCell))
                 {
-                    int index = this.pathFinder.Path.IndexOf(currentGridMap);
+                    int index = this.pathFinder.Path.IndexOf(currentCell);
 
                     GridLocation nextGPS = unit.Position.Location;
-                    GridMap nextGridMap;
+                    Cell nextCell;
 
                     if (index > 0)
                     {
-                        nextGridMap = this.pathFinder.Path[index - 1];
+                        nextCell = this.pathFinder.Path[index - 1];
 
-                        int shiftX = nextGridMap.Location.X - currentGridMap.Location.X;
-                        int shiftY = nextGridMap.Location.Y - currentGridMap.Location.Y;
+                        int shiftX = nextCell.Location.X - currentCell.Location.X;
+                        int shiftY = nextCell.Location.Y - currentCell.Location.Y;
 
                         switch (shiftX * shiftY)
                         {
@@ -152,7 +152,7 @@ namespace Maze.Classes
                         }
                     }
                     else
-                        nextGridMap = this.pathFinder.Path[index];
+                        nextCell = this.pathFinder.Path[index];
                 }
             }
         }
@@ -164,15 +164,15 @@ namespace Maze.Classes
 
             // HACK: Ignore if not the center of the block
             int movementStep = (int)(GlobalConstants.MOVEMENT_STEP_PX * unit.SpeedRate) + 1;
-            if (!(unit.Position.X >= GlobalConstants.GRIDMAP_BLOCK_WIDTH / 2 - movementStep / 2 &&
-                unit.Position.X <= GlobalConstants.GRIDMAP_BLOCK_WIDTH / 2 + movementStep / 2 &&
-                unit.Position.Y >= GlobalConstants.GRIDMAP_BLOCK_HEIGHT / 2 - movementStep / 2 &&
-                unit.Position.Y <= GlobalConstants.GRIDMAP_BLOCK_HEIGHT / 2 + movementStep / 2 &&
-                !this.gridMapReached))
+            if (!(unit.Position.X >= GlobalConstants.CELL_WIDTH / 2 - movementStep / 2 &&
+                unit.Position.X <= GlobalConstants.CELL_WIDTH / 2 + movementStep / 2 &&
+                unit.Position.Y >= GlobalConstants.CELL_HEIGHT / 2 - movementStep / 2 &&
+                unit.Position.Y <= GlobalConstants.CELL_HEIGHT / 2 + movementStep / 2 &&
+                !this.cellReached))
                 return;
 
             unit.Position = new GPS(unit.Position, 25, 25);
-            this.gridMapReached = true;
+            this.cellReached = true;
             FindPath();
 
             // TODO: Define state PhobosStates.DestinationReached

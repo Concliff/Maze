@@ -13,9 +13,9 @@ namespace MapEditor.Forms
 {
     public partial class BlockEdit : MazeForm
     {
-        private GridMap Block;
+        private Cell Block;
 
-        public BlockEdit(GridMap Block)
+        public BlockEdit(Cell Block)
         {
             this.Block = Block;
             InitializeComponent();
@@ -47,18 +47,18 @@ namespace MapEditor.Forms
             RightCheckBox.Checked   = Block.CanMoveTo(Directions.Right);
 
             // Attributes
-            StartCheckBox.Checked   = Block.HasAttribute(GridMapAttributes.IsStart);
-            FinishCheckBox.Checked  = Block.HasAttribute(GridMapAttributes.IsFinish);
-            DropCheckBox.Checked    = Block.HasAttribute(GridMapAttributes.HasDrop);
+            StartCheckBox.Checked   = Block.HasAttribute(CellAttributes.IsStart);
+            FinishCheckBox.Checked  = Block.HasAttribute(CellAttributes.IsFinish);
+            DropCheckBox.Checked    = Block.HasAttribute(CellAttributes.HasDrop);
 
             // Options
-            PortalCheckBox.Checked = Block.HasOption(GridMapOptions.Portal);
+            PortalCheckBox.Checked = Block.HasOption(CellOptions.Portal);
             OptionValueTextBox.Text = Block.OptionValue.ToString();
         }
          
         void AcceptButtonClick(object sender, System.EventArgs e)
         {
-            GridMap NewBlock = new GridMap();
+            Cell NewBlock = new Cell();
             NewBlock.Initialize();
 
             NewBlock.ID = Convert.ToInt32(BlockIDTextBox.Text);
@@ -74,16 +74,16 @@ namespace MapEditor.Forms
             if (RightCheckBox.Checked)  NewBlock.Type += (uint)Directions.Right;
 
             NewBlock.Attribute = 0;
-            if (StartCheckBox.Checked)  NewBlock.Attribute += (uint)GridMapAttributes.IsStart;
-            if (FinishCheckBox.Checked) NewBlock.Attribute += (uint)GridMapAttributes.IsFinish;
-            if (DropCheckBox.Checked) NewBlock.Attribute += (uint)GridMapAttributes.HasDrop;
+            if (StartCheckBox.Checked)  NewBlock.Attribute += (uint)CellAttributes.IsStart;
+            if (FinishCheckBox.Checked) NewBlock.Attribute += (uint)CellAttributes.IsFinish;
+            if (DropCheckBox.Checked) NewBlock.Attribute += (uint)CellAttributes.HasDrop;
 
             NewBlock.Option = 0;
-            if (PortalCheckBox.Checked) NewBlock.Option += (uint)GridMapOptions.Portal;
+            if (PortalCheckBox.Checked) NewBlock.Option += (uint)CellOptions.Portal;
 
             NewBlock.OptionValue = Convert.ToInt32(OptionValueTextBox.Text);
 
-            Map.WorldMap.AddGridMap(NewBlock);
+            Map.WorldMap.AddCell(NewBlock);
             Program.EditorForm.RebuildGraphMap();
             this.Close();
         }

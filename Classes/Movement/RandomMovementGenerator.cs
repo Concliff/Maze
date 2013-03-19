@@ -40,7 +40,7 @@ namespace Maze.Classes
         {
             Directions newDirection = Directions.None;
             int maxIterations = 10;
-            GridMap currentGridMap = WorldMap.GetGridMap(this.unit.Position.Location);
+            Cell currentCell = WorldMap.GetCell(this.unit.Position.Location);
 
             for (int i = 0; i < maxIterations; ++i)
             {
@@ -55,7 +55,7 @@ namespace Maze.Classes
                     continue;
 
                 // Ignore Opposite Direction if there is another one
-                if (currentGridMap.CanMoveTo(newDirection) &&
+                if (currentCell.CanMoveTo(newDirection) &&
                     (newDirection != GetOppositeDirection(CurrentDirection.First) || CurrentDirection.First == Directions.None))
                 {
                     CurrentDirection = new Direction(newDirection);
@@ -64,7 +64,7 @@ namespace Maze.Classes
             }
 
             // Go opposite Direction if no choice to go
-            if (currentGridMap.CanMoveTo(GetOppositeDirection(CurrentDirection.First)))
+            if (currentCell.CanMoveTo(GetOppositeDirection(CurrentDirection.First)))
                 CurrentDirection = new Direction(GetOppositeDirection(CurrentDirection.First));
             else
                 CurrentDirection = new Direction(Directions.None);
@@ -73,22 +73,22 @@ namespace Maze.Classes
             // Recheck the availability of all four directions
             if (CurrentDirection.First == Directions.None)
             {
-                if (currentGridMap.CanMoveTo(Directions.Up))
+                if (currentCell.CanMoveTo(Directions.Up))
                 {
                     CurrentDirection = new Direction(Directions.Up);
                     return;
                 }
-                else if (currentGridMap.CanMoveTo(Directions.Left))
+                else if (currentCell.CanMoveTo(Directions.Left))
                 {
                     CurrentDirection = new Direction(Directions.Left);
                     return;
                 }
-                else if (currentGridMap.CanMoveTo(Directions.Down))
+                else if (currentCell.CanMoveTo(Directions.Down))
                 {
                     CurrentDirection = new Direction(Directions.Down);
                     return;
                 }
-                else if (currentGridMap.CanMoveTo(Directions.Right))
+                else if (currentCell.CanMoveTo(Directions.Right))
                 {
                     CurrentDirection = new Direction(Directions.Right);
                     return;
@@ -98,25 +98,25 @@ namespace Maze.Classes
 
         protected override void OnDestinationReached()
         {
-            this.gridMapReached = true;
+            this.cellReached = true;
 
             unit.Position = new GPS(unit.Position, 25, 25);
 
             if (Random.Int(100) <= 33)  // 33% chance to change direction
                 SelectNewDirection();
 
-            if (!WorldMap.GetGridMap(this.unit.Position.Location).CanMoveTo(CurrentDirection.First))
+            if (!WorldMap.GetCell(this.unit.Position.Location).CanMoveTo(CurrentDirection.First))
                 SelectNewDirection();
 
             // Deimos can not pass through the Start Point
-            // Check the next GridMap whether it is such block
+            // Check the next cell whether it is such block
 
-            GridMap nextGridMap;
+            Cell nextCell;
 
             DefineNextGPS(CurrentDirection);
 
-            nextGridMap = WorldMap.GetGridMap(nextGPS.Location);
-            if (nextGridMap.HasAttribute(GridMapAttributes.IsStart))
+            nextCell = WorldMap.GetCell(nextGPS.Location);
+            if (nextCell.HasAttribute(CellAttributes.IsStart))
             {
                 SelectNewDirection(false);
                 DefineNextGPS(CurrentDirection);

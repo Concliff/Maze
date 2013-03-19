@@ -12,8 +12,8 @@ namespace Maze.Classes
         {
             GPS gridGPS;
             gridGPS.Location = location;
-            gridGPS.X = GlobalConstants.GRIDMAP_BLOCK_WIDTH / 2;
-            gridGPS.Y = GlobalConstants.GRIDMAP_BLOCK_HEIGHT / 2;
+            gridGPS.X = GlobalConstants.CELL_WIDTH / 2;
+            gridGPS.Y = GlobalConstants.CELL_HEIGHT / 2;
             gridGPS.BlockID = 0;
 
             return gridGPS;
@@ -120,10 +120,10 @@ namespace Maze.Classes
             GridLocation SearchGPS = centralGridGPS.Location;
 
             // How much grids use for search
-            int GridToNorth = (int)Math.Ceiling(Math.Abs(centralGridGPS.Y - radius) * 1d / GlobalConstants.GRIDMAP_BLOCK_HEIGHT);
-            int GridToSouth = (int)Math.Floor(Math.Abs(centralGridGPS.Y + radius) * 1d / GlobalConstants.GRIDMAP_BLOCK_HEIGHT);
-            int GridToWest = (int)Math.Ceiling(Math.Abs(centralGridGPS.X - radius) * 1d / GlobalConstants.GRIDMAP_BLOCK_WIDTH);
-            int GridToEast = (int)Math.Floor(Math.Abs(centralGridGPS.X + radius) * 1d / GlobalConstants.GRIDMAP_BLOCK_WIDTH);
+            int GridToNorth = (int)Math.Ceiling(Math.Abs(centralGridGPS.Y - radius) * 1d / GlobalConstants.CELL_HEIGHT);
+            int GridToSouth = (int)Math.Floor(Math.Abs(centralGridGPS.Y + radius) * 1d / GlobalConstants.CELL_HEIGHT);
+            int GridToWest = (int)Math.Ceiling(Math.Abs(centralGridGPS.X - radius) * 1d / GlobalConstants.CELL_WIDTH);
+            int GridToEast = (int)Math.Floor(Math.Abs(centralGridGPS.X + radius) * 1d / GlobalConstants.CELL_WIDTH);
 
             for (int width = centralGridGPS.Location.X - GridToWest; width <= centralGridGPS.Location.X + GridToEast; ++width)
                 for (int height = centralGridGPS.Location.Y - GridToNorth; height <= centralGridGPS.Location.Y + GridToSouth; ++height)
@@ -138,8 +138,8 @@ namespace Maze.Classes
             foreach (Object obj in objects)
             {
                 // Calculate actual distance
-                if (Math.Sqrt(Math.Pow(centralGridGPS.X - obj.Position.X + (centralGridGPS.Location.X - obj.Position.Location.X) * GlobalConstants.GRIDMAP_BLOCK_WIDTH, 2)
-                    + Math.Pow(centralGridGPS.Y - obj.Position.Y + (centralGridGPS.Location.Y - obj.Position.Location.Y) * GlobalConstants.GRIDMAP_BLOCK_HEIGHT, 2)) < radius)
+                if (Math.Sqrt(Math.Pow(centralGridGPS.X - obj.Position.X + (centralGridGPS.Location.X - obj.Position.Location.X) * GlobalConstants.CELL_WIDTH, 2)
+                    + Math.Pow(centralGridGPS.Y - obj.Position.Y + (centralGridGPS.Location.Y - obj.Position.Location.Y) * GlobalConstants.CELL_HEIGHT, 2)) < radius)
                 {
                     result.Add(obj);
                 }

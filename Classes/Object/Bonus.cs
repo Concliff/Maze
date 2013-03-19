@@ -25,7 +25,7 @@ namespace Maze.Classes
         public Bonus(GPS currentGridGPS)
         {
             Position = currentGridGPS;
-            currentGridMap = GetWorldMap().GetGridMap(currentGridGPS.Location);
+            currentCell = GetWorldMap().GetCell(currentGridGPS.Location);
 
             gridObjectType = GridObjectType.Bonus;
             SetFlag(GridObjectFlags.Temporal);

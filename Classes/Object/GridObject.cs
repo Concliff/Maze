@@ -56,7 +56,7 @@ namespace Maze.Classes
             objectType = ObjectType.GridObject;
             gridObjectType = GridObjectType.GridObject;
 
-            // Always in center of GridMap
+            // Always in center of the cell
             Position = new GPS(Position, 25, 25);
 
             // Flags by default

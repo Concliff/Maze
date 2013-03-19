@@ -18,7 +18,7 @@ namespace Maze.Classes
 
             this.motionMaster = new ChasingMovement(this);
 
-            currentGridMap = GetWorldMap().GetGridMap(Position.Location);
+            currentCell = GetWorldMap().GetCell(Position.Location);
 
             BaseSpeed = 0.4d;
         }

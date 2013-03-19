@@ -41,7 +41,7 @@ namespace Maze.Classes
         protected uint GUID;
         protected ObjectType objectType;
         protected ObjectState objectState;
-        protected GridMap currentGridMap;
+        protected Cell currentCell;
         protected ModelSize objectSize;
 
         private GPS pr_position;
@@ -67,23 +67,23 @@ namespace Maze.Classes
                 if (newPosition.X < 0)
                 {
                     newPosition.Location.X -= 1;
-                    newPosition.X += GlobalConstants.GRIDMAP_BLOCK_WIDTH;
+                    newPosition.X += GlobalConstants.CELL_WIDTH;
                 }
-                else if (newPosition.X > GlobalConstants.GRIDMAP_BLOCK_WIDTH)
+                else if (newPosition.X > GlobalConstants.CELL_WIDTH)
                 {
                     newPosition.Location.X += 1;
-                    newPosition.X -= GlobalConstants.GRIDMAP_BLOCK_WIDTH;
+                    newPosition.X -= GlobalConstants.CELL_WIDTH;
                 }
 
                 if (newPosition.Y < 0)
                 {
                     newPosition.Location.Y -= 1;
-                    newPosition.Y += GlobalConstants.GRIDMAP_BLOCK_HEIGHT;
+                    newPosition.Y += GlobalConstants.CELL_HEIGHT;
                 }
-                else if (newPosition.Y > GlobalConstants.GRIDMAP_BLOCK_HEIGHT)
+                else if (newPosition.Y > GlobalConstants.CELL_HEIGHT)
                 {
                     newPosition.Location.Y += 1;
-                    newPosition.Y -= GlobalConstants.GRIDMAP_BLOCK_HEIGHT;
+                    newPosition.Y -= GlobalConstants.CELL_HEIGHT;
                 }
 
                 // Object moved to other GPS
@@ -92,12 +92,12 @@ namespace Maze.Classes
                     // HACK:
                     // Do not enter the nonexistent block
                     // Need revert after NormalizePosition rework
-                    GridMap newGridMap = GetWorldMap().GetGridMap(newPosition.Location);
+                    Cell newCell = GetWorldMap().GetCell(newPosition.Location);
 
-                    if (newGridMap.ID != -1)
+                    if (newCell.ID != -1)
                     {
-                        currentGridMap = newGridMap;
-                        newPosition.BlockID = currentGridMap.ID;
+                        currentCell = newCell;
+                        newPosition.BlockID = currentCell.ID;
                         locationChanged = true;
                     }
                     else
@@ -128,7 +128,7 @@ namespace Maze.Classes
         
         public event PositionHandler PositionChanged;
         /// <summary>
-        /// Occurs when object changed its GPS location, i.e moved to other GridMap block
+        /// Occurs when object changed its GPS location, i.e moved to other cell
         /// </summary>
         public event PositionHandler LocationChanged;
 
@@ -141,7 +141,7 @@ namespace Maze.Classes
             // Seems not needed
             // All uninitialized values is auto-initialized by 0
 
-            currentGridMap.Initialize();
+            currentCell.Initialize();
 
             GUID = ObjectContainer.Container.CreateObject(this);
         }
@@ -178,31 +178,31 @@ namespace Maze.Classes
         }
 
         /// <summary>
-        /// Set Position.X and Position.Y considering object model size and current GridMap block
+        /// Set Position.X and Position.Y considering object model size and current Cell
         /// </summary>
         protected GPS NormalizePosition(GPS position)
         {
-            GridMap gridMap = GetWorldMap().GetGridMap(position.Location);
+            Cell cell = GetWorldMap().GetCell(position.Location);
 
-            int lowerXBound = GlobalConstants.GRIDMAP_BORDER_PX + objectSize.Width / 2;
-            int upperXBound = GlobalConstants.GRIDMAP_BLOCK_WIDTH - lowerXBound;
-            int lowerYBound = GlobalConstants.GRIDMAP_BORDER_PX + objectSize.Height / 2;
-            int upperYBound = GlobalConstants.GRIDMAP_BLOCK_HEIGHT - lowerYBound;
+            int lowerXBound = GlobalConstants.CELL_BORDER_PX + objectSize.Width / 2;
+            int upperXBound = GlobalConstants.CELL_WIDTH - lowerXBound;
+            int lowerYBound = GlobalConstants.CELL_BORDER_PX + objectSize.Height / 2;
+            int upperYBound = GlobalConstants.CELL_HEIGHT - lowerYBound;
 
             if (position.X < lowerXBound)
-                if (!gridMap.CanMoveTo(Directions.Left))
+                if (!cell.CanMoveTo(Directions.Left))
                     position.X = lowerXBound;
 
             if (position.X > upperXBound)
-                if (!gridMap.CanMoveTo(Directions.Right))
+                if (!cell.CanMoveTo(Directions.Right))
                     position.X = upperXBound;
 
             if (position.Y < lowerYBound)
-                if (!gridMap.CanMoveTo(Directions.Up))
+                if (!cell.CanMoveTo(Directions.Up))
                     position.Y = lowerYBound;
 
             if (position.Y > upperYBound)
-                if (!gridMap.CanMoveTo(Directions.Down))
+                if (!cell.CanMoveTo(Directions.Down))
                     position.Y = upperYBound;
 
             return position;

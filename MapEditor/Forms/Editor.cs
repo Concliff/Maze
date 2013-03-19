@@ -90,28 +90,28 @@ namespace MapEditor.Forms
             if ((MoveType & (uint)Directions.Down) != 0)
                 oPlayer.Position.Y += GlobalConstants.MOVEMENT_STEP_PX * 2;
 
-            if (oPlayer.Position.X > GlobalConstants.GRIDMAP_BLOCK_WIDTH)
+            if (oPlayer.Position.X > GlobalConstants.CELL_WIDTH)
             {
                 ++oPlayer.Position.Location.X;
-                oPlayer.Position.X -= GlobalConstants.GRIDMAP_BLOCK_WIDTH;
+                oPlayer.Position.X -= GlobalConstants.CELL_WIDTH;
             }
 
             if (oPlayer.Position.X < 0)
             {
                 --oPlayer.Position.Location.X;
-                oPlayer.Position.X = GlobalConstants.GRIDMAP_BLOCK_WIDTH + oPlayer.Position.X;
+                oPlayer.Position.X = GlobalConstants.CELL_WIDTH + oPlayer.Position.X;
             }
 
-            if (oPlayer.Position.Y > GlobalConstants.GRIDMAP_BLOCK_HEIGHT)
+            if (oPlayer.Position.Y > GlobalConstants.CELL_HEIGHT)
             {
                 ++oPlayer.Position.Location.Y;
-                oPlayer.Position.Y -= GlobalConstants.GRIDMAP_BLOCK_HEIGHT;
+                oPlayer.Position.Y -= GlobalConstants.CELL_HEIGHT;
             }
 
             if (oPlayer.Position.Y < 0)
             {
                 --oPlayer.Position.Location.Y;
-                oPlayer.Position.Y = GlobalConstants.GRIDMAP_BLOCK_HEIGHT + oPlayer.Position.Y;
+                oPlayer.Position.Y = GlobalConstants.CELL_HEIGHT + oPlayer.Position.Y;
             }
 
             RebuildGraphMap();
@@ -123,49 +123,49 @@ namespace MapEditor.Forms
             gGraphic = this.CreateGraphics();
             this.SuspendLayout();
             GridLocation PBLocation = new GridLocation();
-            GridMap Block = new GridMap();
-            // GridMapGraph
+            Cell Block = new Cell();
+            // CellGraph
             for (int i = 0; i < GlobalConstants.GRIDMAP_WIDTH; ++i)
                 for (int j = 0; j < GlobalConstants.GRIDMAP_HEIGHT; ++j)
                 {
                     int x, y;
-                    x = (i - 1) * GlobalConstants.GRIDMAP_BLOCK_WIDTH - (oPlayer.Position.X - GlobalConstants.GRIDMAP_BLOCK_WIDTH / 2) - this.pbRightPanel.Size.Width / 2;
-                    y = (j - 1) * GlobalConstants.GRIDMAP_BLOCK_HEIGHT - (oPlayer.Position.Y - GlobalConstants.GRIDMAP_BLOCK_HEIGHT / 2) + FormTitleBarSize;
+                    x = (i - 1) * GlobalConstants.CELL_WIDTH - (oPlayer.Position.X - GlobalConstants.CELL_WIDTH / 2) - this.pbRightPanel.Size.Width / 2;
+                    y = (j - 1) * GlobalConstants.CELL_HEIGHT - (oPlayer.Position.Y - GlobalConstants.CELL_HEIGHT / 2) + FormTitleBarSize;
                     PBLocation.X = oPlayer.Position.Location.X + i - GlobalConstants.GRIDMAP_WIDTH / 2;
                     PBLocation.Y = oPlayer.Position.Location.Y + j - GlobalConstants.GRIDMAP_HEIGHT / 2;
                     PBLocation.Z = oPlayer.Position.Location.Z;
                     PBLocation.Level = oPlayer.Position.Location.Level;
-                    Block = Map.WorldMap.GetGridMap(PBLocation);
+                    Block = Map.WorldMap.GetCell(PBLocation);
 
-                    this.GridMapGraphic[i, j].Block = Block;
+                    this.CellGraphic[i, j].Block = Block;
 
-                    gGraphic.DrawImage(PictureManager.GetPictureByType(Block.Type), x, y, GlobalConstants.GRIDMAP_BLOCK_WIDTH, GlobalConstants.GRIDMAP_BLOCK_HEIGHT);
+                    gGraphic.DrawImage(PictureManager.GetPictureByType(Block.Type), x, y, GlobalConstants.CELL_WIDTH, GlobalConstants.CELL_HEIGHT);
 
                     // Draw Start Block
-                    if (Block.HasAttribute(GridMapAttributes.IsStart))
+                    if (Block.HasAttribute(CellAttributes.IsStart))
                     {
                         gGraphic.DrawImage(PictureManager.StartImage, x + 5, y + 5, 40, 40);
                     }
 
                     // Draw Finish Block
-                    if (Block.HasAttribute(GridMapAttributes.IsFinish))
+                    if (Block.HasAttribute(CellAttributes.IsFinish))
                     {
                         gGraphic.DrawImage(PictureManager.FinishImage, x + 5, y + 5, PictureManager.FinishImage.Width, PictureManager.FinishImage.Height);
                     }
 
                     // Draw Ooze Drop
-                    if (Block.HasAttribute(GridMapAttributes.HasDrop))
+                    if (Block.HasAttribute(CellAttributes.HasDrop))
                     {
                         gGraphic.DrawImage(PictureManager.DropImage, x + 15, y + 10, 20, 30);
                     }
 
                     // Portal
-                    if (Block.HasOption(GridMapOptions.Portal))
+                    if (Block.HasOption(CellOptions.Portal))
                     {
                         Image image = PictureManager.PortalImage;
                         gGraphic.DrawImage(image,
-                            x + (GlobalConstants.GRIDMAP_BLOCK_WIDTH - image.Width) / 2,
-                            y + (GlobalConstants.GRIDMAP_BLOCK_HEIGHT - image.Height) / 2,
+                            x + (GlobalConstants.CELL_WIDTH - image.Width) / 2,
+                            y + (GlobalConstants.CELL_HEIGHT - image.Height) / 2,
                             PictureManager.PortalImage.Width, PictureManager.PortalImage.Height);
                     }
                 }
@@ -181,13 +181,13 @@ namespace MapEditor.Forms
             // form center point and MouseClick point
             CursorGPS.X += (int)Math.Floor((oPlayer.Position.X + (Cursor.Position.X - this.Location.X -
                 (this.PlayerPB.Location.X + this.PlayerPB.Size.Width / 2 + FormBorderBarSize))) /
-                (double)GlobalConstants.GRIDMAP_BLOCK_WIDTH);
+                (double)GlobalConstants.CELL_WIDTH);
 
             CursorGPS.Y += (int)Math.Floor((oPlayer.Position.Y + (Cursor.Position.Y - this.Location.Y -
                 (this.PlayerPB.Location.Y + this.PlayerPB.Size.Height / 2 + FormTitleBarSize))) /
-                (double)GlobalConstants.GRIDMAP_BLOCK_HEIGHT);
+                (double)GlobalConstants.CELL_HEIGHT);
 
-            GridMap Block = Map.WorldMap.GetGridMap(CursorGPS);
+            Cell Block = Map.WorldMap.GetCell(CursorGPS);
 
             if (BlockEditForm == null)
                 BlockEditForm = new BlockEdit(Block);

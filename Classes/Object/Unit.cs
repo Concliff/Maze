@@ -197,7 +197,7 @@ namespace Maze.Classes
         {
             get
             {
-                return currentGridMap.Location.Equals(Home);
+                return currentCell.Location.Equals(Home);
             }
         }
 
@@ -304,47 +304,47 @@ namespace Maze.Classes
             switch (this.motionMaster.CurrentDirection.First)
             {
                 case Directions.Down:
-                    while (distance >= GlobalConstants.GRIDMAP_BLOCK_HEIGHT)
+                    while (distance >= GlobalConstants.CELL_HEIGHT)
                     {
                         intermidiatePosition.Location.Y++;
-                        GridMap interimPoint = GetWorldMap().GetGridMap(intermidiatePosition.Location);
+                        Cell interimPoint = GetWorldMap().GetCell(intermidiatePosition.Location);
                         if (interimPoint.ID != -1)
                             newPosition = intermidiatePosition;
 
-                        distance -= GlobalConstants.GRIDMAP_BLOCK_HEIGHT;
+                        distance -= GlobalConstants.CELL_HEIGHT;
                     }
                     break;
                 case Directions.Up:
-                    while (distance >= GlobalConstants.GRIDMAP_BLOCK_HEIGHT)
+                    while (distance >= GlobalConstants.CELL_HEIGHT)
                     {
                         intermidiatePosition.Location.Y--;
-                        GridMap interimPoint = GetWorldMap().GetGridMap(intermidiatePosition.Location);
+                        Cell interimPoint = GetWorldMap().GetCell(intermidiatePosition.Location);
                         if (interimPoint.ID != -1)
                             newPosition = intermidiatePosition;
 
-                        distance -= GlobalConstants.GRIDMAP_BLOCK_HEIGHT;
+                        distance -= GlobalConstants.CELL_HEIGHT;
                     }
                     break;
                 case Directions.Left:
-                    while (distance >= GlobalConstants.GRIDMAP_BLOCK_HEIGHT)
+                    while (distance >= GlobalConstants.CELL_HEIGHT)
                     {
                         intermidiatePosition.Location.X--;
-                        GridMap interimPoint = GetWorldMap().GetGridMap(intermidiatePosition.Location);
+                        Cell interimPoint = GetWorldMap().GetCell(intermidiatePosition.Location);
                         if (interimPoint.ID != -1)
                             newPosition = intermidiatePosition;
 
-                        distance -= GlobalConstants.GRIDMAP_BLOCK_HEIGHT;
+                        distance -= GlobalConstants.CELL_HEIGHT;
                     }
                     break;
                 case Directions.Right:
-                    while (distance >= GlobalConstants.GRIDMAP_BLOCK_HEIGHT)
+                    while (distance >= GlobalConstants.CELL_HEIGHT)
                     {
                         intermidiatePosition.Location.X++;
-                        GridMap interimPoint = GetWorldMap().GetGridMap(intermidiatePosition.Location);
+                        Cell interimPoint = GetWorldMap().GetCell(intermidiatePosition.Location);
                         if (interimPoint.ID != -1)
                             newPosition = intermidiatePosition;
 
-                        distance -= GlobalConstants.GRIDMAP_BLOCK_HEIGHT;
+                        distance -= GlobalConstants.CELL_HEIGHT;
                     }
                     break;
             }
@@ -352,15 +352,15 @@ namespace Maze.Classes
             Position = newPosition;
         }
 
-        public void TeleportTo(GridMap destinationGridMap)
+        public void TeleportTo(Cell destinationCell)
         {
-            Position = new GPS(destinationGridMap.Location, 25, 25);
+            Position = new GPS(destinationCell.Location, 25, 25);
         }
 
         public void TeleportTo(GridLocation destinationGPS)
         {
-            GridMap destinationGridMap = GetWorldMap().GetGridMap(destinationGPS);
-            TeleportTo(destinationGridMap);
+            Cell destinationCell = GetWorldMap().GetCell(destinationGPS);
+            TeleportTo(destinationCell);
         }
 
 

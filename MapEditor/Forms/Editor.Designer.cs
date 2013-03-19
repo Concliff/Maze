@@ -61,8 +61,8 @@ namespace MapEditor.Forms
             this.lblDescription = new Label();
 
             this.Size = new System.Drawing.Size
-                ((GlobalConstants.GRIDMAP_BLOCK_WIDTH) * (GlobalConstants.GRIDMAP_WIDTH - 2),
-                (GlobalConstants.GRIDMAP_BLOCK_HEIGHT) * (GlobalConstants.GRIDMAP_HEIGHT - 2) + 100);
+                ((GlobalConstants.CELL_WIDTH) * (GlobalConstants.GRIDMAP_WIDTH - 2),
+                (GlobalConstants.CELL_HEIGHT) * (GlobalConstants.GRIDMAP_HEIGHT - 2) + 100);
             this.FormClosing += new FormClosingEventHandler(MapEditorFormClosing);
             this.MouseClick +=new MouseEventHandler(BlockClick);
 
@@ -100,10 +100,10 @@ namespace MapEditor.Forms
             this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.KeyMgr.EventKeyUp);
 
 
-            GridMapGraphic = new GridMapGraph[GlobalConstants.GRIDMAP_WIDTH, GlobalConstants.GRIDMAP_HEIGHT];
+            CellGraphic = new CellGraph[GlobalConstants.GRIDMAP_WIDTH, GlobalConstants.GRIDMAP_HEIGHT];
             for (int i = 0; i < GlobalConstants.GRIDMAP_WIDTH; ++i)
                 for (int j = 0; j < GlobalConstants.GRIDMAP_HEIGHT; ++j)
-                    GridMapGraphic[i, j] = new GridMapGraph();
+                    CellGraphic[i, j] = new CellGraph();
 
             this.SetStyle(ControlStyles.DoubleBuffer | ControlStyles.UserPaint | ControlStyles.AllPaintingInWmPaint, true);
 
@@ -137,6 +137,6 @@ namespace MapEditor.Forms
         private Label lblCurrentMap;
         private Label lblDescription;
 
-        private GridMapGraph[,] GridMapGraphic;
+        private CellGraph[,] CellGraphic;
     }
 }

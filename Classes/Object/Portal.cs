@@ -7,33 +7,33 @@ namespace Maze.Classes
 {
     public class Portal : GridObject
     {
-        private GridMap destinationGridMap;
+        private Cell destinationCell;
 
         public Portal()
         {
             gridObjectType = GridObjectType.Portal;
             activationTime = 3000;  // 3 seconds
-            destinationGridMap.Initialize();
+            destinationCell.Initialize();
         }
 
-        public Portal(GridMap position)
+        public Portal(Cell position)
             : this()
         {
             GPS startPosition = Position;
             startPosition.Location = position.Location;
             Position = startPosition;
-            currentGridMap = position;
+            currentCell = position;
         }
 
         public void SetDestination(GridLocation destinationGPS)
         {
-            GridMap destinationGridMap = GetWorldMap().GetGridMap(destinationGPS);
-            SetDestination(destinationGridMap);
+            Cell destinationCell = GetWorldMap().GetCell(destinationGPS);
+            SetDestination(destinationCell);
         }
 
-        public void SetDestination(GridMap destinationGridMap)
+        public void SetDestination(Cell destinationCell)
         {
-            this.destinationGridMap = destinationGridMap;
+            this.destinationCell = destinationCell;
         }
 
         public override void UpdateState(int timeP)
@@ -45,7 +45,7 @@ namespace Maze.Classes
         {
             if (!user.IsVisible())
                 return;
-            user.TeleportTo(destinationGridMap);
+            user.TeleportTo(destinationCell);
 
             base.Use(user);
         }

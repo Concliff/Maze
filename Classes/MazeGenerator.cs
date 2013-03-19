@@ -62,8 +62,8 @@ namespace Maze.Classes
         private List<Point> mainPath;
         private CoordBounds bounds;     // Boundaries coords (for table creation)
 
-        public GridMap StartPoint;
-        public GridMap FinishPoint;
+        public Cell StartPoint;
+        public Cell FinishPoint;
 
         public MazeGenerator()
         {
@@ -76,7 +76,7 @@ namespace Maze.Classes
             bounds.MinY = 0;
         }
 
-        public List<GridMap> Generate(ushort seed)
+        public List<Cell> Generate(ushort seed)
         {
             Random.Int(100);
             Random.Int(100);
@@ -247,12 +247,12 @@ namespace Maze.Classes
             // ======================
 
 
-            // Convert list of Points into list of GridMap blocks
-            List<GridMap> mapBlocks = new List<GridMap>();
+            // Convert list of Points into list of cell blocks
+            List<Cell> mapBlocks = new List<Cell>();
             int idCounter = 1;
             foreach (Point point in maze)
             {
-                GridMap block = new GridMap();
+                Cell block = new Cell();
                 block.Initialize();
 
                 block.ID = idCounter;
@@ -275,12 +275,12 @@ namespace Maze.Classes
 
                 if (point.Equals(start))
                 {
-                    block.Attribute += (uint)GridMapAttributes.IsStart;
+                    block.Attribute += (uint)CellAttributes.IsStart;
                     StartPoint = block;
                 }
                 if (point.Equals(finish))
                 {
-                    block.Attribute += (uint)GridMapAttributes.IsFinish;
+                    block.Attribute += (uint)CellAttributes.IsFinish;
                     FinishPoint = block;
                 }
 

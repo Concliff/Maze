@@ -59,7 +59,7 @@ namespace Maze.Forms
             InitializeComponent();
             CustomInitialize();
             AddControlsOrder();
-            GridMapPB.BackColor = Color.Gray;
+            CellPB.BackColor = Color.Gray;
             SystemTimer.Interval = GlobalConstants.TIMER_TICK_IN_MS; // 50 ms
 
             label1.Text = "0";
@@ -268,7 +268,7 @@ namespace Maze.Forms
                                 SystemTimer.Stop();
 
                                 // Clean Form Controls
-                                GridMapPB.Invalidate();
+                                CellPB.Invalidate();
                                 RightPanelPB.Invalidate();
                                 LeftPanelPB.Invalidate();
 
@@ -481,7 +481,7 @@ namespace Maze.Forms
                     bonusGridGPS.Location.Y += yDiff - 3;
 
                     // If current GPS doesn't have a map block
-                    if (worldMap.GetGridMap(bonusGridGPS.Location).ID == -1)
+                    if (worldMap.GetCell(bonusGridGPS.Location).ID == -1)
                         continue;
 
                     // else generate Bonus object
@@ -504,7 +504,7 @@ namespace Maze.Forms
                 bonusGenerateTimer -= tickTime;
 
             // Redraw Form Map
-            GridMapPB.Invalidate();
+            CellPB.Invalidate();
         }
 
         private void UseSpell(int spellNumber)
@@ -534,7 +534,7 @@ namespace Maze.Forms
         {
             // Check finish point
             if (worldMap.DropsRemain == 0 &&
-                worldMap.GetGridMap(Player.Position.BlockID).HasAttribute(GridMapAttributes.IsFinish))
+                worldMap.GetCell(Player.Position.BlockID).HasAttribute(CellAttributes.IsFinish))
             {
                 // Random Map: regenerate level and create objects
                 if (worldMap.IsRandom())

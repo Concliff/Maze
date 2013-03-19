@@ -44,13 +44,13 @@ namespace Maze.Classes
         #endregion
 
 
-        private List<GridMap> MapBlocks;    // Array of GridMap block of current map
-        private int[] dropsCount;            // Ooze Drops per level on map
-        private string[] MapNameList;       // Names of All downloaded maps
+        private List<Cell> MapBlocks;   // Array of cells of current map
+        private int[] dropsCount;       // Ooze Drops per level on map
+        private string[] MapNameList;   // Names of All downloaded maps
         private List<GridLocation> StartPoint;
         private List<GridLocation> FinishPoint;
         private string CurrentMapName;
-        private bool GridMapChanged;        // If map changed, it should be rewrited into mapFile
+        private bool CellChanged;    // If map changed, it should be rewrited into mapFile
         private int currentMapIndex;
         private string MapDirectoryPath = GlobalConstants.MAPS_PATH;
         private bool isRandom;
@@ -99,7 +99,7 @@ namespace Maze.Classes
         ~Map()
         {
             /// Save changed Map blocks back into file (Not for random mode)
-            if (GridMapChanged)
+            if (CellChanged)
                 SaveToFile();
         }
 
@@ -121,7 +121,7 @@ namespace Maze.Classes
 
         public void CloseCurrentMap()
         {
-            if (GridMapChanged)
+            if (CellChanged)
                 SaveToFile();
         }
 
@@ -154,7 +154,7 @@ namespace Maze.Classes
             currentMapIndex = 0;
             CurrentLevel = 0;
 
-            // Geneate GridMap blocks
+            // Geneate cell blocks
             MazeGenerator generator = new MazeGenerator();
             MapBlocks = generator.Generate(0);
             BlocksCount = MapBlocks.Count;
@@ -173,15 +173,15 @@ namespace Maze.Classes
             int currentDropsCount = 0;
             while (currentDropsCount < dropsCounter)
             {
-                GridMap block = MapBlocks[Random.Int(MapBlocks.Count)];
-                if (block.HasAttribute(GridMapAttributes.HasDrop) ||
-                    block.HasAttribute(GridMapAttributes.IsStart) ||
-                    block.HasAttribute(GridMapAttributes.IsFinish))
+                Cell block = MapBlocks[Random.Int(MapBlocks.Count)];
+                if (block.HasAttribute(CellAttributes.HasDrop) ||
+                    block.HasAttribute(CellAttributes.IsStart) ||
+                    block.HasAttribute(CellAttributes.IsFinish))
                     continue;
 
-                block.Attribute += (uint)GridMapAttributes.HasDrop;
+                block.Attribute += (uint)CellAttributes.HasDrop;
                 ++currentDropsCount;
-                ReplaceGridMap(block);
+                ReplaceCell(block);
             }
 
             // Generate Portals
@@ -191,20 +191,20 @@ namespace Maze.Classes
 
             while (portalCount < portalCounter)
             {
-                GridMap portalBlock = MapBlocks[Random.Int(MapBlocks.Count)];
-                GridMap destinationBlock = MapBlocks[Random.Int(MapBlocks.Count)];
+                Cell portalBlock = MapBlocks[Random.Int(MapBlocks.Count)];
+                Cell destinationBlock = MapBlocks[Random.Int(MapBlocks.Count)];
 
                 if (portalBlock.ID == destinationBlock.ID ||
-                    portalBlock.HasAttribute(GridMapAttributes.HasDrop) ||
-                    portalBlock.HasAttribute(GridMapAttributes.IsStart) ||
-                    portalBlock.HasAttribute(GridMapAttributes.IsFinish) ||
-                    destinationBlock.HasAttribute(GridMapAttributes.IsStart))
+                    portalBlock.HasAttribute(CellAttributes.HasDrop) ||
+                    portalBlock.HasAttribute(CellAttributes.IsStart) ||
+                    portalBlock.HasAttribute(CellAttributes.IsFinish) ||
+                    destinationBlock.HasAttribute(CellAttributes.IsStart))
                     continue;
 
-                portalBlock.Option += (uint)GridMapOptions.Portal;
+                portalBlock.Option += (uint)CellOptions.Portal;
                 portalBlock.OptionValue = destinationBlock.ID;
                 ++portalCount;
-                ReplaceGridMap(portalBlock);
+                ReplaceCell(portalBlock);
             }
         }
 
@@ -232,44 +232,44 @@ namespace Maze.Classes
         private void LoadFromFile(string MapFileName)
         {
             this.isRandom = false;
-            MapBlocks = new List<GridMap>();
+            MapBlocks = new List<Cell>();
             StartPoint = new List<GridLocation>();
             FinishPoint = new List<GridLocation>();
             CurrentMapName = MapFileName.Split('.')[0];
             int levelIndicator = 0;
 
-            StreamReader GridMapStream = File.OpenText(MapDirectoryPath + MapFileName);
+            StreamReader CellStream = File.OpenText(MapDirectoryPath + MapFileName);
             string CurrentString;
-            while ((CurrentString = GridMapStream.ReadLine()) != null)
+            while ((CurrentString = CellStream.ReadLine()) != null)
             {
                 string[] StringStruct = new string[10];
                 StringStruct = CurrentString.Split(' ');
                 // Processing
 
-                GridMap GridMapStruct;
+                Cell CellStruct;
 
-                GridMapStruct.ID = Convert.ToInt32(StringStruct[0]);
-                GridMapStruct.Location.X = Convert.ToInt32(StringStruct[1]);
-                GridMapStruct.Location.Y = Convert.ToInt32(StringStruct[2]);
-                GridMapStruct.Location.Z = Convert.ToInt32(StringStruct[3]);
-                GridMapStruct.Location.Level = Convert.ToInt32(StringStruct[4]);
-                GridMapStruct.Type = Convert.ToUInt32(StringStruct[5]);
-                GridMapStruct.Attribute = Convert.ToUInt32(StringStruct[6]);
-                GridMapStruct.Option = Convert.ToUInt32(StringStruct[7]);
-                GridMapStruct.OptionValue = Convert.ToInt32(StringStruct[8]);
-                GridMapStruct.ND4 = Convert.ToInt32(StringStruct[9]);
+                CellStruct.ID = Convert.ToInt32(StringStruct[0]);
+                CellStruct.Location.X = Convert.ToInt32(StringStruct[1]);
+                CellStruct.Location.Y = Convert.ToInt32(StringStruct[2]);
+                CellStruct.Location.Z = Convert.ToInt32(StringStruct[3]);
+                CellStruct.Location.Level = Convert.ToInt32(StringStruct[4]);
+                CellStruct.Type = Convert.ToUInt32(StringStruct[5]);
+                CellStruct.Attribute = Convert.ToUInt32(StringStruct[6]);
+                CellStruct.Option = Convert.ToUInt32(StringStruct[7]);
+                CellStruct.OptionValue = Convert.ToInt32(StringStruct[8]);
+                CellStruct.ND4 = Convert.ToInt32(StringStruct[9]);
 
-                AddGridMap(GridMapStruct);
+                AddCell(CellStruct);
 
                 if (Convert.ToInt32(StringStruct[4]) >= levelIndicator)
                     levelIndicator++;
 
-                if (GridMapStruct.HasAttribute(GridMapAttributes.IsStart))
-                    StartPoint.Insert(GridMapStruct.Location.Level, GridMapStruct.Location);
-                if (GridMapStruct.HasAttribute(GridMapAttributes.IsFinish))
-                    FinishPoint.Insert(GridMapStruct.Location.Level, GridMapStruct.Location);
+                if (CellStruct.HasAttribute(CellAttributes.IsStart))
+                    StartPoint.Insert(CellStruct.Location.Level, CellStruct.Location);
+                if (CellStruct.HasAttribute(CellAttributes.IsFinish))
+                    FinishPoint.Insert(CellStruct.Location.Level, CellStruct.Location);
             }
-            GridMapStream.Close();
+            CellStream.Close();
             LevelCount = levelIndicator;
             dropsCount = new int[LevelCount];
         }
@@ -279,12 +279,12 @@ namespace Maze.Classes
             if (isRandom)
                 return;
 
-            StreamWriter GridMapStream = new StreamWriter(MapDirectoryPath + CurrentMapName + ".map", false);
-            string GridMapString;
+            StreamWriter CellStream = new StreamWriter(MapDirectoryPath + CurrentMapName + ".map", false);
+            string CellString;
 
-            foreach(GridMap Block in MapBlocks)
+            foreach(Cell Block in MapBlocks)
             {
-                GridMapString = Block.ID.ToString() + " "
+                CellString = Block.ID.ToString() + " "
                     + Block.Location.X.ToString() + " "
                     + Block.Location.Y.ToString() + " "
                     + Block.Location.Z.ToString() + " "
@@ -294,16 +294,16 @@ namespace Maze.Classes
                     + Block.Option.ToString() + " "
                     + Block.OptionValue.ToString() + " "
                     + Block.ND4.ToString();
-                GridMapStream.WriteLine(GridMapString);
+                CellStream.WriteLine(CellString);
             }
-            GridMapStream.Close();
+            CellStream.Close();
         }
 
         public void FillMapWithUnits()
         {
-            foreach (GridMap block in MapBlocks)
+            foreach (Cell block in MapBlocks)
             {
-                if (block.HasAttribute(GridMapAttributes.HasDrop))
+                if (block.HasAttribute(CellAttributes.HasDrop))
                     // Create Deimos at Ooze Drop Location
                     new Deimos(block.Location);
             }
@@ -314,75 +314,75 @@ namespace Maze.Classes
 
         internal void FillMapWithObjects()
         {
-            foreach (GridMap block in MapBlocks)
+            foreach (Cell block in MapBlocks)
             {
-                if (block.HasAttribute(GridMapAttributes.HasDrop))
+                if (block.HasAttribute(CellAttributes.HasDrop))
                 {
                     new OozeDrop(block);
                     ++dropsCount[block.Location.Level];
                 }
 
-                if (block.HasOption(GridMapOptions.Portal))
+                if (block.HasOption(CellOptions.Portal))
                 {
                     Portal portal = new Portal(block);
-                    portal.SetDestination(GetGridMap(block.OptionValue));
+                    portal.SetDestination(GetCell(block.OptionValue));
                 }
             }
         }
 
-        public GridMap GetGridMap(int BlockID)
+        public Cell GetCell(int BlockID)
         {
-            GridMap MapBlock = new GridMap();
+            Cell MapBlock = new Cell();
             MapBlock.Initialize();
 
             for (int i = 0; i < BlocksCount; ++i)
-                if (((GridMap)MapBlocks[i]).ID == BlockID)
-                    return (GridMap)MapBlocks[i];
+                if (((Cell)MapBlocks[i]).ID == BlockID)
+                    return (Cell)MapBlocks[i];
 
             return MapBlock;
         }
-        public GridMap GetGridMap(GridLocation BlockLocation)
+        public Cell GetCell(GridLocation BlockLocation)
         {
-            GridMap MapBlock = new GridMap();
+            Cell MapBlock = new Cell();
             MapBlock.Initialize();// Initialize(MapBlock);
             MapBlock.Location = BlockLocation;
 
             for (int i = 0; i < MapBlocks.Count; ++i)
-                if (((GridMap)MapBlocks[i]).Location.Equals(BlockLocation))
-                    return (GridMap)MapBlocks[i];
+                if (((Cell)MapBlocks[i]).Location.Equals(BlockLocation))
+                    return (Cell)MapBlocks[i];
 
             return MapBlock;
         }
 
-        public bool AddGridMap(GridMap NewGridMap)
+        public bool AddCell(Cell NewCell)
         {
-            if (GetGridMap(NewGridMap.ID).ID != -1)
+            if (GetCell(NewCell.ID).ID != -1)
             {
-                ReplaceGridMap(NewGridMap);
+                ReplaceCell(NewCell);
                 return false;
             }
 
-            MapBlocks.Add(NewGridMap);
+            MapBlocks.Add(NewCell);
             ++BlocksCount;
-            GridMapChanged = true;
+            CellChanged = true;
             return true;
         }
 
-        public void AddEmptyGrigMap(GridMap NewGridMap)
+        public void AddEmptyGrigMap(Cell NewCell)
         {
-            RemoveGridMap(NewGridMap);
+            RemoveCell(NewCell);
         }
 
-        private bool RemoveGridMap(GridMap RemovedGridMap)
+        private bool RemoveCell(Cell RemovedCell)
         {
-            MapBlocks.Remove(RemovedGridMap);
+            MapBlocks.Remove(RemovedCell);
             --BlocksCount;
             return true;
         }
-        private bool ReplaceGridMap(GridMap ChangedGridMap)
+        private bool ReplaceCell(Cell ChangedCell)
         {
-            RemoveGridMap(GetGridMap(ChangedGridMap.ID));
-            AddGridMap(ChangedGridMap);
+            RemoveCell(GetCell(ChangedCell.ID));
+            AddCell(ChangedCell);
             return true;
         }
 
