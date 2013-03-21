@@ -22,11 +22,13 @@ namespace Maze.Classes
 
     public class PositionEventArgs : EventArgs
     {
+        public GPS PrevPosition;
         public GPS NewPosition;
 
-        public PositionEventArgs(GPS position)
+        public PositionEventArgs(GPS prevPosition, GPS newPosition)
         {
-            NewPosition = position;
+            PrevPosition = prevPosition;
+            NewPosition = newPosition;
         }
     }
 
@@ -107,17 +109,15 @@ namespace Maze.Classes
                 // Fix Position, including object bounds and map border
                 newPosition = NormalizePosition(newPosition);
 
-                // Apply new Position
-                pr_position = newPosition;
-
                 // Call events
                 if (locationChanged && LocationChanged != null)
-                    LocationChanged(this, new PositionEventArgs(pr_position));
+                    LocationChanged(this, new PositionEventArgs(pr_position, newPosition));
 
                 if (PositionChanged != null)
-                    PositionChanged(this, new PositionEventArgs(pr_position));
+                    PositionChanged(this, new PositionEventArgs(pr_position, newPosition));
 
-
+                // Apply new Position
+                pr_position = newPosition;
             }
         }
 
@@ -125,8 +125,8 @@ namespace Maze.Classes
         /// <summary>
         /// Occurs when object changed its Location.
         /// </summary>
-        
         public event PositionHandler PositionChanged;
+
         /// <summary>
         /// Occurs when object changed its GPS location, i.e moved to other cell
         /// </summary>

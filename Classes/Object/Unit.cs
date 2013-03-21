@@ -209,6 +209,11 @@ namespace Maze.Classes
         protected MovementGenerator motionMaster;
 
         /// <summary>
+        /// Occurs when object changed its Position without any movement processes.
+        /// </summary>
+        public event PositionHandler Relocated;
+
+        /// <summary>
         /// Determines the type of the unit
         /// </summary>
         public UnitTypes UnitType
@@ -349,12 +354,24 @@ namespace Maze.Classes
                     break;
             }
 
+            // save previous position
+            GPS prevPosition = Position;
+
             Position = newPosition;
+
+            if (Relocated != null)
+                Relocated(this, new PositionEventArgs(prevPosition, Position));
         }
 
         public void TeleportTo(Cell destinationCell)
         {
+            // save old position
+            GPS prevPosition = Position;
             Position = new GPS(destinationCell.Location, 25, 25);
+
+            if (Relocated != null)
+                Relocated(this, new PositionEventArgs(prevPosition, Position));
+
         }
 
         public void TeleportTo(GridLocation destinationGPS)
