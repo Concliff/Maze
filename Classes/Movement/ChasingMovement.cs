@@ -28,14 +28,14 @@ namespace Maze.Classes
             pathFindingTimer = PATHFINDING_TIME;
             this.state = MotionStates.None;
             victim = World.PlayForm.Player;
-            pathFinder = new PathFinder(WorldMap.GetCell(this.unit.Position.Location),
+            pathFinder = new PathFinder(WorldMap.GetCell(this.mover.Position.Location),
                 WorldMap.GetCell(this.victim.Position.Location));
             FindPath();
         }
 
         public override void UpdateState(int timeP)
         {
-            if (!IsInMotion || this.unit.HasEffectType(EffectTypes.Root))
+            if (!IsInMotion || this.mover.HasEffectType(EffectTypes.Root))
                 return;
 
             switch (state)
@@ -61,10 +61,10 @@ namespace Maze.Classes
         private void MovementAction()
         {
             // Generate Path if located at unknown grid
-            if (!this.pathFinder.Path.Contains(WorldMap.GetCell(unit.Position.Location)))
+            if (!this.pathFinder.Path.Contains(WorldMap.GetCell(mover.Position.Location)))
                 FindPath();
 
-            double movementStepD = GlobalConstants.MOVEMENT_STEP_PX * this.unit.SpeedRate;
+            double movementStepD = GlobalConstants.MOVEMENT_STEP_PX * this.mover.SpeedRate;
             if (CurrentDirection.Second != Directions.None)
                 movementStepD = Math.Sqrt(2 * movementStepD);
             int movementStep = (int)(movementStepD);
@@ -80,7 +80,7 @@ namespace Maze.Classes
 
         private void FindPath()
         {
-            Cell currentCell = WorldMap.GetCell(unit.Position.Location);
+            Cell currentCell = WorldMap.GetCell(mover.Position.Location);
 
             if (this.victim == null)
                 return;
@@ -95,7 +95,7 @@ namespace Maze.Classes
             bool isHome = state == MotionStates.ReturningHome;
 
             this.pathFinder.GeneratePath(currentCell,
-                isHome ? WorldMap.GetCell(unit.Home) : WorldMap.GetCell(this.victim.Position.Location));
+                isHome ? WorldMap.GetCell(mover.Home) : WorldMap.GetCell(this.victim.Position.Location));
             if (this.pathFinder.Path.Count == 0)
             {
                 state = MotionStates.StandingBy;
@@ -108,7 +108,7 @@ namespace Maze.Classes
                 {
                     int index = this.pathFinder.Path.IndexOf(currentCell);
 
-                    GridLocation nextGPS = unit.Position.Location;
+                    GridLocation nextGPS = mover.Position.Location;
                     Cell nextCell;
 
                     if (index > 0)
@@ -163,15 +163,15 @@ namespace Maze.Classes
                 return;
 
             // HACK: Ignore if not the center of the block
-            int movementStep = (int)(GlobalConstants.MOVEMENT_STEP_PX * unit.SpeedRate) + 1;
-            if (!(unit.Position.X >= GlobalConstants.CELL_WIDTH / 2 - movementStep / 2 &&
-                unit.Position.X <= GlobalConstants.CELL_WIDTH / 2 + movementStep / 2 &&
-                unit.Position.Y >= GlobalConstants.CELL_HEIGHT / 2 - movementStep / 2 &&
-                unit.Position.Y <= GlobalConstants.CELL_HEIGHT / 2 + movementStep / 2 &&
+            int movementStep = (int)(GlobalConstants.MOVEMENT_STEP_PX * mover.SpeedRate) + 1;
+            if (!(mover.Position.X >= GlobalConstants.CELL_WIDTH / 2 - movementStep / 2 &&
+                mover.Position.X <= GlobalConstants.CELL_WIDTH / 2 + movementStep / 2 &&
+                mover.Position.Y >= GlobalConstants.CELL_HEIGHT / 2 - movementStep / 2 &&
+                mover.Position.Y <= GlobalConstants.CELL_HEIGHT / 2 + movementStep / 2 &&
                 !this.cellReached))
                 return;
 
-            unit.Position = new GPS(unit.Position, 25, 25);
+            mover.Position = new GPS(mover.Position, 25, 25);
             this.cellReached = true;
             FindPath();
 

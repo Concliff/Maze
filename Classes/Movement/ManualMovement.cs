@@ -76,7 +76,7 @@ namespace Maze.Classes
             else
                 direction.Second = Directions.None;
 
-            if (unit.HasEffectType(EffectTypes.MoveReverse))
+            if (mover.HasEffectType(EffectTypes.MoveReverse))
             {
                 direction.First = GetOppositeDirection(direction.First);
                 direction.Second = GetOppositeDirection(direction.Second);
@@ -84,7 +84,7 @@ namespace Maze.Classes
 
             CurrentDirection = direction;
 
-            double movementStepD = GlobalConstants.MOVEMENT_STEP_PX * this.unit.SpeedRate;
+            double movementStepD = GlobalConstants.MOVEMENT_STEP_PX * this.mover.SpeedRate;
             if (CurrentDirection.Second != Directions.None)
                 movementStepD = Math.Sqrt(2 * movementStepD);
             int movementStep = (int)(movementStepD);

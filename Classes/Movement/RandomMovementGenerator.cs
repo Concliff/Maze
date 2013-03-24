@@ -15,10 +15,10 @@ namespace Maze.Classes
 
         public override void UpdateState(int timeP)
         {
-            if (!IsInMotion || this.unit.HasEffectType(EffectTypes.Root))
+            if (!IsInMotion || this.mover.HasEffectType(EffectTypes.Root))
                 return;
 
-            double movementStepD = GlobalConstants.MOVEMENT_STEP_PX * this.unit.SpeedRate;
+            double movementStepD = GlobalConstants.MOVEMENT_STEP_PX * this.mover.SpeedRate;
             int movementStep = (int)(movementStepD);
             stepRemainder += movementStepD - movementStep;
             if (stepRemainder > 1d)
@@ -47,7 +47,7 @@ namespace Maze.Classes
         {
             Directions newDirection = Directions.None;
             int maxIterations = 10;
-            Cell currentCell = WorldMap.GetCell(this.unit.Position.Location);
+            Cell currentCell = WorldMap.GetCell(this.mover.Position.Location);
 
             for (int i = 0; i < maxIterations; ++i)
             {
@@ -107,12 +107,12 @@ namespace Maze.Classes
         {
             this.cellReached = true;
 
-            unit.Position = new GPS(unit.Position, 25, 25);
+            mover.Position = new GPS(mover.Position, 25, 25);
 
             if (Random.Int(100) <= 33)  // 33% chance to change direction
                 SelectNewDirection();
 
-            if (!WorldMap.GetCell(this.unit.Position.Location).CanMoveTo(CurrentDirection.First))
+            if (!WorldMap.GetCell(this.mover.Position.Location).CanMoveTo(CurrentDirection.First))
                 SelectNewDirection();
 
             // Deimos can not pass through the Start Point
@@ -129,7 +129,7 @@ namespace Maze.Classes
                 DefineNextGPS(CurrentDirection);
             }
 
-            remainDistance = this.unit.Position.GetDistance(nextGPS);
+            remainDistance = this.mover.Position.GetDistance(nextGPS);
         }
 
     }

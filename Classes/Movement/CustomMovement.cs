@@ -15,7 +15,7 @@ namespace Maze.Classes
             if (CurrentDirection.First == Directions.None)
                 return;
 
-            double movementStepD = GlobalConstants.MOVEMENT_STEP_PX * this.unit.SpeedRate;
+            double movementStepD = GlobalConstants.MOVEMENT_STEP_PX * this.mover.SpeedRate;
             int movementStep = (int)(movementStepD);
             stepRemainder += movementStepD - movementStep;
             if (stepRemainder > 1d)
