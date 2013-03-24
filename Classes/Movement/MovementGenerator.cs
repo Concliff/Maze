@@ -47,6 +47,7 @@ namespace Maze.Classes
             IsInMotion = false;
 
             this.mover.LocationChanged += OnLocationChanged;
+            this.mover.Relocated += mover_Relocated;
         }
 
         /// <summary>
@@ -97,6 +98,11 @@ namespace Maze.Classes
                 }
 
             this.mover.Position = newPosition;
+        }
+
+        private void mover_Relocated(object sender, PositionEventArgs e)
+        {
+            OnDestinationReached();
         }
 
         protected virtual void OnDestinationReached() { ;}
