@@ -11,7 +11,6 @@ namespace Maze.Classes
             : base(unit)
         {
             this.generatorType = MovementGeneratorType.Random;
-            SelectNewDirection();
         }
 
         public override void UpdateState(int timeP)
@@ -26,6 +25,14 @@ namespace Maze.Classes
             {
                 ++movementStep;
                 stepRemainder -= 1;
+            }
+
+            remainDistance -= movementStep;
+
+            if (remainDistance <= 0)
+            {
+                OnDestinationReached();
+                return;
             }
 
             Move(movementStep);
@@ -121,6 +128,8 @@ namespace Maze.Classes
                 SelectNewDirection(false);
                 DefineNextGPS(CurrentDirection);
             }
+
+            remainDistance = this.unit.Position.GetDistance(nextGPS);
         }
 
     }

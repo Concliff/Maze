@@ -19,6 +19,14 @@ namespace Maze.Classes
         protected MovementGeneratorType generatorType;
         protected Unit unit;
 
+        /// <summary>
+        /// Remain distance to the next block
+        /// </summary>
+        protected double remainDistance;
+
+        protected GPS nextGPS; // Next block to move in the current direction
+
+
         protected bool pr_IsInMotion;
         public bool IsInMotion
         {
@@ -31,8 +39,6 @@ namespace Maze.Classes
                 pr_IsInMotion = value;
             }
         }
-
-        protected GPS nextGPS; // Next block to move in the current direction
 
         public MovementGenerator(Unit unit)
         {
@@ -57,6 +63,11 @@ namespace Maze.Classes
         public void StartMotion()
         {
             IsInMotion = true;
+
+            if (nextGPS.BlockID == 0)
+                nextGPS = this.unit.Position;
+
+            remainDistance = this.unit.Position.GetDistance(nextGPS);
         }
 
         public void StopMotion()
@@ -67,12 +78,6 @@ namespace Maze.Classes
         protected void Move(int movementStep)
         {
             GPS newPosition = this.unit.Position;
-
-            if (newPosition.GetDistance(nextGPS) <= (double)movementStep / 2)
-            {
-                OnDestinationReached();
-                return;
-            }
 
             for (int i = 0; i < 2; ++i)
                 switch (i == 0 ? CurrentDirection.First : CurrentDirection.Second)
@@ -92,7 +97,6 @@ namespace Maze.Classes
                 }
 
             this.unit.Position = newPosition;
-
         }
 
         protected virtual void OnDestinationReached() { ;}
