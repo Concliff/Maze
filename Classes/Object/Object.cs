@@ -109,15 +109,16 @@ namespace Maze.Classes
                 // Fix Position, including object bounds and map border
                 newPosition = NormalizePosition(newPosition);
 
+                // Apply new Position
+                GPS prevPosition = pr_position;
+                pr_position = newPosition;
+
                 // Call events
                 if (locationChanged && LocationChanged != null)
-                    LocationChanged(this, new PositionEventArgs(pr_position, newPosition));
+                    LocationChanged(this, new PositionEventArgs(prevPosition, pr_position));
 
                 if (PositionChanged != null)
-                    PositionChanged(this, new PositionEventArgs(pr_position, newPosition));
-
-                // Apply new Position
-                pr_position = newPosition;
+                    PositionChanged(this, new PositionEventArgs(prevPosition, pr_position));
             }
         }
 
