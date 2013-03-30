@@ -18,6 +18,12 @@ namespace Maze.Classes
             if (!IsInMotion || this.mover.HasEffectType(EffectTypes.Root))
                 return;
 
+            if (this.remainDistance <= 0)
+            {
+                OnDestinationReached();
+                //return;
+            }
+
             double movementStepD = GlobalConstants.MOVEMENT_STEP_PX * this.mover.SpeedRate;
             int movementStep = (int)(movementStepD);
             stepRemainder += movementStepD - movementStep;
@@ -29,13 +35,13 @@ namespace Maze.Classes
 
             remainDistance -= movementStep;
 
-            if (remainDistance <= 0)
-            {
-                OnDestinationReached();
-                return;
-            }
-
             Move(movementStep);
+        }
+
+        public override void StartMotion()
+        {
+            SelectNewDirection();
+            base.StartMotion();
         }
 
         private void SelectNewDirection()
@@ -66,6 +72,7 @@ namespace Maze.Classes
                     (newDirection != GetOppositeDirection(CurrentDirection.First) || CurrentDirection.First == Directions.None))
                 {
                     CurrentDirection = new Direction(newDirection);
+                    DefineNextGPS();
                     return;
                 }
             }
@@ -83,33 +90,31 @@ namespace Maze.Classes
                 if (currentCell.CanMoveTo(Directions.Up))
                 {
                     CurrentDirection = new Direction(Directions.Up);
-                    return;
                 }
                 else if (currentCell.CanMoveTo(Directions.Left))
                 {
                     CurrentDirection = new Direction(Directions.Left);
-                    return;
                 }
                 else if (currentCell.CanMoveTo(Directions.Down))
                 {
                     CurrentDirection = new Direction(Directions.Down);
-                    return;
                 }
                 else if (currentCell.CanMoveTo(Directions.Right))
                 {
                     CurrentDirection = new Direction(Directions.Right);
-                    return;
                 }
             }
+
+            DefineNextGPS();
         }
 
         protected override void OnDestinationReached()
         {
-            this.cellReached = true;
-
             mover.Position = new GPS(mover.Position, 25, 25);
 
-            if (Random.Int(100) <= 33)  // 33% chance to change direction
+            if (CurrentDirection.First == Directions.None) // First time moving
+                SelectNewDirection();
+            else if (Random.Int(100) <= 33)  // 33% chance to change direction
                 SelectNewDirection();
 
             if (!WorldMap.GetCell(this.mover.Position.Location).CanMoveTo(CurrentDirection.First))
@@ -120,16 +125,11 @@ namespace Maze.Classes
 
             Cell nextCell;
 
-            DefineNextGPS(CurrentDirection);
-
             nextCell = WorldMap.GetCell(nextGPS.Location);
             if (nextCell.HasAttribute(CellAttributes.IsStart))
             {
                 SelectNewDirection(false);
-                DefineNextGPS(CurrentDirection);
             }
-
-            remainDistance = this.mover.Position.GetDistance(nextGPS);
         }
 
     }

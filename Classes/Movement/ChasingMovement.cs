@@ -58,8 +58,20 @@ namespace Maze.Classes
 
         }
 
+        public override void StartMotion()
+        {
+            FindPath();
+            base.StartMotion();
+        }
+
         private void MovementAction()
         {
+            if (this.remainDistance <= 0)
+            {
+                OnDestinationReached();
+                return;
+            }
+
             // Generate Path if located at unknown grid
             if (!this.pathFinder.Path.Contains(WorldMap.GetCell(mover.Position.Location)))
                 FindPath();
@@ -75,6 +87,7 @@ namespace Maze.Classes
                 stepRemainder -= 1;
             }
 
+            this.remainDistance -= movementStep;
             Move(movementStep);
         }
 
@@ -153,6 +166,8 @@ namespace Maze.Classes
                     }
                     else
                         nextCell = this.pathFinder.Path[index];
+
+                    DefineNextGPS();
                 }
             }
         }
@@ -162,17 +177,6 @@ namespace Maze.Classes
             if (state != MotionStates.Chasing && state != MotionStates.ReturningHome)
                 return;
 
-            // HACK: Ignore if not the center of the block
-            int movementStep = (int)(GlobalConstants.MOVEMENT_STEP_PX * mover.SpeedRate) + 1;
-            if (!(mover.Position.X >= GlobalConstants.CELL_WIDTH / 2 - movementStep / 2 &&
-                mover.Position.X <= GlobalConstants.CELL_WIDTH / 2 + movementStep / 2 &&
-                mover.Position.Y >= GlobalConstants.CELL_HEIGHT / 2 - movementStep / 2 &&
-                mover.Position.Y <= GlobalConstants.CELL_HEIGHT / 2 + movementStep / 2 &&
-                !this.cellReached))
-                return;
-
-            mover.Position = new GPS(mover.Position, 25, 25);
-            this.cellReached = true;
             FindPath();
 
             // TODO: Define state PhobosStates.DestinationReached

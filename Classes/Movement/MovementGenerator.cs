@@ -15,7 +15,6 @@ namespace Maze.Classes
 
     public abstract class MovementGenerator : Movement
     {
-        protected bool cellReached;
         protected MovementGeneratorType generatorType;
         protected Unit mover;
 
@@ -61,17 +60,12 @@ namespace Maze.Classes
             return generatorType;
         }
 
-        public void StartMotion()
+        public virtual void StartMotion()
         {
             IsInMotion = true;
-
-            if (nextGPS.BlockID == 0)
-                nextGPS = this.mover.Position;
-
-            remainDistance = this.mover.Position.GetDistance(nextGPS);
         }
 
-        public void StopMotion()
+        public virtual void StopMotion()
         {
             IsInMotion = false;
         }
@@ -107,23 +101,23 @@ namespace Maze.Classes
 
         protected virtual void OnDestinationReached() { ;}
 
-        protected virtual void OnLocationChanged(object sender, PositionEventArgs e)
-        {
-            this.cellReached = false;
-        }
+        protected virtual void OnLocationChanged(object sender, PositionEventArgs e) { ; }
 
-        public GPS DefineNextGPS(Direction Currenetdirection)
+        protected void DefineNextGPS()
         {
-            nextGPS = new GPS(mover.Position, 25, 25);
+            this.nextGPS = new GPS(mover.Position, 25, 25);
 
-            switch (CurrentDirection.First)
-            {
-                case Directions.Up: --nextGPS.Location.Y; break;
-                case Directions.Down: ++nextGPS.Location.Y; break;
-                case Directions.Left: --nextGPS.Location.X; break;
-                case Directions.Right: ++nextGPS.Location.X; break;
-            }
-            return nextGPS;
+            for (int i = 0; i < 2; ++i)
+                switch (i == 0 ? CurrentDirection.First : CurrentDirection.Second)
+                {
+                    case Directions.Up: --this.nextGPS.Location.Y; break;
+                    case Directions.Down: ++this.nextGPS.Location.Y; break;
+                    case Directions.Left: --this.nextGPS.Location.X; break;
+                    case Directions.Right: ++this.nextGPS.Location.X; break;
+                }
+
+            this.remainDistance = this.mover.Position.GetDistance(this.nextGPS);
+
         }
     }
 
