@@ -12,7 +12,7 @@ namespace Maze.Classes
 
         public Slime()
         {
-            gridObjectType = GridObjectType.Slime;
+            GridObjectType = GridObjectTypes.Slime;
             SetFlag(GridObjectFlags.Temporal);
             if (World.PlayForm.Player.HasEffectType(EffectTypes.SlimeDuration))
                 timeToLive = 5000;

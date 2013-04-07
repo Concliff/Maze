@@ -16,10 +16,18 @@ namespace Maze.Classes
             DestinationReached,     // Reached final destination
         };
 
+        /// <summary>
+        /// Reference to a unit we are chasing
+        /// </summary>
         private Unit victim;
         private PathFinder pathFinder;
         private const int PATHFINDING_TIME = 3000;
         private int pathFindingTimer;
+
+        /// <summary>
+        /// Gets or Sets current motion state.
+        /// (Finite State Machine implementaion)
+        /// </summary>
         private MotionStates state;
 
         public ChasingMovement(Unit unit)
@@ -38,6 +46,7 @@ namespace Maze.Classes
             if (!IsInMotion || this.mover.HasEffectType(EffectTypes.Root))
                 return;
 
+            // Select behavior to the current state
             switch (state)
             {
                 case MotionStates.Chasing:
@@ -93,22 +102,32 @@ namespace Maze.Classes
 
         private void FindPath()
         {
-            Cell currentCell = WorldMap.GetCell(mover.Position.Location);
-
+            // when there is no victim unit
             if (this.victim == null)
                 return;
 
+            Cell currentCell = WorldMap.GetCell(mover.Position.Location);
+
+            // Stop pursuit
+            // when victim is not available
             if (!this.victim.IsAlive() || this.victim.IsAtHome || !this.victim.IsVisible())
             {
                 state = MotionStates.ReturningHome;
             }
+            // otherwise stop motion when returning home
+            // after a time the (pathFindingTimer) the pursuit of the victim will be continued
             else if (state == MotionStates.ReturningHome)
                 state = MotionStates.StandingBy;
 
             bool isHome = state == MotionStates.ReturningHome;
 
+            // Generate new path:
+            // if ReturningHome - path to the respawn location
+            // else - path to the victim location
             this.pathFinder.GeneratePath(currentCell,
                 isHome ? WorldMap.GetCell(mover.Home) : WorldMap.GetCell(this.victim.Position.Location));
+
+            // PathFinding failed or victim and mover are at the same location
             if (this.pathFinder.Path.Count == 0)
             {
                 state = MotionStates.StandingBy;
@@ -119,6 +138,7 @@ namespace Maze.Classes
 
                 if (this.pathFinder.Path.Contains(currentCell))
                 {
+                    // Index number of the current Cell in Path
                     int index = this.pathFinder.Path.IndexOf(currentCell);
 
                     GridLocation nextGPS = mover.Position.Location;
@@ -128,9 +148,13 @@ namespace Maze.Classes
                     {
                         nextCell = this.pathFinder.Path[index - 1];
 
+                        // Difine coords difference between current location and next one.
                         int shiftX = nextCell.Location.X - currentCell.Location.X;
                         int shiftY = nextCell.Location.Y - currentCell.Location.Y;
 
+                        // shiftX or shiftY == 0 -> moving is unidirectional
+                        // shiftX == -1 -> Left; == 1 -> Right;
+                        // shiftY == -1 -> Up; == 1 -> Down;
                         switch (shiftX * shiftY)
                         {
                             case -1:
@@ -165,6 +189,7 @@ namespace Maze.Classes
                         }
                     }
                     else
+                        // TODO: know why we are doing that code
                         nextCell = this.pathFinder.Path[index];
 
                     DefineNextGPS();
@@ -177,6 +202,9 @@ namespace Maze.Classes
             if (state != MotionStates.Chasing && state != MotionStates.ReturningHome)
                 return;
 
+            // After reaching next Cell, the victim could move to another location
+            // need generate new Path
+            // TODO: do this ONLY when victim changed location while the mover unit was moving
             FindPath();
 
             // TODO: Define state PhobosStates.DestinationReached

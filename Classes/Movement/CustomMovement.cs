@@ -5,6 +5,9 @@ using System.Text;
 
 namespace Maze.Classes
 {
+    /// <summary>
+    /// Represents a movement generator, provides motion with the set Direction from the outside.
+    /// </summary>
     public class CustomMovement : MovementGenerator
     {
         public CustomMovement(Unit unit)

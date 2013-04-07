@@ -94,32 +94,7 @@ namespace Maze.Classes
 
         public override void UpdateState(int timeP)
         {
-            if (IsAlive() && IsVisible())
-            {
-                // Kill Slug in a collision with others Units
-                // Collision = any "hostile" Unit is passing by closer then 30
-                List<Unit> Units = GetUnitsWithinRange(30);
-                if (Units.Count > 0)
-                {
-                    foreach (Unit unit in Units)
-                    {
-                        OnUnitCollision(unit);
-                        if (!this.collidingUnits.Exists(p => p.GetGUID() == unit.GetGUID()))
-                        {
-                            OnUnitCollisionBegin(unit);
-                            this.collidingUnits.Add(unit);
-                        }
-                    }
-                }
-                else
-                    if (collidingUnits.Count > 0)
-                    {
-                        foreach (Unit unit in this.collidingUnits)
-                            OnUnitCollisionEnd(unit);
-                        this.collidingUnits.Clear();
-                    }
-
-            }
+            CheckUnitsCollision();
 
             // Slug is moving:
             // take 2 OozeEnergy every second
@@ -149,6 +124,36 @@ namespace Maze.Classes
             MovementAction(timeP);
 
             base.UpdateState(timeP);
+        }
+
+        protected void CheckUnitsCollision()
+        {
+            if (IsAlive() && IsVisible())
+            {
+                // Kill Slug in a collision with others Units
+                // Collision = any "hostile" Unit is passing by closer then 30
+                List<Unit> Units = GetUnitsWithinRange(30);
+                if (Units.Count > 0)
+                {
+                    foreach (Unit unit in Units)
+                    {
+                        if (!this.collidingUnits.Exists(p => p.GetGUID() == unit.GetGUID()))
+                        {
+                            OnUnitCollision(unit);
+                            OnUnitCollisionBegin(unit);
+                            this.collidingUnits.Add(unit);
+                        }
+                    }
+                }
+                else
+                    if (collidingUnits.Count > 0)
+                    {
+                        foreach (Unit unit in this.collidingUnits)
+                            OnUnitCollisionEnd(unit);
+                        this.collidingUnits.Clear();
+                    }
+
+            }
         }
 
         public override void SetDeathState(DeathStates deathState)
@@ -221,7 +226,7 @@ namespace Maze.Classes
             slimeAround = ObjectSearcher.GetGridObjectsInArea(searchingPoint, searchingStep);
             foreach (GridObject slime in slimeAround)
             {
-                if (slime.GetGridObjectType() == GridObjectType.Slime)
+                if (slime.GridObjectType == GridObjectTypes.Slime)
                     slimePersist = true;
             }
             // Increase speed with an Effect "Viscous Slime - Slug"

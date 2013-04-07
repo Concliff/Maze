@@ -11,7 +11,7 @@ namespace Maze.Classes
 
         public Portal()
         {
-            gridObjectType = GridObjectType.Portal;
+            GridObjectType = GridObjectTypes.Portal;
             activationTime = 3000;  // 3 seconds
             destinationCell.Initialize();
         }

@@ -139,7 +139,13 @@ namespace Maze.Classes
         // Some constructors for the simplified initialization
 
         /// <summary>
-        /// Initialize with Custom LOcation and X, Y block coords
+        /// Initialize with Custom Location.
+        /// X = Y = 25;
+        /// </summary>
+        public GPS(GridLocation location) : this(location, 25, 25) { }
+
+        /// <summary>
+        /// Initialize with Custom Location and X, Y block coords
         /// </summary>
         public GPS(GridLocation Location, int X, int Y)
         {

@@ -10,7 +10,7 @@ namespace Maze.Classes
         public SlugClone(GPS position, Movement.Direction currentDirection)
         {
             UnitType = UnitTypes.SlugClone;
-
+            this.objectType = ObjectType.Slug;
             Position = position;
             this.currentCell = GetWorldMap().GetCell(Position.Location);
 
@@ -37,8 +37,8 @@ namespace Maze.Classes
 
                 return;
             }
-            
-            base.UpdateState(timeP);
+
+            CheckUnitsCollision();
         }
 
         public override void SetDeathState(DeathStates deathState)

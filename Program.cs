@@ -20,6 +20,8 @@ namespace Maze
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
+            // Create World instance to process with
+            // application common data (win Forms, Stores, Files)
             World WorldMgr = new World();
         }
     }

@@ -16,7 +16,7 @@ namespace Maze.Classes
 
     public enum ObjectState
     {
-        Default,     // Setted by Default
+        Default,     // Set by Default
         Removed,     // Waiting for deletion from container
     }
 

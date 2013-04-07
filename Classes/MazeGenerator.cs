@@ -45,7 +45,7 @@ namespace Maze.Classes
         };
 
         //
-        // Maze parameters
+        // CONFIG: Maze parameters
         //
         private const int MAINPATH_LENGTH_MIN = 30;
         private const int MAINPATH_LENGTH_MAX = 40;
@@ -55,32 +55,41 @@ namespace Maze.Classes
         // BRANCH_SEGMENT is section of branch path before change the direction
         private const int BRANCH_SEGMENT_MIN = 3;
         private const int BRANCH_SEGMENT_MAX = 4;
-        private const int BRANCH_FREQUENCY = 4;     // Section of mainpath between every branch
+        // Section of mainpath(points count) between every branch
+        private const int BRANCH_FREQUENCY = 4;
+        // Ouput created maze to a file (for Testing)
+        private const bool IS_WRITE_MAZE_FILE = false;
 
-
+        /// <summary>
+        /// Contains Points collection of the whole maze
+        /// </summary>
         private List<Point> maze;
+
+        /// <summary>
+        /// Contains Points collection of the main Maze path
+        /// </summary>
         private List<Point> mainPath;
-        private CoordBounds bounds;     // Boundaries coords (for table creation)
 
         public Cell StartPoint;
         public Cell FinishPoint;
 
         public MazeGenerator()
         {
-            maze = new List<Point>();
-            mainPath = new List<Point>();
-
-            bounds.MaxX = 0;
-            bounds.MaxY = 0;
-            bounds.MinX = 0;
-            bounds.MinY = 0;
+            this.maze = new List<Point>();
+            this.mainPath = new List<Point>();
         }
 
+        /// <summary>
+        /// Creates new random Maze with specified seed value
+        /// </summary>
+        /// <returns>Collection of the Maze Cells</returns>
         public List<Cell> Generate(ushort seed)
         {
             Random.Int(100);
             Random.Int(100);
 
+            // Keeps maze size
+            // Boundaries coords (for table creation)
             CoordBounds bounds;
             bounds.MaxX = 0;
             bounds.MaxY = 0;
@@ -94,20 +103,21 @@ namespace Maze.Classes
             start.X = 0;
             start.Y = 0;
 
-            mainPath.Add(start);
+            this.mainPath.Add(start);
 
             // Priority - in what direction finishPoint(relative of startPoint) will be located
             DecDirections priorityDirection = (DecDirections)(Random.Int(4) + 1);
-
             DecDirections currentDirection = (DecDirections)(Random.Int(4) + 1);
+
             //
             // Generate Main Path
             //
             currentPoint = start;
 
-            int pathLenth = Random.Int(MAINPATH_LENGTH_MIN, MAINPATH_LENGTH_MAX);
+            // Main path length
+            int pathLength = Random.Int(MAINPATH_LENGTH_MIN, MAINPATH_LENGTH_MAX);
             int currentLenth = 0;
-            while (currentLenth < pathLenth)
+            while (currentLenth < pathLength)
             {
                 DecDirections oldDirection = currentDirection;
                 do
@@ -137,32 +147,33 @@ namespace Maze.Classes
                 for (int j = 0; j < segmentLenth; ++j)
                 {
                     ++currentLenth;
-                    if (currentLenth > pathLenth)
+                    if (currentLenth > pathLength)
                         break;
-
+                    // Next Point on direction
                     currentPoint = MoveTo(currentPoint, currentDirection);
-
+                    // Recalc maze size
                     bounds.Recheck(currentPoint);
 
-                    mainPath.Add(currentPoint);
+                    this.mainPath.Add(currentPoint);
                 }
 
             }
 
             finish = currentPoint;
 
-            maze.AddRange(mainPath);
+            // Add Main path to all maze points
+            this.maze.AddRange(mainPath);
 
             //
             // Generate Branch Paths
             //
-            int branchCount = pathLenth / BRANCH_FREQUENCY - 1;
+            int branchCount = pathLength / BRANCH_FREQUENCY - 1;
             for (int i = 0; i < branchCount; ++i)
             {
-                // Total branch relative to mainPath length
-                int branchLenth = Random.Int(pathLenth / 3, pathLenth / 2);
+                // Total branches length relative to mainPath length
+                int branchLenth = Random.Int(pathLength / 3, pathLength / 2);
 
-                currentPoint = mainPath[(i + 1) * BRANCH_FREQUENCY];
+                currentPoint = this.mainPath[(i + 1) * BRANCH_FREQUENCY];
                 priorityDirection = (DecDirections)(Random.Int(4) + 1);
 
                 int currentBranchLenth = 0;
@@ -172,6 +183,10 @@ namespace Maze.Classes
                     DecDirections oldDirection = currentDirection;
                     do
                     {
+                        // Choose new direction (but NOT oppoite of current one)
+                        // 60% chance - priority
+                        // 30% chance - left or rights side of current
+                        // 10% chance - opposite of priority direction
                         int rnd = Random.Int(100);
                         if (rnd >= 40)
                         {
@@ -201,7 +216,7 @@ namespace Maze.Classes
 
                         bounds.Recheck(currentPoint);
 
-                        maze.Add(currentPoint);
+                        this.maze.Add(currentPoint);
                     }
 
                 }
@@ -218,39 +233,43 @@ namespace Maze.Classes
                 for (int j = 0; j < height; ++j)
                     mainPathMatrix[i, j] = 0;
 
-            for (int i = 0; i < maze.Count; ++i)
+            for (int i = 0; i < this.maze.Count; ++i)
             {
                 //mainPathMatrix[mainPath[i].X - bounds.MinX + 1, mainPath[i].Y - bounds.MinY + 1] = 1;.
-                mainPathMatrix[maze[i].X - bounds.MinX + 1, maze[i].Y - bounds.MinY + 1] = 1;
+                mainPathMatrix[this.maze[i].X - bounds.MinX + 1, this.maze[i].Y - bounds.MinY + 1] = 1;
 
             }
-
 
             // =====================
             // Test Part:
             // Record Maze into file
-            
-            StreamWriter fileStream = new StreamWriter("1.txt", false);
-
-            for (int j = 0; j < height; ++j)
+            if (IS_WRITE_MAZE_FILE)
             {
-                String record = "";
-                
-                    for (int i = 0; i < width; ++i)
-                {
-                    record += mainPathMatrix[i, j] == 0 ? "8" : " ";
-                }
-                fileStream.WriteLine(record);
+                StreamWriter fileStream = new StreamWriter("maze.txt", false);
 
+                for (int j = 0; j < height; ++j)
+                {
+                    String record = "";
+
+                    for (int i = 0; i < width; ++i)
+                    {
+                        record += mainPathMatrix[i, j] == 0 ? "8" : " ";
+                    }
+                    fileStream.WriteLine(record);
+
+                }
+                fileStream.Close();
             }
-            fileStream.Close();
             // ======================
 
 
+            //
+            // FINAL: Map Cells Construct
             // Convert list of Points into list of cell blocks
+            //
             List<Cell> mapBlocks = new List<Cell>();
             int idCounter = 1;
-            foreach (Point point in maze)
+            foreach (Point point in this.maze)
             {
                 Cell block = new Cell();
                 block.Initialize();
@@ -273,11 +292,13 @@ namespace Maze.Classes
                 if (mainPathMatrix[point.X - bounds.MinX + 2, point.Y - bounds.MinY + 1] == 1)
                     block.Type += (uint)Maze.Classes.Directions.Right;
 
+                // Start Point
                 if (point.Equals(start))
                 {
                     block.Attribute += (uint)CellAttributes.IsStart;
                     StartPoint = block;
                 }
+                // Finish Point
                 if (point.Equals(finish))
                 {
                     block.Attribute += (uint)CellAttributes.IsFinish;
@@ -293,7 +314,9 @@ namespace Maze.Classes
             
         }
 
-        // This method replaces two identical code parts
+        /// <summary>
+        /// This method replaces two identical code parts
+        /// </summary>
         private Point MoveTo(Point currentPoint, DecDirections direction)
         {
             Point result = currentPoint;

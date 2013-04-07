@@ -13,6 +13,9 @@ namespace Maze.Forms
 {
     public partial class Play : MazeForm
     {
+        /// <summary>
+        /// Allowed the count of spell on the bottom Spell Panel
+        /// </summary>
         public static int MAX_SPELLS_COUNT = 5;
 
         private enum FormInterface
@@ -26,15 +29,20 @@ namespace Maze.Forms
             Quit,
         };
 
-        bool GamePaused;
-        bool PlayStarted;
+        private bool gamePaused;
+        private bool playStarted;
 
-        int tempCount;
+        /// <summary>
+        /// Diagnostic tool for tracking the total Play time
+        /// </summary>
+        private Stopwatch gameTime;
 
-        private Stopwatch time;
-        private long millisecondsPassed;
+        /// <summary>
+        /// The time of the last update tick (in milliseconds).
+        /// </summary>
+        private long lastTickTime;
 
-        FormInterface CurrentInterface;
+        private FormInterface CurrentInterface;
 
         private int bonusGenerateTimer;
         private BonusEffect[] bonusEffects;
@@ -49,32 +57,37 @@ namespace Maze.Forms
 
         public Play()
         {
-            tempCount = 0;
+            // Visual is 11x7
+            // Player grid is 7,5 (central)
 
-            time = new Stopwatch();
+            // |------------------------>
+            // |                        X
+            // |
+            // |        Blocks 50x50 px
+            // |
+            // |
+            // | Y
+            //
 
-            GamePaused = false;
-            PlayStarted = false;
+            this.gameTime = new Stopwatch();
+
+            this.gamePaused = false;
+            this.playStarted = false;
 
             InitializeComponent();
             CustomInitialize();
             AddControlsOrder();
             GridMapPB.BackColor = Color.Gray;
-            SystemTimer.Interval = GlobalConstants.TIMER_TICK_IN_MS; // 50 ms
-
-            label1.Text = "0";
-            label1.Hide();
+            this.systemTimer.Interval = GlobalConstants.TIMER_TICK_IN_MS;
             
-            // Visual is 11x7
-            // Player grid is 7,5 (central)
-
             //RebuildGraphMap();
             CurrentInterface = FormInterface.MainMenu;
             SetInterface(FormInterface.MainMenu);
 
-            bonusGenerateTimer = 5000;
+            this.bonusGenerateTimer = 5000;
+
             // Define bonus effects
-            bonusEffects = new BonusEffect[]
+            this.bonusEffects = new BonusEffect[]
             {
                 // Open Bonuses
                 new BonusEffect(2 , true),      // Sprint
@@ -168,9 +181,10 @@ namespace Maze.Forms
                 spellSlot = firstFree;
             }
 
+            // when free slot is found
+            // and the played do not have this spell already
             if (!isExist && spellSlot != -1)
             {
-
                 SpellBarPB[spellSlot].RelatedEffect = effectEntry;
                 SpellBarPB[spellSlot].Image = PictureManager.EffectImages[effectEntry.ID].Aura;
                 SpellBarPB[spellSlot].IsPermanentSpell = isPermanent;
@@ -180,7 +194,12 @@ namespace Maze.Forms
             }
         }
 
-        public bool RemoveSpell(int spellSlot)
+        /// <summary>
+        /// Clear the spell slot.
+        /// </summary>
+        /// <param name="spellSlot">Specific Slot</param>
+        /// <returns></returns>
+        private bool RemoveSpell(int spellSlot)
         {
             // Valid spell slot
             if (spellSlot < 0 || spellSlot >= MAX_SPELLS_COUNT)
@@ -259,13 +278,13 @@ namespace Maze.Forms
             {
                 case FormInterface.MainMenu:
                     {
-                        time.Reset();
+                        this.gameTime.Reset();
                         if (Show)
                         {
-                            if (PlayStarted)    // When paused
+                            if (this.playStarted)    // When paused
                             {
-                                PlayStarted = false;        // Stop the game
-                                SystemTimer.Stop();
+                                this.playStarted = false;        // Stop the game
+                                this.systemTimer.Stop();
 
                                 // Clean Form Controls
                                 GridMapPB.Invalidate();
@@ -294,7 +313,7 @@ namespace Maze.Forms
                     {
                         if (Show)
                         {
-                            time.Start();
+                            this.gameTime.Start();
                             // Create Map and units
                             worldMap.Reset();
                             worldMap.SetMap(0);
@@ -308,7 +327,7 @@ namespace Maze.Forms
                     {
                         if (Show)
                         {
-                            time.Start();
+                            this.gameTime.Start();
 
                             // Create Map and units
 
@@ -322,25 +341,25 @@ namespace Maze.Forms
                     {
                         if (!Show)
                             break;
-                        time.Start();
-                        if (!PlayStarted)                   // Start New Game
+                        gameTime.Start();
+                        if (!this.playStarted)                   // Start New Game
                         {
-                            PlayStarted = true;
-                            millisecondsPassed = 0;
+                            this.playStarted = true;
+                            this.lastTickTime = 0;
 
-                            objectContainer.ClearEnvironment(true); // Remove all old objects and units
+                            this.objectContainer.ClearEnvironment(true); // Remove all old objects and units
                             Player = new Slug();    // Create new Slug
                             Player.HookEvents();
-                            worldMap.FillMapWithUnits(); // Add units to map
-                            worldMap.FillMapWithObjects();// Add objects
-                            objectContainer.StartMotion();
+                            this.worldMap.FillMapWithUnits(); // Add units to map
+                            this.worldMap.FillMapWithObjects(); // Add objects
+                            this.objectContainer.StartMotion();
 
                             // Events
                             Player.LocationChanged += new Maze.Classes.Object.PositionHandler(Player_OnLocationChanged);
 
-                            SystemTimer.Start();
+                            this.systemTimer.Start();
                         }
-                        if (PlayStarted && GamePaused)  //Continue Game
+                        if (this.playStarted && this.gamePaused)  //Continue Game
                         {
                             // Implemented in FormInterface.Pause !show
                             //GamePaused = false;
@@ -351,9 +370,9 @@ namespace Maze.Forms
                     {
                         if (Show)
                         {
-                            time.Stop();
+                            this.gameTime.Stop();
 
-                            GamePaused = true;
+                            this.gamePaused = true;
                             PausePB.Show();
                             PauseResumePB.Show();
                             PauseMainMenuPB.Show();
@@ -367,7 +386,7 @@ namespace Maze.Forms
                         }
                         else
                         {
-                            GamePaused = false;
+                            this.gamePaused = false;
                             PausePB.Hide();
                             PauseResumePB.Hide();
                             PauseMainMenuPB.Hide();
@@ -393,9 +412,13 @@ namespace Maze.Forms
 
         #endregion
 
+        /// <summary>
+        /// Handle game update ticks.
+        /// </summary>
         public void SystemTimerTick(object sender, EventArgs e)
         {
-            if (!PlayStarted)
+            // Do nothing when game is not started
+            if (!this.playStarted)
                 return;
 
             int usedSpellNumber = 0;
@@ -429,41 +452,22 @@ namespace Maze.Forms
                     break;
                 case Keys.D5:
                     usedSpellNumber = 5;
+                    Player.CastEffect(8, Player);
                     break;
             }
             if (Player.IsAlive() && usedSpellNumber > 0)
                 UseSpell(usedSpellNumber);
 
-            if (GamePaused)
+            if (this.gamePaused)
                 return;
 
             // Calculate actual past time since last timer tick
-            long currentElapsedMilliseconds = time.ElapsedMilliseconds;
-            int tickTime = (int)(currentElapsedMilliseconds - millisecondsPassed);
-
+            long currentTime = this.gameTime.ElapsedMilliseconds;
+            int tickTime = (int)(currentTime - this.lastTickTime);
             // Update every object on map
-            objectContainer.UpdateState(tickTime);
+            this.objectContainer.UpdateState(tickTime);
 
-            millisecondsPassed = currentElapsedMilliseconds;
-
-            // Repaint Game stats panel
-            this.RightPanelPB.Invalidate();
-
-            this.LeftPanelPB.Invalidate();
-
-            //Repaing auras PB
-            for (int i = 0; i < aurasCount; ++i)
-                AuraIconPB[i].Invalidate();
-
-            //this.SuspendLayout();
-            // |------------------------>
-            // |                        X
-            // |
-            // |        Blocks 50x50 px
-            // |
-            // |
-            // | Y
-            //
+            this.lastTickTime = currentTime;
 
             // Generate Bonus
             if (bonusGenerateTimer <= 0)
@@ -502,6 +506,19 @@ namespace Maze.Forms
             }
             else
                 bonusGenerateTimer -= tickTime;
+
+            // GRAPHIC PART
+            // Repaint display elements of Play form
+            // in a particular order
+
+            // Redraw Game stats panel
+            this.RightPanelPB.Invalidate();
+
+            this.LeftPanelPB.Invalidate();
+
+            // Redraw auras PB
+            for (int i = 0; i < aurasCount; ++i)
+                AuraIconPB[i].Invalidate();
 
             // Redraw Form Map
             GridMapPB.Invalidate();

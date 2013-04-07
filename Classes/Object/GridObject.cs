@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Maze.Classes
 {
-    public enum GridObjectType
+    public enum GridObjectTypes
     {
         GridObject,
         OozeDrop,
@@ -16,7 +16,7 @@ namespace Maze.Classes
         SmokeCloud,
     };
 
-    public enum GridObjectState : byte
+    public enum GridObjectStates : byte
     {
         OFF,
         Active,
@@ -46,15 +46,28 @@ namespace Maze.Classes
         protected bool recentlyUsed;
         protected AreaEffect areaEffect;
 
-        protected GridObjectState gridObjectState;
-        protected GridObjectType gridObjectType;
+        protected GridObjectStates gridObjectState;
+
+        protected GridObjectTypes pr_gridObjectType;
+        public GridObjectTypes GridObjectType
+        {
+            get
+            {
+                return this.pr_gridObjectType;
+            }
+            protected set
+            {
+                this.pr_gridObjectType = value;
+            }
+        }
+
         protected GridObjectFlags gridObjectsFlags;
 
         public GridObject()
         {
-            gridObjectState = GridObjectState.Active;
+            gridObjectState = GridObjectStates.Active;
             objectType = ObjectType.GridObject;
-            gridObjectType = GridObjectType.GridObject;
+            GridObjectType = GridObjectTypes.GridObject;
 
             // Always in center of the cell
             Position = new GPS(Position, 25, 25);
@@ -63,32 +76,30 @@ namespace Maze.Classes
             SetFlag(GridObjectFlags.Usable);
             timeToLive = 0;
             activationTime = timeToActivate = 0;
-            recentlyUsed = false;
+            this.recentlyUsed = false;
         }
 
         public GridLocation GetLocation() { return Position.Location; }
 
-        public GridObjectType GetGridObjectType() { return gridObjectType; }
-
         protected void SetFlag(GridObjectFlags flag)
         {
             if (!HasFlag(flag))
-                gridObjectsFlags += (uint)flag;
+                this.gridObjectsFlags += (uint)flag;
         }
         protected void RemoveFlag(GridObjectFlags flag)
         {
             if (HasFlag(flag))
-                gridObjectsFlags -= (uint)flag;
+                this.gridObjectsFlags -= (uint)flag;
         }
         public bool HasFlag(GridObjectFlags flag)
         {
-            return ((uint)flag & (uint)gridObjectsFlags) != 0;
+            return ((uint)flag & (uint)this.gridObjectsFlags) != 0;
         }
 
 
-        public void SetGridObjectState(GridObjectState gridObjectState)
+        public void SetGridObjectState(GridObjectStates gridObjectState)
         {
-            if (gridObjectState != GridObjectState.OFF)
+            if (gridObjectState != GridObjectStates.OFF)
             {
                 this.gridObjectState = gridObjectState;
             }
@@ -96,6 +107,7 @@ namespace Maze.Classes
 
         public override void UpdateState(int timeP)
         {
+            // Update life timer for Temporal GO
             if (HasFlag(GridObjectFlags.Temporal))
             {
                 if (timeToLive < timeP)
@@ -104,14 +116,17 @@ namespace Maze.Classes
                     timeToLive -= timeP;
             }
 
-            if (recentlyUsed && !HasFlag(GridObjectFlags.Disposable))
+            // Update activation timer for inactive GO
+            if (this.recentlyUsed && !HasFlag(GridObjectFlags.Disposable))
             {
                 if (timeToActivate < timeP)
-                    SetGridObjectState(GridObjectState.Active);
+                    SetGridObjectState(GridObjectStates.Active);
                 else
                     timeToActivate -= timeP;
             }
 
+            // AreaEffect GO
+            // Apply effect on the nearest units
             if (HasFlag(GridObjectFlags.AreaEffect) && areaEffect.ID != 0)
             {
                 List<Unit> units = GetUnitsWithinRange(areaEffect.Range);
@@ -126,15 +141,16 @@ namespace Maze.Classes
 
         public virtual void Use(Unit user)
         {
+            // Deactivate if needed
             if (!HasFlag(GridObjectFlags.AlwaysActive))
             {
-                SetGridObjectState(GridObjectState.Inactive);
-                recentlyUsed = true;
+                SetGridObjectState(GridObjectStates.Inactive);
+                this.recentlyUsed = true;
                 timeToActivate = activationTime;
             }
 
         }
 
-        public bool IsActive() { return this.gridObjectState == GridObjectState.Active; }
+        public bool IsActive() { return this.gridObjectState == GridObjectStates.Active; }
     }
 }

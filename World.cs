@@ -10,14 +10,12 @@ namespace Maze
     public class World
     {
         private static Play pr_PlayForm;
-
         /// <summary>
-        /// Returns current play form
+        /// Returns main Game Form
         /// </summary>
         public static Play PlayForm
         {
             get { return pr_PlayForm; }
-            private set { ;}
         }
 
         public World()
@@ -34,18 +32,15 @@ namespace Maze
             DBStores.InitializeComponents();
             DBStores.Load();
 
+            // Load all image files and graphic parts
             PictureManager.InitializeComponents();
             PictureManager.Load();
 
-            CreatePlayForm();
-            Application.Run(pr_PlayForm);
-            
-        }
-
-        public static void CreatePlayForm()
-        {
+            // Create Play Form
             pr_PlayForm = new Play();
-        }
 
+            // Run Play Form
+            Application.Run(PlayForm);
+        }
     }
 }

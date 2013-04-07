@@ -60,11 +60,13 @@ namespace Maze.Classes
             else
                 direction.First = Directions.None;
 
+            // When the first direction not set.
             if (direction.First == Directions.None)
                 return;
 
             moveType -= (uint)direction.First;
 
+            // Secondary direction (diagonal moving)
             if ((moveType & (uint)Directions.Up) != 0)
                 direction.Second = Directions.Up;
             else if ((moveType & (uint)Directions.Down) != 0)
@@ -76,6 +78,7 @@ namespace Maze.Classes
             else
                 direction.Second = Directions.None;
 
+            // Reverse moving if has Reverse effect
             if (mover.HasEffectType(EffectTypes.MoveReverse))
             {
                 direction.First = GetOppositeDirection(direction.First);

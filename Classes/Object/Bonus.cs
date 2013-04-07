@@ -27,7 +27,7 @@ namespace Maze.Classes
             Position = currentPosition;
             currentCell = GetWorldMap().GetCell(currentPosition.Location);
 
-            gridObjectType = GridObjectType.Bonus;
+            GridObjectType = GridObjectTypes.Bonus;
             SetFlag(GridObjectFlags.Temporal);
             SetFlag(GridObjectFlags.Disposable);
             timeToLive = 5000; // LifeTime = 5 sec

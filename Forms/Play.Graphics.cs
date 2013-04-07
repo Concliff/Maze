@@ -9,27 +9,30 @@ namespace Maze.Forms
     {
         void RightPanelPB_Paint(object sender, PaintEventArgs e)
         {
-            if (!PlayStarted)
+            if (!this.playStarted)
                 return;
-
-            e.Graphics.DrawString("Time: " + (time.ElapsedMilliseconds/1000).ToString(), new Font("Arial", 14), new SolidBrush(Color.White), 10, 30);
+            // Total game time
+            e.Graphics.DrawString("Time: " + (this.gameTime.ElapsedMilliseconds / 1000).ToString(), new Font("Arial", 14), new SolidBrush(Color.White), 10, 30);
+            // Ooze drops count to collect.
             e.Graphics.DrawString("Drops x " + worldMap.DropsRemain.ToString(),
                 new Font("Arial", 14), new SolidBrush(Color.White), 10, 50);
+            // Game Scores.
             e.Graphics.DrawString("Total scores: " + Player.GetScore(), new Font("Arial", 12), new SolidBrush(Color.White), 10, 70);
         }
 
-
         void LeftPanelPB_Paint(object sender, PaintEventArgs e)
         {
-            if (!PlayStarted)
+            if (!this.playStarted)
                 return;
 
+            // Calcs Ooze energy percentage
             int playerOozePercent = Player.OozeEnergy * 100 / Slug.MaxOozeEnergy;
             Brush emptyBrush = new SolidBrush(Color.Black);
             Brush filledBrush = new SolidBrush(Color.Green);
             Rectangle oozeBar = new Rectangle(20, 100, 100, 30);
             Rectangle oozeAmount = new Rectangle(20, 100, 100 * playerOozePercent / 100, 30);
 
+            // Draw green and black rectanges to show current Energy level.
             e.Graphics.FillRectangle(emptyBrush, oozeBar);
             e.Graphics.FillRectangle(filledBrush, oozeAmount);
             e.Graphics.DrawString(Player.OozeEnergy.ToString(), new Font("Arial", 14), new SolidBrush(Color.White), 50, 105);
@@ -38,7 +41,7 @@ namespace Maze.Forms
         void CellPB_Paint(object sender, PaintEventArgs e)
         {
             // Only when game is started
-            if (PlayStarted)
+            if (this.playStarted)
                 RebuildGraphMap(e.Graphics);
         }
 
@@ -64,6 +67,8 @@ namespace Maze.Forms
         private void SpellBarPB_Paint(object sender, PaintEventArgs e)
         {
             SpellBarPictureBox paintedSpellPB = (SpellBarPictureBox)sender;
+            // Draw spell keyboard digits
+            // Draw bigger white digits and smaller red one simulating text shadow effect.
             e.Graphics.DrawString(paintedSpellPB.SpellNumber.ToString(), new Font("Arial", 14, FontStyle.Bold), new SolidBrush(Color.White), 35, -2);
             e.Graphics.DrawString(paintedSpellPB.SpellNumber.ToString(), new Font("Arial", 12, FontStyle.Bold), new SolidBrush(Color.Red), 36, 0);
         }
@@ -71,10 +76,9 @@ namespace Maze.Forms
         private void Play_Paint(object sender, PaintEventArgs e)
         {
             //RebuildGraphMap();
-            ++tempCount;
         }
 
-        void MenuItemMouseEnter(object sender, System.EventArgs e)
+        private void MenuItemMouseEnter(object sender, System.EventArgs e)
         {
             PictureBox SenderPB = (PictureBox)sender;
             Graphics g;
@@ -82,7 +86,7 @@ namespace Maze.Forms
             g.DrawString(SenderPB.Name, MenuFont, MenuSelectedBrush, 0, 0);
         }
 
-        void MenuItemMouseLeave(object sender, System.EventArgs e)
+        private void MenuItemMouseLeave(object sender, System.EventArgs e)
         {
             PictureBox SenderPB = (PictureBox)sender;
             Graphics g;
@@ -90,7 +94,7 @@ namespace Maze.Forms
             g.DrawString(SenderPB.Name, MenuFont, MenuUnselectedBrush, 0, 0);
         }
 
-        void MenuItemPaint(object sender, PaintEventArgs e)
+        private void MenuItemPaint(object sender, PaintEventArgs e)
         {
             PictureBox senderPB = (PictureBox)sender;
             e.Graphics.DrawString(senderPB.Name, MenuFont, MenuUnselectedBrush, 0, 0);
@@ -121,6 +125,7 @@ namespace Maze.Forms
                     PBLocation.Level = Player.Position.Location.Level;
                     Block = worldMap.GetCell(PBLocation);
 
+                    // Draw Grid Cell image
                     this.CellGraphic[i, j].Block = Block;
                     gCellBP.DrawImage(PictureManager.GetPictureByType(Block.Type), x, y, GlobalConstants.CELL_WIDTH, GlobalConstants.CELL_HEIGHT);
 
@@ -161,7 +166,7 @@ namespace Maze.Forms
                         case 0:
                             // Slime
                             if (objectsOnMap[i].GetType() == ObjectType.GridObject &&
-                                ((GridObject)objectsOnMap[i]).GetGridObjectType() == GridObjectType.Slime)
+                                ((GridObject)objectsOnMap[i]).GridObjectType == GridObjectTypes.Slime)
                             {
                                 objectImage = PictureManager.SlimeImage;
                             }
@@ -173,7 +178,7 @@ namespace Maze.Forms
                             if (objectsOnMap[i].GetType() == ObjectType.GridObject)
                             {
                                 GridObject gridObject = (GridObject)objectsOnMap[i];
-                                if (gridObject.GetGridObjectType() == GridObjectType.Slime)
+                                if (gridObject.GridObjectType == GridObjectTypes.Slime)
                                     continue;
 
                                 objectImage = PictureManager.GetGridObjectImage(gridObject);
@@ -207,6 +212,8 @@ namespace Maze.Forms
                     if (objectImage == null)
                         continue;
 
+                    // Determine object image coords
+                    // relative to the object position on Cell and Player (as a center of the GridMap)
                     int xCoord = GridMapPB.Size.Width / 2 - ((Player.Position.Location.X - objectsOnMap[i].Position.Location.X) *
                             GlobalConstants.CELL_WIDTH + Player.Position.X - objectsOnMap[i].Position.X) - objectImage.Size.Width / 2;
                     int yCoord = GridMapPB.Size.Height / 2 - ((Player.Position.Location.Y - objectsOnMap[i].Position.Location.Y) *

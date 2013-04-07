@@ -122,15 +122,15 @@ namespace Maze.Classes
             if (!gridObject.IsActive())
                 return null;
 
-            switch (gridObject.GetGridObjectType())
+            switch (gridObject.GridObjectType)
             {
-                case GridObjectType.SmokeCloud:
+                case GridObjectTypes.SmokeCloud:
                     return PictureManager.SmokeCloud;
-                case GridObjectType.OozeDrop:
+                case GridObjectTypes.OozeDrop:
                     return PictureManager.DropImage;
-                case GridObjectType.Portal:
+                case GridObjectTypes.Portal:
                     return PictureManager.PortalImage;
-                case GridObjectType.Bonus:
+                case GridObjectTypes.Bonus:
                     return PictureManager.EffectImages[((Bonus)gridObject).GetEffect()].Map;
             }
 

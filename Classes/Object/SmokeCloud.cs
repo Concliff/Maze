@@ -14,7 +14,7 @@ namespace Maze.Classes
             Position = currentPosition;
             currentCell = GetWorldMap().GetCell(currentPosition.Location);
 
-            gridObjectType = GridObjectType.SmokeCloud;
+            GridObjectType = GridObjectTypes.SmokeCloud;
             SetFlag(GridObjectFlags.Temporal);
             SetFlag(GridObjectFlags.AreaEffect);
 

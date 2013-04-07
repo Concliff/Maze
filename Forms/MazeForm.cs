@@ -6,6 +6,9 @@ using Maze.Classes;
 
 namespace Maze.Forms
 {
+    /// <summary>
+    /// Base Game form class.
+    /// </summary>
     public partial class MazeForm : System.Windows.Forms.Form
     {
         public static int FormTitleBarSize = 28;
@@ -23,9 +26,9 @@ namespace Maze.Forms
 
         public MazeForm()
         {
-            objectContainer = ObjectContainer.Container;
+            this.objectContainer = ObjectContainer.Container;
 
-            worldMap = Map.WorldMap;
+            this.worldMap = Map.WorldMap;
         }
     }
 }

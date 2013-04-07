@@ -9,18 +9,16 @@ namespace Maze.Classes
     {
         public OozeDrop()
         {
-            gridObjectType = GridObjectType.OozeDrop;
+            GridObjectType = GridObjectTypes.OozeDrop;
             SetFlag(GridObjectFlags.Disposable);
         }
 
         public OozeDrop(Cell cell)
             : this()
         {
-            GPS position = Position;
-            position.Location = cell.Location;
-            Position = position;
-            currentCell = cell;
+            Position = new GPS(cell.Location);
         }
+
         public override void Use(Unit user)
         {
             if (!IsActive() || user.GetType() != ObjectType.Slug || !user.IsVisible() || !user.IsAlive())

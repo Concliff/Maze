@@ -22,7 +22,7 @@ namespace Maze.Forms
                 components.Dispose();
             }
 
-            SystemTimer.Stop();
+            this.systemTimer.Stop();
 
             base.Dispose(disposing);
         }
@@ -36,8 +36,7 @@ namespace Maze.Forms
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            this.SystemTimer = new System.Windows.Forms.Timer(this.components);
-            this.label1 = new System.Windows.Forms.Label();
+            this.systemTimer = new System.Windows.Forms.Timer(this.components);
             this.TopPanelPB = new System.Windows.Forms.PictureBox();
             this.BottomPanelPB = new System.Windows.Forms.PictureBox();
             this.LeftPanelPB = new System.Windows.Forms.PictureBox();
@@ -50,16 +49,7 @@ namespace Maze.Forms
             // 
             // SystemTimer
             // 
-            this.SystemTimer.Tick += new System.EventHandler(this.SystemTimerTick);
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(30, 71);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(35, 13);
-            this.label1.TabIndex = 2;
-            this.label1.Text = "label1";
+            this.systemTimer.Tick += new System.EventHandler(this.SystemTimerTick);
             // 
             // Play
             // 
@@ -285,7 +275,6 @@ namespace Maze.Forms
         private void AddControlsOrder()
         {
             // Add every control in the specific order
-            this.Controls.Add(this.label1);
             for (int i = 0; i < 5; ++i)
                 this.Controls.Add(this.SpellBarPB[i]);
             for (int i = 0; i < 5; ++i)
@@ -312,8 +301,7 @@ namespace Maze.Forms
 
         public KeyManager KeyMgr;
         private System.Windows.Forms.PictureBox GridMapPB;
-        private System.Windows.Forms.Timer SystemTimer;
-        public  System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Timer systemTimer;
         private PictureBox TopPanelPB;
         private PictureBox BottomPanelPB;
         private PictureBox LeftPanelPB;
