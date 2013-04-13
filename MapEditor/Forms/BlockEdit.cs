@@ -30,7 +30,7 @@ namespace MapEditor.Forms
             // Add new or chage exsist MapBlock
             if (Block.ID == -1)
             {
-                BlockIDTextBox.Text = Map.WorldMap.BlocksCount.ToString();
+                BlockIDTextBox.Text = Map.WorldMap.CellsCount.ToString();
                 ConfirmButton.Text = "Add";
                 DeleteButton.Hide();
             }
@@ -95,7 +95,7 @@ namespace MapEditor.Forms
 
         void DeleteButton_Click(object sender, System.EventArgs e)
         {
-            Map.WorldMap.AddEmptyGrigMap(Block);
+            Map.WorldMap.AddEmptyCell(Block);
             Block.Type = 16;
             Program.EditorForm.RebuildGraphMap();
             this.Close();
