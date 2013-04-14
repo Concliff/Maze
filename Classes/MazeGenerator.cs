@@ -224,7 +224,10 @@ namespace Maze.Classes
 
             //
             // Create Maze Table
-            // 1 - Path; 0 - Wall (no path)
+            // 0 - Wall (no path)
+            // 1 - Path;
+            // 2 - Start Point
+            // 3 - Finish Point
             int width = bounds.MaxX - bounds.MinX + 1 + 2;
             int height = bounds.MaxY - bounds.MinY + 1 + 2;
             int[,] mainPathMatrix = new int[width, height];
@@ -233,11 +236,17 @@ namespace Maze.Classes
                 for (int j = 0; j < height; ++j)
                     mainPathMatrix[i, j] = 0;
 
-            for (int i = 0; i < this.maze.Count; ++i)
+            int number;
+            foreach(Point point in this.maze)
             {
-                //mainPathMatrix[mainPath[i].X - bounds.MinX + 1, mainPath[i].Y - bounds.MinY + 1] = 1;.
-                mainPathMatrix[this.maze[i].X - bounds.MinX + 1, this.maze[i].Y - bounds.MinY + 1] = 1;
+                if (point.Equals(start))
+                    number = 2;
+                else if (point.Equals(finish))
+                    number = 3;
+                else
+                    number = 1;
 
+                mainPathMatrix[point.X - bounds.MinX + 1, point.Y - bounds.MinY + 1] = number;
             }
 
             // =====================
@@ -246,16 +255,30 @@ namespace Maze.Classes
             if (IS_WRITE_MAZE_FILE)
             {
                 StreamWriter fileStream = new StreamWriter("maze.txt", false);
-
+                StringBuilder record;
                 for (int j = 0; j < height; ++j)
                 {
-                    String record = "";
+                    record = new StringBuilder(String.Empty);
 
                     for (int i = 0; i < width; ++i)
                     {
-                        record += mainPathMatrix[i, j] == 0 ? "8" : " ";
+                        switch (mainPathMatrix[i, j])
+                        {
+                            case 1:
+                                record.Append(" ");
+                                break;
+                            case 2:
+                                record.Append("S");
+                                break;
+                            case 3:
+                                record.Append("F");
+                                break;
+                            default:
+                                record.Append("█");
+                                break;
+                        }
                     }
-                    fileStream.WriteLine(record);
+                    fileStream.WriteLine(record.ToString());
 
                 }
                 fileStream.Close();
@@ -280,16 +303,16 @@ namespace Maze.Classes
 
                 block.Type = 0;
                 // Up
-                if (mainPathMatrix[point.X - bounds.MinX + 1, point.Y - bounds.MinY] == 1)
+                if (mainPathMatrix[point.X - bounds.MinX + 1, point.Y - bounds.MinY] > 0)
                     block.Type += (uint)Maze.Classes.Directions.Up;
                 // Down
-                if (mainPathMatrix[point.X - bounds.MinX + 1, point.Y - bounds.MinY + 2] == 1)
+                if (mainPathMatrix[point.X - bounds.MinX + 1, point.Y - bounds.MinY + 2] > 0)
                     block.Type += (uint)Maze.Classes.Directions.Down;
                 // Left
-                if (mainPathMatrix[point.X - bounds.MinX, point.Y - bounds.MinY + 1] == 1)
+                if (mainPathMatrix[point.X - bounds.MinX, point.Y - bounds.MinY + 1] > 0)
                     block.Type += (uint)Maze.Classes.Directions.Left;
                 // Right
-                if (mainPathMatrix[point.X - bounds.MinX + 2, point.Y - bounds.MinY + 1] == 1)
+                if (mainPathMatrix[point.X - bounds.MinX + 2, point.Y - bounds.MinY + 1] > 0)
                     block.Type += (uint)Maze.Classes.Directions.Right;
 
                 // Start Point
