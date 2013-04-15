@@ -72,7 +72,6 @@ namespace Maze.Classes
                     (newDirection != GetOppositeDirection(CurrentDirection.First) || CurrentDirection.First == Directions.None))
                 {
                     CurrentDirection = new Direction(newDirection);
-                    DefineNextGPS();
                     return;
                 }
             }
@@ -104,8 +103,6 @@ namespace Maze.Classes
                     CurrentDirection = new Direction(Directions.Right);
                 }
             }
-
-            DefineNextGPS();
         }
 
         protected override void OnDestinationReached()
@@ -120,6 +117,8 @@ namespace Maze.Classes
             if (!WorldMap.GetCell(this.mover.Position.Location).CanMoveTo(CurrentDirection.First))
                 SelectNewDirection();
 
+            DefineNextGPS();
+
             // Deimos can not pass through the Start Point
             // Check the next cell whether it is such block
 
@@ -129,7 +128,10 @@ namespace Maze.Classes
             if (nextCell.HasAttribute(CellAttributes.IsStart))
             {
                 SelectNewDirection(false);
+                DefineNextGPS();
             }
+
+
         }
 
     }
