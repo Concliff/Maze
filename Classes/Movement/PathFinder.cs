@@ -43,7 +43,7 @@ namespace Maze.Classes
         public PathFinder(Cell startPoint, Cell finishPoint)
             : this()
         {
-            GeneratePath(startPoint, finishPoint);
+            //GeneratePath(startPoint, finishPoint);
         }
 
         private bool SearchInList(List<CellParam> List, CellParam Element)
@@ -148,11 +148,11 @@ namespace Maze.Classes
                         bannedList.Add(currentCell);
 
                     currentCell = CellWithMinF;
-
                 }
                 else
                     break;
             }
+
             if (closeList.Count > 0)
             {
                 currentCell = closeList[closeList.Count - 1];

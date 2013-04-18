@@ -38,7 +38,6 @@ namespace Maze.Classes
             victim = World.PlayForm.Player;
             pathFinder = new PathFinder(WorldMap.GetCell(this.mover.Position.Location),
                 WorldMap.GetCell(this.victim.Position.Location));
-            FindPath();
         }
 
         public override void UpdateState(int timeP)
@@ -69,7 +68,7 @@ namespace Maze.Classes
 
         public override void StartMotion()
         {
-            FindPath();
+            this.state = MotionStates.StandingBy;
             base.StartMotion();
         }
 
