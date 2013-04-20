@@ -15,7 +15,7 @@ namespace Maze.Classes
 
         public override void UpdateState(int timeP)
         {
-            if (CurrentDirection.First == Directions.None)
+            if (this.Orientation == -1)
                 return;
 
             double movementStepD = GlobalConstants.MOVEMENT_STEP_PX * this.mover.SpeedRate;
@@ -28,11 +28,6 @@ namespace Maze.Classes
             }
 
             Move(movementStep);
-        }
-
-        public void SetDirection(Direction direction)
-        {
-            CurrentDirection = direction;
         }
     }
 }

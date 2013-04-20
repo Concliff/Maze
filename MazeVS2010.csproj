@@ -68,6 +68,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Classes\ObjectOrientation.cs" />
     <Compile Include="Custom\CollectionID.cs" />
     <Compile Include="Classes\DBStores.cs" />
     <Compile Include="Classes\MazeGenerator.cs" />

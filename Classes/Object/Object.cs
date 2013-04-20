@@ -191,19 +191,19 @@ namespace Maze.Classes
             int upperYBound = GlobalConstants.CELL_HEIGHT - lowerYBound;
 
             if (position.X < lowerXBound)
-                if (!cell.CanMoveTo(Directions.Left))
+                if (!cell.CanMoveTo(Math.PI))
                     position.X = lowerXBound;
 
             if (position.X > upperXBound)
-                if (!cell.CanMoveTo(Directions.Right))
+                if (!cell.CanMoveTo(0.0))
                     position.X = upperXBound;
 
             if (position.Y < lowerYBound)
-                if (!cell.CanMoveTo(Directions.Up))
+                if (!cell.CanMoveTo(Math.PI / 2))
                     position.Y = lowerYBound;
 
             if (position.Y > upperYBound)
-                if (!cell.CanMoveTo(Directions.Down))
+                if (!cell.CanMoveTo(3 * Math.PI / 2))
                     position.Y = upperYBound;
 
             return position;

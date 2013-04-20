@@ -187,41 +187,29 @@ namespace Maze.Classes
             List<GridObject> slimeAround;
             bool slimePersist = false;
 
-            switch (this.motionMaster.CurrentDirection.First)
+            searchingPoint.X = Position.X + (int)Math.Cos(this.motionMaster.Orientation) * searchingStep;
+            if (searchingPoint.X > GlobalConstants.CELL_WIDTH)
             {
-                case Directions.Right:
-                    searchingPoint.X = Position.X + searchingStep;
-                    if (searchingPoint.X > GlobalConstants.CELL_WIDTH)
-                    {
-                        searchingPoint.X -= GlobalConstants.CELL_WIDTH;
-                        ++searchingPoint.Location.X;
-                    }
-                    break;
-                case Directions.Left:
-                    searchingPoint.X = Position.X - searchingStep;
-                    if (searchingPoint.X < 0)
-                    {
-                        searchingPoint.X -= GlobalConstants.CELL_WIDTH;
-                        --searchingPoint.Location.X;
-                    }
-                    break;
-                case Directions.Up:
-                    searchingPoint.Y = Position.Y - searchingStep;
-                    if (searchingPoint.Y < 0)
-                    {
-                        searchingPoint.Y += GlobalConstants.CELL_HEIGHT;
-                        --searchingPoint.Location.Y;
-                    }
-                    break;
-                case Directions.Down:
-                    searchingPoint.Y = Position.Y + searchingStep;
-                    if (searchingPoint.Y > GlobalConstants.CELL_HEIGHT)
-                    {
-                        searchingPoint.Y -= GlobalConstants.CELL_HEIGHT;
-                        ++searchingPoint.Location.Y;
-                    }
-                    break;
+                searchingPoint.X -= GlobalConstants.CELL_WIDTH;
+                ++searchingPoint.Location.X;
             }
+            if (searchingPoint.X < 0)
+            {
+                searchingPoint.X -= GlobalConstants.CELL_WIDTH;
+                --searchingPoint.Location.X;
+            }
+            searchingPoint.Y = Position.Y + (int)Math.Sin(this.motionMaster.Orientation) * searchingStep;
+            if (searchingPoint.Y < 0)
+            {
+                searchingPoint.Y += GlobalConstants.CELL_HEIGHT;
+                --searchingPoint.Location.Y;
+            }
+            if (searchingPoint.Y > GlobalConstants.CELL_HEIGHT)
+            {
+                searchingPoint.Y -= GlobalConstants.CELL_HEIGHT;
+                ++searchingPoint.Location.Y;
+            }
+
             // try to find any Slime around that point
             slimeAround = ObjectSearcher.GetGridObjectsInArea(searchingPoint, searchingStep);
             foreach (GridObject slime in slimeAround)
@@ -284,7 +272,7 @@ namespace Maze.Classes
 
         public void CreateClone()
         {
-            new SlugClone(Position, this.motionMaster.CurrentDirection);
+            new SlugClone(Position, this.motionMaster.Orientation);
         }
 
         public void OnUnitCollisionBegin(Unit unit)

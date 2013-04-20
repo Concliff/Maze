@@ -48,6 +48,12 @@ namespace Maze.Classes
         {
             return (Type & (uint)direction) != 0;
         }
+
+        public bool CanMoveTo(double orientation)
+        {
+            ObjectOrientation orient = new ObjectOrientation();
+            return (Type & orient.GetNumericValue(orientation)) != 0;
+        }
     };
 
     public struct GridLocation

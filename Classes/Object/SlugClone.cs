@@ -7,7 +7,7 @@ namespace Maze.Classes
 {
     public class SlugClone : Slug
     {
-        public SlugClone(GPS position, Movement.Direction currentDirection)
+        public SlugClone(GPS position, double orientation)
         {
             UnitType = UnitTypes.SlugClone;
             this.objectType = ObjectType.Slug;
@@ -18,7 +18,7 @@ namespace Maze.Classes
             objectSize.Height = GlobalConstants.PLAYER_SIZE_HEIGHT;
 
             this.motionMaster = new CustomMovement(this);
-            ((CustomMovement)this.motionMaster).SetDirection(currentDirection);
+            ((CustomMovement)this.motionMaster).Orientation = orientation;
 
             BaseSpeed = 1.0d;
         }

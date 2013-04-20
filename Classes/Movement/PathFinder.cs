@@ -148,11 +148,11 @@ namespace Maze.Classes
                         bannedList.Add(currentCell);
 
                     currentCell = CellWithMinF;
+
                 }
                 else
                     break;
             }
-
             if (closeList.Count > 0)
             {
                 currentCell = closeList[closeList.Count - 1];
@@ -204,10 +204,8 @@ namespace Maze.Classes
                                         locLeft.X--;
 
                                         // Check cell's passability
-                                        if ((Block.CanMoveTo(Directions.Down) &&
-                                            WorldMap.GetCell(locDown).CanMoveTo(Directions.Left)) &&
-                                            (Block.CanMoveTo(Directions.Left) &&
-                                            WorldMap.GetCell(locLeft).CanMoveTo(Directions.Down)))
+                                        if((Block.CanMoveTo(3 * Math.PI / 2) && WorldMap.GetCell(locDown).CanMoveTo(Math.PI)) &&
+                                            (Block.CanMoveTo(Math.PI) && WorldMap.GetCell(locLeft).CanMoveTo(3 * Math.PI / 2)))
                                         {
                                             flag = true;
                                         }
@@ -219,10 +217,8 @@ namespace Maze.Classes
                                         GridLocation locRight = Block.Location;
                                         locRight.X++;
 
-                                        if ((Block.CanMoveTo(Directions.Up) &&
-                                            WorldMap.GetCell(locUp).CanMoveTo(Directions.Right)) &&
-                                            (Block.CanMoveTo(Directions.Right) &&
-                                            WorldMap.GetCell(locRight).CanMoveTo(Directions.Up)))
+                                        if ((Block.CanMoveTo(Math.PI / 2) && WorldMap.GetCell(locUp).CanMoveTo(0.0)) &&
+                                            (Block.CanMoveTo(0.0) && WorldMap.GetCell(locRight).CanMoveTo(Math.PI / 2)))
                                         {
                                             flag = true;
                                         }
@@ -236,10 +232,8 @@ namespace Maze.Classes
                                         GridLocation locLeft = Block.Location;
                                         locLeft.X--;
 
-                                        if ((Block.CanMoveTo(Directions.Left) &&
-                                            WorldMap.GetCell(locLeft).CanMoveTo(Directions.Up)) &&
-                                            (Block.CanMoveTo(Directions.Up) &&
-                                            WorldMap.GetCell(locUp).CanMoveTo(Directions.Left)))
+                                        if ((Block.CanMoveTo(Math.PI) && WorldMap.GetCell(locLeft).CanMoveTo(Math.PI / 2)) &&
+                                            (Block.CanMoveTo(Math.PI / 2) && WorldMap.GetCell(locUp).CanMoveTo(Math.PI)))
                                         {
                                             flag = true;
                                         }
@@ -251,10 +245,8 @@ namespace Maze.Classes
                                         GridLocation locRight = Block.Location;
                                         locRight.X++;
 
-                                        if ((Block.CanMoveTo(Directions.Down) &&
-                                            WorldMap.GetCell(locDown).CanMoveTo(Directions.Right)) &&
-                                            (Block.CanMoveTo(Directions.Right) &&
-                                            WorldMap.GetCell(locRight).CanMoveTo(Directions.Down)))
+                                        if ((Block.CanMoveTo(3 * Math.PI / 2) && WorldMap.GetCell(locDown).CanMoveTo(0.0)) &&
+                                            (Block.CanMoveTo(0.0) && WorldMap.GetCell(locRight).CanMoveTo(3 * Math.PI / 2)))
                                         {
                                             flag = true;
                                         }
@@ -263,16 +255,16 @@ namespace Maze.Classes
                                 case 0:
                                     if (i == 0)    // moving up or down
                                     {
-                                        if ((j == -1 && Block.CanMoveTo(Directions.Up)) ||
-                                            (j == 1 && Block.CanMoveTo(Directions.Down)))
+                                        if ((j == -1 && Block.CanMoveTo(Math.PI / 2)) ||
+                                            (j == 1 && Block.CanMoveTo(3 * Math.PI / 2)))
                                         {
                                             flag = true;
                                         }
                                     }
                                     else    // moving - right or left
                                     {
-                                        if ((i == 1 && Block.CanMoveTo(Directions.Right)) ||
-                                            (i == -1 && Block.CanMoveTo(Directions.Left)))
+                                        if ((i == 1 && Block.CanMoveTo(0.0)) ||
+                                            (i == -1 && Block.CanMoveTo(Math.PI)))
                                         {
                                             flag = true;
                                         }
@@ -290,7 +282,7 @@ namespace Maze.Classes
                                 else
                                     Cell.G = currentCell.G + 14;    // Diagonal movement
 
-                                Cell.H = (Math.Abs(location.X - FindCell(openList, FinalPoint).Location.X) + Math.Abs(location.Y - FindCell(openList, FinalPoint/*, CurrentMap*/).Location.Y)) * 10;
+                                Cell.H = (Math.Abs(location.X - FindCell(openList, FinalPoint).Location.X) + Math.Abs(location.Y - FindCell(openList, FinalPoint).Location.Y)) * 10;
                                 Cell.F = Cell.G + Cell.H;
 
                                 if (!SearchInList(openList, Cell) && !SearchInList(closeList, Cell))

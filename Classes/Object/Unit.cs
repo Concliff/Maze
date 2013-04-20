@@ -297,7 +297,8 @@ namespace Maze.Classes
             // 2. Improve current method
 
             bool isDiagonal = false;
-            if (this.motionMaster.CurrentDirection.Second != Directions.None)
+
+            if(this.motionMaster.Orientation % Math.PI / 2 != 0)
             {
                 isDiagonal = true;
                 distance = (int)Math.Sqrt(distance);
@@ -306,52 +307,16 @@ namespace Maze.Classes
             GPS newPosition = Position;
             GPS intermidiatePosition = Position;
 
-            switch (this.motionMaster.CurrentDirection.First)
+            while (distance >= GlobalConstants.CELL_HEIGHT)
             {
-                case Directions.Down:
-                    while (distance >= GlobalConstants.CELL_HEIGHT)
-                    {
-                        intermidiatePosition.Location.Y++;
-                        Cell interimPoint = GetWorldMap().GetCell(intermidiatePosition.Location);
-                        if (interimPoint.ID != -1)
-                            newPosition = intermidiatePosition;
+                intermidiatePosition.Location.X += (int)Math.Cos(this.motionMaster.Orientation);
+                intermidiatePosition.Location.Y -= (int)Math.Sin(this.motionMaster.Orientation);
 
-                        distance -= GlobalConstants.CELL_HEIGHT;
-                    }
-                    break;
-                case Directions.Up:
-                    while (distance >= GlobalConstants.CELL_HEIGHT)
-                    {
-                        intermidiatePosition.Location.Y--;
-                        Cell interimPoint = GetWorldMap().GetCell(intermidiatePosition.Location);
-                        if (interimPoint.ID != -1)
-                            newPosition = intermidiatePosition;
+                Cell interimPoint = GetWorldMap().GetCell(intermidiatePosition.Location);
+                if (interimPoint.ID != -1)
+                    newPosition = intermidiatePosition;
 
-                        distance -= GlobalConstants.CELL_HEIGHT;
-                    }
-                    break;
-                case Directions.Left:
-                    while (distance >= GlobalConstants.CELL_HEIGHT)
-                    {
-                        intermidiatePosition.Location.X--;
-                        Cell interimPoint = GetWorldMap().GetCell(intermidiatePosition.Location);
-                        if (interimPoint.ID != -1)
-                            newPosition = intermidiatePosition;
-
-                        distance -= GlobalConstants.CELL_HEIGHT;
-                    }
-                    break;
-                case Directions.Right:
-                    while (distance >= GlobalConstants.CELL_HEIGHT)
-                    {
-                        intermidiatePosition.Location.X++;
-                        Cell interimPoint = GetWorldMap().GetCell(intermidiatePosition.Location);
-                        if (interimPoint.ID != -1)
-                            newPosition = intermidiatePosition;
-
-                        distance -= GlobalConstants.CELL_HEIGHT;
-                    }
-                    break;
+                distance -= GlobalConstants.CELL_HEIGHT;
             }
 
             // save previous position
