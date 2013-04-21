@@ -6,7 +6,7 @@ using Maze.Forms;
 
 namespace Maze.Classes
 {
-    public enum ObjectType
+    public enum ObjectTypes
     {
         Object,
         GridObject,
@@ -14,7 +14,7 @@ namespace Maze.Classes
         Slug,
     };
 
-    public enum ObjectState
+    public enum ObjectStates
     {
         Default,     // Set by Default
         Removed,     // Waiting for deletion from container
@@ -41,8 +41,21 @@ namespace Maze.Classes
         };
 
         protected uint GUID;
-        protected ObjectType objectType;
-        protected ObjectState objectState;
+
+        protected ObjectTypes pr_objectType;
+        public ObjectTypes ObjectType
+        {
+            get { return this.pr_objectType; }
+            protected set { this.pr_objectType = value; }
+        }
+
+        protected ObjectStates pr_objectState;
+        public ObjectStates ObjectState
+        {
+            get { return this.pr_objectState; }
+            set { this.pr_objectState = value; }
+        }
+
         protected Cell currentCell;
         protected ModelSize objectSize;
 
@@ -135,8 +148,8 @@ namespace Maze.Classes
 
         public Object()
         {
-            objectType = ObjectType.Object;
-            objectState = ObjectState.Default;
+            ObjectType = ObjectTypes.Object;
+            ObjectState = ObjectStates.Default;
 
             // Initialize Position by default values
             // Seems not needed
@@ -148,8 +161,6 @@ namespace Maze.Classes
         }
 
         protected Map GetWorldMap() { return Map.WorldMap; }
-
-        new public ObjectType GetType() { return objectType; }
 
         // ObjectSearcher simplified
         protected List<Object> GetObjectsWithinRange(int rangeDistance)
@@ -210,12 +221,6 @@ namespace Maze.Classes
         }
 
         public uint GetGUID() { return GUID; }
-
-        public ObjectState GetObjectState() { return objectState; }
-        public void SetObjectState(ObjectState objectState)
-        {
-            this.objectState = objectState;
-        }
 
         public virtual void UpdateState(int timeP) { }
 

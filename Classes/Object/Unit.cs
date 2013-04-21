@@ -202,7 +202,6 @@ namespace Maze.Classes
         }
 
         protected int respawnTimer;
-        protected UnitTypes pr_unitType;
         protected int unitFlags;
         protected EffectCollection effectList;
 
@@ -213,6 +212,7 @@ namespace Maze.Classes
         /// </summary>
         public event PositionHandler Relocated;
 
+        protected UnitTypes pr_unitType;
         /// <summary>
         /// Determines the type of the unit
         /// </summary>
@@ -229,7 +229,7 @@ namespace Maze.Classes
 
             this.respawnLocation = new GridLocation();
 
-            objectType = ObjectType.Unit;
+            ObjectType = ObjectTypes.Unit;
             UnitType = UnitTypes.Unit;
 
             effectList = new EffectCollection(this);

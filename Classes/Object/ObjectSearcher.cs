@@ -21,7 +21,7 @@ namespace Maze.Classes
             List<GridObject> gridObjects = GetGridObjectsInArea(searcher.Position, rangeDistance);
 
             // exclude itself
-            if (searcher.GetType() == ObjectType.GridObject)
+            if (searcher.ObjectType == ObjectTypes.GridObject)
                 gridObjects.Remove((GridObject)searcher);
 
             return gridObjects;
@@ -41,7 +41,7 @@ namespace Maze.Classes
 
             foreach (Object obj in objects)
             {
-                if (obj.GetType() == ObjectType.GridObject)
+                if (obj.ObjectType == ObjectTypes.GridObject)
                 {
                     result.Add((GridObject)obj);
                 }
@@ -60,7 +60,7 @@ namespace Maze.Classes
             List<Unit> units = GetUnitsInArea(searcher.Position, rangeDistance, includeInvisible, includeDead);
 
             // exclude itself
-            if (searcher.GetType() == ObjectType.Unit || searcher.GetType() == ObjectType.Slug)
+            if (searcher.ObjectType == ObjectTypes.Unit || searcher.ObjectType == ObjectTypes.Slug)
                 units.Remove((Unit)searcher);
 
             return units;
@@ -80,9 +80,9 @@ namespace Maze.Classes
 
             foreach (Object obj in objects)
             {
-                if (obj.GetType() == ObjectType.Unit ||
+                if (obj.ObjectType == ObjectTypes.Unit ||
                     // In face Slug is Unit but with own ObjectType
-                    obj.GetType() == ObjectType.Slug)
+                    obj.ObjectType == ObjectTypes.Slug)
                 {
                     Unit unit = (Unit)obj;
                     if (!unit.IsVisible() && !includeInvisible)

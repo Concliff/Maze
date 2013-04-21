@@ -53,7 +53,7 @@ namespace Maze.Classes
         public Slug()
         {
             Name = "Noname";
-            objectType = ObjectType.Slug;
+            ObjectType = ObjectTypes.Slug;
             UnitType = UnitTypes.Slug;
             Home = GetWorldMap().GetStartPoint();
 
@@ -305,7 +305,7 @@ namespace Maze.Classes
         public void OnUnitCollision(Unit unit)
         {
             // HACK: do not collide with SlugClone
-            if (unit.GetType() != ObjectType.Slug)
+            if (unit.ObjectType != ObjectTypes.Slug)
             {
                 // Do not kill with shield
                 if (!this.HasEffectType(EffectTypes.Shield))

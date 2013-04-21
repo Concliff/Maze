@@ -66,7 +66,7 @@ namespace Maze.Classes
         public GridObject()
         {
             gridObjectState = GridObjectStates.Active;
-            objectType = ObjectType.GridObject;
+            ObjectType = ObjectTypes.GridObject;
             GridObjectType = GridObjectTypes.GridObject;
 
             // Always in center of the cell
@@ -111,7 +111,7 @@ namespace Maze.Classes
             if (HasFlag(GridObjectFlags.Temporal))
             {
                 if (timeToLive < timeP)
-                    SetObjectState(ObjectState.Removed);
+                    ObjectState = ObjectStates.Removed;
                 else
                     timeToLive -= timeP;
             }

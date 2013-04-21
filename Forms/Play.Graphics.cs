@@ -164,7 +164,7 @@ namespace Maze.Forms
                     {
                         case 0:
                             // Slime
-                            if (objectsOnMap[i].GetType() == ObjectType.GridObject &&
+                            if (objectsOnMap[i].ObjectType == ObjectTypes.GridObject &&
                                 ((GridObject)objectsOnMap[i]).GridObjectType == GridObjectTypes.Slime)
                             {
                                 objectImage = PictureManager.SlimeImage;
@@ -174,7 +174,7 @@ namespace Maze.Forms
                             break;
                         case 1:
                             // GridObjects
-                            if (objectsOnMap[i].GetType() == ObjectType.GridObject)
+                            if (objectsOnMap[i].ObjectType == ObjectTypes.GridObject)
                             {
                                 GridObject gridObject = (GridObject)objectsOnMap[i];
                                 if (gridObject.GridObjectType == GridObjectTypes.Slime)
@@ -187,7 +187,7 @@ namespace Maze.Forms
                             break;
                         case 2:
                             // Units
-                            if (objectsOnMap[i].GetType() == ObjectType.Unit)
+                            if (objectsOnMap[i].ObjectType == ObjectTypes.Unit)
                             {
                                 Unit unit = (Unit)objectsOnMap[i];
 
@@ -201,7 +201,7 @@ namespace Maze.Forms
                             break;
                         case 3:
                             // Slug
-                            if (objectsOnMap[i].GetType() == ObjectType.Slug)
+                            if (objectsOnMap[i].ObjectType == ObjectTypes.Slug)
                                 objectImage = PictureManager.GetSlugImage((Slug)objectsOnMap[i]);
                             else
                                 continue;

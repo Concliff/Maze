@@ -92,7 +92,7 @@ namespace Maze.Classes
             // Update each object or add to Remove Stack
             foreach (Object objectF in this.objects)
             {
-                if (objectF.GetObjectState() == ObjectState.Removed)
+                if (objectF.ObjectState == ObjectStates.Removed)
                 {
                     this.objectsToRemove.Push(objectF);
                 }
@@ -135,7 +135,7 @@ namespace Maze.Classes
         {
             foreach (Object unit in this.objects)
             {
-                if (unit.GetType() == ObjectType.Unit)
+                if (unit.ObjectType == ObjectTypes.Unit)
                     ((Unit)unit).StartMotion();
             }
         }
@@ -147,7 +147,7 @@ namespace Maze.Classes
         {
             foreach (Object objectF in this.objects)
             {
-                if (objectF.GetType() == ObjectType.Slug && !isRemoveSlug)
+                if (objectF.ObjectType == ObjectTypes.Slug && !isRemoveSlug)
                     continue;
 
                 this.objectsToRemove.Push(objectF);

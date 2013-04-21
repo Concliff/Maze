@@ -28,7 +28,7 @@ namespace Maze.Classes
 
         public override void Use(Unit user)
         {
-            if (user.GetType() != ObjectType.Slug)
+            if (user.ObjectType != ObjectTypes.Slug)
                 user.CastEffect(ViscousSlime, user);
 
             base.Use(user);

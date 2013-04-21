@@ -21,7 +21,7 @@ namespace Maze.Classes
 
         public override void Use(Unit user)
         {
-            if (!IsActive() || user.GetType() != ObjectType.Slug || !user.IsVisible() || !user.IsAlive())
+            if (!IsActive() || user.ObjectType != ObjectTypes.Slug || !user.IsVisible() || !user.IsAlive())
                 return;
 
             ((Slug)user).CollectDrop(this);

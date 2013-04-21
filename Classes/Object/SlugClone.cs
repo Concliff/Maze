@@ -10,7 +10,7 @@ namespace Maze.Classes
         public SlugClone(GPS position, Movement.Direction currentDirection)
         {
             UnitType = UnitTypes.SlugClone;
-            this.objectType = ObjectType.Slug;
+            this.ObjectType = ObjectTypes.Slug;
             Position = position;
             this.currentCell = GetWorldMap().GetCell(Position.Location);
 
@@ -47,7 +47,7 @@ namespace Maze.Classes
             {
                 // Cast Slimy Trick
                 CastEffect(9, this);
-                SetObjectState(ObjectState.Removed);
+                ObjectState = ObjectStates.Removed;
             }
         }
     }

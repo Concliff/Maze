@@ -87,7 +87,7 @@ namespace Maze.Classes
         public static Image GetUnitImage(Unit unit)
         {
             // Separate method for Slug
-            if (unit.GetType() == ObjectType.Slug)
+            if (unit.ObjectType == ObjectTypes.Slug)
                 return GetSlugImage((Slug)unit);
 
             // Do not draw Invisible and Dead units
@@ -140,13 +140,13 @@ namespace Maze.Classes
 
         public static Image GetObjectImage(Object obj)
         {
-            switch (obj.GetType())
+            switch (obj.ObjectType)
             {
-                case ObjectType.Slug:
+                case ObjectTypes.Slug:
                     return GetSlugImage((Slug)obj);
-                case ObjectType.Unit:
+                case ObjectTypes.Unit:
                     return GetUnitImage((Unit)obj);
-                case ObjectType.GridObject:
+                case ObjectTypes.GridObject:
                     return GetGridObjectImage((GridObject)obj);
                 default:
                     return null;
