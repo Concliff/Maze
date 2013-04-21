@@ -5,8 +5,31 @@ using System.Text;
 
 namespace Maze.Classes
 {
-    public abstract class Movement: ObjectOrientation
+    public abstract class Movement
     {
+        public struct Direction
+        {
+            /// <summary>
+            ///  Main Direction. Used to unidirectional movement.
+            /// </summary>
+            public Directions First;
+
+            /// <summary>
+            /// Secondary Direction. Used to define diagonal movement.
+            /// </summary>
+            public Directions Second;
+
+            public Direction(Directions first, Directions second)
+            {
+                First = first;
+                Second = second;
+            }
+
+            public Direction(Directions first)
+                : this(first, Directions.None) { }
+
+        };
+
         /// <summary>
         /// Fraction part after conversion from double(speedRate) to int(Coords)
         /// </summary>
@@ -14,14 +37,25 @@ namespace Maze.Classes
 
         public Map WorldMap = Map.WorldMap;
 
+        protected Direction pr_CurrentDirection;
         /// <summary>
-        /// Returns Orientation that was after last movement action handling.
+        /// Returns Direction that was after last movement action handling.
         /// </summary>
-        public ObjectOrientation orientation;
+        public Direction CurrentDirection
+        {
+            get
+            {
+                return pr_CurrentDirection;
+            }
+            protected set
+            {
+                pr_CurrentDirection = value;
+            }
+        }
 
         public Movement()
         {
-            orientation = new ObjectOrientation();
+            CurrentDirection = new Direction(Directions.None, Directions.None);
         }
 
         public static Directions GetOppositeDirection(Directions Direction)

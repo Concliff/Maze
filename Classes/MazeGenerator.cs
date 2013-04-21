@@ -106,9 +106,8 @@ namespace Maze.Classes
             this.mainPath.Add(start);
 
             // Priority - in what direction finishPoint(relative of startPoint) will be located
-            double priorityOrientation = (double)(Random.Int(3) * Math.PI / 2);
-            ObjectOrientation currentOrientation = new ObjectOrientation();
-            currentOrientation.Orientation = (double)(Random.Int(3) * Math.PI / 2);
+            DecDirections priorityDirection = (DecDirections)(Random.Int(4) + 1);
+            DecDirections currentDirection = (DecDirections)(Random.Int(4) + 1);
 
             //
             // Generate Main Path
@@ -120,8 +119,7 @@ namespace Maze.Classes
             int currentLenth = 0;
             while (currentLenth < pathLength)
             {
-                double oldOrientation = currentOrientation.Orientation;
-
+                DecDirections oldDirection = currentDirection;
                 do
                 {
                     // Choose new direction (but NOT oppoite of current one)
@@ -131,18 +129,18 @@ namespace Maze.Classes
                     int rnd = Random.Int(100);
                     if (rnd >= 40)
                     {
-                        currentOrientation.Orientation = priorityOrientation;
+                        currentDirection = priorityDirection;
                     }
                     else if (rnd > 10 && rnd < 40)
                     {
-                        currentOrientation.Orientation = currentOrientation.GetNeighbourOrientation(priorityOrientation, Random.Int(100) > 50 ? 1 : 2);
+                        currentDirection = GetNeighborDirection(priorityDirection, Random.Int(100) > 50 ? 1 : 2);
                     }
                     
                     else
                     {
-                        currentOrientation.Orientation = currentOrientation.GetOppositeOrientation(priorityOrientation);
+                        currentDirection = GetOppositeDirection(priorityDirection);
                     }
-                } while (currentOrientation.GetOppositeOrientation(oldOrientation) == currentOrientation.Orientation);
+                } while (GetOppositeDirection(oldDirection) == currentDirection);
 
                 // Generate segment
                 int segmentLenth = Random.Int(SEGMENT_LENGTH_MIN, SEGMENT_LENGTH_MAX);
@@ -152,7 +150,7 @@ namespace Maze.Classes
                     if (currentLenth > pathLength)
                         break;
                     // Next Point on direction
-                    currentPoint = MoveTo(currentPoint, currentOrientation.Orientation);
+                    currentPoint = MoveTo(currentPoint, currentDirection);
                     // Recalc maze size
                     bounds.Recheck(currentPoint);
 
@@ -176,14 +174,13 @@ namespace Maze.Classes
                 int branchLenth = Random.Int(pathLength / 3, pathLength / 2);
 
                 currentPoint = this.mainPath[(i + 1) * BRANCH_FREQUENCY];
-                priorityOrientation = (double)(Random.Int(3) * Math.PI / 2);
+                priorityDirection = (DecDirections)(Random.Int(4) + 1);
 
                 int currentBranchLenth = 0;
 
                 while (currentBranchLenth < branchLenth)
                 {
-                    double oldOrientation = currentOrientation.Orientation;
-
+                    DecDirections oldDirection = currentDirection;
                     do
                     {
                         // Choose new direction (but NOT oppoite of current one)
@@ -193,25 +190,25 @@ namespace Maze.Classes
                         int rnd = Random.Int(100);
                         if (rnd >= 40)
                         {
-                            currentOrientation.Orientation = priorityOrientation;
+                            currentDirection = priorityDirection;
                         }
                         else if (rnd > 10 && rnd < 40)
                         {
-                            currentOrientation.Orientation = currentOrientation.GetNeighbourOrientation(priorityOrientation, Random.Int(100) > 50 ? 1 : 2);
+                            currentDirection = GetNeighborDirection(priorityDirection, Random.Int(100) > 50 ? 1 : 2);
                         }
                         else
                         {
-                            currentOrientation.Orientation = currentOrientation.GetOppositeOrientation(priorityOrientation);
+                            currentDirection = GetOppositeDirection(priorityDirection);
                         }
-                    } while (currentOrientation.GetOppositeOrientation(oldOrientation) == currentOrientation.Orientation);
+                    } while (GetOppositeDirection(oldDirection) == currentDirection);
 
                     int segmentLenth = Random.Int(BRANCH_SEGMENT_MIN, BRANCH_SEGMENT_MAX);
                     // Reduce the length of long straight segments
-                    if (oldOrientation == currentOrientation.Orientation)
+                    if (oldDirection == currentDirection)
                         segmentLenth /= 2;
                     for (int j = 0; j < segmentLenth; ++j)
                     {
-                        currentPoint = MoveTo(currentPoint, currentOrientation.Orientation);
+                        currentPoint = MoveTo(currentPoint, currentDirection);
 
                         ++currentBranchLenth;
                         if (currentBranchLenth > branchLenth)
@@ -307,16 +304,16 @@ namespace Maze.Classes
                 block.Type = 0;
                 // Up
                 if (mainPathMatrix[point.X - bounds.MinX + 1, point.Y - bounds.MinY] > 0)
-                    block.Type += currentOrientation.GetNumericValue(Math.PI / 2);
+                    block.Type += (uint)Maze.Classes.Directions.Up;
                 // Down
                 if (mainPathMatrix[point.X - bounds.MinX + 1, point.Y - bounds.MinY + 2] > 0)
-                    block.Type += currentOrientation.GetNumericValue(3 * Math.PI / 2);
+                    block.Type += (uint)Maze.Classes.Directions.Down;
                 // Left
                 if (mainPathMatrix[point.X - bounds.MinX, point.Y - bounds.MinY + 1] > 0)
-                    block.Type += currentOrientation.GetNumericValue(Math.PI);
+                    block.Type += (uint)Maze.Classes.Directions.Left;
                 // Right
                 if (mainPathMatrix[point.X - bounds.MinX + 2, point.Y - bounds.MinY + 1] > 0)
-                    block.Type += currentOrientation.GetNumericValue(0);
+                    block.Type += (uint)Maze.Classes.Directions.Right;
 
                 // Start Point
                 if (point.Equals(start))
@@ -340,12 +337,74 @@ namespace Maze.Classes
             
         }
 
-        private Point MoveTo(Point currentPoint, double orientation)
+        /// <summary>
+        /// This method replaces two identical code parts
+        /// </summary>
+        private Point MoveTo(Point currentPoint, DecDirections direction)
         {
             Point result = currentPoint;
-            result.X += (int)Math.Cos(orientation);
-            result.Y += (int)Math.Sin(orientation);
+            switch (direction)
+            {
+                case DecDirections.Down:
+                    result.Y++;
+                    break;
+                case DecDirections.Up:
+                    result.Y--;
+                    break;
+                case DecDirections.Left:
+                    result.X--;
+                    break;
+                case DecDirections.Right:
+                    result.X++;
+                    break;
+            }
+
             return result;
+        }
+
+        private DecDirections GetOppositeDirection(DecDirections direction)
+        {
+            switch (direction)
+            {
+                case DecDirections.Right:
+                    return DecDirections.Left;
+                case DecDirections.Left:
+                    return DecDirections.Right;
+                case DecDirections.Up:
+                    return DecDirections.Down;
+                case DecDirections.Down:
+                    return DecDirections.Up;
+            }
+
+            return DecDirections.Left;
+        }
+
+        private DecDirections GetNeighborDirection(DecDirections direction, int number)
+        {
+            switch (direction)
+            {
+                case DecDirections.Right:
+                    if (number == 1)
+                        return DecDirections.Up;
+                    else
+                        return DecDirections.Down;
+                case DecDirections.Left:
+                    if (number == 1)
+                        return DecDirections.Up;
+                    else
+                        return DecDirections.Down;
+                case DecDirections.Up:
+                    if (number == 1)
+                        return DecDirections.Left;
+                    else
+                        return DecDirections.Right;
+                case DecDirections.Down:
+                    if (number == 1)
+                        return DecDirections.Left;
+                    else
+                        return DecDirections.Right;
+            }
+            return DecDirections.Left;
         }
     }
 }

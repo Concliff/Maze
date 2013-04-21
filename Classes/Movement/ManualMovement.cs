@@ -18,7 +18,7 @@ namespace Maze.Classes
         {
             KeyManager keyMgr = World.PlayForm.KeyMgr;
 
-            uint moveType = 0x010;
+            uint moveType = (uint)Directions.None;
 
             // Review all the keys are currently down
             for (int counter = 0; counter < keyMgr.KeysDownCount; ++counter)
@@ -26,18 +26,18 @@ namespace Maze.Classes
                 {
                     // Catch moving keys
                     case Keys.Up:
-                    case Keys.W: moveType += GetNumericValue(Math.PI / 2); break;
+                    case Keys.W: moveType += (uint)Directions.Up; break;
                     case Keys.Left:
-                    case Keys.A: moveType += GetNumericValue(Math.PI); break;
+                    case Keys.A: moveType += (uint)Directions.Left; break;
                     case Keys.Down:
-                    case Keys.S: moveType += GetNumericValue(3 * Math.PI / 2); break;
+                    case Keys.S: moveType += (uint)Directions.Down; break;
                     case Keys.Right:
-                    case Keys.D: moveType += GetNumericValue(0); break;
+                    case Keys.D: moveType += (uint)Directions.Right; break;
                 }
 
             // Check if moving occurs
-            if ((moveType & GetNumericValue(Math.PI / 2)) == 0 && (moveType & GetNumericValue(3 * Math.PI / 2)) == 0 &&
-                (moveType & GetNumericValue(0)) == 0 && (moveType & GetNumericValue(Math.PI)) == 0)
+            if ((moveType & (uint)Directions.Up) == 0 && (moveType & (uint)Directions.Down) == 0 &&
+                (moveType & (uint)Directions.Right) == 0 && (moveType & (uint)Directions.Left) == 0)
                 return;
 
             MovementAction(moveType);
@@ -46,66 +46,50 @@ namespace Maze.Classes
 
         private void MovementAction(uint moveType)
         {
-            // Define the orientation of motion
-            ObjectOrientation objectOrientation = new ObjectOrientation();
+            Direction direction;
+            // Define direction of motion
+            // TODO: improve the next stupid if..else..if
+            if ((moveType & (uint)Directions.Up) != 0)
+                direction.First = Directions.Up;
+            else if ((moveType & (uint)Directions.Down) != 0)
+                direction.First = Directions.Down;
+            else if ((moveType & (uint)Directions.Left) != 0)
+                direction.First = Directions.Left;
+            else if ((moveType & (uint)Directions.Right) != 0)
+                direction.First = Directions.Right;
+            else
+                direction.First = Directions.None;
 
-            for (int i = 0; i < 4; ++i)
-            {
-                if ((moveType & GetNumericValue(i * Math.PI / 2)) != 0)
-                {
-                    objectOrientation.Orientation = i * Math.PI / 2;
-                    break;
-                }
-            }
-
-            if (objectOrientation.Orientation == -1)
+            // When the first direction not set.
+            if (direction.First == Directions.None)
                 return;
 
-            moveType -= GetNumericValue(objectOrientation.Orientation);
+            moveType -= (uint)direction.First;
 
-            //        |pi/2
-            //        |
-            // pi-----------0
-            //        |
-            //        |3pi/2
-
-            for (int i = 0; i < 4; ++i)
-            {
-                if ((moveType & GetNumericValue(i * Math.PI / 2)) != 0)
-                {
-                    if (objectOrientation.Orientation > 0)
-                    {
-                        objectOrientation.Orientation -= (objectOrientation.Orientation - i * Math.PI / 2) / 2;
-                    }
-                    else if (objectOrientation.Orientation == 0)
-                    {
-                        if (i == 1)
-                        {
-                            objectOrientation.Orientation = Math.PI / 4;
-                            break;
-                        }
-                        else if (i == 3)
-                        {
-                            objectOrientation.Orientation = 7 * Math.PI / 4;
-                            break;
-                        }
-                    }
-                }
-            }
+            // Secondary direction (diagonal moving)
+            if ((moveType & (uint)Directions.Up) != 0)
+                direction.Second = Directions.Up;
+            else if ((moveType & (uint)Directions.Down) != 0)
+                direction.Second = Directions.Down;
+            else if ((moveType & (uint)Directions.Left) != 0)
+                direction.Second = Directions.Left;
+            else if ((moveType & (uint)Directions.Right) != 0)
+                direction.Second = Directions.Right;
+            else
+                direction.Second = Directions.None;
 
             // Reverse moving if has Reverse effect
             if (mover.HasEffectType(EffectTypes.MoveReverse))
             {
-                objectOrientation.Orientation = GetOppositeOrientation(objectOrientation.Orientation);
+                direction.First = GetOppositeDirection(direction.First);
+                direction.Second = GetOppositeDirection(direction.Second);
             }
 
-            this.Orientation = objectOrientation.Orientation;
+            CurrentDirection = direction;
 
             double movementStepD = GlobalConstants.MOVEMENT_STEP_PX * this.mover.SpeedRate;
-
-            if (this.Orientation % Math.PI / 2 != 0)
+            if (CurrentDirection.Second != Directions.None)
                 movementStepD = Math.Sqrt(2 * movementStepD);
-
             int movementStep = (int)(movementStepD);
             stepRemainder += movementStepD - movementStep;
             if (stepRemainder > 1d)

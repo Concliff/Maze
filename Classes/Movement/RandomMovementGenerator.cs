@@ -51,50 +51,57 @@ namespace Maze.Classes
 
         private void SelectNewDirection(bool includeCurrent)
         {
-            ObjectOrientation newOrientation = new ObjectOrientation();
-            newOrientation.Orientation = -1;
-
+            Directions newDirection = Directions.None;
             int maxIterations = 10;
             Cell currentCell = WorldMap.GetCell(this.mover.Position.Location);
 
             for (int i = 0; i < maxIterations; ++i)
             {
-                switch(Random.Int(3))
+                switch (Random.Int(4) + 1)
                 {
-                    case 0: newOrientation.Orientation = 0; break;
-                    case 1: newOrientation.Orientation = Math.PI / 2; break;
-                    case 2: newOrientation.Orientation = Math.PI; break;
-                    case 3: newOrientation.Orientation = 3 * Math.PI / 2; break;
+                    case 1: newDirection = Directions.Right; break;
+                    case 2: newDirection = Directions.Down; break;
+                    case 3: newDirection = Directions.Left; break;
+                    case 4: newDirection = Directions.Up; break;
                 }
-                if (!includeCurrent && newOrientation.Orientation % Math.PI / 2 == 0)
+                if (!includeCurrent && newDirection == CurrentDirection.First)
                     continue;
 
                 // Ignore Opposite Direction if there is another one
-                if (currentCell.CanMoveTo(newOrientation.Orientation) &&
-                    (newOrientation.Orientation != GetOppositeOrientation(Orientation) || Orientation == -1))
+                if (currentCell.CanMoveTo(newDirection) &&
+                    (newDirection != GetOppositeDirection(CurrentDirection.First) || CurrentDirection.First == Directions.None))
                 {
-                    Orientation = newOrientation.Orientation;
-                    DefineNextGPS();
+                    CurrentDirection = new Direction(newDirection);
                     return;
                 }
             }
 
             // Go opposite Direction if no choice to go
-            if (currentCell.CanMoveTo(GetOppositeOrientation(Orientation)))
-                Orientation = GetOppositeOrientation(Orientation);
+            if (currentCell.CanMoveTo(GetOppositeDirection(CurrentDirection.First)))
+                CurrentDirection = new Direction(GetOppositeDirection(CurrentDirection.First));
             else
-                Orientation = -1;
+                CurrentDirection = new Direction(Directions.None);
 
             // Selecting with random might be failed
             // Recheck the availability of all four directions
-            if (Orientation == -1)
+            if (CurrentDirection.First == Directions.None)
             {
-                for(int i = 0; i < 4; ++i)
-                    if (currentCell.CanMoveTo(i * Math.PI / 2))
-                    {
-                        Orientation = i * Math.PI / 2;
-                        break;
-                    }
+                if (currentCell.CanMoveTo(Directions.Up))
+                {
+                    CurrentDirection = new Direction(Directions.Up);
+                }
+                else if (currentCell.CanMoveTo(Directions.Left))
+                {
+                    CurrentDirection = new Direction(Directions.Left);
+                }
+                else if (currentCell.CanMoveTo(Directions.Down))
+                {
+                    CurrentDirection = new Direction(Directions.Down);
+                }
+                else if (currentCell.CanMoveTo(Directions.Right))
+                {
+                    CurrentDirection = new Direction(Directions.Right);
+                }
             }
         }
 
@@ -102,13 +109,15 @@ namespace Maze.Classes
         {
             mover.Position = new GPS(mover.Position, 25, 25);
 
-            if (Orientation == -1) // First time moving
+            if (CurrentDirection.First == Directions.None) // First time moving
                 SelectNewDirection();
             else if (Random.Int(100) <= 33)  // 33% chance to change direction
                 SelectNewDirection();
 
-            if (!WorldMap.GetCell(this.mover.Position.Location).CanMoveTo(Orientation))
+            if (!WorldMap.GetCell(this.mover.Position.Location).CanMoveTo(CurrentDirection.First))
                 SelectNewDirection();
+
+            DefineNextGPS();
 
             // Deimos can not pass through the Start Point
             // Check the next cell whether it is such block
@@ -119,7 +128,10 @@ namespace Maze.Classes
             if (nextCell.HasAttribute(CellAttributes.IsStart))
             {
                 SelectNewDirection(false);
+                DefineNextGPS();
             }
+
+
         }
 
     }
