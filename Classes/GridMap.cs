@@ -230,10 +230,4 @@ namespace Maze.Classes
         public int Type;
         public Image PictureImage;
     };
-
-    public struct CellGraph
-    {
-        public Graphics Graphic;
-        public Cell Block;
-    }
 }

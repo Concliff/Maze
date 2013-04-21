@@ -166,14 +166,6 @@ namespace Maze.Forms
                 SpellBarPB[i].Paint += new PaintEventHandler(SpellBarPB_Paint);
             }
 
-            CellGraphic = new CellGraph[GlobalConstants.GRIDMAP_WIDTH, GlobalConstants.GRIDMAP_HEIGHT];
-            for (int i = 0; i < GlobalConstants.GRIDMAP_WIDTH; ++i)
-                for (int j = 0; j < GlobalConstants.GRIDMAP_HEIGHT; ++j)
-                {
-                    CellGraphic[i, j] = new CellGraph();
-                    //CellGraphic[i, j].Graphic = Graphics.FromHwnd(this.CellPB.Handle);
-                }
-
             ////
             // Menu object PictureBoxes
             ////
@@ -306,8 +298,6 @@ namespace Maze.Forms
         private PictureBox BottomPanelPB;
         private PictureBox LeftPanelPB;
         private PictureBox RightPanelPB;
-
-        private CellGraph[,] CellGraphic;
 
         private PictureBox[] AuraIconPB;
         private SpellBarPictureBox[] SpellBarPB;

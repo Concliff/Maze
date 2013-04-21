@@ -126,7 +126,6 @@ namespace Maze.Forms
                     Block = worldMap.GetCell(PBLocation);
 
                     // Draw Grid Cell image
-                    this.CellGraphic[i, j].Block = Block;
                     gCellBP.DrawImage(PictureManager.GetPictureByType(Block.Type), x, y, GlobalConstants.CELL_WIDTH, GlobalConstants.CELL_HEIGHT);
 
 

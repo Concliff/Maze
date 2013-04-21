@@ -137,8 +137,6 @@ namespace MapEditor.Forms
                     PBLocation.Level = oPlayer.Position.Location.Level;
                     Block = Map.WorldMap.GetCell(PBLocation);
 
-                    this.CellGraphic[i, j].Block = Block;
-
                     gGraphic.DrawImage(PictureManager.GetPictureByType(Block.Type), x, y, GlobalConstants.CELL_WIDTH, GlobalConstants.CELL_HEIGHT);
 
                     // Draw Start Block

@@ -99,12 +99,6 @@ namespace MapEditor.Forms
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.KeyMgr.EventKeyDown);
             this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.KeyMgr.EventKeyUp);
 
-
-            CellGraphic = new CellGraph[GlobalConstants.GRIDMAP_WIDTH, GlobalConstants.GRIDMAP_HEIGHT];
-            for (int i = 0; i < GlobalConstants.GRIDMAP_WIDTH; ++i)
-                for (int j = 0; j < GlobalConstants.GRIDMAP_HEIGHT; ++j)
-                    CellGraphic[i, j] = new CellGraph();
-
             this.SetStyle(ControlStyles.DoubleBuffer | ControlStyles.UserPaint | ControlStyles.AllPaintingInWmPaint, true);
 
             // Adding Controls Order
@@ -136,7 +130,5 @@ namespace MapEditor.Forms
         private NumericUpDown levelUpDown;
         private Label lblCurrentMap;
         private Label lblDescription;
-
-        private CellGraph[,] CellGraphic;
     }
 }
