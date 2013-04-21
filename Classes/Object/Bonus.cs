@@ -21,12 +21,8 @@ namespace Maze.Classes
     {
         private BonusEffect bonusEffect;
 
-
-        public Bonus(GPS currentPosition)
+        public Bonus()
         {
-            Position = currentPosition;
-            currentCell = GetWorldMap().GetCell(currentPosition.Location);
-
             GridObjectType = GridObjectTypes.Bonus;
             SetFlag(GridObjectFlags.Temporal);
             SetFlag(GridObjectFlags.Disposable);
@@ -35,9 +31,10 @@ namespace Maze.Classes
             bonusEffect = new BonusEffect(0, false);
         }
 
-        public void SetEffect(BonusEffect bonusEffect)
+        public void Create(GPS position, BonusEffect effect)
         {
-            this.bonusEffect = bonusEffect;
+            this.bonusEffect = effect;
+            base.Create(position);
         }
 
         public ushort GetEffect()

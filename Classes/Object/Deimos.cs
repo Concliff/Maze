@@ -19,14 +19,6 @@ namespace Maze.Classes
             //currentCell = GetWorldMap().GetCell(Position.Location);
         }
 
-        public Deimos(GridLocation respawnLocation)
-            : this()
-        {
-            Home = respawnLocation;
-
-            Position = new GPS(Home, 25, 25);
-        }
-
         public override void UpdateState(int timeP)
         {
             this.motionMaster.UpdateState(timeP);

@@ -244,6 +244,12 @@ namespace Maze.Classes
             effectList.EffectRemoveEvent += new EffectCollection.EffectHandler(OnEffectRemoved);
         }
 
+        public void Create(GridLocation respawnLocation)
+        {
+            Home = respawnLocation;
+            base.Create(new GPS(respawnLocation));
+        }
+
         public void OnEffectApplied(object sender, EffectEventArgs e)
         {
             EffectHolder holder = e.holder;

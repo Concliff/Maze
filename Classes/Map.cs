@@ -333,12 +333,16 @@ namespace Maze.Classes
             foreach (KeyValuePair<GridLocation, Cell> cell in this.mapCells)
             {
                 if (cell.Value.HasAttribute(CellAttributes.HasDrop))
-                    // Create Deimos at Ooze Drop Location
-                    new Deimos(cell.Key);
+                // Create Deimos at Ooze Drop Location
+                {
+                    Deimos deimos = new Deimos();
+                    deimos.Create(cell.Key);
+                }
             }
 
             // Test-created monsters
-            new Phobos(FinishPoint[CurrentLevel]);
+            Phobos phobos = new Phobos();
+            phobos.Create(FinishPoint[CurrentLevel]);
         }
 
         public void FillMapWithObjects()
@@ -347,13 +351,15 @@ namespace Maze.Classes
             {
                 if (cell.Value.HasAttribute(CellAttributes.HasDrop))
                 {
-                    new OozeDrop(cell.Value);
+                    OozeDrop drop = new OozeDrop();
+                    drop.Create(new GPS(cell.Key));
                     ++dropsCount[cell.Key.Level];
                 }
 
                 if (cell.Value.HasOption(CellOptions.Portal))
                 {
-                    Portal portal = new Portal(cell.Value);
+                    Portal portal = new Portal();
+                    portal.Create(new GPS(cell.Key));
                     portal.SetDestination(GetCell(cell.Value.OptionValue));
                 }
             }

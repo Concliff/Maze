@@ -7,20 +7,24 @@ namespace Maze.Classes
 {
     public class SlugClone : Slug
     {
-        public SlugClone(GPS position, Movement.Direction currentDirection)
+        public SlugClone()
         {
             UnitType = UnitTypes.SlugClone;
             this.ObjectType = ObjectTypes.Slug;
-            Position = position;
             this.currentCell = GetWorldMap().GetCell(Position.Location);
 
             objectSize.Width = GlobalConstants.PLAYER_SIZE_WIDTH;
             objectSize.Height = GlobalConstants.PLAYER_SIZE_HEIGHT;
 
             this.motionMaster = new CustomMovement(this);
-            ((CustomMovement)this.motionMaster).SetDirection(currentDirection);
 
             BaseSpeed = 1.0d;
+        }
+
+        public void Create(GPS position, Movement.Direction currentDirection)
+        {
+            ((CustomMovement)this.motionMaster).SetDirection(currentDirection);
+            base.Create(position);
         }
 
         public override void UpdateState(int timeP)

@@ -156,6 +156,19 @@ namespace Maze.Classes
             // All uninitialized values is auto-initialized by 0
 
             currentCell.Initialize();
+        }
+
+        public virtual void Create(GPS position)
+        {
+            Position = position;
+            Create();
+        }
+
+        public virtual void Create()
+        {
+            // Do not create object twice
+            if (GUID != 0)
+                return;
 
             GUID = ObjectContainer.Container.CreateObject(this);
         }

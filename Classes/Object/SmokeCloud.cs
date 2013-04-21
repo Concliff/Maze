@@ -9,11 +9,8 @@ namespace Maze.Classes
     {
         public static int SmokeDuration = 5000;
 
-        public SmokeCloud(GPS currentPosition)
+        public SmokeCloud()
         {
-            Position = currentPosition;
-            currentCell = GetWorldMap().GetCell(currentPosition.Location);
-
             GridObjectType = GridObjectTypes.SmokeCloud;
             SetFlag(GridObjectFlags.Temporal);
             SetFlag(GridObjectFlags.AreaEffect);

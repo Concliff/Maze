@@ -7,18 +7,12 @@ namespace Maze.Classes
 {
     public class Phobos : Unit
     {
-        public Phobos(GridLocation respawnLocation)
+        public Phobos()
         {
             UnitType = UnitTypes.Phobos;
             SetUnitFlags(UnitFlags.CanNotBeKilled);
 
-            Home = respawnLocation;
-
-            Position = new GPS(respawnLocation, 25, 25);
-
             this.motionMaster = new ChasingMovement(this);
-
-            currentCell = GetWorldMap().GetCell(Position.Location);
 
             BaseSpeed = 0.4d;
         }

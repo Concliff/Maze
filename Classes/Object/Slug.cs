@@ -77,7 +77,6 @@ namespace Maze.Classes
             BaseSpeed = 0.7d;
 
             this.motionMaster = new ManualMovement(this);
-
         }
 
         public void HookEvents()
@@ -85,11 +84,6 @@ namespace Maze.Classes
             effectList.EffectApplyEvent += new EffectCollection.EffectHandler(World.PlayForm.OnEffectApplied);
 
             effectList.EffectRemoveEvent += new EffectCollection.EffectHandler(World.PlayForm.OnEffectRemoved);
-        }
-
-        public Slug(String name) : this()
-        {
-            Name = name;
         }
 
         public override void UpdateState(int timeP)
@@ -241,7 +235,8 @@ namespace Maze.Classes
                 this.isInMotion = true;
 
                 //create slime at old position
-                new Slime(previousPosition);
+                Slime slime = new Slime();
+                slime.Create(previousPosition);
             }
             else
             {
@@ -284,7 +279,8 @@ namespace Maze.Classes
 
         public void CreateClone()
         {
-            new SlugClone(Position, this.motionMaster.CurrentDirection);
+            SlugClone clone = new SlugClone();
+            clone.Create(Position, this.motionMaster.CurrentDirection);
         }
 
         public void OnUnitCollisionBegin(Unit unit)

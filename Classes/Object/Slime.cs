@@ -19,12 +19,6 @@ namespace Maze.Classes
             else
                 timeToLive = 3000;
         }
-        public Slime(GPS currentPositionS)
-            : this()
-        {
-            Position = currentPositionS;
-            currentCell = GetWorldMap().GetCell(currentPositionS.Location);
-        }
 
         public override void Use(Unit user)
         {

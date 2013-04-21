@@ -12,17 +12,8 @@ namespace Maze.Classes
         public Portal()
         {
             GridObjectType = GridObjectTypes.Portal;
-            activationTime = 3000;  // 3 seconds
-            destinationCell.Initialize();
-        }
-
-        public Portal(Cell position)
-            : this()
-        {
-            GPS startPosition = Position;
-            startPosition.Location = position.Location;
-            Position = startPosition;
-            currentCell = position;
+            this.activationTime = 3000;  // 3 seconds
+            this.destinationCell.Initialize();
         }
 
         public void SetDestination(GridLocation destinationGPS)

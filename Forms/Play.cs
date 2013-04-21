@@ -349,6 +349,7 @@ namespace Maze.Forms
 
                             this.objectContainer.ClearEnvironment(true); // Remove all old objects and units
                             Player = new Slug();    // Create new Slug
+                            Player.Create();
                             Player.HookEvents();
                             this.worldMap.FillMapWithUnits(); // Add units to map
                             this.worldMap.FillMapWithObjects(); // Add objects
@@ -492,11 +493,11 @@ namespace Maze.Forms
                     bonusPosition.X = Random.Int(30) + 10;
                     bonusPosition.Y = Random.Int(30) + 10;
 
-                    Bonus newBonus = new Bonus(bonusPosition);
-
                     // Get Random effect
-                    BonusEffect eff = bonusEffects[Random.Int(bonusEffects.Count())];
-                    newBonus.SetEffect(eff);
+                    BonusEffect effect = bonusEffects[Random.Int(bonusEffects.Count())];
+
+                    Bonus newBonus = new Bonus();
+                    newBonus.Create(bonusPosition, effect);
 
                     // leave cycle
                     break;

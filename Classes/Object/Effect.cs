@@ -155,7 +155,8 @@ namespace Maze.Classes
                     break;
                 case EffectTypes.SmokeBomb:
                     // Create Smoke Cloud at caster position
-                    new SmokeCloud(caster.Position);
+                    SmokeCloud cloud = new SmokeCloud();
+                    cloud.Create(caster.Position);
                     break;
                 case EffectTypes.JumpThrough:
                     caster.JumpThroughDistance(effectInfo.Range);
