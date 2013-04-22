@@ -142,7 +142,7 @@ namespace Maze.Forms
                     }
 
                     // Include all objects in this grid
-                    objectsOnMap.AddRange(objectContainer.GetAllObjectsByGPS(Block.Location));
+                    objectsOnMap.AddRange(objectContainer.GetObjects(Block.Location));
 
                 }
 

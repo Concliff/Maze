@@ -8,12 +8,18 @@ namespace Maze.Classes
 {
     class ObjectSearcher
     {
-        private static GPS DefaultGPS(GridLocation location)
-        {
-            GPS position = new GPS(location, GlobalConstants.CELL_WIDTH / 2, GlobalConstants.CELL_HEIGHT);
-            position.BlockID = 0;
+        //
+        // Within Range Methods:
+        //
 
-            return position;
+        public static List<Object> GetObjectsWithinRange(Object searcher, int rangeDistance)
+        {
+            List<Object> objects = GetObjectsInArea(searcher.Position, rangeDistance);
+
+            // exclude itself
+            objects.Remove(searcher);
+
+            return objects;
         }
 
         public static List<GridObject> GetGridObjectsWithinRange(Object searcher, int rangeDistance)
@@ -25,29 +31,6 @@ namespace Maze.Classes
                 gridObjects.Remove((GridObject)searcher);
 
             return gridObjects;
-        }
-
-        public static List<GridObject> GetGridObjectsInArea(GridLocation centralLocation, int radius)
-        {
-            return GetGridObjectsInArea(DefaultGPS(centralLocation), radius);
-        }
-
-        public static List<GridObject> GetGridObjectsInArea(GPS centralPosition, int radius)
-        {
-            List<Object> objects = new List<Object>();
-            objects = GetObjectsInArea(centralPosition, radius);
-
-            List<GridObject> result = new List<GridObject>();
-
-            foreach (Object obj in objects)
-            {
-                if (obj.ObjectType == ObjectTypes.GridObject)
-                {
-                    result.Add((GridObject)obj);
-                }
-            }
-
-            return result;
         }
 
         public static List<Unit> GetUnitsWithinRange(Object searcher, int rangeDistance)
@@ -66,83 +49,106 @@ namespace Maze.Classes
             return units;
         }
 
-        public static List<Unit> GetUnitsInArea(GridLocation centralLocation, int radius, bool includeInvisible, bool includeDead)
+        //
+        // In Area Methods:
+        //
+
+        public static List<GridObject> GetGridObjectsInArea(GPS centralPosition, int radius)
         {
-            return GetUnitsInArea(DefaultGPS(centralLocation), radius, includeInvisible, includeDead);
-        }
+            List<GridLocation> locations = GetMatchedLocations(centralPosition, radius);
+            List<GridObject> objects = new List<GridObject>();
 
-        public static List<Unit> GetUnitsInArea(GPS centralPosition, int radius, bool includeInvisible, bool includeDead)
-        {
-            List<Object> objects = new List<Object>();
-            objects = GetObjectsInArea(centralPosition, radius);
-
-            List<Unit> result = new List<Unit>();
-
-            foreach (Object obj in objects)
+            foreach (GridLocation location in locations)
             {
-                if (obj.ObjectType == ObjectTypes.Unit ||
-                    // In face Slug is Unit but with own ObjectType
-                    obj.ObjectType == ObjectTypes.Slug)
-                {
-                    Unit unit = (Unit)obj;
-                    if (!unit.IsVisible() && !includeInvisible)
-                        continue;
-                    if (!unit.IsAlive() && !includeDead)
-                        continue;
-                    result.Add(unit);
-                }
+                List<GridObject> foundObject = ObjectContainer.Container.GetGridObjects(location);
+                if (foundObject.Count == 0)
+                    continue;
+                foundObject = FilterInRangeObjects<GridObject>(foundObject, centralPosition, radius);
+                if (foundObject.Count > 0)
+                    objects.AddRange(foundObject);
             }
-
-            return result;
-        }
-
-        public static List<Object> GetObjectsWithinRange(Object searcher, int rangeDistance)
-        {
-            List<Object> objects = GetObjectsInArea(searcher.Position, rangeDistance);
-
-            // exclude itself
-            objects.Remove(searcher);
 
             return objects;
         }
 
-        public static List<Object> GetObjectsInArea(GridLocation centralLocation, int radius)
+        public static List<Unit> GetUnitsInArea(GPS centralPosition, int radius, bool includeInvisible, bool includeDead)
         {
-            return GetObjectsInArea(DefaultGPS(centralLocation), radius);
+            List<GridLocation> locations = GetMatchedLocations(centralPosition, radius);
+            List<Unit> units = new List<Unit>();
+
+            foreach (GridLocation location in locations)
+            {
+                List<Unit> foundUnits = ObjectContainer.Container.GetUnits(location);
+                if (foundUnits.Count == 0)
+                    continue;
+                foundUnits = FilterInRangeObjects<Unit>(foundUnits, centralPosition, radius);
+                if (foundUnits.Count > 0)
+                    if (!includeInvisible && !includeDead)
+                    {
+                        foreach (Unit unit in foundUnits)
+                            if (unit.IsAlive() && !includeDead || unit.IsVisible() && !includeInvisible)
+                                units.Add(unit);
+                    }
+                    else
+                    {
+                        units.AddRange(foundUnits);
+                    }
+            }
+
+            return units;
         }
 
         public static List<Object> GetObjectsInArea(GPS centralPosition, int radius)
         {
+            List<GridLocation> locations = GetMatchedLocations(centralPosition, radius);
             List<Object> objects = new List<Object>();
-            GridLocation searchLocation = centralPosition.Location;
 
+            foreach (GridLocation location in locations)
+            {
+                List<Object> foundObjects = ObjectContainer.Container.GetObjects(location);
+                if (foundObjects.Count == 0)
+                    continue;
+                foundObjects = FilterInRangeObjects<Object>(foundObjects, centralPosition, radius);
+                if (foundObjects.Count > 0)
+                    objects.AddRange(foundObjects);
+            }
+
+            return objects;
+        }
+
+        //
+        // Helper Methods:
+        //
+
+        private static List<GridLocation> GetMatchedLocations(GPS position, int radius)
+        {
+            List<GridLocation> locations = new List<GridLocation>();
             // How much cells use for search
-            int cellsToNorth = (int)Math.Ceiling(Math.Abs(centralPosition.Y - radius) * 1d / GlobalConstants.CELL_HEIGHT);
-            int cellsToSouth = (int)Math.Floor(Math.Abs(centralPosition.Y + radius) * 1d / GlobalConstants.CELL_HEIGHT);
-            int cellsToWest = (int)Math.Ceiling(Math.Abs(centralPosition.X - radius) * 1d / GlobalConstants.CELL_WIDTH);
-            int cellsToEast = (int)Math.Floor(Math.Abs(centralPosition.X + radius) * 1d / GlobalConstants.CELL_WIDTH);
+            int cellsToNorth = (int)Math.Ceiling(Math.Abs(position.Location.Y - radius) * 1d / GlobalConstants.CELL_HEIGHT);
+            int cellsToSouth = (int)Math.Floor(Math.Abs(position.Location.Y + radius) * 1d / GlobalConstants.CELL_HEIGHT);
+            int cellsToWest = (int)Math.Ceiling(Math.Abs(position.Location.X - radius) * 1d / GlobalConstants.CELL_WIDTH);
+            int cellsToEast = (int)Math.Floor(Math.Abs(position.Location.X + radius) * 1d / GlobalConstants.CELL_WIDTH);
+            GridLocation searchLocation = position.Location;
 
-            for (int width = centralPosition.Location.X - cellsToWest; width <= centralPosition.Location.X + cellsToEast; ++width)
-                for (int height = centralPosition.Location.Y - cellsToNorth; height <= centralPosition.Location.Y + cellsToSouth; ++height)
+            for (int width = position.Location.X - cellsToWest; width <= position.Location.X + cellsToEast; ++width)
+                for (int height = position.Location.Y - cellsToNorth; height <= position.Location.Y + cellsToSouth; ++height)
                 {
                     searchLocation.X = width;
                     searchLocation.Y = height;
-                    objects.AddRange(ObjectContainer.Container.GetAllObjectsByGPS(searchLocation));
+                    locations.Add(searchLocation);
                 }
 
-            List<Object> result = new List<Object>();
+            return locations;
+        }
 
-            foreach (Object obj in objects)
-            {
-                // Calculate actual distance
-                if (Math.Sqrt(Math.Pow(centralPosition.X - obj.Position.X + (centralPosition.Location.X - obj.Position.Location.X) * GlobalConstants.CELL_WIDTH, 2)
-                    + Math.Pow(centralPosition.Y - obj.Position.Y + (centralPosition.Location.Y - obj.Position.Location.Y) * GlobalConstants.CELL_HEIGHT, 2)) < radius)
-                {
-                    result.Add(obj);
-                }
-            }
+        private static List<T> FilterInRangeObjects<T>(List<T> objects, GPS position, int range) where T : Object
+        {
+            List<T> matchedObjects = new List<T>();
+            foreach (T obj in objects)
+                if (obj.Position.GetDistance(position) <= range)
+                    matchedObjects.Add(obj);
 
-            return result;
+            return matchedObjects;
         }
 
     }
