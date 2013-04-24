@@ -51,57 +51,48 @@ namespace Maze.Classes
 
         private void SelectNewDirection(bool includeCurrent)
         {
-            Directions newDirection = Directions.None;
+            double newOrientation = -1;
+
             int maxIterations = 10;
             Cell currentCell = WorldMap.GetCell(this.mover.Position.Location);
 
             for (int i = 0; i < maxIterations; ++i)
             {
-                switch (Random.Int(4) + 1)
+                switch(Random.Int(3))
                 {
-                    case 1: newDirection = Directions.Right; break;
-                    case 2: newDirection = Directions.Down; break;
-                    case 3: newDirection = Directions.Left; break;
-                    case 4: newDirection = Directions.Up; break;
+                    case 0: newOrientation = 0; break;
+                    case 1: newOrientation = Math.PI / 2; break;
+                    case 2: newOrientation = Math.PI; break;
+                    case 3: newOrientation = 3 * Math.PI / 2; break;
                 }
-                if (!includeCurrent && newDirection == CurrentDirection.First)
+                if (!includeCurrent && newOrientation % Math.PI / 2 == 0)
                     continue;
 
                 // Ignore Opposite Direction if there is another one
-                if (currentCell.CanMoveTo(newDirection) &&
-                    (newDirection != GetOppositeDirection(CurrentDirection.First) || CurrentDirection.First == Directions.None))
+                if (currentCell.CanMoveTo(newOrientation) &&
+                    (newOrientation != (Orientation + GlobalConstants.pi) || Orientation == -1))
                 {
-                    CurrentDirection = new Direction(newDirection);
+                    Orientation = newOrientation;
                     return;
                 }
             }
 
             // Go opposite Direction if no choice to go
-            if (currentCell.CanMoveTo(GetOppositeDirection(CurrentDirection.First)))
-                CurrentDirection = new Direction(GetOppositeDirection(CurrentDirection.First));
+            if (currentCell.CanMoveTo(Orientation + GlobalConstants.pi))
+                Orientation += GlobalConstants.pi;
             else
-                CurrentDirection = new Direction(Directions.None);
+                Orientation = -1;
 
             // Selecting with random might be failed
             // Recheck the availability of all four directions
-            if (CurrentDirection.First == Directions.None)
+            if (Orientation == -1)
             {
-                if (currentCell.CanMoveTo(Directions.Up))
-                {
-                    CurrentDirection = new Direction(Directions.Up);
-                }
-                else if (currentCell.CanMoveTo(Directions.Left))
-                {
-                    CurrentDirection = new Direction(Directions.Left);
-                }
-                else if (currentCell.CanMoveTo(Directions.Down))
-                {
-                    CurrentDirection = new Direction(Directions.Down);
-                }
-                else if (currentCell.CanMoveTo(Directions.Right))
-                {
-                    CurrentDirection = new Direction(Directions.Right);
-                }
+                for(int i = 0; i < 4; ++i)
+                    if (currentCell.CanMoveTo(i * Math.PI / 2))
+                    {
+                        Orientation = i * Math.PI / 2;
+                        break;
+                    }
             }
         }
 
@@ -109,12 +100,12 @@ namespace Maze.Classes
         {
             mover.Position = new GPS(mover.Position, 25, 25);
 
-            if (CurrentDirection.First == Directions.None) // First time moving
+            if (Orientation == -1) // First time moving
                 SelectNewDirection();
             else if (Random.Int(100) <= 33)  // 33% chance to change direction
                 SelectNewDirection();
 
-            if (!WorldMap.GetCell(this.mover.Position.Location).CanMoveTo(CurrentDirection.First))
+            if (!WorldMap.GetCell(this.mover.Position.Location).CanMoveTo(Orientation))
                 SelectNewDirection();
 
             DefineNextGPS();
@@ -130,8 +121,6 @@ namespace Maze.Classes
                 SelectNewDirection(false);
                 DefineNextGPS();
             }
-
-
         }
 
     }

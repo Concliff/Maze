@@ -27,7 +27,6 @@ namespace Maze.Classes
 
             public Direction(Directions first)
                 : this(first, Directions.None) { }
-
         };
 
         /// <summary>
@@ -37,25 +36,19 @@ namespace Maze.Classes
 
         public Map WorldMap = Map.WorldMap;
 
-        protected Direction pr_CurrentDirection;
         /// <summary>
-        /// Returns Direction that was after last movement action handling.
+        /// Returns Orientation that was after last movement action handling.
         /// </summary>
-        public Direction CurrentDirection
+        protected double pr_orientation;
+        public double Orientation
         {
-            get
-            {
-                return pr_CurrentDirection;
-            }
-            protected set
-            {
-                pr_CurrentDirection = value;
-            }
+            get { return pr_orientation; }
+            set { pr_orientation = value; }
         }
 
         public Movement()
         {
-            CurrentDirection = new Direction(Directions.None, Directions.None);
+            Orientation = -1;
         }
 
         public static Directions GetOppositeDirection(Directions Direction)

@@ -25,5 +25,6 @@ namespace Maze.Classes
         public const int PLAYER_SIZE_WIDTH = 32;
         public const int PLAYER_SIZE_HEIGHT = 32;
 
+        public const double pi = Math.PI;
     }
 }
