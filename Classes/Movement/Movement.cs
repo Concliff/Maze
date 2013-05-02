@@ -39,16 +39,16 @@ namespace Maze.Classes
         /// <summary>
         /// Returns Orientation that was after last movement action handling.
         /// </summary>
-        protected double pr_orientation;
-        public double Orientation
-        {
-            get { return pr_orientation; }
-            set { pr_orientation = value; }
-        }
+        public double Orientation;
 
         public Movement()
         {
-            Orientation = -1;
+            Orientation = (double)ObjOrientation.Right;
+        }
+
+        public static double GetOrientation(double orientation)
+        {
+            return orientation * GlobalConstants.Angle;
         }
 
         public static Directions GetOppositeDirection(Directions Direction)

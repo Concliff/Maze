@@ -60,17 +60,17 @@ namespace Maze.Classes
             {
                 switch(Random.Int(3))
                 {
-                    case 0: newOrientation = 0; break;
-                    case 1: newOrientation = Math.PI / 2; break;
-                    case 2: newOrientation = Math.PI; break;
-                    case 3: newOrientation = 3 * Math.PI / 2; break;
+                    case 0: newOrientation = GetOrientation((double)ObjOrientation.Right); break;
+                    case 1: newOrientation = GetOrientation((double)ObjOrientation.Up); break;
+                    case 2: newOrientation = GetOrientation((double)ObjOrientation.Left); break;
+                    case 3: newOrientation = GetOrientation((double)ObjOrientation.Down); break;
                 }
                 if (!includeCurrent && newOrientation % Math.PI / 2 == 0)
                     continue;
 
                 // Ignore Opposite Direction if there is another one
                 if (currentCell.CanMoveTo(newOrientation) &&
-                    (newOrientation != (Orientation + GlobalConstants.pi) || Orientation == -1))
+                    (newOrientation != (Orientation + 2 * GlobalConstants.Angle)))
                 {
                     Orientation = newOrientation;
                     return;
@@ -78,19 +78,19 @@ namespace Maze.Classes
             }
 
             // Go opposite Direction if no choice to go
-            if (currentCell.CanMoveTo(Orientation + GlobalConstants.pi))
-                Orientation += GlobalConstants.pi;
+            if (currentCell.CanMoveTo(Orientation + 2 * GlobalConstants.Angle))
+                Orientation += 2 * GlobalConstants.Angle;
             else
-                Orientation = -1;
+                Orientation = (double)ObjOrientation.Right;
 
             // Selecting with random might be failed
             // Recheck the availability of all four directions
-            if (Orientation == -1)
+            if (Orientation == (double)ObjOrientation.Right)
             {
                 for(int i = 0; i < 4; ++i)
-                    if (currentCell.CanMoveTo(i * Math.PI / 2))
+                    if (currentCell.CanMoveTo(i * GlobalConstants.Angle))
                     {
-                        Orientation = i * Math.PI / 2;
+                        Orientation = i * GlobalConstants.Angle;
                         break;
                     }
             }
@@ -100,7 +100,7 @@ namespace Maze.Classes
         {
             mover.Position = new GPS(mover.Position, 25, 25);
 
-            if (Orientation == -1) // First time moving
+            if (Orientation == (double)ObjOrientation.Right) // First time moving
                 SelectNewDirection();
             else if (Random.Int(100) <= 33)  // 33% chance to change direction
                 SelectNewDirection();

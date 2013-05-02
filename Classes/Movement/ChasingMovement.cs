@@ -38,6 +38,7 @@ namespace Maze.Classes
             victim = World.PlayForm.Player;
             pathFinder = new PathFinder(WorldMap.GetCell(this.mover.Position.Location),
                 WorldMap.GetCell(this.victim.Position.Location));
+            FindPath();
         }
 
         public override void UpdateState(int timeP)
@@ -85,8 +86,10 @@ namespace Maze.Classes
                 FindPath();
 
             double movementStepD = GlobalConstants.MOVEMENT_STEP_PX * this.mover.SpeedRate;
-            if (CurrentDirection.Second != Directions.None)
+
+            if(Orientation % GlobalConstants.Angle != 0)
                 movementStepD = Math.Sqrt(2 * movementStepD);
+
             int movementStep = (int)(movementStepD);
             stepRemainder += movementStepD - movementStep;
             if (stepRemainder > 1d)
@@ -158,32 +161,32 @@ namespace Maze.Classes
                         {
                             case -1:
                                 if (shiftX == -1)
-                                    CurrentDirection = new Direction(Directions.Left, Directions.Down);
+                                    Orientation = GetOrientation((double)ObjOrientation.Left) + GlobalConstants.SemiAngle;
                                 else
-                                    CurrentDirection = new Direction(Directions.Right, Directions.Up);
+                                    Orientation = GlobalConstants.SemiAngle;
                                 break;
                             case 0:
                                 switch (shiftX)
                                 {
                                     case -1:
-                                        CurrentDirection = new Direction(Directions.Left);
+                                        Orientation = GetOrientation((double)ObjOrientation.Left);
                                         break;
                                     case 0:
                                         if (shiftY == -1)
-                                            CurrentDirection = new Direction(Directions.Up);
+                                            Orientation = GetOrientation((double)ObjOrientation.Up);
                                         else
-                                            CurrentDirection = new Direction(Directions.Down);
+                                            Orientation = GetOrientation((double)ObjOrientation.Down);
                                         break;
                                     case 1:
-                                        CurrentDirection = new Direction(Directions.Right);
+                                        Orientation = GetOrientation((double)ObjOrientation.Right);
                                         break;
                                 }
                                 break;
                             case 1:
                                 if (shiftX == 1)
-                                    CurrentDirection = new Direction(Directions.Right, Directions.Down);
+                                    Orientation = GlobalConstants.FullAngles - GlobalConstants.SemiAngle;
                                 else
-                                    CurrentDirection = new Direction(Directions.Left, Directions.Up);
+                                    Orientation = GetOrientation((double)ObjOrientation.Up) + GlobalConstants.SemiAngle;
                                 break;
                         }
                     }
