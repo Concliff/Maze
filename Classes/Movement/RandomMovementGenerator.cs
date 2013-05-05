@@ -65,12 +65,12 @@ namespace Maze.Classes
                     case 2: newOrientation = ORIENTATION_LEFT; break;
                     case 3: newOrientation = ORIENTATION_DOWN; break;
                 }
-                if (!includeCurrent && newOrientation % QuarterAngle == 0)
+                if (!includeCurrent && newOrientation % Math.PI / 2 == 0)
                     continue;
 
                 // Ignore Opposite Direction if there is another one
                 if (currentCell.CanMoveTo(newOrientation) &&
-                    (newOrientation != (Orientation + 2 * QuarterAngle)))
+                    (newOrientation != (Orientation + Math.PI)))
                 {
                     Orientation = newOrientation;
                     return;
@@ -78,8 +78,8 @@ namespace Maze.Classes
             }
 
             // Go opposite Direction if no choice to go
-            if (currentCell.CanMoveTo(Orientation + 2 * QuarterAngle))
-                Orientation += 2 * QuarterAngle;
+            if (currentCell.CanMoveTo(Orientation + Math.PI))
+                Orientation += Math.PI;
             else
                 Orientation = ORIENTATION_RIGHT;
 
@@ -88,9 +88,9 @@ namespace Maze.Classes
             if (Orientation == ORIENTATION_RIGHT)
             {
                 for(int i = 0; i < 4; ++i)
-                    if (currentCell.CanMoveTo(i * QuarterAngle))
+                    if (currentCell.CanMoveTo(i * Math.PI / 2))
                     {
-                        Orientation = i * QuarterAngle;
+                        Orientation = i * Math.PI / 2;
                         break;
                     }
             }

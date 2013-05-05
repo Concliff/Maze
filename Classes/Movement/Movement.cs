@@ -12,8 +12,6 @@ namespace Maze.Classes
         public const double ORIENTATION_LEFT = Math.PI;
         public const double ORIENTATION_DOWN = 3 * Math.PI / 2;
 
-        public const double QuarterAngle = Math.PI / 2;
-
         public struct Direction
         {
             /// <summary>
@@ -55,8 +53,8 @@ namespace Maze.Classes
 
         public static Directions WhatIsDirection(double orientation)
         {
-            while (orientation >= 4 * QuarterAngle)
-                orientation -= 4 * QuarterAngle;
+            while (orientation >= 2 * Math.PI)
+                orientation -= 2 * Math.PI;
 
             if (orientation == ORIENTATION_RIGHT)
                 return Directions.Right;
