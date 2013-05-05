@@ -7,6 +7,13 @@ namespace Maze.Classes
 {
     public abstract class Movement
     {
+        public const double ORIENTATION_RIGHT = 0;
+        public const double ORIENTATION_UP = Math.PI / 2;
+        public const double ORIENTATION_LEFT = Math.PI;
+        public const double ORIENTATION_DOWN = 3 * Math.PI / 2;
+
+        public const double QuarterAngle = Math.PI / 2;
+
         public struct Direction
         {
             /// <summary>
@@ -43,12 +50,24 @@ namespace Maze.Classes
 
         public Movement()
         {
-            Orientation = (double)ObjOrientation.Right;
+            Orientation = ORIENTATION_RIGHT;
         }
 
-        public static double GetOrientation(double orientation)
+        public static Directions WhatIsDirection(double orientation)
         {
-            return orientation * GlobalConstants.Angle;
+            while (orientation >= 4 * QuarterAngle)
+                orientation -= 4 * QuarterAngle;
+
+            if (orientation == ORIENTATION_RIGHT)
+                return Directions.Right;
+            else if (orientation == ORIENTATION_UP)
+                return Directions.Up;
+            else if (orientation == ORIENTATION_LEFT)
+                return Directions.Left;
+            else if (orientation == ORIENTATION_DOWN)
+                return Directions.Down;
+            else
+                return Directions.None;
         }
 
         public static Directions GetOppositeDirection(Directions Direction)

@@ -24,9 +24,5 @@ namespace Maze.Classes
         // Player
         public const int PLAYER_SIZE_WIDTH = 32;
         public const int PLAYER_SIZE_HEIGHT = 32;
-
-        public const double Angle = Math.PI / 2;
-        public const double FullAngles = 2 * Math.PI;
-        public const double SemiAngle = Math.PI / 4;
     }
 }

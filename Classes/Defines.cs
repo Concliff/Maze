@@ -50,12 +50,4 @@ namespace Maze.Classes
         MapEdit,
         ApplicationQuit,
     };
-
-    public enum ObjOrientation
-    {
-        Right = 0,
-        Up = 1,
-        Left = 2,
-        Down = 3,
-    };
 }

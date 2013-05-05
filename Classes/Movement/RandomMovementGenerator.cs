@@ -51,7 +51,7 @@ namespace Maze.Classes
 
         private void SelectNewDirection(bool includeCurrent)
         {
-            double newOrientation = -1;
+            double newOrientation = 0;
 
             int maxIterations = 10;
             Cell currentCell = WorldMap.GetCell(this.mover.Position.Location);
@@ -60,17 +60,17 @@ namespace Maze.Classes
             {
                 switch(Random.Int(3))
                 {
-                    case 0: newOrientation = GetOrientation((double)ObjOrientation.Right); break;
-                    case 1: newOrientation = GetOrientation((double)ObjOrientation.Up); break;
-                    case 2: newOrientation = GetOrientation((double)ObjOrientation.Left); break;
-                    case 3: newOrientation = GetOrientation((double)ObjOrientation.Down); break;
+                    case 0: newOrientation = ORIENTATION_RIGHT; break;
+                    case 1: newOrientation = ORIENTATION_UP; break;
+                    case 2: newOrientation = ORIENTATION_LEFT; break;
+                    case 3: newOrientation = ORIENTATION_DOWN; break;
                 }
-                if (!includeCurrent && newOrientation % Math.PI / 2 == 0)
+                if (!includeCurrent && newOrientation % QuarterAngle == 0)
                     continue;
 
                 // Ignore Opposite Direction if there is another one
                 if (currentCell.CanMoveTo(newOrientation) &&
-                    (newOrientation != (Orientation + 2 * GlobalConstants.Angle)))
+                    (newOrientation != (Orientation + 2 * QuarterAngle)))
                 {
                     Orientation = newOrientation;
                     return;
@@ -78,19 +78,19 @@ namespace Maze.Classes
             }
 
             // Go opposite Direction if no choice to go
-            if (currentCell.CanMoveTo(Orientation + 2 * GlobalConstants.Angle))
-                Orientation += 2 * GlobalConstants.Angle;
+            if (currentCell.CanMoveTo(Orientation + 2 * QuarterAngle))
+                Orientation += 2 * QuarterAngle;
             else
-                Orientation = (double)ObjOrientation.Right;
+                Orientation = ORIENTATION_RIGHT;
 
             // Selecting with random might be failed
             // Recheck the availability of all four directions
-            if (Orientation == (double)ObjOrientation.Right)
+            if (Orientation == ORIENTATION_RIGHT)
             {
                 for(int i = 0; i < 4; ++i)
-                    if (currentCell.CanMoveTo(i * GlobalConstants.Angle))
+                    if (currentCell.CanMoveTo(i * QuarterAngle))
                     {
-                        Orientation = i * GlobalConstants.Angle;
+                        Orientation = i * QuarterAngle;
                         break;
                     }
             }
@@ -100,7 +100,7 @@ namespace Maze.Classes
         {
             mover.Position = new GPS(mover.Position, 25, 25);
 
-            if (Orientation == (double)ObjOrientation.Right) // First time moving
+            if (Orientation == ORIENTATION_RIGHT) // First time moving
                 SelectNewDirection();
             else if (Random.Int(100) <= 33)  // 33% chance to change direction
                 SelectNewDirection();
