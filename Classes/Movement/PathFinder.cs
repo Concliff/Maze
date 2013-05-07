@@ -148,11 +148,11 @@ namespace Maze.Classes
                         bannedList.Add(currentCell);
 
                     currentCell = CellWithMinF;
+
                 }
                 else
                     break;
             }
-
             if (closeList.Count > 0)
             {
                 currentCell = closeList[closeList.Count - 1];
@@ -204,10 +204,8 @@ namespace Maze.Classes
                                         locLeft.X--;
 
                                         // Check cell's passability
-                                        if ((Block.CanMoveTo(Directions.Down) &&
-                                            WorldMap.GetCell(locDown).CanMoveTo(Directions.Left)) &&
-                                            (Block.CanMoveTo(Directions.Left) &&
-                                            WorldMap.GetCell(locLeft).CanMoveTo(Directions.Down)))
+                                        if((Block.CanMoveTo(Movement.ORIENTATION_DOWN) && WorldMap.GetCell(locDown).CanMoveTo(Movement.ORIENTATION_LEFT)) &&
+                                            (Block.CanMoveTo(Movement.ORIENTATION_LEFT) && WorldMap.GetCell(locLeft).CanMoveTo(Movement.ORIENTATION_DOWN)))
                                         {
                                             flag = true;
                                         }
@@ -219,10 +217,8 @@ namespace Maze.Classes
                                         GridLocation locRight = Block.Location;
                                         locRight.X++;
 
-                                        if ((Block.CanMoveTo(Directions.Up) &&
-                                            WorldMap.GetCell(locUp).CanMoveTo(Directions.Right)) &&
-                                            (Block.CanMoveTo(Directions.Right) &&
-                                            WorldMap.GetCell(locRight).CanMoveTo(Directions.Up)))
+                                        if ((Block.CanMoveTo(Directions.Up) && WorldMap.GetCell(locUp).CanMoveTo(Directions.Right)) &&
+                                            (Block.CanMoveTo(Directions.Right) && WorldMap.GetCell(locRight).CanMoveTo(Directions.Up)))
                                         {
                                             flag = true;
                                         }
@@ -236,10 +232,8 @@ namespace Maze.Classes
                                         GridLocation locLeft = Block.Location;
                                         locLeft.X--;
 
-                                        if ((Block.CanMoveTo(Directions.Left) &&
-                                            WorldMap.GetCell(locLeft).CanMoveTo(Directions.Up)) &&
-                                            (Block.CanMoveTo(Directions.Up) &&
-                                            WorldMap.GetCell(locUp).CanMoveTo(Directions.Left)))
+                                        if ((Block.CanMoveTo(Directions.Left) && WorldMap.GetCell(locLeft).CanMoveTo(Directions.Up)) &&
+                                            (Block.CanMoveTo(Directions.Up) && WorldMap.GetCell(locUp).CanMoveTo(Directions.Left)))
                                         {
                                             flag = true;
                                         }
@@ -251,10 +245,8 @@ namespace Maze.Classes
                                         GridLocation locRight = Block.Location;
                                         locRight.X++;
 
-                                        if ((Block.CanMoveTo(Directions.Down) &&
-                                            WorldMap.GetCell(locDown).CanMoveTo(Directions.Right)) &&
-                                            (Block.CanMoveTo(Directions.Right) &&
-                                            WorldMap.GetCell(locRight).CanMoveTo(Directions.Down)))
+                                        if ((Block.CanMoveTo(Directions.Down) && WorldMap.GetCell(locDown).CanMoveTo(Directions.Right)) &&
+                                            (Block.CanMoveTo(Directions.Right) && WorldMap.GetCell(locRight).CanMoveTo(Directions.Down)))
                                         {
                                             flag = true;
                                         }
@@ -290,7 +282,7 @@ namespace Maze.Classes
                                 else
                                     Cell.G = currentCell.G + 14;    // Diagonal movement
 
-                                Cell.H = (Math.Abs(location.X - FindCell(openList, FinalPoint).Location.X) + Math.Abs(location.Y - FindCell(openList, FinalPoint/*, CurrentMap*/).Location.Y)) * 10;
+                                Cell.H = (Math.Abs(location.X - FindCell(openList, FinalPoint).Location.X) + Math.Abs(location.Y - FindCell(openList, FinalPoint).Location.Y)) * 10;
                                 Cell.F = Cell.G + Cell.H;
 
                                 if (!SearchInList(openList, Cell) && !SearchInList(closeList, Cell))

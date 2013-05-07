@@ -87,7 +87,7 @@ namespace Maze.Classes
 
             double movementStepD = GlobalConstants.MOVEMENT_STEP_PX * this.mover.SpeedRate;
 
-            if(Orientation % GlobalConstants.Angle != 0)
+            if (Orientation % Math.PI / 2 != 0)
                 movementStepD = Math.Sqrt(2 * movementStepD);
 
             int movementStep = (int)(movementStepD);
@@ -161,32 +161,32 @@ namespace Maze.Classes
                         {
                             case -1:
                                 if (shiftX == -1)
-                                    Orientation = GetOrientation((double)ObjOrientation.Left) + GlobalConstants.SemiAngle;
+                                    Orientation = ORIENTATION_LEFT + Math.PI / 4;
                                 else
-                                    Orientation = GlobalConstants.SemiAngle;
+                                    Orientation = Math.PI / 4;
                                 break;
                             case 0:
                                 switch (shiftX)
                                 {
                                     case -1:
-                                        Orientation = GetOrientation((double)ObjOrientation.Left);
+                                        Orientation = ORIENTATION_LEFT;
                                         break;
                                     case 0:
                                         if (shiftY == -1)
-                                            Orientation = GetOrientation((double)ObjOrientation.Up);
+                                            Orientation = ORIENTATION_UP;
                                         else
-                                            Orientation = GetOrientation((double)ObjOrientation.Down);
+                                            Orientation = ORIENTATION_DOWN;
                                         break;
                                     case 1:
-                                        Orientation = GetOrientation((double)ObjOrientation.Right);
+                                        Orientation = ORIENTATION_RIGHT;
                                         break;
                                 }
                                 break;
                             case 1:
                                 if (shiftX == 1)
-                                    Orientation = GlobalConstants.FullAngles - GlobalConstants.SemiAngle;
+                                    Orientation = ORIENTATION_DOWN + Math.PI / 4;
                                 else
-                                    Orientation = GetOrientation((double)ObjOrientation.Up) + GlobalConstants.SemiAngle;
+                                    Orientation = ORIENTATION_UP + Math.PI / 4;
                                 break;
                         }
                     }

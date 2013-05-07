@@ -44,6 +44,11 @@ namespace Maze.Classes
             return (Option & (uint)option) != 0;
         }
 
+        public bool CanMoveTo(Directions direction)
+        {
+            return (Type & (uint)direction) != 0;
+        }
+
         public bool CanMoveTo(double orientation)
         {
             Directions direction = Movement.WhatIsDirection(orientation);

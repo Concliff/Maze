@@ -74,22 +74,8 @@ namespace Maze.Classes
         {
             GPS newPosition = this.mover.Position;
 
-            for (int i = 0; i < 2; ++i)
-                switch (i == 0 ? CurrentDirection.First : CurrentDirection.Second)
-                {
-                    case Directions.Up:
-                        newPosition.Y -= movementStep;
-                        break;
-                    case Directions.Down:
-                        newPosition.Y += movementStep;
-                        break;
-                    case Directions.Left:
-                        newPosition.X -= movementStep;
-                        break;
-                    case Directions.Right:
-                        newPosition.X += movementStep;
-                        break;
-                }
+            newPosition.X += (int)Math.Cos(Orientation) * movementStep;
+            newPosition.Y -= (int)Math.Sin(Orientation) * movementStep;
 
             this.mover.Position = newPosition;
         }
@@ -107,14 +93,8 @@ namespace Maze.Classes
         {
             this.nextGPS = new GPS(mover.Position, 25, 25);
 
-            for (int i = 0; i < 2; ++i)
-                switch (i == 0 ? CurrentDirection.First : CurrentDirection.Second)
-                {
-                    case Directions.Up: --this.nextGPS.Location.Y; break;
-                    case Directions.Down: ++this.nextGPS.Location.Y; break;
-                    case Directions.Left: --this.nextGPS.Location.X; break;
-                    case Directions.Right: ++this.nextGPS.Location.X; break;
-                }
+            this.nextGPS.Location.X += (int)Math.Cos(Orientation);
+            this.nextGPS.Location.Y -= (int)Math.Sin(Orientation);
 
             this.remainDistance = this.mover.Position.GetDistance(this.nextGPS);
 

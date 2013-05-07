@@ -44,11 +44,24 @@ namespace Maze.Classes
         /// <summary>
         /// Returns Orientation that was after last movement action handling.
         /// </summary>
-        public double Orientation;
+        protected double pr_orientation;
+
+        public double Orientation
+        {
+            get { return pr_orientation; }
+            set { pr_orientation = value; }
+        }
+
+        protected bool pr_isOrientChanged;
+        public bool IsOrientChanged
+        {
+            get { return pr_isOrientChanged; }
+            set { pr_isOrientChanged = value; }
+        }
 
         public Movement()
         {
-            Orientation = ORIENTATION_RIGHT;
+            IsOrientChanged = false;
         }
 
         public static Directions WhatIsDirection(double orientation)
@@ -66,6 +79,26 @@ namespace Maze.Classes
                 return Directions.Down;
             else
                 return Directions.None;
+        }
+
+        public static double GetOppositeOrientation(double orientation)
+        {
+            //opposite angles:
+            //0 - pi; pi/2 - 3pi/2; pi - 0; 3pi/2 - pi/2 
+            //watch only the angles from 0 to 2pi
+            return orientation >= Math.PI ? orientation - Math.PI : orientation + Math.PI;
+        }
+
+        public static double GetNeighbourOrientation(double orientation, int number) 
+        { 
+            //if number == 1 - left, if number == 2 - right
+            //watch only the angles from 0 to 2pi
+            if (number == 1) 
+            { 
+                return orientation >= 3 * Math.PI / 2 ? 0 : orientation + Math.PI / 2; 
+            } 
+            else
+                return orientation < Math.PI / 2 ? 3 * Math.PI / 2 : orientation - Math.PI / 2; 
         }
 
         public static Directions GetOppositeDirection(Directions Direction)

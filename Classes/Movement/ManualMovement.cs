@@ -41,55 +41,66 @@ namespace Maze.Classes
                 return;
 
             MovementAction(moveType);
-
+            IsOrientChanged = false;
         }
 
         private void MovementAction(uint moveType)
         {
-            Direction direction;
-            // Define direction of motion
-            // TODO: improve the next stupid if..else..if
-            if ((moveType & (uint)Directions.Up) != 0)
-                direction.First = Directions.Up;
-            else if ((moveType & (uint)Directions.Down) != 0)
-                direction.First = Directions.Down;
-            else if ((moveType & (uint)Directions.Left) != 0)
-                direction.First = Directions.Left;
-            else if ((moveType & (uint)Directions.Right) != 0)
-                direction.First = Directions.Right;
-            else
-                direction.First = Directions.None;
+            // Define the orientation of motion
+            double objectOrientation = 0;
 
-            // When the first direction not set.
-            if (direction.First == Directions.None)
-                return;
+            for (int i = 0; i < 4; ++i)
+            {
+                if ((moveType & (uint)WhatIsDirection(i)) != 0)
+                {
+                    objectOrientation = i;
+                    IsOrientChanged = true;
+                    break;
+                }
+                else
+                    IsOrientChanged = false;
+            }
 
-            moveType -= (uint)direction.First;
+            moveType -= (uint)WhatIsDirection(objectOrientation);
 
-            // Secondary direction (diagonal moving)
-            if ((moveType & (uint)Directions.Up) != 0)
-                direction.Second = Directions.Up;
-            else if ((moveType & (uint)Directions.Down) != 0)
-                direction.Second = Directions.Down;
-            else if ((moveType & (uint)Directions.Left) != 0)
-                direction.Second = Directions.Left;
-            else if ((moveType & (uint)Directions.Right) != 0)
-                direction.Second = Directions.Right;
-            else
-                direction.Second = Directions.None;
+            for (int i = 0; i < 4; ++i)
+            {
+                if ((moveType & (uint)WhatIsDirection(i)) != 0)
+                {
+                    if (objectOrientation > 0)
+                    {
+                        objectOrientation -= (objectOrientation - i) / 2;
+                    }
+                    else if (objectOrientation == 0)
+                    {
+                        if (i == 1)
+                        {
+                            objectOrientation = Math.PI / 4;
+                            break;
+                        }
+                        else if (i == 3)
+                        {
+                            objectOrientation = ORIENTATION_DOWN + Math.PI / 4;
+                            break;
+                        }
+                    }
+                }
+            }
 
             // Reverse moving if has Reverse effect
             if (mover.HasEffectType(EffectTypes.MoveReverse))
             {
-                direction.First = GetOppositeDirection(direction.First);
-                direction.Second = GetOppositeDirection(direction.Second);
+                objectOrientation = GetOppositeOrientation(objectOrientation);
             }
 
-            CurrentDirection = direction;
+            Orientation = objectOrientation;
+            IsOrientChanged = true;
 
             double movementStepD = GlobalConstants.MOVEMENT_STEP_PX * this.mover.SpeedRate;
-            if (CurrentDirection.Second != Directions.None)
+
+            if (Orientation % Math.PI / 2 != 0)
                 movementStepD = Math.Sqrt(2 * movementStepD);
+
             int movementStep = (int)(movementStepD);
             stepRemainder += movementStepD - movementStep;
             if (stepRemainder > 1d)

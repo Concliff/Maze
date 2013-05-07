@@ -21,6 +21,7 @@ namespace Maze.Classes
             if (this.remainDistance <= 0)
             {
                 OnDestinationReached();
+                IsOrientChanged = false;
                 //return;
             }
 
@@ -70,22 +71,26 @@ namespace Maze.Classes
 
                 // Ignore Opposite Direction if there is another one
                 if (currentCell.CanMoveTo(newOrientation) &&
-                    (newOrientation != (Orientation + Math.PI)))
+                    (newOrientation != GetOppositeOrientation(Orientation)))
                 {
                     Orientation = newOrientation;
+                    IsOrientChanged = true;
                     return;
                 }
             }
 
             // Go opposite Direction if no choice to go
-            if (currentCell.CanMoveTo(Orientation + Math.PI))
-                Orientation += Math.PI;
+            if (currentCell.CanMoveTo(GetOppositeOrientation(Orientation)))
+            {
+                Orientation = GetOppositeOrientation(Orientation);
+                IsOrientChanged = true;
+            }
             else
-                Orientation = ORIENTATION_RIGHT;
+                IsOrientChanged = false;
 
             // Selecting with random might be failed
             // Recheck the availability of all four directions
-            if (Orientation == ORIENTATION_RIGHT)
+            if (IsOrientChanged == false)
             {
                 for(int i = 0; i < 4; ++i)
                     if (currentCell.CanMoveTo(i * Math.PI / 2))
@@ -100,7 +105,7 @@ namespace Maze.Classes
         {
             mover.Position = new GPS(mover.Position, 25, 25);
 
-            if (Orientation == ORIENTATION_RIGHT) // First time moving
+            if (IsOrientChanged == false) // First time moving
                 SelectNewDirection();
             else if (Random.Int(100) <= 33)  // 33% chance to change direction
                 SelectNewDirection();
