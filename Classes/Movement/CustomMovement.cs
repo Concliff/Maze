@@ -15,7 +15,7 @@ namespace Maze.Classes
 
         public override void UpdateState(int timeP)
         {
-            if (IsOrientChanged == false)
+            if (pr_isOrientSet == false)
                 return;
 
             double movementStepD = GlobalConstants.MOVEMENT_STEP_PX * this.mover.SpeedRate;

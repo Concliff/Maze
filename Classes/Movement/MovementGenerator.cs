@@ -78,6 +78,7 @@ namespace Maze.Classes
             newPosition.Y -= (int)Math.Sin(Orientation) * movementStep;
 
             this.mover.Position = newPosition;
+            pr_isOrientSet = true;
         }
 
         private void mover_Relocated(object sender, PositionEventArgs e)

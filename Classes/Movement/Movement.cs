@@ -52,16 +52,16 @@ namespace Maze.Classes
             set { pr_orientation = value; }
         }
 
-        protected bool pr_isOrientChanged;
-        public bool IsOrientChanged
+        protected bool pr_isOrientSet;
+        /*public bool IsOrientChanged
         {
             get { return pr_isOrientChanged; }
             set { pr_isOrientChanged = value; }
-        }
+        }*/
 
         public Movement()
         {
-            IsOrientChanged = false;
+            pr_isOrientSet = false;
         }
 
         public static Directions WhatIsDirection(double orientation)

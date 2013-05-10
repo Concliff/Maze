@@ -21,7 +21,6 @@ namespace Maze.Classes
             if (this.remainDistance <= 0)
             {
                 OnDestinationReached();
-                IsOrientChanged = false;
                 //return;
             }
 
@@ -52,6 +51,7 @@ namespace Maze.Classes
 
         private void SelectNewDirection(bool includeCurrent)
         {
+            pr_isOrientSet = false;
             double newOrientation = 0;
 
             int maxIterations = 10;
@@ -66,7 +66,7 @@ namespace Maze.Classes
                     case 2: newOrientation = ORIENTATION_LEFT; break;
                     case 3: newOrientation = ORIENTATION_DOWN; break;
                 }
-                if (!includeCurrent && newOrientation % Math.PI / 2 == 0)
+                if (!includeCurrent && newOrientation == Orientation && newOrientation % Math.PI / 2 == 0)
                     continue;
 
                 // Ignore Opposite Direction if there is another one
@@ -74,7 +74,7 @@ namespace Maze.Classes
                     (newOrientation != GetOppositeOrientation(Orientation)))
                 {
                     Orientation = newOrientation;
-                    IsOrientChanged = true;
+                    pr_isOrientSet = true;
                     return;
                 }
             }
@@ -83,19 +83,18 @@ namespace Maze.Classes
             if (currentCell.CanMoveTo(GetOppositeOrientation(Orientation)))
             {
                 Orientation = GetOppositeOrientation(Orientation);
-                IsOrientChanged = true;
+                pr_isOrientSet = true;
             }
-            else
-                IsOrientChanged = false;
 
             // Selecting with random might be failed
             // Recheck the availability of all four directions
-            if (IsOrientChanged == false)
+            if (pr_isOrientSet == false)
             {
-                for(int i = 0; i < 4; ++i)
+                for (int i = 0; i < 4; ++i)
                     if (currentCell.CanMoveTo(i * Math.PI / 2))
                     {
                         Orientation = i * Math.PI / 2;
+                        pr_isOrientSet = true;
                         break;
                     }
             }
@@ -105,7 +104,7 @@ namespace Maze.Classes
         {
             mover.Position = new GPS(mover.Position, 25, 25);
 
-            if (IsOrientChanged == false) // First time moving
+            if (pr_isOrientSet == false) // First time moving
                 SelectNewDirection();
             else if (Random.Int(100) <= 33)  // 33% chance to change direction
                 SelectNewDirection();

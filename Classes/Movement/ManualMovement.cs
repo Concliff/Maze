@@ -41,7 +41,7 @@ namespace Maze.Classes
                 return;
 
             MovementAction(moveType);
-            IsOrientChanged = false;
+            pr_isOrientSet = false;
         }
 
         private void MovementAction(uint moveType)
@@ -51,40 +51,31 @@ namespace Maze.Classes
 
             for (int i = 0; i < 4; ++i)
             {
-                if ((moveType & (uint)WhatIsDirection(i)) != 0)
+                if ((moveType & (uint)WhatIsDirection(i * Math.PI / 2)) != 0)
                 {
-                    objectOrientation = i;
-                    IsOrientChanged = true;
+                    objectOrientation = i * Math.PI / 2;
+                    pr_isOrientSet = true;
                     break;
                 }
                 else
-                    IsOrientChanged = false;
+                    pr_isOrientSet = false;
             }
+
+            if (pr_isOrientSet == false)
+                return;
 
             moveType -= (uint)WhatIsDirection(objectOrientation);
 
             for (int i = 0; i < 4; ++i)
             {
-                if ((moveType & (uint)WhatIsDirection(i)) != 0)
+                if ((moveType & (uint)WhatIsDirection(i * Math.PI / 2)) != 0)
                 {
-                    if (objectOrientation > 0)
-                    {
-                        objectOrientation -= (objectOrientation - i) / 2;
-                    }
-                    else if (objectOrientation == 0)
-                    {
-                        if (i == 1)
-                        {
-                            objectOrientation = Math.PI / 4;
-                            break;
-                        }
-                        else if (i == 3)
-                        {
-                            objectOrientation = ORIENTATION_DOWN + Math.PI / 4;
-                            break;
-                        }
-                    }
+                    objectOrientation = i * Math.PI / 2;
+                    //pr_isOrientChanged = true;
+                    break;
                 }
+                /*else
+                    pr_isOrientChanged = false;*/
             }
 
             // Reverse moving if has Reverse effect
@@ -94,7 +85,7 @@ namespace Maze.Classes
             }
 
             Orientation = objectOrientation;
-            IsOrientChanged = true;
+            pr_isOrientSet = true;
 
             double movementStepD = GlobalConstants.MOVEMENT_STEP_PX * this.mover.SpeedRate;
 
