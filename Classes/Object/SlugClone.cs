@@ -11,7 +11,7 @@ namespace Maze.Classes
         {
             UnitType = UnitTypes.SlugClone;
             this.ObjectType = ObjectTypes.Slug;
-            this.currentCell = GetWorldMap().GetCell(Position.Location);
+            this.currentCell = Map.Instance.GetCell(Position.Location);
 
             objectSize.Width = GlobalConstants.PLAYER_SIZE_WIDTH;
             objectSize.Height = GlobalConstants.PLAYER_SIZE_HEIGHT;

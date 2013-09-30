@@ -315,8 +315,8 @@ namespace Maze.Forms
                         {
                             this.gameTime.Start();
                             // Create Map and units
-                            worldMap.Reset();
-                            worldMap.SetMap(0);
+                            Map.Instance.Reset();
+                            Map.Instance.SetMap(0);
 
                             SetInterface(FormInterface.Play);
                         }
@@ -331,7 +331,7 @@ namespace Maze.Forms
 
                             // Create Map and units
 
-                            worldMap.GenerateRandomMap();
+                            Map.Instance.GenerateRandomMap();
 
                             SetInterface(FormInterface.Play);
                         }
@@ -347,13 +347,13 @@ namespace Maze.Forms
                             this.playStarted = true;
                             this.lastTickTime = 0;
 
-                            this.objectContainer.ClearEnvironment(true); // Remove all old objects and units
+                            ObjectContainer.Instance.ClearEnvironment(true); // Remove all old objects and units
                             Player = new Slug();    // Create new Slug
                             Player.Create();
                             Player.HookEvents();
-                            this.worldMap.FillMapWithUnits(); // Add units to map
-                            this.worldMap.FillMapWithObjects(); // Add objects
-                            this.objectContainer.StartMotion();
+                            Map.Instance.FillMapWithUnits(); // Add units to map
+                            Map.Instance.FillMapWithObjects(); // Add objects
+                            ObjectContainer.Instance.StartMotion();
 
                             // Events
                             Player.LocationChanged += new Maze.Classes.Object.PositionHandler(Player_OnLocationChanged);
@@ -466,7 +466,7 @@ namespace Maze.Forms
             long currentTime = this.gameTime.ElapsedMilliseconds;
             int tickTime = (int)(currentTime - this.lastTickTime);
             // Update every object on map
-            this.objectContainer.UpdateState(tickTime);
+            ObjectContainer.Instance.UpdateState(tickTime);
 
             this.lastTickTime = currentTime;
 
@@ -486,7 +486,7 @@ namespace Maze.Forms
                     bonusPosition.Location.Y += yDiff - 3;
 
                     // If current GPS doesn't have a map block
-                    if (worldMap.GetCell(bonusPosition.Location).ID == -1)
+                    if (Map.Instance.GetCell(bonusPosition.Location).ID == -1)
                         continue;
 
                     // else generate Bonus object
@@ -551,30 +551,30 @@ namespace Maze.Forms
         private void Player_OnLocationChanged(object sender, PositionEventArgs e)
         {
             // Check finish point
-            if (worldMap.DropsRemain == 0 &&
-                worldMap.GetCell(Player.Position.BlockID).HasAttribute(CellAttributes.IsFinish))
+            if (Map.Instance.DropsRemain == 0 &&
+                Map.Instance.GetCell(Player.Position.BlockID).HasAttribute(CellAttributes.IsFinish))
             {
                 // Random Map: regenerate level and create objects
-                if (worldMap.IsRandom())
+                if (Map.Instance.IsRandom())
                 {
                     // Regenerate Map and Objects
-                    worldMap.GenerateRandomMap();
+                    Map.Instance.GenerateRandomMap();
 
-                    objectContainer.ClearEnvironment(false);
+                    ObjectContainer.Instance.ClearEnvironment(false);
 
-                    worldMap.FillMapWithUnits();
-                    worldMap.FillMapWithObjects();
-                    objectContainer.StartMotion();
+                    Map.Instance.FillMapWithUnits();
+                    Map.Instance.FillMapWithObjects();
+                    ObjectContainer.Instance.StartMotion();
                 }
                 // Normal Game: Set next Map level
                 else
                 {
                     // TODO: clear objects for past levels
-                    int currentMap = worldMap.GetMap();
-                    int currentLevel = worldMap.CurrentLevel;
+                    int currentMap = Map.Instance.GetMap();
+                    int currentLevel = Map.Instance.CurrentLevel;
 
-                    if (++currentLevel < worldMap.LevelCount)
-                        worldMap.SetMap(currentMap, currentLevel);
+                    if (++currentLevel < Map.Instance.LevelCount)
+                        Map.Instance.SetMap(currentMap, currentLevel);
                 }
 
                 Player.LevelChanged();

@@ -18,7 +18,7 @@ namespace Maze.Classes
 
         public void SetDestination(GridLocation destinationGPS)
         {
-            Cell destinationCell = GetWorldMap().GetCell(destinationGPS);
+            Cell destinationCell = Map.Instance.GetCell(destinationGPS);
             SetDestination(destinationCell);
         }
 

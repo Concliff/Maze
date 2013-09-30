@@ -13,22 +13,5 @@ namespace Maze.Forms
     {
         public static int FormTitleBarSize = 28;
         public static int FormBorderBarSize = 7;
-
-        /// <summary>
-        /// Contains a reference to Map singleton instance
-        /// </summary>
-        protected Map worldMap;
-
-        /// <summary>
-        /// Contains a reference to Object Container instance
-        /// </summary>
-        protected ObjectContainer objectContainer;
-
-        public MazeForm()
-        {
-            this.objectContainer = ObjectContainer.Container;
-
-            this.worldMap = Map.WorldMap;
-        }
     }
 }

@@ -107,7 +107,7 @@ namespace Maze.Classes
                     // HACK:
                     // Do not enter the nonexistent block
                     // Need revert after NormalizePosition rework
-                    Cell newCell = GetWorldMap().GetCell(newPosition.Location);
+                    Cell newCell = Map.Instance.GetCell(newPosition.Location);
 
                     if (newCell.ID != -1)
                     {
@@ -170,10 +170,8 @@ namespace Maze.Classes
             if (GUID != 0)
                 return;
 
-            GUID = ObjectContainer.Container.CreateObject(this);
+            GUID = ObjectContainer.Instance.CreateObject(this);
         }
-
-        protected Map GetWorldMap() { return Map.WorldMap; }
 
         // ObjectSearcher simplified
         protected List<Object> GetObjectsWithinRange(int rangeDistance)
@@ -207,7 +205,7 @@ namespace Maze.Classes
         /// </summary>
         protected GPS NormalizePosition(GPS position)
         {
-            Cell cell = GetWorldMap().GetCell(position.Location);
+            Cell cell = Map.Instance.GetCell(position.Location);
 
             int lowerXBound = GlobalConstants.CELL_BORDER_PX + objectSize.Width / 2;
             int upperXBound = GlobalConstants.CELL_WIDTH - lowerXBound;

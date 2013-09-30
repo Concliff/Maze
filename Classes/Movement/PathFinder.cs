@@ -31,7 +31,6 @@ namespace Maze.Classes
         private Cell finalPoint;
 
         public List<Cell> Path;
-        public Map WorldMap = Map.WorldMap;
 
         public PathFinder()
         {
@@ -87,7 +86,7 @@ namespace Maze.Classes
             {
                 if (Cell.ID == List[i].ID)
                 {
-                    Block = WorldMap.GetCell(List[i].ID);
+                    Block = Map.Instance.GetCell(List[i].ID);
                     break;
                 }
             }
@@ -189,7 +188,7 @@ namespace Maze.Classes
                         location.X = Block.Location.X + i;
                         location.Y = Block.Location.Y + j;
                         location.Level = Block.Location.Level;
-                        if (WorldMap.GetCell(location).Type != 16)
+                        if (Map.Instance.GetCell(location).Type != 16)
                         {
                             bool flag = false;
 
@@ -205,9 +204,9 @@ namespace Maze.Classes
 
                                         // Check cell's passability
                                         if ((Block.CanMoveTo(Directions.Down) &&
-                                            WorldMap.GetCell(locDown).CanMoveTo(Directions.Left)) &&
+                                            Map.Instance.GetCell(locDown).CanMoveTo(Directions.Left)) &&
                                             (Block.CanMoveTo(Directions.Left) &&
-                                            WorldMap.GetCell(locLeft).CanMoveTo(Directions.Down)))
+                                            Map.Instance.GetCell(locLeft).CanMoveTo(Directions.Down)))
                                         {
                                             flag = true;
                                         }
@@ -220,9 +219,9 @@ namespace Maze.Classes
                                         locRight.X++;
 
                                         if ((Block.CanMoveTo(Directions.Up) &&
-                                            WorldMap.GetCell(locUp).CanMoveTo(Directions.Right)) &&
+                                            Map.Instance.GetCell(locUp).CanMoveTo(Directions.Right)) &&
                                             (Block.CanMoveTo(Directions.Right) &&
-                                            WorldMap.GetCell(locRight).CanMoveTo(Directions.Up)))
+                                            Map.Instance.GetCell(locRight).CanMoveTo(Directions.Up)))
                                         {
                                             flag = true;
                                         }
@@ -237,9 +236,9 @@ namespace Maze.Classes
                                         locLeft.X--;
 
                                         if ((Block.CanMoveTo(Directions.Left) &&
-                                            WorldMap.GetCell(locLeft).CanMoveTo(Directions.Up)) &&
+                                            Map.Instance.GetCell(locLeft).CanMoveTo(Directions.Up)) &&
                                             (Block.CanMoveTo(Directions.Up) &&
-                                            WorldMap.GetCell(locUp).CanMoveTo(Directions.Left)))
+                                            Map.Instance.GetCell(locUp).CanMoveTo(Directions.Left)))
                                         {
                                             flag = true;
                                         }
@@ -252,9 +251,9 @@ namespace Maze.Classes
                                         locRight.X++;
 
                                         if ((Block.CanMoveTo(Directions.Down) &&
-                                            WorldMap.GetCell(locDown).CanMoveTo(Directions.Right)) &&
+                                            Map.Instance.GetCell(locDown).CanMoveTo(Directions.Right)) &&
                                             (Block.CanMoveTo(Directions.Right) &&
-                                            WorldMap.GetCell(locRight).CanMoveTo(Directions.Down)))
+                                            Map.Instance.GetCell(locRight).CanMoveTo(Directions.Down)))
                                         {
                                             flag = true;
                                         }
@@ -283,7 +282,7 @@ namespace Maze.Classes
                             if (flag)
                             {
                                 CellParam Cell = new CellParam();
-                                Cell.ID = WorldMap.GetCell(location).ID;
+                                Cell.ID = Map.Instance.GetCell(location).ID;
                                 Cell.MID = Block.ID;
                                 if (i == 0 || j == 0)
                                     Cell.G = currentCell.G + 10;    // Vertical or horizontal movement

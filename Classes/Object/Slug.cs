@@ -55,7 +55,7 @@ namespace Maze.Classes
             Name = "Noname";
             ObjectType = ObjectTypes.Slug;
             UnitType = UnitTypes.Slug;
-            Home = GetWorldMap().GetStartPoint();
+            Home = Map.Instance.GetStartPoint();
 
             // Set Start Location
             Position = new GPS(Home, 25, 25);
@@ -246,7 +246,7 @@ namespace Maze.Classes
 
         public void LevelChanged()
         {
-            Home = GetWorldMap().GetStartPoint();
+            Home = Map.Instance.GetStartPoint();
             Position = new GPS(Home, 25, 25);
         }
 
@@ -254,7 +254,7 @@ namespace Maze.Classes
         {
             AddPoints(10);
             OozeEnergy += 10;
-            GetWorldMap().CollectDrop(drop);
+            Map.Instance.CollectDrop(drop);
             ++collectedDropsCount;
         }
 

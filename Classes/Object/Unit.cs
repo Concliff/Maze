@@ -318,7 +318,7 @@ namespace Maze.Classes
                     while (distance >= GlobalConstants.CELL_HEIGHT)
                     {
                         intermidiatePosition.Location.Y++;
-                        Cell interimPoint = GetWorldMap().GetCell(intermidiatePosition.Location);
+                        Cell interimPoint = Map.Instance.GetCell(intermidiatePosition.Location);
                         if (interimPoint.ID != -1)
                             newPosition = intermidiatePosition;
 
@@ -329,7 +329,7 @@ namespace Maze.Classes
                     while (distance >= GlobalConstants.CELL_HEIGHT)
                     {
                         intermidiatePosition.Location.Y--;
-                        Cell interimPoint = GetWorldMap().GetCell(intermidiatePosition.Location);
+                        Cell interimPoint = Map.Instance.GetCell(intermidiatePosition.Location);
                         if (interimPoint.ID != -1)
                             newPosition = intermidiatePosition;
 
@@ -340,7 +340,7 @@ namespace Maze.Classes
                     while (distance >= GlobalConstants.CELL_HEIGHT)
                     {
                         intermidiatePosition.Location.X--;
-                        Cell interimPoint = GetWorldMap().GetCell(intermidiatePosition.Location);
+                        Cell interimPoint = Map.Instance.GetCell(intermidiatePosition.Location);
                         if (interimPoint.ID != -1)
                             newPosition = intermidiatePosition;
 
@@ -351,7 +351,7 @@ namespace Maze.Classes
                     while (distance >= GlobalConstants.CELL_HEIGHT)
                     {
                         intermidiatePosition.Location.X++;
-                        Cell interimPoint = GetWorldMap().GetCell(intermidiatePosition.Location);
+                        Cell interimPoint = Map.Instance.GetCell(intermidiatePosition.Location);
                         if (interimPoint.ID != -1)
                             newPosition = intermidiatePosition;
 
@@ -382,7 +382,7 @@ namespace Maze.Classes
 
         public void TeleportTo(GridLocation destinationGPS)
         {
-            Cell destinationCell = GetWorldMap().GetCell(destinationGPS);
+            Cell destinationCell = Map.Instance.GetCell(destinationGPS);
             TeleportTo(destinationCell);
         }
 

@@ -60,7 +60,7 @@ namespace Maze.Classes
 
             foreach (GridLocation location in locations)
             {
-                List<GridObject> foundObject = ObjectContainer.Container.GetGridObjects(location);
+                List<GridObject> foundObject = ObjectContainer.Instance.GetGridObjects(location);
                 if (foundObject.Count == 0)
                     continue;
                 foundObject = FilterInRangeObjects<GridObject>(foundObject, centralPosition, radius);
@@ -78,7 +78,7 @@ namespace Maze.Classes
 
             foreach (GridLocation location in locations)
             {
-                List<Unit> foundUnits = ObjectContainer.Container.GetUnits(location);
+                List<Unit> foundUnits = ObjectContainer.Instance.GetUnits(location);
                 if (foundUnits.Count == 0)
                     continue;
                 foundUnits = FilterInRangeObjects<Unit>(foundUnits, centralPosition, radius);
@@ -105,7 +105,7 @@ namespace Maze.Classes
 
             foreach (GridLocation location in locations)
             {
-                List<Object> foundObjects = ObjectContainer.Container.GetObjects(location);
+                List<Object> foundObjects = ObjectContainer.Instance.GetObjects(location);
                 if (foundObjects.Count == 0)
                     continue;
                 foundObjects = FilterInRangeObjects<Object>(foundObjects, centralPosition, radius);

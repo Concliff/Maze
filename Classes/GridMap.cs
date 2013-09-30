@@ -129,7 +129,7 @@ namespace Maze.Classes
                 X = value.X - Location.X * GlobalConstants.CELL_WIDTH;
                 Y = value.Y - Location.Y * GlobalConstants.CELL_HEIGHT;
 
-                BlockID = Map.WorldMap.GetCell(this.Location).ID;
+                BlockID = Map.Instance.GetCell(this.Location).ID;
             }
         }
         public int X;
@@ -152,7 +152,7 @@ namespace Maze.Classes
             this.Location = Location;
             this.X = X;
             this.Y = Y;
-            this.BlockID = Map.WorldMap.GetCell(this.Location).ID;
+            this.BlockID = Map.Instance.GetCell(this.Location).ID;
         }
 
         /// <summary>

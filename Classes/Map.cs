@@ -16,21 +16,20 @@ namespace Maze.Classes
         /// <summary>
         /// Singleton instance
         /// </summary>
-        private static Map worldMap;
+        private static Map instance;
 
         /// <summary>
-        /// Returns World Map instance
+        /// Gets reference to World Map instance
         /// </summary>
-        public static Map WorldMap
+        public static Map Instance
         {
             get
             {
-                if (worldMap == null)
-                    worldMap = new Map();
+                if (instance == null)
+                    instance = new Map();
 
-                return worldMap;
+                return instance;
             }
-            private set { ;}
         }
 
         /// <summary>

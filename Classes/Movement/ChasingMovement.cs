@@ -36,8 +36,8 @@ namespace Maze.Classes
             pathFindingTimer = PATHFINDING_TIME;
             this.state = MotionStates.None;
             victim = World.PlayForm.Player;
-            pathFinder = new PathFinder(WorldMap.GetCell(this.mover.Position.Location),
-                WorldMap.GetCell(this.victim.Position.Location));
+            pathFinder = new PathFinder(Map.Instance.GetCell(this.mover.Position.Location),
+                Map.Instance.GetCell(this.victim.Position.Location));
         }
 
         public override void UpdateState(int timeP)
@@ -81,7 +81,7 @@ namespace Maze.Classes
             }
 
             // Generate Path if located at unknown grid
-            if (!this.pathFinder.Path.Contains(WorldMap.GetCell(mover.Position.Location)))
+            if (!this.pathFinder.Path.Contains(Map.Instance.GetCell(mover.Position.Location)))
                 FindPath();
 
             double movementStepD = GlobalConstants.MOVEMENT_STEP_PX * this.mover.SpeedRate;
@@ -105,7 +105,7 @@ namespace Maze.Classes
             if (this.victim == null)
                 return;
 
-            Cell currentCell = WorldMap.GetCell(mover.Position.Location);
+            Cell currentCell = Map.Instance.GetCell(mover.Position.Location);
 
             // Stop pursuit
             // when victim is not available
@@ -124,7 +124,7 @@ namespace Maze.Classes
             // if ReturningHome - path to the respawn location
             // else - path to the victim location
             this.pathFinder.GeneratePath(currentCell,
-                isHome ? WorldMap.GetCell(mover.Home) : WorldMap.GetCell(this.victim.Position.Location));
+                isHome ? Map.Instance.GetCell(mover.Home) : Map.Instance.GetCell(this.victim.Position.Location));
 
             // PathFinding failed or victim and mover are at the same location
             if (this.pathFinder.Path.Count == 0)

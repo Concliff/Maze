@@ -12,9 +12,9 @@ namespace Maze.Classes
         private static ObjectContainer instance;
 
         /// <summary>
-        /// Gets reference to the single ObjectContainer instance.
+        /// Gets reference to the ObjectContainer instance.
         /// </summary>
-        public static ObjectContainer Container
+        public static ObjectContainer Instance
         {
             get
             {

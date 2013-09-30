@@ -53,7 +53,7 @@ namespace Maze.Classes
         {
             Directions newDirection = Directions.None;
             int maxIterations = 10;
-            Cell currentCell = WorldMap.GetCell(this.mover.Position.Location);
+            Cell currentCell = Map.Instance.GetCell(this.mover.Position.Location);
 
             for (int i = 0; i < maxIterations; ++i)
             {
@@ -114,7 +114,7 @@ namespace Maze.Classes
             else if (Random.Int(100) <= 33)  // 33% chance to change direction
                 SelectNewDirection();
 
-            if (!WorldMap.GetCell(this.mover.Position.Location).CanMoveTo(CurrentDirection.First))
+            if (!Map.Instance.GetCell(this.mover.Position.Location).CanMoveTo(CurrentDirection.First))
                 SelectNewDirection();
 
             DefineNextGPS();
@@ -124,7 +124,7 @@ namespace Maze.Classes
 
             Cell nextCell;
 
-            nextCell = WorldMap.GetCell(nextGPS.Location);
+            nextCell = Map.Instance.GetCell(nextGPS.Location);
             if (nextCell.HasAttribute(CellAttributes.IsStart))
             {
                 SelectNewDirection(false);

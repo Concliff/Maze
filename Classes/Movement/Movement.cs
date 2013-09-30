@@ -35,8 +35,6 @@ namespace Maze.Classes
         /// </summary>
         protected double stepRemainder;
 
-        public Map WorldMap = Map.WorldMap;
-
         protected Direction pr_CurrentDirection;
         /// <summary>
         /// Returns Direction that was after last movement action handling.

@@ -34,7 +34,7 @@ namespace MapEditor.Forms
             SystemTimer.Start();
 
             oPlayer = new VritualPlayer();
-            oPlayer.Position.Location = Map.WorldMap.GetStartPoint();
+            oPlayer.Position.Location = Map.Instance.GetStartPoint();
             oPlayer.Position.X = 25;
             oPlayer.Position.Y = 25;
 
@@ -61,18 +61,18 @@ namespace MapEditor.Forms
             switch (KeyMgr.ExtractKeyPressed())
             {
                 case Keys.PageUp:
-                    int nextLevel = Map.WorldMap.CurrentLevel;
+                    int nextLevel = Map.Instance.CurrentLevel;
                     ++nextLevel;
-                    Map.WorldMap.SetMap(Map.WorldMap.GetMap(), nextLevel);
+                    Map.Instance.SetMap(Map.Instance.GetMap(), nextLevel);
                     oPlayer.Position.Location.Level = nextLevel;
                     RebuildGraphMap();
                     break;
                 case Keys.PageDown:
-                    int previousLevel = Map.WorldMap.CurrentLevel;
+                    int previousLevel = Map.Instance.CurrentLevel;
                     --previousLevel;
                     if (previousLevel < 0)
                         previousLevel = 0;
-                    Map.WorldMap.SetMap(Map.WorldMap.GetMap(), previousLevel);
+                    Map.Instance.SetMap(Map.Instance.GetMap(), previousLevel);
                     oPlayer.Position.Location.Level = previousLevel;
                     RebuildGraphMap();
                     break;
@@ -135,7 +135,7 @@ namespace MapEditor.Forms
                     PBLocation.Y = oPlayer.Position.Location.Y + j - GlobalConstants.GRIDMAP_HEIGHT / 2;
                     PBLocation.Z = oPlayer.Position.Location.Z;
                     PBLocation.Level = oPlayer.Position.Location.Level;
-                    Block = Map.WorldMap.GetCell(PBLocation);
+                    Block = Map.Instance.GetCell(PBLocation);
 
                     gGraphic.DrawImage(PictureManager.GetPictureByType(Block.Type), x, y, GlobalConstants.CELL_WIDTH, GlobalConstants.CELL_HEIGHT);
 
@@ -185,7 +185,7 @@ namespace MapEditor.Forms
                 (this.PlayerPB.Location.Y + this.PlayerPB.Size.Height / 2 + FormTitleBarSize))) /
                 (double)GlobalConstants.CELL_HEIGHT);
 
-            Cell Block = Map.WorldMap.GetCell(CursorGPS);
+            Cell Block = Map.Instance.GetCell(CursorGPS);
 
             if (BlockEditForm == null)
                 BlockEditForm = new BlockEdit(Block);
@@ -200,7 +200,7 @@ namespace MapEditor.Forms
 
         void MapEditorFormClosing(object sender, FormClosingEventArgs e)
         {
-            Map.WorldMap.CloseCurrentMap();
+            Map.Instance.CloseCurrentMap();
         }
     }
 }

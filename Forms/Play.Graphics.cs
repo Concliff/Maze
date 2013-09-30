@@ -14,7 +14,7 @@ namespace Maze.Forms
             // Total game time
             e.Graphics.DrawString("Time: " + (this.gameTime.ElapsedMilliseconds / 1000).ToString(), new Font("Arial", 14), new SolidBrush(Color.White), 10, 30);
             // Ooze drops count to collect.
-            e.Graphics.DrawString("Drops x " + worldMap.DropsRemain.ToString(),
+            e.Graphics.DrawString("Drops x " + Map.Instance.DropsRemain.ToString(),
                 new Font("Arial", 14), new SolidBrush(Color.White), 10, 50);
             // Game Scores.
             e.Graphics.DrawString("Total scores: " + Player.GetScore(), new Font("Arial", 12), new SolidBrush(Color.White), 10, 70);
@@ -123,7 +123,7 @@ namespace Maze.Forms
                     PBLocation.Y = Player.Position.Location.Y + j - GlobalConstants.GRIDMAP_HEIGHT / 2;
                     PBLocation.Z = Player.Position.Location.Z;
                     PBLocation.Level = Player.Position.Location.Level;
-                    Block = worldMap.GetCell(PBLocation);
+                    Block = Map.Instance.GetCell(PBLocation);
 
                     // Draw Grid Cell image
                     gCellBP.DrawImage(PictureManager.GetPictureByType(Block.Type), x, y, GlobalConstants.CELL_WIDTH, GlobalConstants.CELL_HEIGHT);
@@ -142,7 +142,7 @@ namespace Maze.Forms
                     }
 
                     // Include all objects in this grid
-                    objectsOnMap.AddRange(objectContainer.GetObjects(Block.Location));
+                    objectsOnMap.AddRange(ObjectContainer.Instance.GetObjects(Block.Location));
 
                 }
 

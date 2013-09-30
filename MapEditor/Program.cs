@@ -25,7 +25,7 @@ namespace MapEditor
             PictureManager.InitializeComponents();
             PictureManager.Load();
 
-            Map.WorldMap.SetMap(0, 0);
+            Map.Instance.SetMap(0, 0);
 
             EditorForm = new Editor();
 
