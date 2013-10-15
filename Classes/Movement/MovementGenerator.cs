@@ -5,48 +5,90 @@ using System.Text;
 
 namespace Maze.Classes
 {
+    /// <summary>
+    /// Specifies the type of generation of the movement behaviours.
+    /// </summary>
     public enum MovementGeneratorType
     {
-        None,           // Do Not Have Any Movements
-        Manual,         // Controlled by Player
-        Random,         // Generate random path directions within several map blocks
-        PathFinder,     // Searching for the path between start and finish points
+        /// <summary>
+        /// Movement is not specified.
+        /// </summary>
+        None,
+        /// <summary>
+        /// Movement is controlled with the keyboard (Player control).
+        /// </summary>
+        Manual,
+        /// <summary>
+        /// Movement is randomly generated path of directions within several map blocks.
+        /// </summary>
+        Random,
+        /// <summary>
+        /// Movement is a pathfinding between initial and final points.
+        /// </summary>
+        PathFinder,
     }
 
+    /// <summary>
+    /// Represents the base class that provides motion handling with specified movement algorithm.
+    /// </summary>
     public abstract class MovementGenerator : Movement
     {
+        /// <summary>
+        /// The type of generator. (What derived class is this).
+        /// </summary>
         protected MovementGeneratorType generatorType;
+        /// <summary>
+        /// A Unit who this generator belongs to.
+        /// </summary>
         protected Unit mover;
+        /// <summary>
+        /// Indicating whether the generator is processing movement.
+        /// </summary>
+        protected bool isInMotion;
 
         /// <summary>
-        /// Remain distance to the next block
+        /// Remain distance to the next block.
         /// </summary>
         protected double remainDistance;
 
-        protected GPS nextGPS; // Next block to move in the current direction
+        /// <summary>
+        /// Next position to move base on the current direction.
+        /// </summary>
+        protected GPS nextGPS;
 
-
-        protected bool pr_IsInMotion;
-        public bool IsInMotion
-        {
-            get
-            {
-                return this.pr_IsInMotion;
-            }
-            protected set
-            {
-                pr_IsInMotion = value;
-            }
-        }
-
+        /// <summary>
+        /// Initializes a new instance of the MovementGenerator class.
+        /// </summary>
+        /// <param name="unit">The owner of the generator instance.</param>
         public MovementGenerator(Unit unit)
         {
             this.mover = unit;
             generatorType = MovementGeneratorType.None;
-            IsInMotion = false;
 
             this.mover.LocationChanged += OnLocationChanged;
             this.mover.Relocated += mover_Relocated;
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether the generator is processing movement.
+        /// </summary>
+        public bool IsInMotion
+        {
+            get
+            {
+                return this.isInMotion;
+            }
+        }
+
+        /// <summary>
+        /// Gets the type of a generator.
+        /// </summary>
+        public new MovementGeneratorType GeneratorType
+        {
+            get
+            {
+                return this.generatorType;
+            }
         }
 
         /// <summary>
@@ -55,21 +97,26 @@ namespace Maze.Classes
         /// <returns>New Unit Position</returns>
         public abstract void UpdateState(int timeP);
 
-        public new MovementGeneratorType GetType()
-        {
-            return generatorType;
-        }
-
+        /// <summary>
+        /// Indicates to the generator to start precessing movement.
+        /// </summary>
         public virtual void StartMotion()
         {
-            IsInMotion = true;
+            this.isInMotion = true;
         }
 
+        /// <summary>
+        /// Indicates to the generator to stop precessing movement.
+        /// </summary>
         public virtual void StopMotion()
         {
-            IsInMotion = false;
+            this.isInMotion = false;
         }
 
+        /// <summary>
+        /// Changes the mover position by specified step length in the current direction.
+        /// </summary>
+        /// <param name="movementStep">Step length.</param>
         protected void Move(int movementStep)
         {
             GPS newPosition = this.mover.Position;
@@ -94,15 +141,27 @@ namespace Maze.Classes
             this.mover.Position = newPosition;
         }
 
+        /// <summary>
+        /// Calls when the mover has been relocated not by moving.
+        /// </summary>
         private void mover_Relocated(object sender, PositionEventArgs e)
         {
             OnDestinationReached();
         }
 
+        /// <summary>
+        /// Calls when the mover reaches nextGPS point.
+        /// </summary>
         protected virtual void OnDestinationReached() { ;}
 
+        /// <summary>
+        /// Calls when the mover moved to another <see cref="Cell"/>.
+        /// </summary>
         protected virtual void OnLocationChanged(object sender, PositionEventArgs e) { ; }
 
+        /// <summary>
+        /// Defines the next <see cref="GPS"/> (or <see cref="Cell"/>) where the mover is directed.
+        /// </summary>
         protected void DefineNextGPS()
         {
             this.nextGPS = new GPS(mover.Position, 25, 25);
@@ -117,7 +176,6 @@ namespace Maze.Classes
                 }
 
             this.remainDistance = this.mover.Position.GetDistance(this.nextGPS);
-
         }
     }
 

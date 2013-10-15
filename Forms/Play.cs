@@ -112,7 +112,7 @@ namespace Maze.Forms
 
         public void OnEffectApplied(object sender, EffectEventArgs e)
         {
-            EffectHolder effectHolder = e.holder;
+            EffectHolder effectHolder = e.Holder;
 
             if(effectHolder.EffectInfo.HasAttribute(EffectAttributes.HiddenAura))
                 return;
@@ -128,7 +128,7 @@ namespace Maze.Forms
 
         public void OnEffectRemoved(object sender, EffectEventArgs e)
         {
-            EffectHolder effectHolder = e.holder;
+            EffectHolder effectHolder = e.Holder;
 
             for (int i = 0; i < aurasCount; ++i)
             {
@@ -347,10 +347,12 @@ namespace Maze.Forms
                             this.playStarted = true;
                             this.lastTickTime = 0;
 
-                            ObjectContainer.Instance.ClearEnvironment(true); // Remove all old objects and units
+                            // Remove all old objects and units
+                            // Needed when existing game was resetted and started the new one.
+                            ObjectContainer.Instance.ClearEnvironment(true);
+
                             Player = new Slug();    // Create new Slug
                             Player.Create();
-                            Player.HookEvents();
                             Map.Instance.FillMapWithUnits(); // Add units to map
                             Map.Instance.FillMapWithObjects(); // Add objects
                             ObjectContainer.Instance.StartMotion();
@@ -456,7 +458,7 @@ namespace Maze.Forms
                     Player.CastEffect(8, Player);
                     break;
             }
-            if (Player.IsAlive() && usedSpellNumber > 0)
+            if (Player.IsAlive && usedSpellNumber > 0)
                 UseSpell(usedSpellNumber);
 
             if (this.gamePaused)
@@ -555,7 +557,7 @@ namespace Maze.Forms
                 Map.Instance.GetCell(Player.Position.BlockID).HasAttribute(CellAttributes.IsFinish))
             {
                 // Random Map: regenerate level and create objects
-                if (Map.Instance.IsRandom())
+                if (Map.Instance.IsRandom)
                 {
                     // Regenerate Map and Objects
                     Map.Instance.GenerateRandomMap();

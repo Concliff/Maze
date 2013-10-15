@@ -8,6 +8,9 @@ using System.Drawing;
 
 namespace Maze.Classes
 {
+    /// <summary>
+    /// Contains all Images objects that are used in <see cref="Play"/> form rendering.
+    /// </summary>
     public static class PictureManager
     {
         public struct EffectImage
@@ -33,11 +36,6 @@ namespace Maze.Classes
         private static Image SlugInvisible;
         private static string ImageDirectoryPath = GlobalConstants.IMAGES_PATH;
 
-        public static void InitializeComponents()
-        {
-            mapImageCount = 0;
-        }
-        
         public static void Load()
         {
             StreamReader CellsStream = File.OpenText(ImageDirectoryPath + "Cells.dat");
@@ -91,7 +89,7 @@ namespace Maze.Classes
                 return GetSlugImage((Slug)unit);
 
             // Do not draw Invisible and Dead units
-            if (!unit.IsVisible() || !unit.IsAlive())
+            if (!unit.IsVisible || !unit.IsAlive)
                 return null;
 
             switch (unit.UnitType)
@@ -108,9 +106,9 @@ namespace Maze.Classes
 
         public static Image GetSlugImage(Slug slug)
         {
-            if (!slug.IsAlive())
+            if (!slug.IsAlive)
                 return SoulImage;
-            if (!slug.IsVisible())
+            if (!slug.IsVisible)
                 return SlugInvisible;
 
             return SlugImage;
@@ -119,7 +117,7 @@ namespace Maze.Classes
         public static Image GetGridObjectImage(GridObject gridObject)
         {
             // Only Active objects are visible
-            if (!gridObject.IsActive())
+            if (!gridObject.IsActive)
                 return null;
 
             switch (gridObject.GridObjectType)

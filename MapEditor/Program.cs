@@ -18,11 +18,9 @@ namespace MapEditor
         static void Main()
         {
             // Load Datas
-            DBStores.InitializeComponents();
             DBStores.Load();
 
             // Load Pictures
-            PictureManager.InitializeComponents();
             PictureManager.Load();
 
             Map.Instance.SetMap(0, 0);

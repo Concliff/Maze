@@ -6,17 +6,32 @@ using System.IO;
 
 namespace Maze.Classes
 {
+    /// <summary>
+    /// Contains application database as collections or records.
+    /// </summary>
     public static class DBStores
     {
+        /// <summary>
+        /// Path to database files.
+        /// </summary>
         private static String DBDirectory = "Data\\Base\\";
 
+        /// <summary>
+        /// Stores the effect records.
+        /// </summary>
         public static List<EffectEntry> EffectStore;
 
-        public static void InitializeComponents()
+        /// <summary>
+        /// Initializes static fields. It is invoked before any static member are referenced.
+        /// </summary>
+        static DBStores()
         {
             EffectStore = new List<EffectEntry>();
         }
 
+        /// <summary>
+        /// Loads the data from files to appropriate class fields.
+        /// </summary>
         public static void Load()
         {
             // Load stores from files

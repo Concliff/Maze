@@ -10,22 +10,43 @@ namespace Maze.Classes
 {
     public class KeyManager
     {
+        /// <summary>
+        /// Arguments of the last KeyDown event.
+        /// </summary>
+        private KeyEventArgs lastKeyEventArgs;
+        /// <summary>
+        /// Collection of keys that are holding down at the moment.
+        /// </summary>
+        private List<Keys> keysDownList;
+
+        /// <summary>
+        /// Initializes a new instance of the KeyManager class.
+        /// </summary>
+        public KeyManager()
+        {
+            KeyPressed = Keys.None;
+            keysDownList = new List<Keys>();
+            lastKeyEventArgs = new KeyEventArgs(Keys.None);
+        }
+
+        /// <summary>
+        /// Gets the count of keys that are holding down at this moment.
+        /// </summary>
         public int KeysDownCount
         {
             get
             {
                 return keysDownList.Count;
             }
-            private set { ;}
         }
 
         /// <summary>
-        /// Returns the last pressed KeyCode
+        /// Gets or sets the last pressed key.
         /// </summary>
         public Keys KeyPressed  { get; private set; }
 
         /// <summary>
-        /// Is Control key down
+        /// Gets a value indicating whether the CTRL key was pressed.
         /// </summary>
         public bool Control
         {
@@ -33,10 +54,10 @@ namespace Maze.Classes
             {
                 return lastKeyEventArgs.Control;
             }
-            private set { ;}
         }
+
         /// <summary>
-        /// Is Alt key down
+        /// Gets a value indicating whether the ALT key was pressed.
         /// </summary>
         public bool Alt
         {
@@ -44,10 +65,10 @@ namespace Maze.Classes
             {
                 return lastKeyEventArgs.Alt;
             }
-            private set { ;}
         }
+
         /// <summary>
-        /// Is Shift key down
+        /// Gets a value indicating whether the SHIFT key was pressed.
         /// </summary>
         public bool Shift
         {
@@ -55,17 +76,6 @@ namespace Maze.Classes
             {
                 return lastKeyEventArgs.Shift;
             }
-            private set { ;}
-        }
-
-        private KeyEventArgs lastKeyEventArgs;
-        private List<Keys> keysDownList;
-
-        public KeyManager()
-        {
-            KeyPressed = Keys.None;
-            keysDownList = new List<Keys>();
-            lastKeyEventArgs = new KeyEventArgs(Keys.None);
         }
 
         /// <summary>
@@ -99,8 +109,9 @@ namespace Maze.Classes
         }
 
         public Keys KeyDown(int Number) { return (Keys)keysDownList[Number]; }
+
         /// <summary>
-        /// Receive last pressed key, clear the record about last key pressed
+        /// Gets the last pressed key and clear the record about that.
         /// </summary>
         public Keys ExtractKeyPressed()
         {

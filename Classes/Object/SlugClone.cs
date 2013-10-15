@@ -5,11 +5,14 @@ using System.Text;
 
 namespace Maze.Classes
 {
+    /// <summary>
+    /// Represents an exact copy of the <see cref="Slug"/> unit that moves at the same direction and detonates by any obstacle or unit.
+    /// </summary>
     public class SlugClone : Slug
     {
         public SlugClone()
         {
-            UnitType = UnitTypes.SlugClone;
+            this.unitType = UnitTypes.SlugClone;
             this.ObjectType = ObjectTypes.Slug;
             this.currentCell = Map.Instance.GetCell(Position.Location);
 

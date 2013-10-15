@@ -5,110 +5,213 @@ using System.Text;
 
 namespace Maze.Classes
 {
+    /// <summary>
+    /// Specifies the type of object (or derived class) that an instance of the <see cref="GridObject"/> class represents.
+    /// </summary>
     public enum GridObjectTypes
     {
+        /// <summary>
+        /// Default type. An <see cref="GridObject"/> instance is possibly had bad initialization.
+        /// </summary>
         GridObject,
+        /// <summary>
+        /// An <see cref="GridObject"/> instance is <see cref="OozeDrop"/>.
+        /// </summary>
         OozeDrop,
+        /// <summary>
+        /// An <see cref="GridObject"/> instance is <see cref="Portal"/>.
+        /// </summary>
         Portal,
+        /// <summary>
+        /// An <see cref="GridObject"/> instance is <see cref="OozeBomb"/>.
+        /// </summary>
         Bomb,
+        /// <summary>
+        /// An <see cref="GridObject"/> instance is <see cref="Slime"/>.
+        /// </summary>
         Slime,
+        /// <summary>
+        /// An <see cref="GridObject"/> instance is <see cref="Bonus"/>.
+        /// </summary>
         Bonus,
+        /// <summary>
+        /// An <see cref="GridObject"/> instance is <see cref="SmokeCloud"/>.
+        /// </summary>
         SmokeCloud,
     };
 
+    /// <summary>
+    /// Defines the determinate state in which an instance of the <see cref="GridObject"/> class can be.
+    /// </summary>
     public enum GridObjectStates : byte
     {
-        OFF,
+        /// <summary>
+        /// An GridObject is "turned off". It is not located on map and cannot interact with units.
+        /// </summary>
+        Off,
+        /// <summary>
+        /// An GridObject is on the Map and ready to interact with units.
+        /// </summary>
         Active,
+        /// <summary>
+        /// An GridObkect is temporary "turned off" and after the specified time (the activation time) the gridobject will be active again.
+        /// </summary>
         Inactive,
     };
 
+    /// <summary>
+    /// Specified GridObject different behaviours.
+    /// </summary>
+    [Flags]
     public enum GridObjectFlags : uint
     {
-        Usable          = 0x001,        // May apply GridObject.Use
-        Disposable      = 0x002,        // Can be Used only once
-        AreaEffect      = 0x004,        // Apply effects to the nearest units
-        AlwaysActive    = 0x008,        // Can not be Inactive
-        Temporal        = 0x010,        // Disappears after TTL
+        /// <summary>
+        /// Units can interact with a GridObject (apply <see cref="GridObject.User"/> method).
+        /// </summary>
+        Usable          = 0x001,
+        /// <summary>
+        /// Units can interact with a GridObject only once. After that the gridobject is marked as <see cref="ObjectStates.Removed"/>
+        /// </summary>
+        Disposable      = 0x002,
+        /// <summary>
+        /// A GridObject applies effect at the nearest units within specified range.
+        /// </summary>
+        AreaEffect      = 0x004,
+        /// <summary>
+        /// A GridObject cannot be switched to <see cref="GridObjectStates.Inactive"/> state. This gridobject is unlimited usable.
+        /// </summary>
+        AlwaysActive    = 0x008,
+        /// <summary>
+        /// A GridIbject has its lifetime. When time has expired, object is marked as <see cref="ObjectStates.Removed"/>.
+        /// </summary>
+        Temporal        = 0x010,
     };
 
+    /// <summary>
+    /// Contains information about <see cref="Effect"/> that a gridobject applies.
+    /// </summary>
     public struct AreaEffect
     {
+        /// <summary>
+        /// <see cref="EffectEntry.ID"/>
+        /// </summary>
         public ushort ID;
+        /// <summary>
+        /// A gridobject applies effect on unit within this range value.
+        /// </summary>
         public int Range;
     }
 
-    public class GridObject : Object
+    /// <summary>
+    /// Specifies the base class for static objects on Map that are bound to the specific point. Provides a method for interacting units with these objects.
+    /// </summary>
+    public abstract class GridObject : Object
     {
+        /// <summary>
+        /// The GridObject lifetime remains. Uses only with <see cref="GridObjectFlags.Temporal"/>
+        /// </summary>
         protected int timeToLive;
+
+        /// <summary>
+        /// The time that must elapsed before changing the gridobject state from <see cref="GridObjectStates.Inactive"/> to <see cref="GridObjectStates.Active"/>.
+        /// </summary>
         protected int activationTime;
-        protected int timeToActivate;
+
+        /// <summary>
+        /// Remaining time until the gridobject becomes active.
+        /// </summary>
+        protected int activationTimer;
+
+        /// <summary>
+        /// Indicates that the gridobject is in inactive state because of its recent interaction with an unit.
+        /// </summary>
         protected bool recentlyUsed;
+
+        /// <summary>
+        /// Contains information about the effect that the gridObject is applying to the nearest units.
+        /// </summary>
         protected AreaEffect areaEffect;
 
-        protected GridObjectStates gridObjectState;
-
-        protected GridObjectTypes pr_gridObjectType;
-        public GridObjectTypes GridObjectType
-        {
-            get
-            {
-                return this.pr_gridObjectType;
-            }
-            protected set
-            {
-                this.pr_gridObjectType = value;
-            }
-        }
-
+        /// <summary>
+        /// GridObject flags set.
+        /// </summary>
         protected GridObjectFlags gridObjectsFlags;
 
+        /// <summary>
+        /// GridObject type.
+        /// </summary>
+        protected GridObjectTypes gridObjectType;
+
+        /// <summary>
+        /// Initialized a new instance of the GridObject class.
+        /// </summary>
         public GridObject()
         {
-            gridObjectState = GridObjectStates.Active;
+            pr_GridObjectState = GridObjectStates.Active;
             ObjectType = ObjectTypes.GridObject;
-            GridObjectType = GridObjectTypes.GridObject;
+            this.gridObjectType = GridObjectTypes.GridObject;
 
             // Always in center of the cell
             Position = new GPS(Position, 25, 25);
 
             // Flags by default
-            SetFlag(GridObjectFlags.Usable);
-            timeToLive = 0;
-            activationTime = timeToActivate = 0;
-            this.recentlyUsed = false;
+            this.gridObjectsFlags = GridObjectFlags.Usable;
         }
 
-        public GridLocation GetLocation() { return Position.Location; }
-
-        protected void SetFlag(GridObjectFlags flag)
+        protected GridObjectStates pr_GridObjectState;
+        /// <summary>
+        /// Gets or sets the gridobject current state
+        /// </summary>
+        public GridObjectStates GridObjectState
         {
-            if (!HasFlag(flag))
-                this.gridObjectsFlags += (uint)flag;
-        }
-        protected void RemoveFlag(GridObjectFlags flag)
-        {
-            if (HasFlag(flag))
-                this.gridObjectsFlags -= (uint)flag;
-        }
-        public bool HasFlag(GridObjectFlags flag)
-        {
-            return ((uint)flag & (uint)this.gridObjectsFlags) != 0;
-        }
-
-
-        public void SetGridObjectState(GridObjectStates gridObjectState)
-        {
-            if (gridObjectState != GridObjectStates.OFF)
+            get
             {
-                this.gridObjectState = gridObjectState;
+                return this.pr_GridObjectState;
             }
+            set
+            {
+                // May not change state of disabled gridobjects
+                if (this.pr_GridObjectState != GridObjectStates.Off)
+                    this.pr_GridObjectState = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets the gridObject type.
+        /// </summary>
+        public GridObjectTypes GridObjectType
+        {
+            get
+            {
+                return this.gridObjectType;
+            }
+        }
+
+        /// <summary>
+        /// Gets a value indicating that the gridobject is in <see cref="GridObjectStates.Active"/> state.
+        /// </summary>
+        public bool IsActive
+        {
+            get
+            {
+                return GridObjectState == GridObjectStates.Active;
+            }
+        }
+
+        /// <summary>
+        /// Inidicating whether the gridobject has the specified flags.
+        /// </summary>
+        /// <param name="flags">Set of the flags to check. Multiple flags should be write as 'Flag1 | Flag2 | Flag3 ...'.</param>
+        /// <returns><c>true</c> if the gridobject has all the checked flags; otherwise, <c>false</c>.</returns>
+        public bool HasFlags(GridObjectFlags flags)
+        {
+            return (flags & this.gridObjectsFlags) == flags;
         }
 
         public override void UpdateState(int timeP)
         {
             // Update life timer for Temporal GO
-            if (HasFlag(GridObjectFlags.Temporal))
+            if (HasFlags(GridObjectFlags.Temporal))
             {
                 if (timeToLive < timeP)
                     ObjectState = ObjectStates.Removed;
@@ -117,17 +220,17 @@ namespace Maze.Classes
             }
 
             // Update activation timer for inactive GO
-            if (this.recentlyUsed && !HasFlag(GridObjectFlags.Disposable))
+            if (this.recentlyUsed && !HasFlags(GridObjectFlags.Disposable))
             {
-                if (timeToActivate < timeP)
-                    SetGridObjectState(GridObjectStates.Active);
+                if (activationTimer < timeP)
+                    GridObjectState = GridObjectStates.Active;
                 else
-                    timeToActivate -= timeP;
+                    activationTimer -= timeP;
             }
 
             // AreaEffect GO
             // Apply effect on the nearest units
-            if (HasFlag(GridObjectFlags.AreaEffect) && areaEffect.ID != 0)
+            if (HasFlags(GridObjectFlags.AreaEffect) && areaEffect.ID != 0)
             {
                 List<Unit> units = GetUnitsWithinRange(areaEffect.Range);
 
@@ -142,15 +245,13 @@ namespace Maze.Classes
         public virtual void Use(Unit user)
         {
             // Deactivate if needed
-            if (!HasFlag(GridObjectFlags.AlwaysActive))
+            if (!HasFlags(GridObjectFlags.AlwaysActive))
             {
-                SetGridObjectState(GridObjectStates.Inactive);
+                GridObjectState = GridObjectStates.Inactive;
                 this.recentlyUsed = true;
-                timeToActivate = activationTime;
+                activationTimer = activationTime;
             }
 
         }
-
-        public bool IsActive() { return this.gridObjectState == GridObjectStates.Active; }
     }
 }

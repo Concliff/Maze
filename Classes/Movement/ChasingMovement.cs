@@ -5,19 +5,40 @@ using System.Text;
 
 namespace Maze.Classes
 {
+    /// <summary>
+    /// Represents a movement generator that provides motion to the certain target using the pathfinding algorithm.
+    /// </summary>
     public class ChasingMovement : MovementGenerator
     {
+        /// <summary>
+        /// Defines the states in which a <see cref="ChasingMovement"/> generator can exist.
+        /// </summary>
         private enum MotionStates
         {
-            None,                   // Initialized
-            StandingBy,             // victim is unreachable or not found
-            Chasing,                // Chases the victim
-            ReturningHome,          // Returns to spawn location (victim is dead or at its spawn location)
-            DestinationReached,     // Reached final destination
+            /// <summary>
+            /// The generator is just initialized.
+            /// </summary>
+            None,
+            /// <summary>
+            /// The motion is terminated. The victim is unreachable or not found.
+            /// </summary>
+            StandingBy,
+            /// <summary>
+            /// Currently chasing the victim.
+            /// </summary>
+            Chasing,
+            /// <summary>
+            /// Returns to Home location (the victim is dead or is at its spawn location)
+            /// </summary>
+            ReturningHome,
+            /// <summary>
+            /// The motion is terminated. The victim have been reached.
+            /// </summary>
+            DestinationReached,
         };
 
         /// <summary>
-        /// Reference to a unit we are chasing
+        /// Reference to a unit the owner chases.
         /// </summary>
         private Unit victim;
         private PathFinder pathFinder;
@@ -30,13 +51,17 @@ namespace Maze.Classes
         /// </summary>
         private MotionStates state;
 
+        /// <summary>
+        /// Initializes a new instance of the ChasingMovement class.
+        /// </summary>
+        /// <param name="unit">The owner of the generator instance.</param>
         public ChasingMovement(Unit unit)
             : base(unit)
         {
-            pathFindingTimer = PATHFINDING_TIME;
+            this.pathFindingTimer = PATHFINDING_TIME;
             this.state = MotionStates.None;
-            victim = World.PlayForm.Player;
-            pathFinder = new PathFinder(Map.Instance.GetCell(this.mover.Position.Location),
+            this.victim = World.PlayForm.Player;
+            this.pathFinder = new PathFinder(Map.Instance.GetCell(this.mover.Position.Location),
                 Map.Instance.GetCell(this.victim.Position.Location));
         }
 
@@ -109,7 +134,7 @@ namespace Maze.Classes
 
             // Stop pursuit
             // when victim is not available
-            if (!this.victim.IsAlive() || this.victim.IsAtHome || !this.victim.IsVisible())
+            if (!this.victim.IsAlive || this.victim.IsAtHome || !this.victim.IsVisible)
             {
                 state = MotionStates.ReturningHome;
             }

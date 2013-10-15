@@ -5,13 +5,22 @@ using System.Text;
 
 namespace Maze.Classes
 {
+    /// <summary>
+    /// Represents a gridobject that relocates a user to another defined location.
+    /// </summary>
     public class Portal : GridObject
     {
+        /// <summary>
+        /// Where users will be relocated.
+        /// </summary>
         private Cell destinationCell;
 
+        /// <summary>
+        /// Initializes a new instance of Portal class.
+        /// </summary>
         public Portal()
         {
-            GridObjectType = GridObjectTypes.Portal;
+            this.gridObjectType = GridObjectTypes.Portal;
             this.activationTime = 3000;  // 3 seconds
             this.destinationCell.Initialize();
         }
@@ -34,7 +43,7 @@ namespace Maze.Classes
 
         public override void Use(Unit user)
         {
-            if (!user.IsVisible())
+            if (!user.IsVisible)
                 return;
             user.TeleportTo(destinationCell);
 

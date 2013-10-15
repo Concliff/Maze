@@ -7,46 +7,121 @@ using Maze.Forms;
 
 namespace Maze.Classes
 {
+    /// <summary>
+    /// Specifies the type of object (or derived class) that an instance of the <see cref="Unit"/> class represents.
+    /// </summary>
     public enum UnitTypes
     {
+        /// <summary>
+        /// Default type. An <see cref="Unit"/> instance is not initialized and cannot belong to the specific type.
+        /// </summary>
         Unit,
+        /// <summary>
+        /// An <see cref="Unit"/> instance is derived from <see cref="Deimos"/> class.
+        /// </summary>
         Deimos,
+        /// <summary>
+        /// An <see cref="Unit"/> instance is derived from <see cref="Phobos"/> class.
+        /// </summary>
         Phobos,
+        /// <summary>
+        /// An <see cref="Unit"/> instance is derived from <see cref="Slug"/> class.
+        /// </summary>
         Slug,
+        /// <summary>
+        /// An <see cref="Unit"/> instance is derived from <see cref="SlugClone"/> class.
+        /// </summary>
         SlugClone,
     };
 
+    /// <summary>
+    /// Defines the Unit state showing possibility to interact with other objects or environment.
+    /// </summary>
     public enum DeathStates
     {
+        /// <summary>
+        /// Unit is existing on map and can move, cast spells etc.
+        /// </summary>
         Alive,
+        /// <summary>
+        /// Unit is waiting for respawn timer expired to become <see cref="DeathStates.Alive"/>.
+        /// </summary>
         Dead,
     };
 
+    /// <summary>
+    /// Specifies unit special features.
+    /// </summary>
+    [Flags]
     public enum UnitFlags
     {
-        None            = 0,
+        /// <summary>
+        /// Default value.
+        /// </summary>
+        None            = 0x000,
+        /// <summary>
+        /// The <see cref="Unit"/> cannot be in the <see cref="DeathStatus.Dead"/> state.
+        /// </summary>
         CanNotBeKilled  = 0x001,
     };
 
+    /// <summary>
+    /// Provides data for the <see cref="EffectHandler.EffectApplied"/> and <see cref="EffectHandler.EffectRemoved"/> events.
+    /// </summary>
     public class EffectEventArgs : EventArgs
     {
-        public EffectHolder holder;
+        private EffectHolder pr_Holder;
+        /// <summary>
+        /// Gets an <see cref="EffectHolder"/> instance that raises the event.
+        /// </summary>
+        public EffectHolder Holder { get { return this.pr_Holder; } }
 
+        /// <summary>
+        /// Initializes a new instance of the EffectEventArgs class.
+        /// </summary>
+        /// <param name="holder">EffectHolder that raises the event.</param>
         public EffectEventArgs(EffectHolder holder)
         {
-            this.holder = holder;
+            this.pr_Holder = holder;
         }
     }
 
+    /// <summary>
+    /// Represents custom collection class that stores all the <see cref="EffectHolder"/> instances applied to the specific <see cref="Unit"/> instance.
+    /// </summary>
     public class EffectCollection
     {
+        /// <summary>
+        /// Represents the method that will handle the <see cref="EffectApplied"/> or <see cref="EffectRemoved"/> event.
+        /// </summary>
+        /// <param name="sender">The sourse of the event.</param>
+        /// <param name="e">A <see cref="EffectEventArgs"/> that contains the event data.</param>
+        public delegate void EffectHandler(object sender, EffectEventArgs e);
+        /// <summary>
+        /// Occurs after a holder has been added from <see cref="EffectCollection"/>.
+        /// </summary>
+        public event EffectHandler EffectApplied;
+        /// <summary>
+        /// Occurs after a holder has been deleted from <see cref="EffectCollection"/>.
+        /// </summary>
+        public event EffectHandler EffectRemoved;
+
         private List<EffectHolder> effectList;
         private Unit owner;
 
-        public delegate void EffectHandler(object sender, EffectEventArgs e);
-        public event EffectHandler EffectApplyEvent;
-        public event EffectHandler EffectRemoveEvent;
+        /// <summary>
+        /// Initializes a new instance of the EffectCollection class.
+        /// </summary>
+        /// <param name="owner">The <see cref="Unit"/> instance whom all these effect will belong to.</param>
+        public EffectCollection(Unit owner)
+        {
+            this.owner = owner;
+            effectList = new List<EffectHolder>();
+        }
 
+        /// <summary>
+        /// Gets a number of effects contained in <see cref="EffectCollection"/>.
+        /// </summary>
         public int Count
         {
             get
@@ -55,18 +130,17 @@ namespace Maze.Classes
             }
         }
 
+        /// <summary>
+        /// Gets an effect holder at the specific index.
+        /// </summary>
+        /// <param name="index">The zero-based index of the element to get or set.</param>
+        /// <returns>The <see cref="EffectHolder"/> instance at the specific index.</returns>
         public EffectHolder this[int index]
         {
             get
             {
                 return effectList[index];
             }
-        }
-
-        public EffectCollection(Unit owner)
-        {
-            this.owner = owner;
-            effectList = new List<EffectHolder>();
         }
 
         public bool Add(EffectHolder holder)
@@ -84,10 +158,10 @@ namespace Maze.Classes
 
             effectList.Add(holder);
 
-            if (EffectApplyEvent != null)
+            if (EffectApplied != null)
             {
                 EffectEventArgs e = new EffectEventArgs(holder);
-                EffectApplyEvent(owner, e);
+                EffectApplied(owner, e);
             }
 
             return true;
@@ -109,10 +183,10 @@ namespace Maze.Classes
 
             if (effectList.Remove(holder))
             {
-                if (EffectRemoveEvent != null)
+                if (EffectRemoved != null)
                 {
                     EffectEventArgs e = new EffectEventArgs(holder);
-                    EffectRemoveEvent(owner, e);
+                    EffectRemoved(owner, e);
                 }
 
             }
@@ -144,39 +218,112 @@ namespace Maze.Classes
 
     }
 
-    public class Unit : Object
+    /// <summary>
+    /// Represents a base class for dynamic objects that can move through the map.
+    /// </summary>
+    public abstract class Unit : Object
     {
+        /// <summary>
+        /// Occurs when object changed its Position without any movement processes.
+        /// </summary>
+        public event PositionHandler Relocated;
+
+        /// <summary>
+        /// Gets or sets respawn Location of the Unit.
+        /// </summary>
+        protected GridLocation respawnLocation;
+
+        /// <summary>
+        /// The current unit state.
+        /// </summary>
         protected DeathStates deathState;
-        protected double baseSpeed; // base speed of the Unit
+
+        protected int respawnTime;
+
+        /// <summary>
+        /// Shows after which time the unit will respawn (will change its deathState from <see cref="DeathState.Dead"/> to <see cref="DeathState.Alive"/>).
+        /// </summary>
+        protected int respawnTimer;
+
+        /// <summary>
+        /// Contains the flags set.
+        /// </summary>
+        protected UnitFlags unitFlags;
+
+        /// <summary>
+        /// Collection of effect holders that the unit has at this moment.
+        /// </summary>
+        protected EffectCollection effectList;
+
+        /// <summary>
+        /// The current movement engine of the unit.
+        /// </summary>
+        protected MovementGenerator motionMaster;
+
+        /// <summary>
+        /// Type of the unit. Specifies the unit's derived class.
+        /// </summary>
+        protected UnitTypes unitType;
+
+        /// <summary>
+        /// Initializes a new instance of the Unit class.
+        /// </summary>
+        public Unit()
+        {
+            SetDeathState(DeathStates.Alive);
+            this.unitFlags = UnitFlags.None;
+
+            this.respawnLocation = new GridLocation();
+
+            ObjectType = ObjectTypes.Unit;
+            this.unitType = UnitTypes.Unit;
+
+            this.effectList = new EffectCollection(this);
+
+            BaseSpeed = 1.0d;
+            SpeedRate = BaseSpeed;
+
+            this.respawnTimer = 3000;
+
+            this.effectList.EffectApplied += new EffectCollection.EffectHandler(OnEffectApplied);
+            this.effectList.EffectRemoved += new EffectCollection.EffectHandler(OnEffectRemoved);
+        }
+
+        protected double pr_BaseSpeed;
+        /// <summary>
+        /// Gets or sets the Unit base speed value. Base Unit Speed is the speed of specific Unit type, without any effects or smth else.
+        /// </summary>
         public double BaseSpeed
         {
             get
             {
-                return baseSpeed;
+                return this.pr_BaseSpeed;
             }
             protected set
             {
-                baseSpeed = value;
+                this.pr_BaseSpeed = value;
                 CalculateSpeedRate();
             }
         }
 
-        protected double speedRate; // Current speed(+effects)
+        protected double pt_SpeedRate; // Current speed(+effects)
+        /// <summary>
+        /// Gets or sets Unit current speed considering all movement effect at it.
+        /// </summary>
         public double SpeedRate
         {
             get
             {
-                return speedRate;
+                return this.pt_SpeedRate;
             }
             protected set
             {
-                speedRate = value;
+                this.pt_SpeedRate = value;
             }
         }
 
-        protected GridLocation respawnLocation;
         /// <summary>
-        /// Gets Respawn Location of the unit.
+        /// Gets respawn location of the unit.
         /// </summary>
         public GridLocation Home
         {
@@ -184,14 +331,21 @@ namespace Maze.Classes
             {
                 return this.respawnLocation;
             }
-            protected set
+        }
+
+        /// <summary>
+        /// Gets a value indicating that the unit is in the <see cref="DeathStates.Alive"/> state.
+        /// </summary>
+        public bool IsAlive
+        {
+            get
             {
-                this.respawnLocation = value;
+                return deathState == DeathStates.Alive;
             }
         }
 
         /// <summary>
-        /// Gets a value indicating whether a Unit is located at its respawn Point
+        /// Gets a value indicating whether a Unit is located at its respawn <see cref="Cell"/>.
         /// </summary>
         public bool IsAtHome
         {
@@ -201,58 +355,38 @@ namespace Maze.Classes
             }
         }
 
-        protected int respawnTimer;
-        protected int unitFlags;
-        protected EffectCollection effectList;
-
-        protected MovementGenerator motionMaster;
-
         /// <summary>
-        /// Occurs when object changed its Position without any movement processes.
+        /// Gets a value indicating that the unit is displayed on map and other units can interact with it.
         /// </summary>
-        public event PositionHandler Relocated;
+        public bool IsVisible
+        {
+            get
+            {
+                return !HasEffectType(EffectTypes.Invisibility);
+            }
+        }
 
-        protected UnitTypes pr_unitType;
         /// <summary>
-        /// Determines the type of the unit
+        /// Gets the unit type.
         /// </summary>
         public UnitTypes UnitType
         {
-            get { return pr_unitType; }
-            set { pr_unitType = value; }
+            get { return this.unitType; }
         }
 
-        public Unit()
-        {
-            SetDeathState(DeathStates.Alive);
-            SetUnitFlags(UnitFlags.None);
-
-            this.respawnLocation = new GridLocation();
-
-            ObjectType = ObjectTypes.Unit;
-            UnitType = UnitTypes.Unit;
-
-            effectList = new EffectCollection(this);
-
-            BaseSpeed = 1.0d;
-            SpeedRate = BaseSpeed;
-
-            respawnTimer = 3000;
-
-            effectList.EffectApplyEvent += new EffectCollection.EffectHandler(OnEffectApplied);
-
-            effectList.EffectRemoveEvent += new EffectCollection.EffectHandler(OnEffectRemoved);
-        }
-
+        /// <summary>
+        /// Registers this unit in <see cref="ObjectContainer"/> and sets its Home location.
+        /// </summary>
+        /// <param name="respawnLocation">Home location of the unit.</param>
         public void Create(GridLocation respawnLocation)
         {
-            Home = respawnLocation;
+            this.respawnLocation = respawnLocation;
             base.Create(new GPS(respawnLocation));
         }
 
         public void OnEffectApplied(object sender, EffectEventArgs e)
         {
-            EffectHolder holder = e.holder;
+            EffectHolder holder = e.Holder;
 
             // Update unit stats
             if (holder.EffectInfo.EffectType == EffectTypes.Snare ||
@@ -262,7 +396,7 @@ namespace Maze.Classes
 
         public void OnEffectRemoved(object sender, EffectEventArgs e)
         {
-            EffectHolder holder = e.holder;
+            EffectHolder holder = e.Holder;
 
             // Update unit stats
             if (holder.EffectInfo.EffectType == EffectTypes.Snare ||
@@ -270,24 +404,14 @@ namespace Maze.Classes
                 CalculateSpeedRate();
         }
 
-        //public UnitTypes GetUnitType() { return pr_unitType; }
-
         /// <summary>
-        /// Sets all specified flags if unit doesnt have it
+        /// Inidicating whether the unit has the specified flags.
         /// </summary>
-        /// <param name="unitFlags"></param>
-        public void SetUnitFlags(params UnitFlags[] unitFlags)
+        /// <param name="flags">Set of the flags to check. Multiple flags should be write as 'Flag1 | Flag2 | Flag3 ...'.</param>
+        /// <returns><c>true</c> if the unit has all the checked flags; otherwise, <c>false</c>.</returns>
+        public bool HasUnitFlags(UnitFlags flags)
         {
-            for (int i = 0; i < unitFlags.Count(); ++i)
-            {
-                if (!HasUnitFlag(unitFlags[i]))
-                    this.unitFlags += (int)unitFlags[i];
-            }
-        }
-
-        public bool HasUnitFlag(UnitFlags unitFlag)
-        {
-            return ((uint)unitFlag & (uint)this.unitFlags) != 0;
+            return (flags & this.unitFlags) == flags;
         }
 
         /// <summary>
@@ -369,6 +493,10 @@ namespace Maze.Classes
                 Relocated(this, new PositionEventArgs(prevPosition, Position));
         }
 
+        /// <summary>
+        /// Relocates the unit to the specifed destination <see cref="Cell"/>.
+        /// </summary>
+        /// <param name="destinationCell">A cell where the unit is relocating</param>
         public void TeleportTo(Cell destinationCell)
         {
             // save old position
@@ -380,12 +508,15 @@ namespace Maze.Classes
 
         }
 
+        /// <summary>
+        /// Relocates the unit to the secified destination position.
+        /// </summary>
+        /// <param name="destinationGPS">A new position where the unit is relocating.</param>
         public void TeleportTo(GridLocation destinationGPS)
         {
             Cell destinationCell = Map.Instance.GetCell(destinationGPS);
             TeleportTo(destinationCell);
         }
-
 
         public void CastEffect(ushort effectID, Unit target)
         {
@@ -405,11 +536,21 @@ namespace Maze.Classes
             effectList.Remove(effectHolder);
         }
 
+        /// <summary>
+        /// Determines whether the unit has applied aura with the specified effect type.
+        /// </summary>
+        /// <param name="effectType">One of the <see cref="EffectTypes"/> value.</param>
+        /// <returns><c>true</c> if the unit has at least one aura with the specified type; otherwise, <c>false</c>.</returns>
         public bool HasEffectType(EffectTypes effectType)
         {
             return GetEffectsByType(effectType).Count > 0;
         }
 
+        /// <summary>
+        /// Returns a collection of effects with the specifed type.
+        /// </summary>
+        /// <param name="effectType"></param>
+        /// <returns></returns>
         public List<EffectEntry> GetEffectsByType(EffectTypes effectType)
         {
             List<EffectEntry> result = new List<EffectEntry>();
@@ -426,6 +567,9 @@ namespace Maze.Classes
             return result;
         }
 
+        /// <summary>
+        /// Computes the actual speed rate considering all the influencing effects.
+        /// </summary>
         protected void CalculateSpeedRate()
         {
             SpeedRate = BaseSpeed;
@@ -444,7 +588,6 @@ namespace Maze.Classes
             SpeedRate *= speedModifier / 100d;
         }
 
-        public bool IsAlive() { return deathState == DeathStates.Alive; }
         public virtual void SetDeathState(DeathStates deathState)
         {
             if (deathState == DeathStates.Dead)
@@ -458,9 +601,14 @@ namespace Maze.Classes
 
         }
 
+        /// <summary>
+        /// The unit changes the death state of another unit by force, getting a reward for it.
+        /// </summary>
+        /// <param name="victim">The target unit</param>
+        /// <returns><c>true</c>, if a victim bacame dead; otherwise, <c>false</c>.</returns>
         public bool KillUnit(Unit victim)
         {
-            if (victim.HasUnitFlag(UnitFlags.CanNotBeKilled))
+            if (victim.HasUnitFlags(UnitFlags.CanNotBeKilled))
                 return false;
 
             victim.SetDeathState(DeathStates.Dead);
@@ -471,6 +619,9 @@ namespace Maze.Classes
             return true;
         }
 
+        /// <summary>
+        /// Returns the unit to its Home location and changes the state to <see cref="DeathState.Alive"/>.
+        /// </summary>
         protected void Respawn()
         {
             // Return to start location
@@ -478,8 +629,6 @@ namespace Maze.Classes
 
             SetDeathState(DeathStates.Alive);
         }
-
-
 
         public override void UpdateState(int timeP)
         {
@@ -494,8 +643,6 @@ namespace Maze.Classes
                     respawnTimer -= timeP;
             }
 
-
-
             // Update unit effects
             effectList.Update(timeP);
 
@@ -504,28 +651,29 @@ namespace Maze.Classes
 
             foreach (GridObject obj in objects)
             {
-                if (obj.IsActive() && obj.HasFlag(GridObjectFlags.Usable))
+                if (obj.IsActive && obj.HasFlags(GridObjectFlags.Usable))
                     obj.Use(this);
             }
 
             base.UpdateState(timeP);
         }
 
+        /// <summary>
+        /// Starts the motion of a unit's movement generator.
+        /// </summary>
         public void StartMotion()
         {
             if (this.motionMaster != null)
                 this.motionMaster.StartMotion();
         }
 
+        /// <summary>
+        /// Stops the motion of a unit's movement generator.
+        /// </summary>
         public void StopMotion()
         {
             if (this.motionMaster != null)
                 this.motionMaster.StopMotion();
-        }
-
-        public bool IsVisible()
-        {
-            return !HasEffectType(EffectTypes.Invisibility);
         }
     }
 }

@@ -5,14 +5,61 @@ using System.Text;
 
 namespace Maze.Classes
 {
+    /// <summary>
+    /// Represents the unit that is controlled by a player.
+    /// </summary>
     public class Slug : Unit
     {
+        /// <summary>
+        /// Max value of energy the Slug may have.
+        /// </summary>
+        public const int MaxOozeEnergy = 100;
+
+        private int downTime; // stand still time
+        private int travelTime; // in motion time
+        private bool isInMotion;
+        private List<Unit> collidingUnits;
+
+        /// <summary>
+        /// Total game score of this Slug
+        /// </summary>
         private int score;
-        private int collectedDropsCount;    // at current level
+
+        /// <summary>
+        /// Count of Drops that Player has collected at current level.
+        /// </summary>
+        private int collectedDropsCount;
+
+        /// <summary>
+        /// Initialized a new instance of the Slug class.
+        /// </summary>
+        public Slug()
+        {
+            Name = "Noname";
+            ObjectType = ObjectTypes.Slug;
+            this.unitType = UnitTypes.Slug;
+            this.respawnLocation = Map.Instance.GetStartPoint();
+
+            // Set Start Location
+            Position = new GPS(Home, 25, 25);
+
+            this.respawnTimer = 3000;
+
+            this.collidingUnits = new List<Unit>();
+
+            OozeEnergy = MaxOozeEnergy;
+
+            objectSize.Width = GlobalConstants.PLAYER_SIZE_WIDTH;
+            objectSize.Height = GlobalConstants.PLAYER_SIZE_HEIGHT;
+
+            BaseSpeed = 0.7d;
+
+            this.motionMaster = new ManualMovement(this);
+        }
 
         private String pr_Name;
         /// <summary>
-        /// Returns player's name
+        /// Gets or Sets Player's name
         /// </summary>
         public String Name
         {
@@ -20,8 +67,15 @@ namespace Maze.Classes
             set { pr_Name = value; }
         }
 
-        // ooze
-        public const int MaxOozeEnergy = 100;
+        /// <summary>
+        /// Gets total game score of this Slug.
+        /// </summary>
+        public int Score { get { return this.score; } }
+
+        /// <summary>
+        /// Gets Count of Drops that this Slug has collected at current Level.
+        /// </summary>
+        public int CollectedDropsCount { get { return this.collectedDropsCount; } }
 
         private int pr_oozeEnergy;
         /// <summary>
@@ -29,7 +83,7 @@ namespace Maze.Classes
         /// </summary>
         public int OozeEnergy
         {
-            get { return pr_oozeEnergy;}
+            get { return pr_oozeEnergy; }
             set
             {
                 if (value > MaxOozeEnergy)
@@ -45,45 +99,17 @@ namespace Maze.Classes
             }
         }
 
-        private int downTime; // stand still time
-        private int travelTime; // in motion time
-        private bool isInMotion;
-        private List<Unit> collidingUnits;
-
-        public Slug()
+        /// <summary>
+        /// Registers a Slug in <see cref="ObjectContainer"/>. (Overrides <see cref="Object.Create"/>.)
+        /// </summary>
+        public override void Create()
         {
-            Name = "Noname";
-            ObjectType = ObjectTypes.Slug;
-            UnitType = UnitTypes.Slug;
-            Home = Map.Instance.GetStartPoint();
+            base.Create();
 
-            // Set Start Location
-            Position = new GPS(Home, 25, 25);
-
-            respawnTimer = 3000;
-
-            score = 0;
-            collectedDropsCount = 0;
-            this.isInMotion = false;
-            this.collidingUnits = new List<Unit>();
-
-            pr_oozeEnergy = MaxOozeEnergy;
-            downTime = 0;
-            travelTime = 0;
-
-            objectSize.Width = GlobalConstants.PLAYER_SIZE_WIDTH;
-            objectSize.Height = GlobalConstants.PLAYER_SIZE_HEIGHT;
-
-            BaseSpeed = 0.7d;
-
-            this.motionMaster = new ManualMovement(this);
-        }
-
-        public void HookEvents()
-        {
-            effectList.EffectApplyEvent += new EffectCollection.EffectHandler(World.PlayForm.OnEffectApplied);
-
-            effectList.EffectRemoveEvent += new EffectCollection.EffectHandler(World.PlayForm.OnEffectRemoved);
+            // Bind Player's effect events to Game Form
+            // Needed to display auras at AuraBar
+            effectList.EffectApplied += new EffectCollection.EffectHandler(World.PlayForm.OnEffectApplied);
+            effectList.EffectRemoved += new EffectCollection.EffectHandler(World.PlayForm.OnEffectRemoved);
         }
 
         public override void UpdateState(int timeP)
@@ -122,7 +148,7 @@ namespace Maze.Classes
 
         protected void CheckUnitsCollision()
         {
-            if (IsAlive() && IsVisible())
+            if (IsAlive && IsVisible)
             {
                 // Kill Slug in a collision with others Units
                 // Collision = any "hostile" Unit is passing by closer then 30
@@ -131,7 +157,7 @@ namespace Maze.Classes
                 {
                     foreach (Unit unit in Units)
                     {
-                        if (!this.collidingUnits.Exists(p => p.GetGUID() == unit.GetGUID()))
+                        if (!this.collidingUnits.Exists(p => p.GUID == unit.GUID))
                         {
                             OnUnitCollision(unit);
                             OnUnitCollisionBegin(unit);
@@ -140,7 +166,7 @@ namespace Maze.Classes
                     }
                 }
                 else
-                    if (collidingUnits.Count > 0)
+                    if (this.collidingUnits.Count > 0)
                     {
                         foreach (Unit unit in this.collidingUnits)
                             OnUnitCollisionEnd(unit);
@@ -166,7 +192,7 @@ namespace Maze.Classes
         /// <param name="MoveType">Flags of direction</param>
         private void MovementAction(int timeP)
         {
-            if (!IsAlive())
+            if (!IsAlive)
                 return;
 
             if (HasEffectType(EffectTypes.Root))
@@ -246,10 +272,14 @@ namespace Maze.Classes
 
         public void LevelChanged()
         {
-            Home = Map.Instance.GetStartPoint();
+            this.respawnLocation = Map.Instance.GetStartPoint();
             Position = new GPS(Home, 25, 25);
         }
 
+        /// <summary>
+        /// Handles process of picking up a <see cref="OozeDrop"/> object.
+        /// </summary>
+        /// <param name="drop"></param>
         public void CollectDrop(OozeDrop drop)
         {
             AddPoints(10);
@@ -258,11 +288,16 @@ namespace Maze.Classes
             ++collectedDropsCount;
         }
 
-        public int GetScore() { return score; }
+        /// <summary>
+        /// Adds points to Total <see cref="Slug.Score"/>
+        /// </summary>
+        /// <param name="points"></param>
         public void AddPoints(int points) { this.score += points; }
 
-        public int GetCollectedDropsCount() { return this.collectedDropsCount; }
-
+        /// <summary>
+        /// Handles process of picking up a hidden bonus on map.
+        /// </summary>
+        /// <param name="effectID"><see cref="EffectEntry.ID"/> of the picking effect.</param>
         public void CollectHiddenBonus(ushort effectID)
         {
             EffectEntry effectEntry = DBStores.EffectStore[effectID];
@@ -277,6 +312,9 @@ namespace Maze.Classes
             }
         }
 
+        /// <summary>
+        /// Create an exact copy of the Slug at the same position and moving in the same direction as the original.
+        /// </summary>
         public void CreateClone()
         {
             SlugClone clone = new SlugClone();
@@ -301,9 +339,10 @@ namespace Maze.Classes
         public void OnUnitCollision(Unit unit)
         {
             // HACK: do not collide with SlugClone
+            // TODO: Remove this after friendly/hostile Unit separation
             if (unit.ObjectType != ObjectTypes.Slug)
             {
-                // Do not kill with shield
+                // Do not kill with shield effect
                 if (!this.HasEffectType(EffectTypes.Shield))
                     unit.KillUnit(this);
             }

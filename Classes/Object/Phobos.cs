@@ -5,12 +5,18 @@ using System.Text;
 
 namespace Maze.Classes
 {
+    /// <summary>
+    /// Represents a hostile unit that chases the Slug.
+    /// </summary>
     public class Phobos : Unit
     {
+        /// <summary>
+        /// Initializes a new instance of Phobos class.
+        /// </summary>
         public Phobos()
         {
-            UnitType = UnitTypes.Phobos;
-            SetUnitFlags(UnitFlags.CanNotBeKilled);
+            this.unitType = UnitTypes.Phobos;
+            this.unitFlags |= UnitFlags.CanNotBeKilled;
 
             this.motionMaster = new ChasingMovement(this);
 

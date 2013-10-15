@@ -200,7 +200,7 @@ namespace MapEditor.Forms
 
         void MapEditorFormClosing(object sender, FormClosingEventArgs e)
         {
-            Map.Instance.CloseCurrentMap();
+            Map.Instance.Dispose();
         }
     }
 }

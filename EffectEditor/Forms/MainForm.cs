@@ -32,7 +32,6 @@ namespace EffectEditor
             this.cmbTargets.DropDownStyle = ComboBoxStyle.DropDownList;
             this.cmbType.DropDownStyle = ComboBoxStyle.DropDownList;
 
-            Maze.Classes.DBStores.InitializeComponents();
             Maze.Classes.DBStores.Load();
             EffectIDsLoad();
 
@@ -368,7 +367,6 @@ namespace EffectEditor
         private void btnReload_Click(object sender, EventArgs e)
         {
             // Reinitialize EffectStore
-            Maze.Classes.DBStores.InitializeComponents();
             Maze.Classes.DBStores.Load();
             object currentEffectId = cmbInfoID.SelectedItem;
             cmbInfoID.Items.Clear();

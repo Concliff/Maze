@@ -17,7 +17,7 @@ namespace Maze.Forms
             e.Graphics.DrawString("Drops x " + Map.Instance.DropsRemain.ToString(),
                 new Font("Arial", 14), new SolidBrush(Color.White), 10, 50);
             // Game Scores.
-            e.Graphics.DrawString("Total scores: " + Player.GetScore(), new Font("Arial", 12), new SolidBrush(Color.White), 10, 70);
+            e.Graphics.DrawString("Total scores: " + Player.Score, new Font("Arial", 12), new SolidBrush(Color.White), 10, 70);
         }
 
         void LeftPanelPB_Paint(object sender, PaintEventArgs e)

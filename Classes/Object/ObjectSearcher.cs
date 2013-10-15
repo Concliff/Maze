@@ -6,7 +6,10 @@ using Maze.Forms;
 
 namespace Maze.Classes
 {
-    class ObjectSearcher
+    /// <summary>
+    /// Provides static methods to search the <see cref="Object"/>s and its derived classes in <see cref="ObjectContainer"/>.
+    /// </summary>
+    public static class ObjectSearcher
     {
         //
         // Within Range Methods:
@@ -86,7 +89,7 @@ namespace Maze.Classes
                     if (!includeInvisible && !includeDead)
                     {
                         foreach (Unit unit in foundUnits)
-                            if (unit.IsAlive() && !includeDead || unit.IsVisible() && !includeInvisible)
+                            if (unit.IsAlive && !includeDead || unit.IsVisible && !includeInvisible)
                                 units.Add(unit);
                     }
                     else

@@ -5,17 +5,23 @@ using System.Text;
 
 namespace Maze.Classes
 {
+    /// <summary>
+    /// Represents the base class for implementing various motion types.
+    /// </summary>
     public abstract class Movement
     {
+        /// <summary>
+        /// Represents the information about direction the generator moves in.
+        /// </summary>
         public struct Direction
         {
             /// <summary>
-            ///  Main Direction. Used to unidirectional movement.
+            ///  Main Direction. Is used for simple unidirectional movement.
             /// </summary>
             public Directions First;
 
             /// <summary>
-            /// Secondary Direction. Used to define diagonal movement.
+            /// Secondary Direction. Is used for complex diagonal movement.
             /// </summary>
             public Directions Second;
 
@@ -37,7 +43,7 @@ namespace Maze.Classes
 
         protected Direction pr_CurrentDirection;
         /// <summary>
-        /// Returns Direction that was after last movement action handling.
+        /// Gets or sets the Direction that was after last movement action handling.
         /// </summary>
         public Direction CurrentDirection
         {
@@ -51,14 +57,22 @@ namespace Maze.Classes
             }
         }
 
+        /// <summary>
+        /// Initializes a new instance of the Movement class.
+        /// </summary>
         public Movement()
         {
             CurrentDirection = new Direction(Directions.None, Directions.None);
         }
 
-        public static Directions GetOppositeDirection(Directions Direction)
+        /// <summary>
+        /// Determines what is the opposite direction for the specified one.
+        /// </summary>
+        /// <param name="direction">An initial direction</param>
+        /// <returns>Direction that is opposite to given one.</returns>
+        public static Directions GetOppositeDirection(Directions direction)
         {
-            switch (Direction)
+            switch (direction)
             {
                 case Directions.Left: return Directions.Right;
                 case Directions.Right: return Directions.Left;

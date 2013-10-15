@@ -5,6 +5,9 @@ using System.Text;
 
 namespace Maze.Classes
 {
+    /// <summary>
+    /// Represents the collection of settings parameters of the game application.
+    /// </summary>
     public static class GlobalConstants
     {
         public const int TIMER_TICK_IN_MS      = 20;

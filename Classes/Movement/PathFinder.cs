@@ -5,15 +5,36 @@ using System.Text;
 
 namespace Maze.Classes
 {
+    /// <summary>
+    /// Represents base algorithm to find a way between two points on the map.
+    /// </summary>
     public class PathFinder
     {
+        /// <summary>
+        /// Represents the information and costs of path steps.
+        /// </summary>
         private struct CellParam
         {
-            public int ID;  // Cell's number in grid
-            public int MID; // Master cell
-            public int G;   // Moving cost from the start piont to the current one
-            public int H;   // Moving cost from the current point to the final one
-            public int F;   // F = G + H
+            /// <summary>
+            /// Cell ID
+            /// </summary>
+            public int ID;
+            /// <summary>
+            /// Master cell
+            /// </summary>
+            public int MID;
+            /// <summary>
+            /// Moving cost from the start piont to the current one
+            /// </summary>
+            public int G;
+            /// <summary>
+            /// Moving cost from the current point to the final one
+            /// </summary>
+            public int H;
+            /// <summary>
+            /// G + H
+            /// </summary>
+            public int F;
 
             public void InitializeCell()
             {
@@ -25,10 +46,15 @@ namespace Maze.Classes
             }
         };
 
+        /// <summary>
+        /// The set of tentative cells to be evaluated, initially containing the start point.
+        /// </summary>
         private List<CellParam> openList;
+
+        /// <summary>
+        /// The set of cells already evaluated.
+        /// </summary>
         private List<CellParam> closeList;
-        private Cell startPoint;
-        private Cell finalPoint;
 
         public List<Cell> Path;
 
@@ -106,11 +132,8 @@ namespace Maze.Classes
             return defaultElement;
         }
 
-        public void GeneratePath(Cell startPoint, Cell finishPoint)
+        public void GeneratePath(Cell startPoint, Cell finalPoint)
         {
-            this.startPoint = startPoint;
-            this.finalPoint = finishPoint;
-
             CellParam currentCell = new CellParam();
             CellParam finalCell = new CellParam();
             List<CellParam> bannedList = new List<CellParam>();
@@ -120,8 +143,8 @@ namespace Maze.Classes
 
             // return empty Way at points on different levels OR
             // start and final points were not defined
-            if (this.startPoint.Location.Level != this.finalPoint.Location.Level ||
-                this.startPoint.ID == 0 && this.finalPoint.ID == 0)
+            if (startPoint.Location.Level != finalPoint.Location.Level ||
+                startPoint.ID == 0 && finalPoint.ID == 0)
                 return;
 
             currentCell.InitializeCell();
@@ -133,7 +156,7 @@ namespace Maze.Classes
             finalCell.ID = finalPoint.ID;
             openList.Add(finalCell);
 
-            while (currentCell.ID != this.finalPoint.ID)
+            while (currentCell.ID != finalPoint.ID)
             {
                 Cell block = FindCell(openList, currentCell);
                 FindNeighbors(block, finalCell);
@@ -152,22 +175,23 @@ namespace Maze.Classes
                     break;
             }
 
-            if (closeList.Count > 0)
-            {
-                currentCell = closeList[closeList.Count - 1];
-                Path.Add(FindCell(openList, currentCell));
+            // No path was found
+            if (closeList.Count == 0)
+                return;
 
-                for (int i = closeList.Count - 1; i >= 0; --i)   // CloseList[0] == Start Cell
+            currentCell = closeList[closeList.Count - 1];
+            Path.Add(FindCell(openList, currentCell));
+
+            for (int i = closeList.Count - 1; i >= 0; --i)   // CloseList[0] == Start Cell
+            {
+                if (closeList[i].ID == FindCell(closeList, Path[Path.Count - 1]).MID)
                 {
-                    if (closeList[i].ID == FindCell(closeList, Path[Path.Count - 1]).MID)
+                    Cell tempCell = new Cell();
+                    tempCell = FindCell(closeList, closeList[i]);
+                    if (!SearchInList(Path, tempCell))
                     {
-                        Cell tempCell = new Cell();
-                        tempCell = FindCell(closeList, closeList[i]);
-                        if (!SearchInList(Path, tempCell))
-                        {
-                            Path.Add(tempCell);
-                            i = closeList.Count;
-                        }
+                        Path.Add(tempCell);
+                        i = closeList.Count;
                     }
                 }
             }
@@ -182,137 +206,139 @@ namespace Maze.Classes
             {
                 for (int j = -1; j <= 1; ++j)
                 {
-                    if (i != 0 || j != 0)
+                    // Skip this cell
+                    if (i == 0 && j == 0)
+                        continue;
+
+                    GridLocation location = new GridLocation();
+                    location.X = Block.Location.X + i;
+                    location.Y = Block.Location.Y + j;
+                    location.Level = Block.Location.Level;
+
+                    // Skip non-existed cell
+                    if (Map.Instance.GetCell(location).Type == 16)
+                        continue;
+
+                    bool isNeighbourReachable = false;
+
+                    switch (i * j)
                     {
-                        GridLocation location = new GridLocation();
-                        location.X = Block.Location.X + i;
-                        location.Y = Block.Location.Y + j;
-                        location.Level = Block.Location.Level;
-                        if (Map.Instance.GetCell(location).Type != 16)
-                        {
-                            bool flag = false;
-
-                            switch (i * j)
+                        case -1:
+                            if (i == -1)    // diagonal moving - left and down
                             {
-                                case -1:
-                                    if (i == -1)    // diagonal moving - left and down
-                                    {
-                                        GridLocation locDown = Block.Location;
-                                        locDown.Y++;
-                                        GridLocation locLeft = Block.Location;
-                                        locLeft.X--;
+                                GridLocation locDown = Block.Location;
+                                locDown.Y++;
+                                GridLocation locLeft = Block.Location;
+                                locLeft.X--;
 
-                                        // Check cell's passability
-                                        if ((Block.CanMoveTo(Directions.Down) &&
-                                            Map.Instance.GetCell(locDown).CanMoveTo(Directions.Left)) &&
-                                            (Block.CanMoveTo(Directions.Left) &&
-                                            Map.Instance.GetCell(locLeft).CanMoveTo(Directions.Down)))
-                                        {
-                                            flag = true;
-                                        }
-                                    }
-                                    else    // diagonal moving - right and up
-                                    {
-                                        GridLocation locUp = Block.Location;
-                                        locUp.Y--;
-                                        GridLocation locRight = Block.Location;
-                                        locRight.X++;
-
-                                        if ((Block.CanMoveTo(Directions.Up) &&
-                                            Map.Instance.GetCell(locUp).CanMoveTo(Directions.Right)) &&
-                                            (Block.CanMoveTo(Directions.Right) &&
-                                            Map.Instance.GetCell(locRight).CanMoveTo(Directions.Up)))
-                                        {
-                                            flag = true;
-                                        }
-                                    }
-                                    break;
-                                case 1:
-                                    if (i == -1)    // diagonal moving - left and up
-                                    {
-                                        GridLocation locUp = Block.Location;
-                                        locUp.Y--;
-                                        GridLocation locLeft = Block.Location;
-                                        locLeft.X--;
-
-                                        if ((Block.CanMoveTo(Directions.Left) &&
-                                            Map.Instance.GetCell(locLeft).CanMoveTo(Directions.Up)) &&
-                                            (Block.CanMoveTo(Directions.Up) &&
-                                            Map.Instance.GetCell(locUp).CanMoveTo(Directions.Left)))
-                                        {
-                                            flag = true;
-                                        }
-                                    }
-                                    else    // diagonal moving - right and down
-                                    {
-                                        GridLocation locDown = Block.Location;
-                                        locDown.Y++;
-                                        GridLocation locRight = Block.Location;
-                                        locRight.X++;
-
-                                        if ((Block.CanMoveTo(Directions.Down) &&
-                                            Map.Instance.GetCell(locDown).CanMoveTo(Directions.Right)) &&
-                                            (Block.CanMoveTo(Directions.Right) &&
-                                            Map.Instance.GetCell(locRight).CanMoveTo(Directions.Down)))
-                                        {
-                                            flag = true;
-                                        }
-                                    }
-                                    break;
-                                case 0:
-                                    if (i == 0)    // moving up or down
-                                    {
-                                        if ((j == -1 && Block.CanMoveTo(Directions.Up)) ||
-                                            (j == 1 && Block.CanMoveTo(Directions.Down)))
-                                        {
-                                            flag = true;
-                                        }
-                                    }
-                                    else    // moving - right or left
-                                    {
-                                        if ((i == 1 && Block.CanMoveTo(Directions.Right)) ||
-                                            (i == -1 && Block.CanMoveTo(Directions.Left)))
-                                        {
-                                            flag = true;
-                                        }
-                                    }
-                                    break;
+                                // Check cell's passability
+                                if ((Block.CanMoveTo(Directions.Down) &&
+                                    Map.Instance.GetCell(locDown).CanMoveTo(Directions.Left)) &&
+                                    (Block.CanMoveTo(Directions.Left) &&
+                                    Map.Instance.GetCell(locLeft).CanMoveTo(Directions.Down)))
+                                {
+                                    isNeighbourReachable = true;
+                                }
                             }
-
-                            if (flag)
+                            else    // diagonal moving - right and up
                             {
-                                CellParam Cell = new CellParam();
-                                Cell.ID = Map.Instance.GetCell(location).ID;
-                                Cell.MID = Block.ID;
-                                if (i == 0 || j == 0)
-                                    Cell.G = currentCell.G + 10;    // Vertical or horizontal movement
-                                else
-                                    Cell.G = currentCell.G + 14;    // Diagonal movement
+                                GridLocation locUp = Block.Location;
+                                locUp.Y--;
+                                GridLocation locRight = Block.Location;
+                                locRight.X++;
 
-                                Cell.H = (Math.Abs(location.X - FindCell(openList, FinalPoint).Location.X) + Math.Abs(location.Y - FindCell(openList, FinalPoint/*, CurrentMap*/).Location.Y)) * 10;
-                                Cell.F = Cell.G + Cell.H;
-
-                                if (!SearchInList(openList, Cell) && !SearchInList(closeList, Cell))
+                                if ((Block.CanMoveTo(Directions.Up) &&
+                                    Map.Instance.GetCell(locUp).CanMoveTo(Directions.Right)) &&
+                                    (Block.CanMoveTo(Directions.Right) &&
+                                    Map.Instance.GetCell(locRight).CanMoveTo(Directions.Up)))
                                 {
-                                    openList.Add(Cell);
-
-                                    if (!SearchInList(closeList, currentCell))
-                                        closeList.Add(currentCell);
-
-                                    if (SearchInList(openList, currentCell))
-                                        openList.Remove(currentCell);
+                                    isNeighbourReachable = true;
                                 }
-
-                                if (Cell.ID == FinalPoint.ID)
-                                {
-                                    if (!SearchInList(closeList, currentCell))
-                                        closeList.Add(currentCell);
-                                    closeList.Add(Cell);
-                                    return;
-                                }
-
                             }
-                        }
+                            break;
+                        case 1:
+                            if (i == -1)    // diagonal moving - left and up
+                            {
+                                GridLocation locUp = Block.Location;
+                                locUp.Y--;
+                                GridLocation locLeft = Block.Location;
+                                locLeft.X--;
+
+                                if ((Block.CanMoveTo(Directions.Left) &&
+                                    Map.Instance.GetCell(locLeft).CanMoveTo(Directions.Up)) &&
+                                    (Block.CanMoveTo(Directions.Up) &&
+                                    Map.Instance.GetCell(locUp).CanMoveTo(Directions.Left)))
+                                {
+                                    isNeighbourReachable = true;
+                                }
+                            }
+                            else    // diagonal moving - right and down
+                            {
+                                GridLocation locDown = Block.Location;
+                                locDown.Y++;
+                                GridLocation locRight = Block.Location;
+                                locRight.X++;
+
+                                if ((Block.CanMoveTo(Directions.Down) &&
+                                    Map.Instance.GetCell(locDown).CanMoveTo(Directions.Right)) &&
+                                    (Block.CanMoveTo(Directions.Right) &&
+                                    Map.Instance.GetCell(locRight).CanMoveTo(Directions.Down)))
+                                {
+                                    isNeighbourReachable = true;
+                                }
+                            }
+                            break;
+                        case 0:
+                            if (i == 0)    // moving up or down
+                            {
+                                if ((j == -1 && Block.CanMoveTo(Directions.Up)) ||
+                                    (j == 1 && Block.CanMoveTo(Directions.Down)))
+                                {
+                                    isNeighbourReachable = true;
+                                }
+                            }
+                            else    // moving - right or left
+                            {
+                                if ((i == 1 && Block.CanMoveTo(Directions.Right)) ||
+                                    (i == -1 && Block.CanMoveTo(Directions.Left)))
+                                {
+                                    isNeighbourReachable = true;
+                                }
+                            }
+                            break;
+                    }
+
+                    if (!isNeighbourReachable)
+                        continue;
+
+                    CellParam Cell = new CellParam();
+                    Cell.ID = Map.Instance.GetCell(location).ID;
+                    Cell.MID = Block.ID;
+                    if (i == 0 || j == 0)
+                        Cell.G = currentCell.G + 10;    // Vertical or horizontal movement
+                    else
+                        Cell.G = currentCell.G + 14;    // Diagonal movement
+
+                    Cell.H = (Math.Abs(location.X - FindCell(openList, FinalPoint).Location.X) + Math.Abs(location.Y - FindCell(openList, FinalPoint/*, CurrentMap*/).Location.Y)) * 10;
+                    Cell.F = Cell.G + Cell.H;
+
+                    if (!SearchInList(openList, Cell) && !SearchInList(closeList, Cell))
+                    {
+                        openList.Add(Cell);
+
+                        if (!SearchInList(closeList, currentCell))
+                            closeList.Add(currentCell);
+
+                        if (SearchInList(openList, currentCell))
+                            openList.Remove(currentCell);
+                    }
+
+                    if (Cell.ID == FinalPoint.ID)
+                    {
+                        if (!SearchInList(closeList, currentCell))
+                            closeList.Add(currentCell);
+                        closeList.Add(Cell);
+                        return;
                     }
                 }
             }

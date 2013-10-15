@@ -6,25 +6,64 @@ using Maze.Forms;
 
 namespace Maze.Classes
 {
+    /// <summary>
+    /// Specifies the type of object (or derived class) that an instance of the <see cref="Object"/> class represents.
+    /// </summary>
     public enum ObjectTypes
     {
+        /// <summary>
+        /// Default type. An <see cref="Object"/> instance is possibly had bad initialization.
+        /// </summary>
         Object,
+        /// <summary>
+        /// An <see cref="Object"/> instance is derived from <see cref="GridObject"/> class.
+        /// </summary>
         GridObject,
+        /// <summary>
+        /// An <see cref="Object"/> instance is derived from <see cref="Unit"/> class (except Slug).
+        /// </summary>
         Unit,
+        /// <summary>
+        /// An instance is <see cref="Slug"/> class instance.
+        /// </summary>
         Slug,
     };
 
+    /// <summary>
+    /// Defines the determinate state in which an instance of the <see cref="Object"/> class can be.
+    /// </summary>
     public enum ObjectStates
     {
-        Default,     // Set by Default
-        Removed,     // Waiting for deletion from container
+        /// <summary>
+        /// Set by default
+        /// </summary>
+        Default,
+        /// <summary>
+        /// An instance is no longer exist and wating for deletion from <see cref="ObjectContainer"/>.
+        /// </summary>
+        Removed,
     }
 
+    /// <summary>
+    /// Provides data for the <see cref="Object.PositionChanged"/> and <see cref="Object.LocationChanged"/> events.
+    /// </summary>
     public class PositionEventArgs : EventArgs
     {
-        public GPS PrevPosition;
-        public GPS NewPosition;
+        /// <summary>
+        /// Gets the previous <see cref="Object"/> position (before changing).
+        /// </summary>
+        public GPS PrevPosition { get; private set; }
 
+        /// <summary>
+        /// Gets the new <see cref="Object"/> position (after changing).
+        /// </summary>
+        public GPS NewPosition { get; private set; }
+
+        /// <summary>
+        /// Initializes a new instance of the PositionEventArgs class.
+        /// </summary>
+        /// <param name="prevPosition">The previous <see cref="Object"/> position.</param>
+        /// <param name="newPosition">The new <see cref="Object"/> position.</param>
         public PositionEventArgs(GPS prevPosition, GPS newPosition)
         {
             PrevPosition = prevPosition;
@@ -32,17 +71,40 @@ namespace Maze.Classes
         }
     }
 
-    public class Object
+    /// <summary>
+    /// Specifies the base class for every Object that can be placed on Map (i.e. has any <see cref="Object.Position"/> within any <see cref="Cell"/>)
+    /// </summary>
+    public abstract class Object
     {
+        /// <summary>
+        /// Represents an Object size information that is used to prevent collistions and intersections with walls.
+        /// </summary>
         protected struct ModelSize
         {
             public int Width;
             public int Height;
         };
 
-        protected uint GUID;
+        /// <summary>
+        /// Represents the method that will handle the <see cref="Object.PositionChanged"/> or <see cref="Object.LocationChanged"/> or <see cref="Unit.Relocated"/> event of an <see cref="Object"/>.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">A <see cref="PositionEventArgs"/> that contains the event data.</param>
+        public delegate void PositionHandler(object sender, PositionEventArgs e);
+        /// <summary>
+        /// Occurs after object changed its Position.
+        /// </summary>
+        public event PositionHandler PositionChanged;
+
+        /// <summary>
+        /// Occurs after object changed its GPS location, i.e moved to other <see cref="Cell"/>
+        /// </summary>
+        public event PositionHandler LocationChanged;
 
         protected ObjectTypes pr_objectType;
+        /// <summary>
+        /// Gets or sets the object essense (based on derived class).
+        /// </summary>
         public ObjectTypes ObjectType
         {
             get { return this.pr_objectType; }
@@ -50,14 +112,14 @@ namespace Maze.Classes
         }
 
         protected ObjectStates pr_objectState;
+        /// <summary>
+        /// Get or sets the current state of an object.
+        /// </summary>
         public ObjectStates ObjectState
         {
             get { return this.pr_objectState; }
             set { this.pr_objectState = value; }
         }
-
-        protected Cell currentCell;
-        protected ModelSize objectSize;
 
         private GPS pr_position;
         /// <summary>
@@ -135,17 +197,24 @@ namespace Maze.Classes
             }
         }
 
-        public delegate void PositionHandler(object sender, PositionEventArgs e);
         /// <summary>
-        /// Occurs when object changed its Location.
+        /// Gets or sets an Object GUID value.
         /// </summary>
-        public event PositionHandler PositionChanged;
+        public uint GUID { get; protected set; }
 
         /// <summary>
-        /// Occurs when object changed its GPS location, i.e moved to other cell
+        /// The <see cref="Cell"/> object where this Object is belong (located).
         /// </summary>
-        public event PositionHandler LocationChanged;
+        protected Cell currentCell;
 
+        /// <summary>
+        /// The object size information.
+        /// </summary>
+        protected ModelSize objectSize;
+
+        /// <summary>
+        /// Initializes a new instance of the Object class.
+        /// </summary>
         public Object()
         {
             ObjectType = ObjectTypes.Object;
@@ -158,12 +227,19 @@ namespace Maze.Classes
             currentCell.Initialize();
         }
 
+        /// <summary>
+        /// <see cref="Object.Create"/> an object with the specified position.
+        /// </summary>
+        /// <param name="position">Object default position</param>
         public virtual void Create(GPS position)
         {
             Position = position;
             Create();
         }
 
+        /// <summary>
+        /// Initilize this instance with assigning the GUID value and placing into <see cref="ObjectContainer"/>.
+        /// </summary>
         public virtual void Create()
         {
             // Do not create object twice
@@ -186,14 +262,13 @@ namespace Maze.Classes
         {
             return ObjectSearcher.GetUnitsWithinRange(this, rangeDistance);
         }
-
         protected List<Unit> GetUnitsWithinRange(int rangeDistance, bool includeInvisible, bool includeDead)
         {
             return ObjectSearcher.GetUnitsWithinRange(this, rangeDistance, includeInvisible, includeDead);
         }
 
         /// <summary>
-        /// Defines a linear distance to another Object.
+        /// Gets a linear distance to another Object.
         /// </summary>
         public double GetDistance(Object target)
         {
@@ -231,8 +306,10 @@ namespace Maze.Classes
             return position;
         }
 
-        public uint GetGUID() { return GUID; }
-
+        /// <summary>
+        /// Update the object statement due to past time.
+        /// </summary>
+        /// <param name="timeP">Elapsed time value (in milliseconds).</param>
         public virtual void UpdateState(int timeP) { }
 
     }

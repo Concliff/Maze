@@ -6,7 +6,7 @@ using System.Text;
 namespace Maze.Classes
 {
     /// <summary>
-    /// Represents a movement generator, provides motion with the set Direction from the outside.
+    /// Represents a movement generator that provides motion with the defined Direction from the outside.
     /// </summary>
     public class CustomMovement : MovementGenerator
     {
@@ -30,6 +30,10 @@ namespace Maze.Classes
             Move(movementStep);
         }
 
+        /// <summary>
+        /// Sets the motion direction that the mover will adhere to.
+        /// </summary>
+        /// <param name="direction">Current direction of the movement.</param>
         public void SetDirection(Direction direction)
         {
             CurrentDirection = direction;

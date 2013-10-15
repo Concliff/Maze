@@ -6,6 +6,9 @@ using System.Windows.Forms;
 
 namespace Maze.Classes
 {
+    /// <summary>
+    /// Represents the movement type that provides manual control of the player.
+    /// </summary>
     public class ManualMovement : MovementGenerator
     {
         public ManualMovement(Unit unit)

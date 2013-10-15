@@ -5,14 +5,24 @@ using System.Text;
 
 namespace Maze.Classes
 {
+    /// <summary>
+    /// Represents the movement generator that provides motion with randomly selected directions to the neighbour cells. The Algorithm provides a less chaotic movement and more ordered path selection.
+    /// </summary>
     public class RandomMovementGenerator : MovementGenerator
     {
+        /// <summary>
+        /// Initializes a new instance of the RandomMovementGenerator class.
+        /// </summary>
+        /// <param name="unit">The owner of the generator</param>
         public RandomMovementGenerator(Unit unit)
             : base(unit)
         {
             this.generatorType = MovementGeneratorType.Random;
         }
 
+        /// <summary>
+        /// Overrides <see cref="MovementGenerator.UpdateState"/>.
+        /// </summary>
         public override void UpdateState(int timeP)
         {
             if (!IsInMotion || this.mover.HasEffectType(EffectTypes.Root))
@@ -44,11 +54,18 @@ namespace Maze.Classes
             base.StartMotion();
         }
 
+        /// <summary>
+        /// Randomly selects a new direction of movement if this direction is available for the <see cref="MovementGenerator.owner"/>.
+        /// </summary>
         private void SelectNewDirection()
         {
             SelectNewDirection(true);
         }
 
+        /// <summary>
+        /// Randomly selects a new direction of movement if this direction is available for the <see cref="MovementGenerator.owner"/>.
+        /// </summary>
+        /// <param name="includeCurrent"><c>true</c> if the new direction may be equal to the previous; otherwise, <c>false</c>.</param>
         private void SelectNewDirection(bool includeCurrent)
         {
             Directions newDirection = Directions.None;

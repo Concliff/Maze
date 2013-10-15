@@ -7,6 +7,9 @@ using System.IO;
 
 namespace Maze.Classes
 {
+    /// <summary>
+    /// Represents the rules and methods of the algorithm to create grids for a maze.
+    /// </summary>
     public class MazeGenerator
     {
         struct Point
@@ -61,18 +64,21 @@ namespace Maze.Classes
         private const bool IS_WRITE_MAZE_FILE = false;
 
         /// <summary>
-        /// Contains Points collection of the whole maze
+        /// Contains the collection of points of the whole maze.
         /// </summary>
         private List<Point> maze;
 
         /// <summary>
-        /// Contains Points collection of the main Maze path
+        /// Contains the collection of points of the main Maze path.
         /// </summary>
         private List<Point> mainPath;
 
         public Cell StartPoint;
         public Cell FinishPoint;
 
+        /// <summary>
+        /// Initializes a new instance of the MazeGenerator class.
+        /// </summary>
         public MazeGenerator()
         {
             this.maze = new List<Point>();

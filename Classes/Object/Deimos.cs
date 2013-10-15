@@ -5,12 +5,17 @@ using System.Text;
 
 namespace Maze.Classes
 {
+    /// <summary>
+    /// Represents a hostile unit that rapidly moves in randomly selected direction.
+    /// </summary>
     class Deimos : Unit
     {
-
+        /// <summary>
+        /// Initializes a new instance of the Deimos class.
+        /// </summary>
         public Deimos()
         {
-            UnitType = UnitTypes.Deimos;
+            this.unitType = UnitTypes.Deimos;
 
             Position = new GPS(Home, 25, 25);
 

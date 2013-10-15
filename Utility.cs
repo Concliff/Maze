@@ -5,6 +5,9 @@ using System.Text;
 
 namespace Maze
 {
+    /// <summary>
+    /// Represents the static analogue of the <see cref="System.Random"/> class.
+    /// </summary>
     public static class Random
     {
         private static System.Random random;

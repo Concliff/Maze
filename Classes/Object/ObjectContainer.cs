@@ -5,6 +5,9 @@ using System.Text;
 
 namespace Maze.Classes
 {
+    /// <summary>
+    /// Represents the storage of all existing Objects in the game.
+    /// </summary>
     public sealed class ObjectContainer
     {
         #region Singleton Part
@@ -181,7 +184,7 @@ namespace Maze.Classes
             {
                 Object objectToRemove = this.objectsToRemove.Pop();
                 // Store free GUIDs
-                releasedGUIDs.Push(objectToRemove.GetGUID());
+                releasedGUIDs.Push(objectToRemove.GUID);
 
                 // Remove from common List
                 this.objects.Remove(objectToRemove);

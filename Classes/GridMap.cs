@@ -8,18 +8,29 @@ using System.Drawing;
 
 namespace Maze.Classes
 {
+    /// <summary>
+    /// Represents a components (separate grid) of the Map. A square area with walls and free ways, having its own <see cref="GridLocation"/>.
+    /// </summary>
     public struct Cell
     {
         public int ID;
         //public int PictureID;
+        /// <summary>
+        /// Position of the Cell on the Map.
+        /// </summary>
         public GridLocation Location;
         public uint Type;
         public uint Attribute;
         public uint Option;
         public int OptionValue;
+        /// <summary>
+        /// Not Defined value.
+        /// </summary>
         public int ND4;
 
-        // Define members by specific default vaules
+        /// <summary>
+        /// Defines members by specific default vaules.
+        /// </summary>
         public void Initialize()
         {
             ID = -1;
@@ -34,22 +45,40 @@ namespace Maze.Classes
             ND4 = 0;
         }
 
+        /// <summary>
+        /// Determines if the cell has the specified attribute.
+        /// </summary>
+        /// <param name="attribute">The attribute to check</param>
+        /// <returns><c>true</c> if the cell has the specified attribute; otherwise, <c>false</c>.</returns>
         public bool HasAttribute(CellAttributes attribute)
         {
             return (Attribute & (uint)attribute) != 0;
         }
 
+        /// <summary>
+        /// Determines if the cell has the specified option.
+        /// </summary>
+        /// <param name="option">The option to check</param>
+        /// <returns><c>true</c> if the cell has the specified option; otherwise, <c>false</c></returns>
         public bool HasOption(CellOptions option)
         {
             return (Option & (uint)option) != 0;
         }
 
+        /// <summary>
+        /// Determines whether the specified direction is free to move from the cell (determines whether the wall is there).
+        /// </summary>
+        /// <param name="direction">The direction to check</param>
+        /// <returns><c>true</c> if the direction has no any obstacles; otherwise, <c>false</c>.</returns>
         public bool CanMoveTo(Directions direction)
         {
             return (Type & (uint)direction) != 0;
         }
     };
 
+    /// <summary>
+    /// Descibes the positioning (or coordinates) of a grid (or a <see cref="Cell"/>).
+    /// </summary>
     public struct GridLocation
     {
         public int X;
@@ -102,10 +131,15 @@ namespace Maze.Classes
         }
     };
 
-    // Location on current Block
+    /// <summary>
+    /// Describes the positioning of any point on the Map. Includes <see cref="GridLocation"/> of the <see cref="Cell"/> where the point is and position inside the cell (X and Y coords).
+    /// </summary>
     public struct GPS
     {
         public GridLocation Location;
+        /// <summary>
+        /// Gets or sets the absolute position of the GPS.
+        /// </summary>
         public GridLocation Absolute
         {
             get
@@ -134,6 +168,9 @@ namespace Maze.Classes
         }
         public int X;
         public int Y;
+        /// <summary>
+        /// ID of the <see cref="Cell"/> where this GPS point belongs.
+        /// </summary>
         public int BlockID;
 
         // Some constructors for the simplified initialization
@@ -165,6 +202,11 @@ namespace Maze.Classes
             this.Y = Y;
         }
 
+        /// <summary>
+        /// Calculates the absolute distance to another GPS value.
+        /// </summary>
+        /// <param name="point">Target position.</param>
+        /// <returns>Distance to the point (in arbitrary units or in visual pixels on the Map).</returns>
         public double GetDistance(GPS point)
         {
             double distance = Math.Sqrt(Math.Pow(this.X - point.X + (this.Location.X - point.Location.X) * GlobalConstants.CELL_WIDTH, 2)

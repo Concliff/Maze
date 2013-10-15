@@ -7,33 +7,40 @@ using Maze.Classes;
 
 namespace Maze
 {
+    /// <summary>
+    /// Represents the first start entry point for whole program initilization and creation.
+    /// </summary>
     public class World
     {
         private static Play pr_PlayForm;
         /// <summary>
-        /// Returns main Game Form
+        /// Get the main Game Form instance.
         /// </summary>
         public static Play PlayForm
         {
             get { return pr_PlayForm; }
         }
 
+        /// <summary>
+        /// Initializes a new instance of the World class.
+        /// </summary>
         public World()
         {
-            Program();
+            Run();
         }
 
-        private void Program()
+        /// <summary>
+        /// Inilializes and loads all game resources and run game <see cref="Play"/> Form.
+        /// </summary>
+        private void Run()
         {
             //Initialize Utilities
             Random.Initialize();
 
             // Load Datas
-            DBStores.InitializeComponents();
             DBStores.Load();
 
             // Load all image files and graphic parts
-            PictureManager.InitializeComponents();
             PictureManager.Load();
 
             // Create Play Form

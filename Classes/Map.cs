@@ -6,7 +6,7 @@ using System.IO;
 
 namespace Maze.Classes
 {
-    public class Map
+    public class Map : IDisposable
     {
         //
         // SINGLETON PART
@@ -49,18 +49,34 @@ namespace Maze.Classes
         private Dictionary<GridLocation, Cell> mapCells;
 
         /// <summary>
-        /// Key - Pair for Map Cells object.
+        /// Collection of the Cells' locations on the Map.\n
+        /// Key = Cell Id.\n
+        /// Value = Location of cell.
         /// </summary>
         private Dictionary<int, GridLocation> mapCellsIds;
 
-        private int[] dropsCount;       // Ooze Drops per level on map
-        private string[] MapNameList;   // Names of All downloaded maps
+        /// <summary>
+        /// Count of Ooze Drops at every level of the map. These count values are values at the current time and are changed when a Drop has been collected.
+        /// </summary>
+        private int[] dropsCount;
+        /// <summary>
+        /// Names of all loaded maps.
+        /// </summary>
+        private string[] MapNameList;
         private List<GridLocation> StartPoint;
         private List<GridLocation> FinishPoint;
+        /// <summary>
+        /// Name of the current map.
+        /// </summary>
         private string CurrentMapName;
-        private bool isMapChanged;    // If map changed, it should be rewrited into mapFile
+        /// <summary>
+        /// Indicating whether a Cell on the Map has been changed. (If true, map should be rewritten into mapFile.)
+        /// </summary>
+        private bool isMapChanged;
         private int currentMapIndex;
-        private string MapDirectoryPath = GlobalConstants.MAPS_PATH;
+        /// <summary>
+        /// Indicating whether the current Map is randomly generated.
+        /// </summary>
         private bool isRandom;
 
         /// <summary>
@@ -108,16 +124,32 @@ namespace Maze.Classes
             }
         }
 
-        ~Map()
+        /// <summary>
+        /// Gets a value endicating whether the current Map is randomly generated.
+        /// </summary>
+        public bool IsRandom
+        {
+            get
+            {
+                return this.isRandom;
+            }
+        }
+
+        public void Dispose()
         {
             /// Save changed Map blocks back into file (Not for random mode)
             if (this.isMapChanged)
                 SaveToFile();
+
+            GC.SuppressFinalize(this);
         }
 
+        /// <summary>
+        /// Loads Names of maps with scanning for map files in the game directory.
+        /// </summary>
         private void LoadMapNameList()
         {
-            DirectoryInfo MapDirectory = new DirectoryInfo(MapDirectoryPath);
+            DirectoryInfo MapDirectory = new DirectoryInfo(GlobalConstants.MAPS_PATH);
             FileInfo[] MapFiles = MapDirectory.GetFiles();
             MapNameList = new string[MapFiles.Count()];
 
@@ -131,12 +163,9 @@ namespace Maze.Classes
 
         }
 
-        public void CloseCurrentMap()
-        {
-            if (this.isMapChanged)
-                SaveToFile();
-        }
-
+        /// <summary>
+        /// Resets the current map removing all the cells.
+        /// </summary>
         public void Reset()
         {
             this.mapCells = null;
@@ -159,6 +188,9 @@ namespace Maze.Classes
             CurrentLevel = level;
         }
 
+        /// <summary>
+        /// Creates random Map with <see cref="MazeGenerator"/> and assigns cells attributes for Start/Finish points, Drops, Portals and so on.
+        /// </summary>
         public void GenerateRandomMap()
         {
             isRandom = true;  // Mark current Map as RandomMap
@@ -233,11 +265,9 @@ namespace Maze.Classes
             }
         }
 
-        public bool IsRandom()
-        {
-            return isRandom;
-        }
-
+        /// <summary>
+        /// Loads Map Cells for specific map.
+        /// </summary>
         private void LoadMap(int MapIndex)
         {
             LoadFromFile(MapNameList[MapIndex] + ".map");
@@ -248,12 +278,16 @@ namespace Maze.Classes
             if (IsMapExist(MapName))
                 return false;
             MapName = MapName + ".map";
-            File.Create(MapDirectoryPath + MapName).Close();
+            File.Create(GlobalConstants.MAPS_PATH + MapName).Close();
             LoadFromFile(MapName);
 
             return true;
         }
 
+        /// <summary>
+        /// Loads Map cell from the file.
+        /// </summary>
+        /// <param name="MapFileName">The name of the Map file (without path).</param>
         private void LoadFromFile(string MapFileName)
         {
             this.isRandom = false;
@@ -264,7 +298,7 @@ namespace Maze.Classes
             CurrentMapName = MapFileName.Split('.')[0];
             int levelIndicator = 0;
 
-            StreamReader CellStream = File.OpenText(MapDirectoryPath + MapFileName);
+            StreamReader CellStream = File.OpenText(GlobalConstants.MAPS_PATH + MapFileName);
             string CurrentString;
             while ((CurrentString = CellStream.ReadLine()) != null)
             {
@@ -302,12 +336,15 @@ namespace Maze.Classes
             this.isMapChanged = false;
         }
 
+        /// <summary>
+        /// Saves changed Map cells back into the file.
+        /// </summary>
         private void SaveToFile()
         {
             if (this.isRandom)
                 return;
 
-            StreamWriter mapFileStream = new StreamWriter(MapDirectoryPath + CurrentMapName + ".map", false);
+            StreamWriter mapFileStream = new StreamWriter(GlobalConstants.MAPS_PATH + CurrentMapName + ".map", false);
             string cellString;
 
             foreach(KeyValuePair<GridLocation, Cell> cell in this.mapCells)
@@ -325,8 +362,14 @@ namespace Maze.Classes
                 mapFileStream.WriteLine(cellString);
             }
             mapFileStream.Close();
+
+            // Mark that map is at newer verstion
+            this.isMapChanged = false;
         }
 
+        /// <summary>
+        /// Places units (Phobos and Deimos) on the map at the appropriate positions.
+        /// </summary>
         public void FillMapWithUnits()
         {
             foreach (KeyValuePair<GridLocation, Cell> cell in this.mapCells)
@@ -344,6 +387,9 @@ namespace Maze.Classes
             phobos.Create(FinishPoint[CurrentLevel]);
         }
 
+        /// <summary>
+        /// Places gridObjects (Drops and Portals) on the map at the appropriate positions.
+        /// </summary>
         public void FillMapWithObjects()
         {
             foreach (KeyValuePair<GridLocation, Cell> cell in this.mapCells)
@@ -364,6 +410,11 @@ namespace Maze.Classes
             }
         }
 
+        /// <summary>
+        /// Gets a Cell of the map with the specified ID.
+        /// </summary>
+        /// <param name="cellId">ID of the Cell.</param>
+        /// <returns>Found Cell or default Cell value when no cells were found.</returns>
         public Cell GetCell(int cellId)
         {
             if (this.mapCellsIds.ContainsKey(cellId) && this.mapCells.ContainsKey(this.mapCellsIds[cellId]))
@@ -374,9 +425,14 @@ namespace Maze.Classes
             defaultCell.Initialize();
             return defaultCell;
         }
+
+        /// <summary>
+        /// Gets a Cell of the map with the specified Location.
+        /// </summary>
+        /// <param name="location">Location where the Cell is expected to be.</param>
+        /// <returns>Found Cell or default Cell value when no cells were found.</returns>
         public Cell GetCell(GridLocation location)
         {
-
             if (this.mapCells.ContainsKey(location))
                 return this.mapCells[location];
 
@@ -422,11 +478,6 @@ namespace Maze.Classes
             return true;
         }
 
-        public string[] GetMapNamesList()
-        {
-            return MapNameList;
-        }
-
         /// <summary>
         /// Returns the Start Point on the current level.
         /// </summary>
@@ -440,7 +491,7 @@ namespace Maze.Classes
         }
 
         /// <summary>
-        /// Returns the Start Point on the current level.
+        /// Returns the Finish Point on the current level.
         /// </summary>
         public GridLocation GetFinishPoint()
         {
@@ -451,6 +502,11 @@ namespace Maze.Classes
             return result;
         }
 
+        /// <summary>
+        /// Determies if the specifed Map name is exists in the list of loaded maps.
+        /// </summary>
+        /// <param name="MapName">Name of the map to check</param>
+        /// <returns><c>true</c> if the map file with the specified name was loaded; otherwise, <c>false</c>.</returns>
         private bool IsMapExist(string MapName)
         {
             for (int i = 0; i < MapNameList.Count(); ++i)
@@ -460,6 +516,10 @@ namespace Maze.Classes
             return false;
         }
 
+        /// <summary>
+        /// Processes picking up the Drop on the map by the <see cref="Slug"/>.
+        /// </summary>
+        /// <param name="drop">The reference to an Drop object that has been collected.</param>
         public void CollectDrop(OozeDrop drop)
         {
             --dropsCount[CurrentLevel];
