@@ -59,7 +59,7 @@ namespace Maze.Classes
 
             for (int i = 0; i < maxIterations; ++i)
             {
-                switch(Random.Int(3))
+                switch(Random.Int(4))
                 {
                     case 0: newOrientation = ORIENTATION_RIGHT; break;
                     case 1: newOrientation = ORIENTATION_UP; break;
