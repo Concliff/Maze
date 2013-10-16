@@ -139,9 +139,9 @@ namespace Maze.Classes
                     
                     else
                     {
-                        currentOrientation = Movement.GetOppositeOrientation(priorityOrientation);
+                        currentOrientation = Movement.GetOppositeDirection(priorityOrientation);
                     }
-                } while (Movement.GetOppositeOrientation(oldOrientation) == currentOrientation);
+                } while (Movement.GetOppositeDirection(oldOrientation) == currentOrientation);
 
                 // Generate segment
                 int segmentLenth = Random.Int(SEGMENT_LENGTH_MIN, SEGMENT_LENGTH_MAX);
@@ -200,9 +200,9 @@ namespace Maze.Classes
                         }
                         else
                         {
-                            currentOrientation = Movement.GetOppositeOrientation(priorityOrientation);
+                            currentOrientation = Movement.GetOppositeDirection(priorityOrientation);
                         }
-                    } while (Movement.GetOppositeOrientation(oldOrientation) == currentOrientation);
+                    } while (Movement.GetOppositeDirection(oldOrientation) == currentOrientation);
 
                     int segmentLenth = Random.Int(BRANCH_SEGMENT_MIN, BRANCH_SEGMENT_MAX);
                     // Reduce the length of long straight segments

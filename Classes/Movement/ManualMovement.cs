@@ -81,7 +81,7 @@ namespace Maze.Classes
             // Reverse moving if has Reverse effect
             if (mover.HasEffectType(EffectTypes.MoveReverse))
             {
-                objectOrientation = GetOppositeOrientation(objectOrientation);
+                objectOrientation = GetOppositeDirection(objectOrientation);
             }
 
             Orientation = objectOrientation;

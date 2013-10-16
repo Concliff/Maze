@@ -12,28 +12,6 @@ namespace Maze.Classes
         public const double ORIENTATION_LEFT = Math.PI;
         public const double ORIENTATION_DOWN = 3 * Math.PI / 2;
 
-        public struct Direction
-        {
-            /// <summary>
-            ///  Main Direction. Used to unidirectional movement.
-            /// </summary>
-            public Directions First;
-
-            /// <summary>
-            /// Secondary Direction. Used to define diagonal movement.
-            /// </summary>
-            public Directions Second;
-
-            public Direction(Directions first, Directions second)
-            {
-                First = first;
-                Second = second;
-            }
-
-            public Direction(Directions first)
-                : this(first, Directions.None) { }
-        };
-
         /// <summary>
         /// Fraction part after conversion from double(speedRate) to int(Coords)
         /// </summary>
@@ -53,11 +31,6 @@ namespace Maze.Classes
         }
 
         protected bool pr_isOrientSet;
-        /*public bool IsOrientChanged
-        {
-            get { return pr_isOrientChanged; }
-            set { pr_isOrientChanged = value; }
-        }*/
 
         public Movement()
         {
@@ -81,7 +54,7 @@ namespace Maze.Classes
                 return Directions.None;
         }
 
-        public static double GetOppositeOrientation(double orientation)
+        public static double GetOppositeDirection(double orientation)
         {
             //opposite angles:
             //0 - pi; pi/2 - 3pi/2; pi - 0; 3pi/2 - pi/2 
@@ -99,18 +72,6 @@ namespace Maze.Classes
             } 
             else
                 return orientation < Math.PI / 2 ? 3 * Math.PI / 2 : orientation - Math.PI / 2; 
-        }
-
-        public static Directions GetOppositeDirection(Directions Direction)
-        {
-            switch (Direction)
-            {
-                case Directions.Left: return Directions.Right;
-                case Directions.Right: return Directions.Left;
-                case Directions.Down: return Directions.Up;
-                case Directions.Up: return Directions.Down;
-                default: return Directions.None;
-            }
         }
     }
 }

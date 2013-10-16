@@ -40,16 +40,16 @@ namespace Maze.Classes
 
         public override void StartMotion()
         {
-            SelectNewDirection();
+            SelectNewOrientation();
             base.StartMotion();
         }
 
-        private void SelectNewDirection()
+        private void SelectNewOrientation()
         {
-            SelectNewDirection(true);
+            SelectNewOrientation(true);
         }
 
-        private void SelectNewDirection(bool includeCurrent)
+        private void SelectNewOrientation(bool includeCurrent)
         {
             pr_isOrientSet = false;
             double newOrientation = 0;
@@ -71,7 +71,7 @@ namespace Maze.Classes
 
                 // Ignore Opposite Direction if there is another one
                 if (currentCell.CanMoveTo(newOrientation) &&
-                    (newOrientation != GetOppositeOrientation(Orientation)))
+                    (newOrientation != GetOppositeDirection(Orientation)))
                 {
                     Orientation = newOrientation;
                     pr_isOrientSet = true;
@@ -80,9 +80,9 @@ namespace Maze.Classes
             }
 
             // Go opposite Direction if no choice to go
-            if (currentCell.CanMoveTo(GetOppositeOrientation(Orientation)))
+            if (currentCell.CanMoveTo(GetOppositeDirection(Orientation)))
             {
-                Orientation = GetOppositeOrientation(Orientation);
+                Orientation = GetOppositeDirection(Orientation);
                 pr_isOrientSet = true;
             }
 
@@ -105,12 +105,12 @@ namespace Maze.Classes
             mover.Position = new GPS(mover.Position, 25, 25);
 
             if (pr_isOrientSet == false) // First time moving
-                SelectNewDirection();
+                SelectNewOrientation();
             else if (Random.Int(100) <= 33)  // 33% chance to change direction
-                SelectNewDirection();
+                SelectNewOrientation();
 
             if (!WorldMap.GetCell(this.mover.Position.Location).CanMoveTo(Orientation))
-                SelectNewDirection();
+                SelectNewOrientation();
 
             DefineNextGPS();
 
@@ -122,7 +122,7 @@ namespace Maze.Classes
             nextCell = WorldMap.GetCell(nextGPS.Location);
             if (nextCell.HasAttribute(CellAttributes.IsStart))
             {
-                SelectNewDirection(false);
+                SelectNewOrientation(false);
                 DefineNextGPS();
             }
         }
