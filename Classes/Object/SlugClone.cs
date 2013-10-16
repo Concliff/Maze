@@ -21,9 +21,9 @@ namespace Maze.Classes
             BaseSpeed = 1.0d;
         }
 
-        public void Create(GPS position, Movement.Direction currentDirection)
+        public void Create(GPS position, double currentOrientation)
         {
-            ((CustomMovement)this.motionMaster).SetDirection(currentDirection);
+            ((CustomMovement)this.motionMaster).Orientation = currentOrientation;
             base.Create(position);
         }
 
