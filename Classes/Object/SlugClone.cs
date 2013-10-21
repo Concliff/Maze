@@ -8,12 +8,13 @@ namespace Maze.Classes
     /// <summary>
     /// Represents an exact copy of the <see cref="Slug"/> unit that moves at the same direction and detonates by any obstacle or unit.
     /// </summary>
-    public class SlugClone : Slug
+    public class SlugClone : Unit
     {
         public SlugClone()
         {
             this.unitType = UnitTypes.SlugClone;
-            this.ObjectType = ObjectTypes.Slug;
+            this.ObjectType = ObjectTypes.Unit;
+            this.unitSide = UnitSides.Good;
             this.currentCell = Map.Instance.GetCell(Position.Location);
 
             objectSize.Width = GlobalConstants.PLAYER_SIZE_WIDTH;
@@ -41,11 +42,9 @@ namespace Maze.Classes
 
                 if (Position == previousPosition)
                     KillUnit(this);
-
-                return;
             }
 
-            CheckUnitsCollision();
+            base.UpdateState(timeP);
         }
 
         public override void SetDeathState(DeathStates deathState)
@@ -56,6 +55,11 @@ namespace Maze.Classes
                 CastEffect(9, this);
                 ObjectState = ObjectStates.Removed;
             }
+        }
+
+        protected override void UnitCollision(Unit unit)
+        {
+            unit.KillUnit(this);
         }
     }
 }

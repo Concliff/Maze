@@ -98,6 +98,8 @@ namespace Maze.Classes
                     return DeimosImage;
                 case UnitTypes.Phobos:
                     return PhobosImage;
+                case UnitTypes.SlugClone:
+                    return SlugImage;
             }
 
             // Else nothing to draw

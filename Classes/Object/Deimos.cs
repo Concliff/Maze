@@ -16,6 +16,7 @@ namespace Maze.Classes
         public Deimos()
         {
             this.unitType = UnitTypes.Deimos;
+            this.unitSide = UnitSides.Evil;
 
             Position = new GPS(Home, 25, 25);
 

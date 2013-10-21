@@ -50,6 +50,21 @@ namespace Maze.Classes
     };
 
     /// <summary>
+    /// Defines two sides of the Unit forces that are the enemies to each other.
+    /// </summary>
+    public enum UnitSides
+    {
+        /// <summary>
+        /// Any friendly unit and the Slug itself.
+        /// </summary>
+        Good,
+        /// <summary>
+        /// Any Hostile units.
+        /// </summary>
+        Evil,
+    };
+
+    /// <summary>
     /// Specifies unit special features.
     /// </summary>
     [Flags]
@@ -266,6 +281,16 @@ namespace Maze.Classes
         protected UnitTypes unitType;
 
         /// <summary>
+        /// The forces side where the unit belongs to.
+        /// </summary>
+        protected UnitSides unitSide;
+
+        /// <summary>
+        /// A collection of the currently colliding units.
+        /// </summary>
+        private List<Unit> collidingUnits;
+
+        /// <summary>
         /// Initializes a new instance of the Unit class.
         /// </summary>
         public Unit()
@@ -277,8 +302,11 @@ namespace Maze.Classes
 
             ObjectType = ObjectTypes.Unit;
             this.unitType = UnitTypes.Unit;
+            this.unitSide = UnitSides.Evil;
 
             this.effectList = new EffectCollection(this);
+
+            this.collidingUnits = new List<Unit>();
 
             BaseSpeed = 1.0d;
             SpeedRate = BaseSpeed;
@@ -372,6 +400,14 @@ namespace Maze.Classes
         public UnitTypes UnitType
         {
             get { return this.unitType; }
+        }
+
+        /// <summary>
+        /// Gets the forces side of the unit.
+        /// </summary>
+        public UnitSides UnitSide
+        {
+            get { return this.unitSide; }
         }
 
         /// <summary>
@@ -632,6 +668,10 @@ namespace Maze.Classes
 
         public override void UpdateState(int timeP)
         {
+            // Only GOOD units are checked for collisions
+            if (UnitSide == UnitSides.Good)
+                CheckUnitsCollision();
+
             if (deathState == DeathStates.Dead)
             {
                 if (respawnTimer < 0)
@@ -675,5 +715,61 @@ namespace Maze.Classes
             if (this.motionMaster != null)
                 this.motionMaster.StopMotion();
         }
+
+        /// <summary>
+        /// Checks whether the unit contacts with hostiles units and then calls the appropriate methods.
+        /// </summary>
+        protected void CheckUnitsCollision()
+        {
+            if (!IsAlive || !IsVisible)
+                return;
+
+            // Kill a unit in a collision with others Units with the opposite side.
+            // Collision = any "hostile" Unit is passing by closer then 30
+            List<Unit> Units = GetUnitsWithinRange(30);
+            if (Units.Count > 0)
+            {
+                foreach (Unit unit in Units)
+                {
+                    // Skip the same side units
+                    if (UnitSide == unit.UnitSide)
+                        continue;
+
+
+                    if (!this.collidingUnits.Exists(p => p.GUID == unit.GUID))
+                    {
+                        UnitCollisionBegins(unit);
+                        this.collidingUnits.Add(unit);
+                    }
+
+                    UnitCollision(unit);
+                }
+            }
+            else
+                if (this.collidingUnits.Count > 0)
+                {
+                    foreach (Unit unit in this.collidingUnits)
+                        UnitCollisionEnds(unit);
+                    this.collidingUnits.Clear();
+                }
+        }
+
+        /// <summary>
+        /// Called every update when the unit is in contact with another unit.
+        /// </summary>
+        /// <param name="unit">The source of the collision.</param>
+        protected virtual void UnitCollision(Unit unit) { }
+
+        /// <summary>
+        /// Called when the unit first time came in contact with another unit.
+        /// </summary>
+        /// <param name="unit">The source of the collision.</param>
+        protected virtual void UnitCollisionBegins(Unit unit) { }
+
+        /// <summary>
+        /// Called when the unit goes away from the collision with another unit.
+        /// </summary>
+        /// <param name="unit">The source of the collision.</param>
+        protected virtual void UnitCollisionEnds(Unit unit) { }
     }
 }

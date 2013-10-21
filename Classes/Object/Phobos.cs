@@ -16,6 +16,7 @@ namespace Maze.Classes
         public Phobos()
         {
             this.unitType = UnitTypes.Phobos;
+            this.unitSide = UnitSides.Evil;
             this.unitFlags |= UnitFlags.CanNotBeKilled;
 
             this.motionMaster = new ChasingMovement(this);

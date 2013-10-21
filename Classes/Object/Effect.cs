@@ -119,7 +119,7 @@ namespace Maze.Classes
                     List<Unit> enemiesAround = ObjectSearcher.GetUnitsWithinRange(caster, effectInfo.Range, false, true);
                     foreach (Unit unit in enemiesAround)
                     {
-                        if (unit.GetType() == caster.GetType())
+                        if (unit.UnitSide == caster.UnitSide)
                             continue;
 
                         AddTarget(unit);

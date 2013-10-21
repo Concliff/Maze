@@ -18,7 +18,6 @@ namespace Maze.Classes
         private int downTime; // stand still time
         private int travelTime; // in motion time
         private bool isInMotion;
-        private List<Unit> collidingUnits;
 
         /// <summary>
         /// Total game score of this Slug
@@ -38,14 +37,13 @@ namespace Maze.Classes
             Name = "Noname";
             ObjectType = ObjectTypes.Slug;
             this.unitType = UnitTypes.Slug;
+            this.unitSide = UnitSides.Good;
             this.respawnLocation = Map.Instance.GetStartPoint();
 
             // Set Start Location
             Position = new GPS(Home, 25, 25);
 
             this.respawnTimer = 3000;
-
-            this.collidingUnits = new List<Unit>();
 
             OozeEnergy = MaxOozeEnergy;
 
@@ -114,8 +112,6 @@ namespace Maze.Classes
 
         public override void UpdateState(int timeP)
         {
-            CheckUnitsCollision();
-
             // Slug is moving:
             // take 2 OozeEnergy every second
             if (isInMotion && GetEffectsByType(EffectTypes.Replenishment).Count == 0) // or id under Replenishment effect
@@ -144,36 +140,6 @@ namespace Maze.Classes
             MovementAction(timeP);
 
             base.UpdateState(timeP);
-        }
-
-        protected void CheckUnitsCollision()
-        {
-            if (IsAlive && IsVisible)
-            {
-                // Kill Slug in a collision with others Units
-                // Collision = any "hostile" Unit is passing by closer then 30
-                List<Unit> Units = GetUnitsWithinRange(30);
-                if (Units.Count > 0)
-                {
-                    foreach (Unit unit in Units)
-                    {
-                        if (!this.collidingUnits.Exists(p => p.GUID == unit.GUID))
-                        {
-                            OnUnitCollision(unit);
-                            OnUnitCollisionBegin(unit);
-                            this.collidingUnits.Add(unit);
-                        }
-                    }
-                }
-                else
-                    if (this.collidingUnits.Count > 0)
-                    {
-                        foreach (Unit unit in this.collidingUnits)
-                            OnUnitCollisionEnd(unit);
-                        this.collidingUnits.Clear();
-                    }
-
-            }
         }
 
         public override void SetDeathState(DeathStates deathState)
@@ -321,12 +287,7 @@ namespace Maze.Classes
             clone.Create(Position, this.motionMaster.CurrentDirection);
         }
 
-        public void OnUnitCollisionBegin(Unit unit)
-        {
-
-        }
-
-        public void OnUnitCollisionEnd(Unit unit)
+        protected override void UnitCollisionEnds(Unit unit)
         {
             if (this.HasEffectType(EffectTypes.Shield))
             {
@@ -336,16 +297,11 @@ namespace Maze.Classes
             }
         }
 
-        public void OnUnitCollision(Unit unit)
+        protected override void UnitCollision(Unit unit)
         {
-            // HACK: do not collide with SlugClone
-            // TODO: Remove this after friendly/hostile Unit separation
-            if (unit.ObjectType != ObjectTypes.Slug)
-            {
-                // Do not kill with shield effect
-                if (!this.HasEffectType(EffectTypes.Shield))
-                    unit.KillUnit(this);
-            }
+            // Do not kill with shield effect
+            if (!this.HasEffectType(EffectTypes.Shield))
+                unit.KillUnit(this);
         }
 
     }
