@@ -115,7 +115,8 @@ namespace Maze.Classes
                         AddTarget(nearestUnit);
                     break;
                 case EffectTargets.AllEnemiesInArea:
-                    List<Unit> enemiesAround = ObjectSearcher.GetUnitsWithinRange(caster, effectInfo.Range);
+                    // Include invisible units (Possibly needed an implementation of the effect flag about the unit's visibility)
+                    List<Unit> enemiesAround = ObjectSearcher.GetUnitsWithinRange(caster, effectInfo.Range, false, true);
                     foreach (Unit unit in enemiesAround)
                     {
                         if (unit.GetType() == caster.GetType())

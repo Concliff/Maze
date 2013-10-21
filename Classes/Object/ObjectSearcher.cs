@@ -38,12 +38,12 @@ namespace Maze.Classes
 
         public static List<Unit> GetUnitsWithinRange(Object searcher, int rangeDistance)
         {
-            return GetUnitsWithinRange(searcher, rangeDistance, false, false);
+            return GetUnitsWithinRange(searcher, rangeDistance, true, true);
         }
 
-        public static List<Unit> GetUnitsWithinRange(Object searcher, int rangeDistance, bool includeInvisible, bool includeDead)
+        public static List<Unit> GetUnitsWithinRange(Object searcher, int rangeDistance, bool isVisibleOnly, bool isAliveOnly)
         {
-            List<Unit> units = GetUnitsInArea(searcher.Position, rangeDistance, includeInvisible, includeDead);
+            List<Unit> units = GetUnitsInArea(searcher.Position, rangeDistance, isVisibleOnly, isAliveOnly);
 
             // exclude itself
             if (searcher.ObjectType == ObjectTypes.Unit || searcher.ObjectType == ObjectTypes.Slug)
@@ -74,7 +74,7 @@ namespace Maze.Classes
             return objects;
         }
 
-        public static List<Unit> GetUnitsInArea(GPS centralPosition, int radius, bool includeInvisible, bool includeDead)
+        public static List<Unit> GetUnitsInArea(GPS centralPosition, int radius, bool isVisibleOnly, bool isAliveOnly)
         {
             List<GridLocation> locations = GetMatchedLocations(centralPosition, radius);
             List<Unit> units = new List<Unit>();
@@ -86,16 +86,9 @@ namespace Maze.Classes
                     continue;
                 foundUnits = FilterInRangeObjects<Unit>(foundUnits, centralPosition, radius);
                 if (foundUnits.Count > 0)
-                    if (!includeInvisible && !includeDead)
-                    {
-                        foreach (Unit unit in foundUnits)
-                            if (unit.IsAlive && !includeDead || unit.IsVisible && !includeInvisible)
-                                units.Add(unit);
-                    }
-                    else
-                    {
-                        units.AddRange(foundUnits);
-                    }
+                    foreach (Unit unit in foundUnits)
+                        if ((!isVisibleOnly || (isVisibleOnly && unit.IsVisible)) && (!isAliveOnly || (isAliveOnly && unit.IsAlive)))
+                            units.Add(unit);
             }
 
             return units;

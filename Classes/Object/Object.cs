@@ -262,9 +262,9 @@ namespace Maze.Classes
         {
             return ObjectSearcher.GetUnitsWithinRange(this, rangeDistance);
         }
-        protected List<Unit> GetUnitsWithinRange(int rangeDistance, bool includeInvisible, bool includeDead)
+        protected List<Unit> GetUnitsWithinRange(int rangeDistance, bool isVisibleOnly, bool isAliveOnly)
         {
-            return ObjectSearcher.GetUnitsWithinRange(this, rangeDistance, includeInvisible, includeDead);
+            return ObjectSearcher.GetUnitsWithinRange(this, rangeDistance, isVisibleOnly, isAliveOnly);
         }
 
         /// <summary>
