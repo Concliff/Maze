@@ -86,6 +86,14 @@ namespace Maze.Classes
         public int Z;
         public int Level;
 
+        public GridLocation(int x, int y, int z, int level)
+        {
+            X = x;
+            Y = y;
+            Z = z;
+            Level = level;
+        }
+
         public static bool operator ==(GridLocation a, GridLocation b)
         {
             if (a == null || b == null)
@@ -156,7 +164,11 @@ namespace Maze.Classes
             set
             {
                 Location.X = value.X / GlobalConstants.CELL_WIDTH;
+                if (value.X < 0)
+                    Location.X--;
                 Location.Y = value.Y / GlobalConstants.CELL_HEIGHT;
+                if (value.Y < 0)
+                    Location.Y--;
                 Location.Z = value.Z;
                 Location.Level = value.Level;
 
