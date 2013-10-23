@@ -84,7 +84,7 @@ namespace MapEditor.Forms
             NewBlock.OptionValue = Convert.ToInt32(OptionValueTextBox.Text);
 
             Map.Instance.AddCell(NewBlock);
-            Program.EditorForm.RebuildGraphMap();
+            Program.EditorForm.Invalidate();
             this.Close();
         }
 
@@ -97,7 +97,7 @@ namespace MapEditor.Forms
         {
             Map.Instance.AddEmptyCell(Block);
             Block.Type = 16;
-            Program.EditorForm.RebuildGraphMap();
+            Program.EditorForm.Invalidate();
             this.Close();
         }
     }

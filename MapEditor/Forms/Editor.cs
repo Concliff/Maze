@@ -14,127 +14,85 @@ namespace MapEditor.Forms
 {
     public partial class Editor : MazeForm
     {
-        struct VritualPlayer
-        {
-            public GPS Position;
-        };
-
-        private VritualPlayer oPlayer;
-        private Timer SystemTimer;
+        /// <summary>
+        /// Central position of the displayed map.
+        /// </summary>
+        private GPS centralGPS;
         private BlockEdit BlockEditForm;
+
+        private Point capturedMousePoint;
+        private bool isCapturingMove;
 
         public Editor()
         {
             InitializeComponent();
             CustomInitialize();
 
-            SystemTimer = new Timer();
-            SystemTimer.Interval = GlobalConstants.TIMER_TICK_IN_MS;
-            SystemTimer.Tick += new EventHandler(SystemTimerTick);
-            SystemTimer.Start();
+            centralGPS.Location = Map.Instance.GetStartPoint();
+            centralGPS.X = 25;
+            centralGPS.Y = 25;
 
-            oPlayer = new VritualPlayer();
-            oPlayer.Position.Location = Map.Instance.GetStartPoint();
-            oPlayer.Position.X = 25;
-            oPlayer.Position.Y = 25;
+            //this.centralGPS = new GPS(new GridLocation(25, 25, 0, 0), 25, 25);
 
             levelUpDown.Value = 0;
 
-            RebuildGraphMap();
+            Invalidate();
             this.Focus();
         }
 
-        public void SystemTimerTick(object sender, EventArgs e)
+        void pbMap_MouseClick(object sender, MouseEventArgs e)
         {
-            uint MoveType = (uint)Directions.None;
-            for (int counter = 0; counter < KeyMgr.KeysDownCount; ++counter)
-                switch (KeyMgr.KeyDown(counter))
-                {
-                    case Keys.W: MoveType += (uint)Directions.Up; break;
-                    case Keys.A: MoveType += (uint)Directions.Left; break;
-                    case Keys.S: MoveType += (uint)Directions.Down; break;
-                    case Keys.D: MoveType += (uint)Directions.Right; break;
-                }
-            MovementAction(MoveType);
+            // Only Left Mouse Button
+            if (e.Button != System.Windows.Forms.MouseButtons.Left)
+                return;
 
-            // Get last pressed Key
-            switch (KeyMgr.ExtractKeyPressed())
+            GridLocation cursorLocation = new GridLocation();
+
+            // Calculate Mouse absolute position
+            // i.e How far it is from the cetral position
+            cursorLocation.X = this.centralGPS.Absolute.X - (this.pbMap.Size.Width / 2 - e.Location.X);
+            cursorLocation.Y = this.centralGPS.Absolute.Y - (this.pbMap.Size.Height / 2 - e.Location.Y);
+
+            GPS cursorGPS = new GPS();
+            cursorGPS.Absolute = cursorLocation;
+
+            Cell Block = Map.Instance.GetCell(cursorGPS.Location);
+
+            if (BlockEditForm == null)
+                BlockEditForm = new BlockEdit(Block);
+            else
             {
-                case Keys.PageUp:
-                    int nextLevel = Map.Instance.CurrentLevel;
-                    ++nextLevel;
-                    Map.Instance.SetMap(Map.Instance.GetMap(), nextLevel);
-                    oPlayer.Position.Location.Level = nextLevel;
-                    RebuildGraphMap();
-                    break;
-                case Keys.PageDown:
-                    int previousLevel = Map.Instance.CurrentLevel;
-                    --previousLevel;
-                    if (previousLevel < 0)
-                        previousLevel = 0;
-                    Map.Instance.SetMap(Map.Instance.GetMap(), previousLevel);
-                    oPlayer.Position.Location.Level = previousLevel;
-                    RebuildGraphMap();
-                    break;
+                BlockEditForm.Close();
+                BlockEditForm = new BlockEdit(Block);
             }
-
-        }
-        private void MovementAction(uint MoveType)
-        {
-            if ((MoveType & (uint)Directions.Right) != 0)
-                oPlayer.Position.X += GlobalConstants.MOVEMENT_STEP_PX * 2;
-            if ((MoveType & (uint)Directions.Left) != 0)
-                oPlayer.Position.X -= GlobalConstants.MOVEMENT_STEP_PX * 2;
-            if ((MoveType & (uint)Directions.Up) != 0)
-                oPlayer.Position.Y -= GlobalConstants.MOVEMENT_STEP_PX * 2;
-            if ((MoveType & (uint)Directions.Down) != 0)
-                oPlayer.Position.Y += GlobalConstants.MOVEMENT_STEP_PX * 2;
-
-            if (oPlayer.Position.X > GlobalConstants.CELL_WIDTH)
-            {
-                ++oPlayer.Position.Location.X;
-                oPlayer.Position.X -= GlobalConstants.CELL_WIDTH;
-            }
-
-            if (oPlayer.Position.X < 0)
-            {
-                --oPlayer.Position.Location.X;
-                oPlayer.Position.X = GlobalConstants.CELL_WIDTH + oPlayer.Position.X;
-            }
-
-            if (oPlayer.Position.Y > GlobalConstants.CELL_HEIGHT)
-            {
-                ++oPlayer.Position.Location.Y;
-                oPlayer.Position.Y -= GlobalConstants.CELL_HEIGHT;
-            }
-
-            if (oPlayer.Position.Y < 0)
-            {
-                --oPlayer.Position.Location.Y;
-                oPlayer.Position.Y = GlobalConstants.CELL_HEIGHT + oPlayer.Position.Y;
-            }
-
-            RebuildGraphMap();
+            BlockEditForm.Show();
+            BlockEditForm.Focus();
         }
 
-        public void RebuildGraphMap()
+        void pbMap_Paint(object sender, PaintEventArgs e)
         {
-            Graphics gGraphic;
-            gGraphic = this.CreateGraphics();
-            this.SuspendLayout();
+            Graphics gGraphic = e.Graphics;
+
             GridLocation PBLocation = new GridLocation();
             Cell Block = new Cell();
             // CellGraph
-            for (int i = 0; i < GlobalConstants.GRIDMAP_WIDTH; ++i)
-                for (int j = 0; j < GlobalConstants.GRIDMAP_HEIGHT; ++j)
+            int cellsCountWidth = this.pbMap.Size.Width / GlobalConstants.CELL_WIDTH + 3;
+            int cellsCountHeight = this.pbMap.Size.Height / GlobalConstants.CELL_HEIGHT + 3;
+
+            // HACK: Correction values because the width and height of drawing region are not a multiple of CELL_WIDTH and CELL_HEIGHT
+            int xCorrection = ((int)Math.Ceiling(this.pbMap.Size.Height * 1d / GlobalConstants.CELL_HEIGHT) * GlobalConstants.CELL_HEIGHT - this.pbMap.Size.Height) / 2;
+            int yCorrection = ((int)Math.Ceiling(this.pbMap.Size.Width * 1d / GlobalConstants.CELL_WIDTH) * GlobalConstants.CELL_WIDTH - this.pbMap.Size.Width) / 2;
+
+            for (int i = 0; i < cellsCountWidth; ++i)
+                for (int j = 0; j < cellsCountHeight; ++j)
                 {
                     int x, y;
-                    x = (i - 1) * GlobalConstants.CELL_WIDTH - (oPlayer.Position.X - GlobalConstants.CELL_WIDTH / 2) - this.pbRightPanel.Size.Width / 2;
-                    y = (j - 1) * GlobalConstants.CELL_HEIGHT - (oPlayer.Position.Y - GlobalConstants.CELL_HEIGHT / 2) + FormTitleBarSize;
-                    PBLocation.X = oPlayer.Position.Location.X + i - GlobalConstants.GRIDMAP_WIDTH / 2;
-                    PBLocation.Y = oPlayer.Position.Location.Y + j - GlobalConstants.GRIDMAP_HEIGHT / 2;
-                    PBLocation.Z = oPlayer.Position.Location.Z;
-                    PBLocation.Level = oPlayer.Position.Location.Level;
+                    x = (i - 1) * GlobalConstants.CELL_WIDTH - this.centralGPS.X + xCorrection;
+                    y = (j - 1) * GlobalConstants.CELL_HEIGHT - this.centralGPS.Y + yCorrection;
+                    PBLocation.X = centralGPS.Location.X + i - cellsCountWidth / 2;
+                    PBLocation.Y = centralGPS.Location.Y + j - cellsCountHeight / 2;
+                    PBLocation.Z = centralGPS.Location.Z;
+                    PBLocation.Level = centralGPS.Location.Level;
                     Block = Map.Instance.GetCell(PBLocation);
 
                     gGraphic.DrawImage(PictureManager.GetPictureByType(Block.Type), x, y, GlobalConstants.CELL_WIDTH, GlobalConstants.CELL_HEIGHT);
@@ -167,35 +125,41 @@ namespace MapEditor.Forms
                             PictureManager.PortalImage.Width, PictureManager.PortalImage.Height);
                     }
                 }
-            gGraphic.Dispose();
-            this.ResumeLayout();
         }
 
-        void BlockClick(object sender, System.EventArgs e)
+        void pbMap_MouseDown(object sender, MouseEventArgs e)
         {
-            GridLocation CursorGPS = oPlayer.Position.Location;
+            if (e.Button != System.Windows.Forms.MouseButtons.Right)
+                return;
 
-            // Calculate GPS of mouse click location by distance beetween player postion, 
-            // form center point and MouseClick point
-            CursorGPS.X += (int)Math.Floor((oPlayer.Position.X + (Cursor.Position.X - this.Location.X -
-                (this.PlayerPB.Location.X + this.PlayerPB.Size.Width / 2 + FormBorderBarSize))) /
-                (double)GlobalConstants.CELL_WIDTH);
+            this.capturedMousePoint = Cursor.Position;
+            this.isCapturingMove = true;
+            Cursor.Hide();
+        }
 
-            CursorGPS.Y += (int)Math.Floor((oPlayer.Position.Y + (Cursor.Position.Y - this.Location.Y -
-                (this.PlayerPB.Location.Y + this.PlayerPB.Size.Height / 2 + FormTitleBarSize))) /
-                (double)GlobalConstants.CELL_HEIGHT);
+        void pbMap_MouseUp(object sender, MouseEventArgs e)
+        {
+            if (e.Button != System.Windows.Forms.MouseButtons.Right)
+                return;
 
-            Cell Block = Map.Instance.GetCell(CursorGPS);
+            this.isCapturingMove = false;
+            Cursor.Show();
+        }
 
-            if (BlockEditForm == null)
-                BlockEditForm = new BlockEdit(Block);
-            else
-            {
-                BlockEditForm.Close();
-                BlockEditForm = new BlockEdit(Block);
-            }
-            BlockEditForm.Show();
-            BlockEditForm.Focus();
+        void pbMap_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (!this.isCapturingMove)
+                return;
+            // Find out where the mouse were moved
+            // and these changes apply to the new Map center
+            GridLocation prevLocation = this.centralGPS.Absolute;
+            prevLocation.X += this.capturedMousePoint.X - Cursor.Position.X;
+            prevLocation.Y += this.capturedMousePoint.Y - Cursor.Position.Y;
+            this.centralGPS.Absolute = prevLocation;
+
+            //Cursor.Position = this.capturedMousePoint;
+            this.capturedMousePoint = Cursor.Position;
+            this.pbMap.Refresh();
         }
 
         void MapEditorFormClosing(object sender, FormClosingEventArgs e)

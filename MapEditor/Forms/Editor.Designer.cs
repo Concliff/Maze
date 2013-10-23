@@ -42,7 +42,7 @@ namespace MapEditor.Forms
             //this.BackColor = System.Drawing.Color.Black;
             this.ClientSize = new System.Drawing.Size(284, 262);
             this.Name = "Editor";
-            this.Text = "Ally Map Editor";
+            this.Text = "Maze Map Editor";
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -54,21 +54,29 @@ namespace MapEditor.Forms
         {
 
             this.KeyMgr = new KeyManager();
-            this.PlayerPB = new PictureBox();
             this.pbRightPanel = new PictureBox();
             this.lblCurrentMap = new Label();
             this.levelUpDown = new System.Windows.Forms.NumericUpDown();
             this.lblDescription = new Label();
+            this.pbMap = new PictureBox();
 
             this.Size = new System.Drawing.Size
                 ((GlobalConstants.CELL_WIDTH) * (GlobalConstants.GRIDMAP_WIDTH - 2),
                 (GlobalConstants.CELL_HEIGHT) * (GlobalConstants.GRIDMAP_HEIGHT - 2) + 100);
             this.FormClosing += new FormClosingEventHandler(MapEditorFormClosing);
-            this.MouseClick +=new MouseEventHandler(BlockClick);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
 
-            this.pbRightPanel.Size = new System.Drawing.Size
-                (100 - 2*FormBorderBarSize, this.Size.Height - FormBorderBarSize - FormTitleBarSize);
-            this.pbRightPanel.Location = new System.Drawing.Point(this.Size.Width - 100, 0);
+            this.pbMap.Size = new System.Drawing.Size(this.Size.Width - 100 - 2 * FormBorderBarSize, this.Size.Height - FormBorderBarSize - FormTitleBarSize);
+            this.pbMap.Location = new System.Drawing.Point(0, 0);
+            this.pbMap.BackColor = System.Drawing.Color.Gray;
+            this.pbMap.Paint += pbMap_Paint;
+            this.pbMap.MouseClick += pbMap_MouseClick;
+            this.pbMap.MouseDown += pbMap_MouseDown;
+            this.pbMap.MouseUp += pbMap_MouseUp;
+            this.pbMap.MouseMove += pbMap_MouseMove;
+
+            this.pbRightPanel.Size = new System.Drawing.Size(100, this.Size.Height - FormBorderBarSize - FormTitleBarSize);
+            this.pbRightPanel.Location = new System.Drawing.Point(this.Size.Width - 100 - 2 * FormBorderBarSize, 0);
             this.pbRightPanel.BackColor = System.Drawing.Color.Gray;
 
             lblCurrentMap.AutoSize = true;
@@ -86,30 +94,22 @@ namespace MapEditor.Forms
             this.levelUpDown.ValueChanged += new System.EventHandler(levelUpDown_ValueChanged);
             this.levelUpDown.TabStop = false;
 
-            this.PlayerPB.Size = new System.Drawing.Size(10, 10);
-            PlayerPB.BackColor = System.Drawing.Color.Red;
-            this.PlayerPB.Location = new System.Drawing.Point
-                ((this.Size.Width - pbRightPanel.Size.Width - this.PlayerPB.Size.Width) / 2, 
-                (this.Size.Height - this.PlayerPB.Size.Height) / 2 - (FormTitleBarSize - FormBorderBarSize));
-            this.PlayerPB.Name = "PlayerPB";
-            this.PlayerPB.TabIndex = 1;
-            this.PlayerPB.TabStop = false;
-
             this.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.KeyMgr.EventKeyPress);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.KeyMgr.EventKeyDown);
             this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.KeyMgr.EventKeyUp);
 
-            this.SetStyle(ControlStyles.DoubleBuffer | ControlStyles.UserPaint | ControlStyles.AllPaintingInWmPaint, true);
+            this.SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
+            this.SetStyle(ControlStyles.AllPaintingInWmPaint, true);
+            this.SetStyle(ControlStyles.UserPaint, true);
 
             // Adding Controls Order
-
-            this.Controls.Add(this.PlayerPB);
             //this.Controls.Add(this.lblCurrentMap);
             //this.Controls.Add(this.levelUpDown);
+            this.Controls.Add(this.pbMap);
             this.Controls.Add(lblDescription);
             this.Controls.Add(this.pbRightPanel);
-
         }
+
 
         void levelUpDown_ValueChanged(object sender, System.EventArgs e)
         {
@@ -119,14 +119,14 @@ namespace MapEditor.Forms
                 levelUpDown.Value = 100;
 
             Map.Instance.SetMap(Map.Instance.GetMap(), (int)levelUpDown.Value);
-            oPlayer.Position.Location.Level = (int)levelUpDown.Value;
+            centralGPS.Location.Level = (int)levelUpDown.Value;
 
             this.Focus();
         }
 
         KeyManager KeyMgr;
-        private System.Windows.Forms.PictureBox PlayerPB;
         private System.Windows.Forms.PictureBox pbRightPanel;
+        private System.Windows.Forms.PictureBox pbMap;
         private NumericUpDown levelUpDown;
         private Label lblCurrentMap;
         private Label lblDescription;
