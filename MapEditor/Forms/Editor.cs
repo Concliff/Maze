@@ -352,8 +352,8 @@ namespace MapEditor.Forms
                 this.cellEditForm.Close();
                 this.cellEditForm = new CellEdit(cell);
             }
-            this.cellEditForm.Show();
-            this.cellEditForm.Focus();
+            this.cellEditForm.FormClosing += (sender_, e_) => { this.pbMap.Refresh(); };
+            this.cellEditForm.ShowDialog();
         }
 
         void pbMap_Paint(object sender, PaintEventArgs e)
@@ -514,6 +514,83 @@ namespace MapEditor.Forms
                 else if (result == System.Windows.Forms.DialogResult.Cancel)
                     e.Cancel = true;
             }
+        }
+
+
+        private void pbMap_MouseLeave(object sender, System.EventArgs e)
+        {
+            this.tbxMapName.Focus();
+        }
+
+        private void pbMap_MouseEnter(object sender, System.EventArgs e)
+        {
+            this.pbMap.Focus();
+        }
+
+        private void pbMap_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode != Keys.W && e.KeyCode != Keys.A && e.KeyCode != Keys.S && e.KeyCode != Keys.D)
+                return;
+
+            // Compute the cursor GPS
+            Point cursorPoint = this.pbMap.PointToClient(Cursor.Position);
+            //Point cursorLocation = new Point(Cursor.Position.X - pbMapPoint.X, Cursor.Position.Y - pbMapPoint.Y);
+
+            GridLocation cursorLocation = new GridLocation();
+
+            // Calculate Mouse absolute position
+            // i.e How far it is from the cetral position
+            cursorLocation.X = this.centralGPS.Absolute.X - (this.pbMap.Size.Width / 2 - cursorPoint.X);
+            cursorLocation.Y = this.centralGPS.Absolute.Y - (this.pbMap.Size.Height / 2 - cursorPoint.Y);
+            cursorLocation.Z = this.centralGPS.Absolute.Z;
+            cursorLocation.Level = this.centralGPS.Location.Level;
+
+            GPS cursorGPS = new GPS();
+            cursorGPS.Absolute = cursorLocation;
+
+            Cell cell = GetCell(cursorGPS.Location);
+            if (cell.ID == -1)
+                cell.ID = NewCellID;
+
+            if (cell.Type == (uint)Directions.None)
+                cell.Type = 0;
+
+            switch (e.KeyCode)
+            {
+                case Keys.W:
+                    if (cell.CanMoveTo(Directions.Up))
+                        cell.Type -= (uint)Directions.Up;
+                    else
+                        cell.Type += (uint)Directions.Up;
+                    break;
+                case Keys.A:
+                    if (cell.CanMoveTo(Directions.Left))
+                        cell.Type -= (uint)Directions.Left;
+                    else
+                        cell.Type += (uint)Directions.Left;
+                    break;
+                case Keys.S:
+                    if (cell.CanMoveTo(Directions.Down))
+                        cell.Type -= (uint)Directions.Down;
+                    else
+                        cell.Type += (uint)Directions.Down;
+                    break;
+                case Keys.D:
+                    if (cell.CanMoveTo(Directions.Right))
+                        cell.Type -= (uint)Directions.Right;
+                    else
+                        cell.Type += (uint)Directions.Right;
+                    break;
+                case Keys.Z:
+                    if (cell.CanMoveTo(Directions.Up) && cell.CanMoveTo(Directions.Left) && cell.CanMoveTo(Directions.Down) && cell.CanMoveTo(Directions.Right))
+                        cell.Type = (uint)Directions.None;
+                    else
+                        cell.Type = (uint)Directions.Up + (uint)Directions.Left + (uint)Directions.Down + (uint)Directions.Right;
+                    break;
+            }
+
+            AddCell(cell);
+            this.pbMap.Refresh();
         }
     }
 }

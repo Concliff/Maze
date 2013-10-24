@@ -75,6 +75,9 @@ namespace MapEditor.Forms
             this.pbMap.MouseDown += pbMap_MouseDown;
             this.pbMap.MouseUp += pbMap_MouseUp;
             this.pbMap.MouseMove += pbMap_MouseMove;
+            this.pbMap.MouseEnter += pbMap_MouseEnter;
+            this.pbMap.MouseLeave += pbMap_MouseLeave;
+            this.pbMap.KeyDown += pbMap_KeyDown;
 
             this.pbRightPanel = new PictureBox();
             this.pbRightPanel.Size = new System.Drawing.Size(rightBarWidth, this.ClientSize.Height);/*(RightBarWidth, this.Size.Height - FormBorderBarSize - FormTitleBarSize);*/
