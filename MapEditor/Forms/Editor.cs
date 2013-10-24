@@ -154,7 +154,7 @@ namespace MapEditor.Forms
             this.startLocations = new Dictionary<int, GridLocation>();
             this.finishLocations = new Dictionary<int, GridLocation>();
             this.currentMapIndex = mapIndex;
-            this.levelsCount = 0;
+            this.levelsCount = 1;
             this.maxCellId = 0;
 
             if (mapIndex != -1)
@@ -188,7 +188,6 @@ namespace MapEditor.Forms
             else
             {
                 this.isNewMap = true;
-                this.levelsCount = 1;
                 this.tbxMapName.Text = "Enter_name";
                 this.tbxMapName.Focus();
             }
