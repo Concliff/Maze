@@ -57,7 +57,7 @@ namespace MapEditor.Forms
             this.Size = new System.Drawing.Size
                 ((GlobalConstants.CELL_WIDTH) * 10 + rightBarWidth,
                 (GlobalConstants.CELL_HEIGHT) * 10);
-            this.FormClosing += new FormClosingEventHandler(MapEditorFormClosing);
+            this.FormClosing += Editor_FormClosing;
             this.Load += Editor_Load;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
@@ -106,6 +106,7 @@ namespace MapEditor.Forms
             this.cboCurrentMap = new ComboBox();
             this.cboCurrentMap.Size = new System.Drawing.Size(95, 20);
             this.cboCurrentMap.Font = new System.Drawing.Font("Arial", 10);
+            this.cboCurrentMap.DropDownStyle = ComboBoxStyle.DropDownList;
             this.cboCurrentMap.SelectedValueChanged += cboCurrentMap_SelectedValueChanged;
 
             this.tbxMapName = new TextBox();

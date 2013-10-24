@@ -47,6 +47,8 @@ namespace MapEditor.Forms
             this.nudCurrentLevel.Value = 0;
             this.currentMapIndex = -1;
 
+            this.pr_isMapSaved = true;
+
             LoadMapNames();
             if (this.mapNames.Length > 0)
                 LoadMap(0);
@@ -184,6 +186,7 @@ namespace MapEditor.Forms
 
                 this.isNewMap = false;
                 this.tbxMapName.Text = mapName;
+                this.isMapSaved = true;
             }
             else
             {
@@ -423,6 +426,12 @@ namespace MapEditor.Forms
 
         void cboCurrentMap_SelectedValueChanged(object sender, System.EventArgs e)
         {
+            if (!this.isMapSaved)
+            {
+                System.Windows.Forms.DialogResult result = MessageBox.Show("Would you like to save the current map?", "Map Saving", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
+                if (result == System.Windows.Forms.DialogResult.Yes)
+                    SaveMap();
+            }
             LoadMap(this.cboCurrentMap.SelectedIndex);
         }
 
@@ -492,9 +501,14 @@ namespace MapEditor.Forms
             this.pbMap.Refresh();
         }
 
-        private void MapEditorFormClosing(object sender, FormClosingEventArgs e)
+        private void Editor_FormClosing(object sender, FormClosingEventArgs e)
         {
-            // TODO: Ask a confirmation if the map was changed
+            if (!this.isMapSaved)
+            {
+                System.Windows.Forms.DialogResult result = MessageBox.Show("Would you like to save the current map?", "Map Saving", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
+                if (result == System.Windows.Forms.DialogResult.Yes)
+                    SaveMap();
+            }
         }
     }
 }
