@@ -28,13 +28,13 @@ namespace MapEditor.Forms
             InitializeComponent();
             CustomInitialize();
 
-            centralGPS.Location = Map.Instance.GetStartPoint();
-            centralGPS.X = 25;
-            centralGPS.Y = 25;
+            this.centralGPS.Location = Map.Instance.GetStartPoint();
+            this.centralGPS.X = 25;
+            this.centralGPS.Y = 25;
 
             //this.centralGPS = new GPS(new GridLocation(25, 25, 0, 0), 25, 25);
 
-            levelUpDown.Value = 0;
+            this.nudCurrentLevel.Value = 0;
 
             Invalidate();
             this.Focus();
@@ -43,7 +43,7 @@ namespace MapEditor.Forms
         void pbMap_MouseClick(object sender, MouseEventArgs e)
         {
             // Only Left Mouse Button
-            if (e.Button != System.Windows.Forms.MouseButtons.Left)
+            if (e.Button != System.Windows.Forms.MouseButtons.Right)
                 return;
 
             GridLocation cursorLocation = new GridLocation();
@@ -76,8 +76,8 @@ namespace MapEditor.Forms
             GridLocation PBLocation = new GridLocation();
             Cell Block = new Cell();
             // CellGraph
-            int cellsCountWidth = this.pbMap.Size.Width / GlobalConstants.CELL_WIDTH + 3;
-            int cellsCountHeight = this.pbMap.Size.Height / GlobalConstants.CELL_HEIGHT + 3;
+            int cellsCountWidth = (int)Math.Ceiling(this.pbMap.Size.Width / 2d / GlobalConstants.CELL_WIDTH) * 2 + 1;
+            int cellsCountHeight = (int)Math.Ceiling(this.pbMap.Size.Height / 2d / GlobalConstants.CELL_HEIGHT) * 2 + 1;
 
             // HACK: Correction values because the width and height of drawing region are not a multiple of CELL_WIDTH and CELL_HEIGHT
             int xCorrection = ((int)Math.Ceiling(this.pbMap.Size.Height * 1d / GlobalConstants.CELL_HEIGHT) * GlobalConstants.CELL_HEIGHT - this.pbMap.Size.Height) / 2;
@@ -87,8 +87,8 @@ namespace MapEditor.Forms
                 for (int j = 0; j < cellsCountHeight; ++j)
                 {
                     int x, y;
-                    x = (i - 1) * GlobalConstants.CELL_WIDTH - this.centralGPS.X + xCorrection;
-                    y = (j - 1) * GlobalConstants.CELL_HEIGHT - this.centralGPS.Y + yCorrection;
+                    x = (i - 1) * GlobalConstants.CELL_WIDTH - this.centralGPS.X + xCorrection + 25;
+                    y = (j - 1) * GlobalConstants.CELL_HEIGHT - this.centralGPS.Y + yCorrection + 25;
                     PBLocation.X = centralGPS.Location.X + i - cellsCountWidth / 2;
                     PBLocation.Y = centralGPS.Location.Y + j - cellsCountHeight / 2;
                     PBLocation.Z = centralGPS.Location.Z;
@@ -127,26 +127,69 @@ namespace MapEditor.Forms
                 }
         }
 
-        void pbMap_MouseDown(object sender, MouseEventArgs e)
+        void nudCurrentLevel_ValueChanged(object sender, System.EventArgs e)
         {
-            if (e.Button != System.Windows.Forms.MouseButtons.Right)
+            if (this.nudCurrentLevel.Value < 0)
+                this.nudCurrentLevel.Value = 0;
+            else if (this.nudCurrentLevel.Value > 100)
+                this.nudCurrentLevel.Value = 100;
+
+            Map.Instance.SetMap(Map.Instance.GetMap(), (int)this.nudCurrentLevel.Value);
+            centralGPS.Location.Level = (int)this.nudCurrentLevel.Value;
+            this.pbMap.Refresh();
+            this.Focus();
+        }
+
+        void cboCurrentMap_SelectedValueChanged(object sender, System.EventArgs e)
+        {
+            // TODO: Load selected map from the file.
+        }
+
+        private void btnAddMap_Click(object sender, System.EventArgs e)
+        {
+            // TODO: Add new map
+        }
+
+        private void btnRemoveMap_Click(object sender, System.EventArgs e)
+        {
+            // TODO: Remove current map
+        }
+
+        private void btnAddLevel_Click(object sender, System.EventArgs e)
+        {
+            // TODO: Add new level
+        }
+
+        private void btnRemoveLevel_Click(object sender, System.EventArgs e)
+        {
+            // TODO: remove current level
+        }
+
+        private void btnSave_Click(object sender, System.EventArgs e)
+        {
+            // TODO: Save current map into the file.
+        }
+
+        private void pbMap_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (e.Button != System.Windows.Forms.MouseButtons.Left)
                 return;
 
             this.capturedMousePoint = Cursor.Position;
             this.isCapturingMove = true;
-            Cursor.Hide();
+            Cursor = Cursors.Hand;
         }
 
-        void pbMap_MouseUp(object sender, MouseEventArgs e)
+        private void pbMap_MouseUp(object sender, MouseEventArgs e)
         {
-            if (e.Button != System.Windows.Forms.MouseButtons.Right)
+            if (e.Button != System.Windows.Forms.MouseButtons.Left)
                 return;
 
             this.isCapturingMove = false;
-            Cursor.Show();
+            Cursor = DefaultCursor;
         }
 
-        void pbMap_MouseMove(object sender, MouseEventArgs e)
+        private void pbMap_MouseMove(object sender, MouseEventArgs e)
         {
             if (!this.isCapturingMove)
                 return;
@@ -162,7 +205,7 @@ namespace MapEditor.Forms
             this.pbMap.Refresh();
         }
 
-        void MapEditorFormClosing(object sender, FormClosingEventArgs e)
+        private void MapEditorFormClosing(object sender, FormClosingEventArgs e)
         {
             Map.Instance.Dispose();
         }

@@ -52,21 +52,22 @@ namespace MapEditor.Forms
 
         private void CustomInitialize()
         {
-
-            this.KeyMgr = new KeyManager();
-            this.pbRightPanel = new PictureBox();
-            this.lblCurrentMap = new Label();
-            this.levelUpDown = new System.Windows.Forms.NumericUpDown();
-            this.lblDescription = new Label();
-            this.pbMap = new PictureBox();
+            int rightBarWidth = 250;
 
             this.Size = new System.Drawing.Size
-                ((GlobalConstants.CELL_WIDTH) * (GlobalConstants.GRIDMAP_WIDTH - 2),
-                (GlobalConstants.CELL_HEIGHT) * (GlobalConstants.GRIDMAP_HEIGHT - 2) + 100);
+                ((GlobalConstants.CELL_WIDTH) * 10 + rightBarWidth,
+                (GlobalConstants.CELL_HEIGHT) * 10);
             this.FormClosing += new FormClosingEventHandler(MapEditorFormClosing);
+            this.Load += Editor_Load;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
+            this.SetStyle(ControlStyles.AllPaintingInWmPaint, true);
+            this.SetStyle(ControlStyles.UserPaint, true);
+            //this.MaximumSize = Size;
+            //this.MinimumSize = Size;
 
-            this.pbMap.Size = new System.Drawing.Size(this.Size.Width - 100 - 2 * FormBorderBarSize, this.Size.Height - FormBorderBarSize - FormTitleBarSize);
+            this.pbMap = new PictureBox();
+            this.pbMap.Size = new System.Drawing.Size(this.ClientSize.Width - rightBarWidth, this.ClientSize.Height);/*(this.Size.Width - RightBarWidth - 2 * FormBorderBarSize, this.Size.Height - FormBorderBarSize - FormTitleBarSize)*/;
             this.pbMap.Location = new System.Drawing.Point(0, 0);
             this.pbMap.BackColor = System.Drawing.Color.Gray;
             this.pbMap.Paint += pbMap_Paint;
@@ -75,60 +76,168 @@ namespace MapEditor.Forms
             this.pbMap.MouseUp += pbMap_MouseUp;
             this.pbMap.MouseMove += pbMap_MouseMove;
 
-            this.pbRightPanel.Size = new System.Drawing.Size(100, this.Size.Height - FormBorderBarSize - FormTitleBarSize);
-            this.pbRightPanel.Location = new System.Drawing.Point(this.Size.Width - 100 - 2 * FormBorderBarSize, 0);
+            this.pbRightPanel = new PictureBox();
+            this.pbRightPanel.Size = new System.Drawing.Size(rightBarWidth, this.ClientSize.Height);/*(RightBarWidth, this.Size.Height - FormBorderBarSize - FormTitleBarSize);*/
+            this.pbRightPanel.Location = new System.Drawing.Point(this.pbMap.Size.Width, 0);
             this.pbRightPanel.BackColor = System.Drawing.Color.Gray;
 
-            lblCurrentMap.AutoSize = true;
-            lblCurrentMap.Location = new System.Drawing.Point(pbRightPanel.Location.X + 10, 40);
-            lblCurrentMap.Text = "Level:";
+            // Labels
+            this.lblCurrentMap = new Label();
+            this.lblCurrentMap.Parent = this.pbRightPanel;
+            this.lblCurrentMap.AutoSize = true;
+            this.lblCurrentMap.Text = "Map";
+            this.lblCurrentMap.Font = new System.Drawing.Font("Arial", 14);
+            this.lblCurrentMap.BackColor = System.Drawing.Color.Transparent;
+            this.lblCurrentMap.ForeColor = System.Drawing.Color.White;
 
-            lblDescription.AutoSize = true;
-            lblDescription.Location = new System.Drawing.Point(pbRightPanel.Location.X + 10, 40);
-            lblDescription.Text = "Page Up\n - Next.\nPage Down\n - Previous";
+            this.lblMapName = new Label();
+            this.lblMapName.Parent = this.pbRightPanel;
+            this.lblMapName.AutoSize = true;
+            this.lblMapName.Text = "Name";
+            this.lblMapName.Font = new System.Drawing.Font("Arial", 14);
+            this.lblMapName.BackColor = System.Drawing.Color.Transparent;
+            this.lblMapName.ForeColor = System.Drawing.Color.White;
 
-            this.levelUpDown.Location = new System.Drawing.Point(pbRightPanel.Location.X + 10, 70);
-            this.levelUpDown.Name = "Level";
-            this.levelUpDown.Size = new System.Drawing.Size(50, 20);
-            this.levelUpDown.TabIndex = 0;
-            this.levelUpDown.ValueChanged += new System.EventHandler(levelUpDown_ValueChanged);
-            this.levelUpDown.TabStop = false;
+            this.lblCurrentLevel = new Label();
+            this.lblCurrentLevel.Parent = this.pbRightPanel;
+            this.lblCurrentLevel.AutoSize = true;
+            this.lblCurrentLevel.Text = "Level";
+            this.lblCurrentLevel.Font = new System.Drawing.Font("Arial", 14);
+            this.lblCurrentLevel.ForeColor = System.Drawing.Color.White;
+            this.lblCurrentLevel.BackColor = System.Drawing.Color.Transparent;
 
-            this.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.KeyMgr.EventKeyPress);
-            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.KeyMgr.EventKeyDown);
-            this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.KeyMgr.EventKeyUp);
+            this.cboCurrentMap = new ComboBox();
+            this.cboCurrentMap.Parent = this.pbRightPanel;
+            this.cboCurrentMap.Size = new System.Drawing.Size(95, 20);
+            this.cboCurrentMap.Font = new System.Drawing.Font("Arial", 10);
+            this.cboCurrentMap.SelectedValueChanged += cboCurrentMap_SelectedValueChanged;
+            // Test Values. Should be removed
+            this.cboCurrentMap.Items.AddRange(new object[] { "- New Map -", "Map Name 1", "Map Name 2", "Map Name 3" });
 
-            this.SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
-            this.SetStyle(ControlStyles.AllPaintingInWmPaint, true);
-            this.SetStyle(ControlStyles.UserPaint, true);
+            this.tbxMapName = new TextBox();
+            this.tbxMapName.Parent = this.pbRightPanel;
+            this.tbxMapName.Size = new System.Drawing.Size(95, 10);
+            this.tbxMapName.Font = new System.Drawing.Font("Arial", 10);
+            // Test Value. Should be removed
+            this.tbxMapName.Text = "Map Name 1";
+
+            this.nudCurrentLevel = new NumericUpDown();
+            this.nudCurrentLevel.Name = "Current Level";
+            this.nudCurrentLevel.Size = new System.Drawing.Size(95, 20);
+            this.nudCurrentLevel.Font = new System.Drawing.Font("Arial", 10);
+            this.nudCurrentLevel.ValueChanged += new System.EventHandler(nudCurrentLevel_ValueChanged);
+
+            this.btnAddMap = new Button();
+            this.btnAddMap.Text = "+";
+            this.btnAddMap.Size = new System.Drawing.Size(23, 23);
+            this.btnAddMap.Font = new System.Drawing.Font("Arial", 14);
+            this.btnAddMap.BackColor = System.Drawing.Color.Transparent;
+            this.btnAddMap.Click += btnAddMap_Click;
+
+            this.btnRemoveMap = new Button();
+            this.btnRemoveMap.Text = "-";
+            this.btnRemoveMap.Size = new System.Drawing.Size(23, 23);
+            this.btnRemoveMap.Font = new System.Drawing.Font("Arial", 14);
+            this.btnRemoveMap.BackColor = System.Drawing.Color.Transparent;
+            this.btnRemoveMap.Click += btnRemoveMap_Click;
+
+            this.btnAddLevel = new Button();
+            this.btnAddLevel.Text = "+";
+            this.btnAddLevel.Size = new System.Drawing.Size(23, 23);
+            this.btnAddLevel.Font = new System.Drawing.Font("Arial", 14);
+            this.btnAddLevel.BackColor = System.Drawing.Color.Transparent;
+            this.btnAddLevel.Click += btnAddLevel_Click;
+
+            this.btnRemoveLevel = new Button();
+            this.btnRemoveLevel.Text = "-";
+            this.btnRemoveLevel.Size = new System.Drawing.Size(23, 23);
+            this.btnRemoveLevel.Font = new System.Drawing.Font("Arial", 14);
+            this.btnRemoveLevel.BackColor = System.Drawing.Color.Transparent;
+            this.btnRemoveLevel.Click += btnRemoveLevel_Click;
+
+            this.btnSave = new Button();
+            this.btnSave.Size = new System.Drawing.Size(75, 25);
+            this.btnSave.Text = "Save";
+            this.btnSave.Font = new System.Drawing.Font("Arial", 10);
+            this.btnSave.BackColor = System.Drawing.Color.Transparent;
+            this.btnSave.Click += btnSave_Click;
+
+            // ToolTips
+            ToolTip toolTip = new ToolTip();
+            toolTip.SetToolTip(this.btnAddMap, "Add New Map");
+            toolTip = new ToolTip();
+            toolTip.SetToolTip(this.btnRemoveMap, "Remove Selected Map");
+            toolTip = new ToolTip();
+            toolTip.SetToolTip(this.btnAddLevel, "Add New Level");
+            toolTip = new ToolTip();
+            toolTip.SetToolTip(this.btnRemoveLevel, "Remove Current Level");
 
             // Adding Controls Order
-            //this.Controls.Add(this.lblCurrentMap);
-            //this.Controls.Add(this.levelUpDown);
+            this.Controls.Add(this.lblCurrentMap);
+            this.Controls.Add(this.lblMapName);
+            this.Controls.Add(this.lblCurrentLevel);
+            this.Controls.Add(this.tbxMapName);
+            this.Controls.Add(this.cboCurrentMap);
+            this.Controls.Add(this.nudCurrentLevel);
+            this.Controls.Add(this.btnAddMap);
+            this.Controls.Add(this.btnSave);
             this.Controls.Add(this.pbMap);
-            this.Controls.Add(lblDescription);
             this.Controls.Add(this.pbRightPanel);
         }
 
-
-        void levelUpDown_ValueChanged(object sender, System.EventArgs e)
+        void Editor_Load(object sender, System.EventArgs e)
         {
-            if (levelUpDown.Value < 0)
-                levelUpDown.Value = 0;
-            else if (levelUpDown.Value > 100)
-                levelUpDown.Value = 100;
+            // Place controls on the right panel
+            // This helps to make Transparent background
+            this.lblCurrentMap.Parent = this.pbRightPanel;
+            this.lblCurrentMap.Location = new System.Drawing.Point(20, 25);
 
-            Map.Instance.SetMap(Map.Instance.GetMap(), (int)levelUpDown.Value);
-            centralGPS.Location.Level = (int)levelUpDown.Value;
+            this.lblMapName.Parent = this.pbRightPanel;
+            this.lblMapName.Location = new System.Drawing.Point(20, 60);
 
-            this.Focus();
+            this.lblCurrentLevel.Parent = this.pbRightPanel;
+            this.lblCurrentLevel.Location = new System.Drawing.Point(20, 95);
+
+            this.cboCurrentMap.Parent = this.pbRightPanel;
+            this.cboCurrentMap.Location = new System.Drawing.Point(90, 23);
+
+            this.tbxMapName.Parent = this.pbRightPanel;
+            this.tbxMapName.Location = new System.Drawing.Point(90, 60);
+
+            this.nudCurrentLevel.Parent = this.pbRightPanel;
+            this.nudCurrentLevel.Location = new System.Drawing.Point(90, 95);
+
+            this.btnAddMap.Parent = this.pbRightPanel;
+            this.btnAddMap.Location = new System.Drawing.Point(191, 23);
+
+            this.btnRemoveMap.Parent = this.pbRightPanel;
+            this.btnRemoveMap.Location = new System.Drawing.Point(218, 23);
+
+            this.btnAddLevel.Parent = this.pbRightPanel;
+            this.btnAddLevel.Location = new System.Drawing.Point(191, 95);
+
+            this.btnRemoveLevel.Parent = this.pbRightPanel;
+            this.btnRemoveLevel.Location = new System.Drawing.Point(218,95);
+
+            this.btnSave.Parent = this.pbRightPanel;
+            this.btnSave.Location = new System.Drawing.Point(this.pbRightPanel.Size.Width - this.btnSave.Size.Width - 9, 140);
         }
 
-        KeyManager KeyMgr;
+        // Drawing Controls
         private System.Windows.Forms.PictureBox pbRightPanel;
         private System.Windows.Forms.PictureBox pbMap;
-        private NumericUpDown levelUpDown;
+
+        // Standard Controls
+        private Label lblMapName;
+        private TextBox tbxMapName;
         private Label lblCurrentMap;
-        private Label lblDescription;
+        private ComboBox cboCurrentMap;
+        private Label lblCurrentLevel;
+        private NumericUpDown nudCurrentLevel;
+        private Button btnAddMap;
+        private Button btnRemoveMap;
+        private Button btnAddLevel;
+        private Button btnRemoveLevel;
+        private Button btnSave;
     }
 }
