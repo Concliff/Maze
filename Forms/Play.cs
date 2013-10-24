@@ -315,7 +315,6 @@ namespace Maze.Forms
                         {
                             this.gameTime.Start();
                             // Create Map and units
-                            Map.Instance.Reset();
                             Map.Instance.SetMap(0);
 
                             SetInterface(FormInterface.Play);

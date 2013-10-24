@@ -207,7 +207,7 @@ namespace MapEditor.Forms
 
         private void MapEditorFormClosing(object sender, FormClosingEventArgs e)
         {
-            Map.Instance.Dispose();
+            // TODO: Ask a confirmation if the map was changed
         }
     }
 }

@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 //      Build Number
 //      Revision
 //
-[assembly: AssemblyFileVersion("0.7.40.280")]
+[assembly: AssemblyFileVersion("0.7.41.281")]
 [assembly: AssemblyVersion("1.0.0.0")]
 
 // General Information about an assembly is controlled through the following

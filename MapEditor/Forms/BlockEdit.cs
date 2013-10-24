@@ -83,7 +83,7 @@ namespace MapEditor.Forms
 
             NewBlock.OptionValue = Convert.ToInt32(OptionValueTextBox.Text);
 
-            Map.Instance.AddCell(NewBlock);
+            // TODO: Add a new Cell here
             Program.EditorForm.Invalidate();
             this.Close();
         }
@@ -95,7 +95,7 @@ namespace MapEditor.Forms
 
         void DeleteButton_Click(object sender, System.EventArgs e)
         {
-            Map.Instance.AddEmptyCell(Block);
+            // TODO: Delete a Cell here
             Block.Type = 16;
             Program.EditorForm.Invalidate();
             this.Close();
