@@ -30,7 +30,7 @@ namespace MapEditor.Forms
             // Add new or chage exsist MapBlock
             if (Block.ID == -1)
             {
-                BlockIDTextBox.Text = Map.Instance.CellsCount.ToString();
+                BlockIDTextBox.Text = Program.EditorForm.NewCellID.ToString();
                 ConfirmButton.Text = "Add";
                 DeleteButton.Hide();
             }
@@ -83,7 +83,7 @@ namespace MapEditor.Forms
 
             NewBlock.OptionValue = Convert.ToInt32(OptionValueTextBox.Text);
 
-            // TODO: Add a new Cell here
+            Program.EditorForm.AddCell(NewBlock);
             Program.EditorForm.Invalidate();
             this.Close();
         }
@@ -95,7 +95,7 @@ namespace MapEditor.Forms
 
         void DeleteButton_Click(object sender, System.EventArgs e)
         {
-            // TODO: Delete a Cell here
+            Program.EditorForm.RemoveCell(Block);
             Block.Type = 16;
             Program.EditorForm.Invalidate();
             this.Close();

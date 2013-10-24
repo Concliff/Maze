@@ -9,7 +9,17 @@ namespace MapEditor
 {
     static class Program
     {
-        public static Editor EditorForm;
+        private static Editor editorForm;
+        /// <summary>
+        /// Gets an Editor Form instance.
+        /// </summary>
+        public static Editor EditorForm
+        {
+            get
+            {
+                return Program.editorForm;
+            }
+        }
 
         /// <summary>
         /// Главная точка входа для приложения.
@@ -17,19 +27,14 @@ namespace MapEditor
         [STAThread]
         static void Main()
         {
-            // Load Datas
-            DBStores.Load();
-
             // Load Pictures
             PictureManager.Load();
 
-            Map.Instance.SetMap(0, 0);
-
-            EditorForm = new Editor();
+            editorForm = new Editor();
 
             Application.EnableVisualStyles();
             //Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(EditorForm);
+            Application.Run(editorForm);
         }
     }
 }

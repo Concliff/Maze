@@ -83,7 +83,6 @@ namespace MapEditor.Forms
 
             // Labels
             this.lblCurrentMap = new Label();
-            this.lblCurrentMap.Parent = this.pbRightPanel;
             this.lblCurrentMap.AutoSize = true;
             this.lblCurrentMap.Text = "Map";
             this.lblCurrentMap.Font = new System.Drawing.Font("Arial", 14);
@@ -91,7 +90,6 @@ namespace MapEditor.Forms
             this.lblCurrentMap.ForeColor = System.Drawing.Color.White;
 
             this.lblMapName = new Label();
-            this.lblMapName.Parent = this.pbRightPanel;
             this.lblMapName.AutoSize = true;
             this.lblMapName.Text = "Name";
             this.lblMapName.Font = new System.Drawing.Font("Arial", 14);
@@ -99,7 +97,6 @@ namespace MapEditor.Forms
             this.lblMapName.ForeColor = System.Drawing.Color.White;
 
             this.lblCurrentLevel = new Label();
-            this.lblCurrentLevel.Parent = this.pbRightPanel;
             this.lblCurrentLevel.AutoSize = true;
             this.lblCurrentLevel.Text = "Level";
             this.lblCurrentLevel.Font = new System.Drawing.Font("Arial", 14);
@@ -107,19 +104,14 @@ namespace MapEditor.Forms
             this.lblCurrentLevel.BackColor = System.Drawing.Color.Transparent;
 
             this.cboCurrentMap = new ComboBox();
-            this.cboCurrentMap.Parent = this.pbRightPanel;
             this.cboCurrentMap.Size = new System.Drawing.Size(95, 20);
             this.cboCurrentMap.Font = new System.Drawing.Font("Arial", 10);
             this.cboCurrentMap.SelectedValueChanged += cboCurrentMap_SelectedValueChanged;
-            // Test Values. Should be removed
-            this.cboCurrentMap.Items.AddRange(new object[] { "- New Map -", "Map Name 1", "Map Name 2", "Map Name 3" });
 
             this.tbxMapName = new TextBox();
-            this.tbxMapName.Parent = this.pbRightPanel;
             this.tbxMapName.Size = new System.Drawing.Size(95, 10);
             this.tbxMapName.Font = new System.Drawing.Font("Arial", 10);
-            // Test Value. Should be removed
-            this.tbxMapName.Text = "Map Name 1";
+            this.tbxMapName.TextChanged += tbxMapName_TextChanged;
 
             this.nudCurrentLevel = new NumericUpDown();
             this.nudCurrentLevel.Name = "Current Level";
@@ -162,6 +154,13 @@ namespace MapEditor.Forms
             this.btnSave.BackColor = System.Drawing.Color.Transparent;
             this.btnSave.Click += btnSave_Click;
 
+            this.lblIsMapSaved = new Label();
+            this.lblIsMapSaved.AutoSize = true;
+            this.lblIsMapSaved.Text = "";
+            this.lblIsMapSaved.Font = new System.Drawing.Font("Arial", 12);
+            this.lblIsMapSaved.ForeColor = System.Drawing.Color.White;
+            this.lblIsMapSaved.BackColor = System.Drawing.Color.Transparent;
+
             // ToolTips
             ToolTip toolTip = new ToolTip();
             toolTip.SetToolTip(this.btnAddMap, "Add New Map");
@@ -181,6 +180,7 @@ namespace MapEditor.Forms
             this.Controls.Add(this.nudCurrentLevel);
             this.Controls.Add(this.btnAddMap);
             this.Controls.Add(this.btnSave);
+            this.Controls.Add(this.lblIsMapSaved);
             this.Controls.Add(this.pbMap);
             this.Controls.Add(this.pbRightPanel);
         }
@@ -221,6 +221,9 @@ namespace MapEditor.Forms
 
             this.btnSave.Parent = this.pbRightPanel;
             this.btnSave.Location = new System.Drawing.Point(this.pbRightPanel.Size.Width - this.btnSave.Size.Width - 9, 140);
+
+            this.lblIsMapSaved.Parent = this.pbRightPanel;
+            this.lblIsMapSaved.Location = new System.Drawing.Point(108, 143);
         }
 
         // Drawing Controls
@@ -239,5 +242,6 @@ namespace MapEditor.Forms
         private Button btnAddLevel;
         private Button btnRemoveLevel;
         private Button btnSave;
+        private Label lblIsMapSaved;
     }
 }
