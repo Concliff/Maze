@@ -19,7 +19,7 @@ namespace MapEditor.Forms
         /// Central position of the displayed map.
         /// </summary>
         private GPS centralGPS;
-        private BlockEdit BlockEditForm;
+        private CellEdit cellEditForm;
 
         private Point capturedMousePoint;
         private bool isCapturingMove;
@@ -342,23 +342,23 @@ namespace MapEditor.Forms
             Cell cell = GetCell(cursorGPS.Location);
 
             // Prevent double BlockEdit window openning
-            if (BlockEditForm == null)
-                BlockEditForm = new BlockEdit(cell);
+            if (this.cellEditForm == null)
+                this.cellEditForm = new CellEdit(cell);
             else
             {
-                BlockEditForm.Close();
-                BlockEditForm = new BlockEdit(cell);
+                this.cellEditForm.Close();
+                this.cellEditForm = new CellEdit(cell);
             }
-            BlockEditForm.Show();
-            BlockEditForm.Focus();
+            this.cellEditForm.Show();
+            this.cellEditForm.Focus();
         }
 
         void pbMap_Paint(object sender, PaintEventArgs e)
         {
             Graphics gGraphic = e.Graphics;
 
-            GridLocation PBLocation = new GridLocation();
-            Cell Block = new Cell();
+            GridLocation cellLocation = new GridLocation();
+            Cell cell = new Cell();
             // CellGraph
             int cellsCountWidth = (int)Math.Ceiling(this.pbMap.Size.Width / 2d / GlobalConstants.CELL_WIDTH) * 2 + 1;
             int cellsCountHeight = (int)Math.Ceiling(this.pbMap.Size.Height / 2d / GlobalConstants.CELL_HEIGHT) * 2 + 1;
@@ -373,34 +373,34 @@ namespace MapEditor.Forms
                     int x, y;
                     x = (i - 1) * GlobalConstants.CELL_WIDTH - this.centralGPS.X + xCorrection + 25;
                     y = (j - 1) * GlobalConstants.CELL_HEIGHT - this.centralGPS.Y + yCorrection + 25;
-                    PBLocation.X = centralGPS.Location.X + i - cellsCountWidth / 2;
-                    PBLocation.Y = centralGPS.Location.Y + j - cellsCountHeight / 2;
-                    PBLocation.Z = centralGPS.Location.Z;
-                    PBLocation.Level = centralGPS.Location.Level;
-                    Block = GetCell(PBLocation);
+                    cellLocation.X = centralGPS.Location.X + i - cellsCountWidth / 2;
+                    cellLocation.Y = centralGPS.Location.Y + j - cellsCountHeight / 2;
+                    cellLocation.Z = centralGPS.Location.Z;
+                    cellLocation.Level = centralGPS.Location.Level;
+                    cell = GetCell(cellLocation);
 
-                    gGraphic.DrawImage(PictureManager.GetPictureByType(Block.Type), x, y, GlobalConstants.CELL_WIDTH, GlobalConstants.CELL_HEIGHT);
+                    gGraphic.DrawImage(PictureManager.GetPictureByType(cell.Type), x, y, GlobalConstants.CELL_WIDTH, GlobalConstants.CELL_HEIGHT);
 
                     // Draw Start Block
-                    if (Block.HasAttribute(CellAttributes.IsStart))
+                    if (cell.HasAttribute(CellAttributes.IsStart))
                     {
                         gGraphic.DrawImage(PictureManager.StartImage, x + 5, y + 5, 40, 40);
                     }
 
                     // Draw Finish Block
-                    if (Block.HasAttribute(CellAttributes.IsFinish))
+                    if (cell.HasAttribute(CellAttributes.IsFinish))
                     {
                         gGraphic.DrawImage(PictureManager.FinishImage, x + 5, y + 5, PictureManager.FinishImage.Width, PictureManager.FinishImage.Height);
                     }
 
                     // Draw Ooze Drop
-                    if (Block.HasAttribute(CellAttributes.HasDrop))
+                    if (cell.HasAttribute(CellAttributes.HasDrop))
                     {
                         gGraphic.DrawImage(PictureManager.DropImage, x + 15, y + 10, 20, 30);
                     }
 
                     // Portal
-                    if (Block.HasOption(CellOptions.Portal))
+                    if (cell.HasOption(CellOptions.Portal))
                     {
                         Image image = PictureManager.PortalImage;
                         gGraphic.DrawImage(image,

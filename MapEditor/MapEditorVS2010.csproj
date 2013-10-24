@@ -63,11 +63,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Forms\BlockEdit.cs">
+    <Compile Include="Forms\CellEdit.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\BlockEdit.Designer.cs">
-      <DependentUpon>BlockEdit.cs</DependentUpon>
+    <Compile Include="Forms\CellEdit.Designer.cs">
+      <DependentUpon>CellEdit.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\Editor.cs">
       <SubType>Form</SubType>
@@ -77,8 +77,8 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="Forms\BlockEdit.resx">
-      <DependentUpon>BlockEdit.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\CellEdit.resx">
+      <DependentUpon>CellEdit.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Editor.resx">
