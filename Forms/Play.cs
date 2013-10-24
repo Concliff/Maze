@@ -553,7 +553,7 @@ namespace Maze.Forms
         {
             // Check finish point
             if (Map.Instance.DropsRemain == 0 &&
-                Map.Instance.GetCell(Player.Position.BlockID).HasAttribute(CellAttributes.IsFinish))
+                Map.Instance.GetCell(Player.Position).HasAttribute(CellAttributes.IsFinish))
             {
                 // Random Map: regenerate level and create objects
                 if (Map.Instance.IsRandom)

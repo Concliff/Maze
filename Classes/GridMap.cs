@@ -174,16 +174,10 @@ namespace Maze.Classes
 
                 X = value.X - Location.X * GlobalConstants.CELL_WIDTH;
                 Y = value.Y - Location.Y * GlobalConstants.CELL_HEIGHT;
-
-                BlockID = Map.Instance.GetCell(this.Location).ID;
             }
         }
         public int X;
         public int Y;
-        /// <summary>
-        /// ID of the <see cref="Cell"/> where this GPS point belongs.
-        /// </summary>
-        public int BlockID;
 
         // Some constructors for the simplified initialization
 
@@ -201,7 +195,6 @@ namespace Maze.Classes
             this.Location = Location;
             this.X = X;
             this.Y = Y;
-            this.BlockID = Map.Instance.GetCell(this.Location).ID;
         }
 
         /// <summary>
@@ -232,7 +225,7 @@ namespace Maze.Classes
             if (a == null || b == null)
                 return false;
 
-            return (a.Location == b.Location && a.X == b.X && a.Y == b.Y && a.BlockID == b.BlockID);
+            return (a.Location == b.Location && a.X == b.X && a.Y == b.Y);
         }
 
         public static bool operator !=(GPS a, GPS b)
@@ -268,7 +261,7 @@ namespace Maze.Classes
 
         public override int GetHashCode()
         {
-            return ((this.Location.GetHashCode() ^ this.X ^ this.Y) + this.BlockID);
+            return (this.Location.GetHashCode() ^ this.X ^ this.Y);
         }
     };
 

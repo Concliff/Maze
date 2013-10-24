@@ -174,7 +174,6 @@ namespace Maze.Classes
                     if (newCell.ID != -1)
                     {
                         currentCell = newCell;
-                        newPosition.BlockID = currentCell.ID;
                         locationChanged = true;
                     }
                     else

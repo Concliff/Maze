@@ -147,7 +147,6 @@ namespace Maze.Classes
                 if (MapName[1].Equals("map"))
                     MapNameList[i] = MapName[0];
             }
-
         }
 
         /// <summary>
@@ -376,6 +375,16 @@ namespace Maze.Classes
             Cell cell = new Cell();
             cell.Initialize();
             return cell;
+        }
+
+        /// <summary>
+        /// Gets a Cell of the map with the specified Position.
+        /// </summary>
+        /// <param name="location">Location where the Cell is expected to be.</param>
+        /// <returns>Found Cell or default Cell value when no cells were found.</returns>
+        public Cell GetCell(GPS position)
+        {
+            return GetCell(position.Location);
         }
 
         private bool AddCell(Cell newCell, bool isReplaceOnExist = false)
