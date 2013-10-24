@@ -188,6 +188,7 @@ namespace MapEditor.Forms
             else
             {
                 this.isNewMap = true;
+                this.levelsCount = 1;
                 this.tbxMapName.Text = "Enter_name";
                 this.tbxMapName.Focus();
             }
