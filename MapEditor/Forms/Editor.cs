@@ -426,11 +426,14 @@ namespace MapEditor.Forms
 
         void cboCurrentMap_SelectedValueChanged(object sender, System.EventArgs e)
         {
-            if (!this.isMapSaved)
+            if (!this.isMapSaved && this.currentMapIndex != this.cboCurrentMap.SelectedIndex)
             {
                 System.Windows.Forms.DialogResult result = MessageBox.Show("Would you like to save the current map?", "Map Saving", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
                 if (result == System.Windows.Forms.DialogResult.Yes)
                     SaveMap();
+                else if (result == System.Windows.Forms.DialogResult.Cancel)
+                    this.cboCurrentMap.SelectedIndex = this.currentMapIndex;
+
             }
             LoadMap(this.cboCurrentMap.SelectedIndex);
         }
@@ -508,6 +511,8 @@ namespace MapEditor.Forms
                 System.Windows.Forms.DialogResult result = MessageBox.Show("Would you like to save the current map?", "Map Saving", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
                 if (result == System.Windows.Forms.DialogResult.Yes)
                     SaveMap();
+                else if (result == System.Windows.Forms.DialogResult.Cancel)
+                    e.Cancel = true;
             }
         }
     }
