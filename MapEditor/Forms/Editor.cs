@@ -549,46 +549,94 @@ namespace MapEditor.Forms
             cursorGPS.Absolute = cursorLocation;
 
             Cell cell = GetCell(cursorGPS.Location);
-            if (cell.ID == -1)
-                cell.ID = NewCellID;
 
             if (cell.Type == (uint)Directions.None)
                 cell.Type = 0;
 
+            byte modifiedDirection = 0;
+
             switch (e.KeyCode)
             {
                 case Keys.W:
-                    if (cell.CanMoveTo(Directions.Up))
-                        cell.Type -= (uint)Directions.Up;
-                    else
-                        cell.Type += (uint)Directions.Up;
+                    modifiedDirection += (byte)Directions.Up;
                     break;
                 case Keys.A:
-                    if (cell.CanMoveTo(Directions.Left))
-                        cell.Type -= (uint)Directions.Left;
-                    else
-                        cell.Type += (uint)Directions.Left;
+                    modifiedDirection += (byte)Directions.Left;
                     break;
                 case Keys.S:
-                    if (cell.CanMoveTo(Directions.Down))
-                        cell.Type -= (uint)Directions.Down;
-                    else
-                        cell.Type += (uint)Directions.Down;
+                    modifiedDirection += (byte)Directions.Down;
                     break;
                 case Keys.D:
-                    if (cell.CanMoveTo(Directions.Right))
-                        cell.Type -= (uint)Directions.Right;
-                    else
-                        cell.Type += (uint)Directions.Right;
+                    modifiedDirection += (byte)Directions.Right;
                     break;
                 case Keys.Z:
-                    if (cell.CanMoveTo(Directions.Up) && cell.CanMoveTo(Directions.Left) && cell.CanMoveTo(Directions.Down) && cell.CanMoveTo(Directions.Right))
-                        cell.Type = (uint)Directions.None;
-                    else
-                        cell.Type = (uint)Directions.Up + (uint)Directions.Left + (uint)Directions.Down + (uint)Directions.Right;
+                    modifiedDirection += (byte)Directions.Up + (byte)Directions.Left + (byte)Directions.Down + (byte)Directions.Right;
                     break;
             }
 
+            if ((modifiedDirection & (byte)Directions.Up) != 0)
+            {
+                cell.Type ^= (uint)Directions.Up;
+                // Neighbour Cell
+                Cell neighbourCell = GetCell(new GridLocation(cell.Location.X, cell.Location.Y - 1, cell.Location.Z, cell.Location.Level));
+                if (neighbourCell.ID == -1)
+                {
+                    neighbourCell.ID = NewCellID;
+                    neighbourCell.Type = 0;
+                }
+                if ((cell.Type & (uint)Directions.Up) != (neighbourCell.Type & (uint)Directions.Down))
+                    neighbourCell.Type ^= (uint)Directions.Down;
+                AddCell(neighbourCell);
+            }
+
+            if ((modifiedDirection & (byte)Directions.Down) != 0)
+            {
+                cell.Type ^= (uint)Directions.Down;
+                // Neighbour Cell
+                Cell neighbourCell = GetCell(new GridLocation(cell.Location.X, cell.Location.Y + 1, cell.Location.Z, cell.Location.Level));
+                if (neighbourCell.ID == -1)
+                {
+                    neighbourCell.ID = NewCellID;
+                    neighbourCell.Type = 0;
+                }
+                if ((cell.Type & (uint)Directions.Down) != (neighbourCell.Type & (uint)Directions.Up))
+                    neighbourCell.Type ^= (uint)Directions.Up;
+                AddCell(neighbourCell);
+            }
+
+            if ((modifiedDirection & (byte)Directions.Left) != 0)
+            {
+                cell.Type ^= (uint)Directions.Left;
+                // Neighbour Cell
+                Cell neighbourCell = GetCell(new GridLocation(cell.Location.X - 1, cell.Location.Y, cell.Location.Z, cell.Location.Level));
+                if (neighbourCell.ID == -1)
+                {
+                    neighbourCell.ID = NewCellID;
+                    neighbourCell.Type = 0;
+                }
+                if ((cell.Type & (uint)Directions.Left) != (neighbourCell.Type & (uint)Directions.Right))
+                    neighbourCell.Type ^= (uint)Directions.Right;
+                AddCell(neighbourCell);
+            }
+
+            if ((modifiedDirection & (byte)Directions.Right) != 0)
+            {
+                cell.Type ^= (uint)Directions.Right;
+                // Neighbour Cell
+                Cell neighbourCell = GetCell(new GridLocation(cell.Location.X + 1, cell.Location.Y, cell.Location.Z, cell.Location.Level));
+                if (neighbourCell.ID == -1)
+                {
+                    neighbourCell.ID = NewCellID;
+                    neighbourCell.Type = 0;
+                }
+                if ((cell.Type & (uint)Directions.Right) != (neighbourCell.Type & (uint)Directions.Left))
+                    neighbourCell.Type ^= (uint)Directions.Left;
+                AddCell(neighbourCell);
+            }
+
+
+            if (cell.ID == -1)
+                cell.ID = NewCellID;
             AddCell(cell);
             this.pbMap.Refresh();
         }
