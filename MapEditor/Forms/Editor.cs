@@ -529,7 +529,7 @@ namespace MapEditor.Forms
 
         private void pbMap_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.KeyCode != Keys.W && e.KeyCode != Keys.A && e.KeyCode != Keys.S && e.KeyCode != Keys.D)
+            if (e.KeyCode != Keys.W && e.KeyCode != Keys.A && e.KeyCode != Keys.S && e.KeyCode != Keys.D && e.KeyCode != Keys.Z)
                 return;
 
             // Compute the cursor GPS
