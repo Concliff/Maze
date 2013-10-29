@@ -18,18 +18,27 @@ namespace Maze.Forms
         /// </summary>
         public static int MAX_SPELLS_COUNT = 5;
 
-        private enum FormInterface
+        public KeyManager KeyMgr;
+
+        private enum GameStates
         {
             MainMenu,
-            NewGame,
-            Random,
+            Game,
+            Paused,
+            SelectingMap,
+            RandomGame,
             HighScores,
-            Play,
-            Pause,
             Quit,
-        };
+        }
 
+        /// <summary>
+        /// Indicates whether the game was paused
+        /// </summary>
         private bool gamePaused;
+
+        /// <summary>
+        /// Indicates whether the Game (selected or random) was started.
+        /// </summary>
         private bool playStarted;
 
         /// <summary>
@@ -41,8 +50,6 @@ namespace Maze.Forms
         /// The time of the last update tick (in milliseconds).
         /// </summary>
         private long lastTickTime;
-
-        private FormInterface CurrentInterface;
 
         private int bonusGenerateTimer;
         private BonusEffect[] bonusEffects;
@@ -74,15 +81,18 @@ namespace Maze.Forms
             this.gamePaused = false;
             this.playStarted = false;
 
+            KeyMgr = new KeyManager();
+
             InitializeComponent();
             CustomInitialize();
             AddControlsOrder();
-            GridMapPB.BackColor = Color.Gray;
+            this.pbGridMap.BackColor = Color.Gray;
             this.systemTimer.Interval = GlobalConstants.TIMER_TICK_IN_MS;
             
             //RebuildGraphMap();
-            CurrentInterface = FormInterface.MainMenu;
-            SetInterface(FormInterface.MainMenu);
+            //CurrentInterface = FormInterface.MainMenu;
+            //SetInterface(FormInterface.MainMenu);
+            this.gameState = GameStates.MainMenu;
 
             this.bonusGenerateTimer = 5000;
 
@@ -110,6 +120,246 @@ namespace Maze.Forms
             aurasCount = 0;
         }
 
+        #region Menu / Interface Actions
+
+        private GameStates pr_gameState;
+        /// <summary>
+        /// Gets or sets the current state of the game.
+        /// </summary>
+        private GameStates gameState
+        {
+            get
+            {
+                return this.pr_gameState;
+            }
+            set
+            {
+                switch (value)
+                {
+                    case GameStates.MainMenu:
+                        // If "Main Menu" was selected from Pause menu
+                        if (this.pr_gameState == GameStates.Paused)
+                        {
+                            this.playStarted = false;        // Stop the game
+                            this.systemTimer.Stop();
+
+                            // Hide Pause Menu
+                            this.pbPause.Hide();
+                            this.pbPauseResume.Hide();
+                            this.pbPauseMainMenu.Hide();
+
+                            // Clean Form Controls
+                            this.pbGridMap.Invalidate();
+                            this.pbRightPanel.Invalidate();
+                            this.pbLeftPanel.Invalidate();
+
+                            ClearPlayerAurasAndSpells();
+                        }
+                        ShowMainMenu("New Game", "Random Map", "High Scores", "Quit");
+                        break;
+
+                    case GameStates.SelectingMap:
+                        ShowMainMenu(Map.Instance.GetMapNames());
+                        break;
+
+                    case GameStates.Game:
+                        // If continued from Pause
+                        if (this.pr_gameState == GameStates.Paused)
+                        {
+                            this.pbPause.Hide();
+                            this.pbPauseResume.Hide();
+                            this.pbPauseMainMenu.Hide();
+                            this.gamePaused = false;
+                            this.gameTime.Start();
+                            break;
+                        }
+
+                        // We are selecting Map
+                        // Nothing to do
+                        // StartNewGame is called when the Map has beed selected
+                        else if (this.pr_gameState == GameStates.SelectingMap)
+                            break;
+
+                        StartNewGame(0);
+                        break;
+
+                    case GameStates.Paused:
+                        this.gameTime.Stop();
+                        this.gamePaused = true;
+                        this.pbPause.Show();
+                        this.pbPauseResume.Show();
+                        this.pbPauseMainMenu.Show();
+
+                        Graphics g;
+                        g = this.pbPauseResume.CreateGraphics();
+                        g.DrawString("Resume", this.fontMenu, this.brushMenuUnselected, 0, 0);
+
+                        g = this.pbPauseMainMenu.CreateGraphics();
+                        g.DrawString("Main Menu", this.fontMenu, this.brushMenuUnselected, 0, 0);
+                        break;
+
+                    case GameStates.RandomGame:
+                        // RandomGame is just a menu title
+                        // The actual state is Game
+                        value = GameStates.Game;
+
+                        StartNewGame(-1);
+                        break;
+
+                    case GameStates.Quit:
+                        Application.Exit();
+                        break;
+
+                    default:
+                        return;
+                }
+
+                this.pr_gameState = value;
+            }
+        }
+
+        /// <summary>
+        /// Draws Main Menu items with specified titles.
+        /// </summary>
+        /// <param name="titles">Array of the menu titles that will be displayed on the form</param>
+        private void ShowMainMenu(params string[] titles)
+        {
+            if (titles.Length == 0)
+                return;
+            ClearMainMenu();
+            this.pbMenuItems = new PictureBox[titles.Length];
+            for (int i = 0; i < titles.Length; ++i)
+            {
+                this.pbMenuItems[i] = new PictureBox();
+                this.pbMenuItems[i].Name = titles[i];
+                this.pbMenuItems[i].Tag = i;
+                this.pbMenuItems[i].Size = new Size(150, 30);
+                this.pbMenuItems[i].Location = new Point(this.pbGridMap.Size.Width / 2 - 75, 40 * (i + 1));
+                this.pbMenuItems[i].Paint += pbMenuItems_Paint;
+                this.pbMenuItems[i].MouseEnter += pbMenuItems_MouseEnter;
+                this.pbMenuItems[i].MouseLeave += pbMenuItems_MouseLeave;
+                this.pbMenuItems[i].Click += MenuItem_Click;
+                this.pbGridMap.Controls.Add(this.pbMenuItems[i]);
+            }
+        }
+
+        /// <summary>
+        /// Removes Main Menu title, unsubsribing from all events.
+        /// </summary>
+        private void ClearMainMenu()
+        {
+            if (this.pbMenuItems == null)
+                return;
+
+            foreach (PictureBox pb in this.pbMenuItems)
+            {
+                pb.Paint -= pbMenuItems_Paint;
+                pb.MouseEnter -= pbMenuItems_MouseEnter;
+                pb.MouseLeave -= pbMenuItems_MouseLeave;
+                pb.Click -= MenuItem_Click;
+                this.pbGridMap.Controls.Remove(pb);
+            }
+
+            this.pbMenuItems = null;
+        }
+
+        private void MenuItem_Click(object sender, System.EventArgs e)
+        {
+            PictureBox pbSender = (PictureBox)sender;
+            if (pbSender == null)
+                return;
+
+            // Pause Menu
+            if (this.gameState == GameStates.Paused)
+            {
+                if (pbSender == this.pbPauseResume)
+                    this.gameState = GameStates.Game;
+                else if (pbSender == this.pbPauseMainMenu)
+                    this.gameState = GameStates.MainMenu;
+                return;
+            }
+
+            // Index Selecting Menus
+
+            if (pbSender.Tag == null || !(pbSender.Tag is int))
+                return;
+
+            int index = (int)pbSender.Tag;
+
+            if (this.gameState == GameStates.MainMenu)
+            {
+                switch (index)
+                {
+                    case 0:     // New Game
+                        this.gameState = GameStates.SelectingMap;
+                        break;
+                    case 1:     // Random Map
+                        this.gameState = GameStates.RandomGame;
+                        break;
+                    case 2:     // HighScrores
+                        this.gameState = GameStates.HighScores;
+                        break;
+                    case 3:     // Quit
+                        this.gameState = GameStates.Quit;
+                        break;
+                }
+            }
+            else if (this.gameState == GameStates.SelectingMap)
+            {
+                this.gameState = GameStates.Game;
+                StartNewGame(index);
+            }
+
+        }
+
+        private void ClearPlayerAurasAndSpells()
+        {
+            for (int i = 0; i < this.pbAuraIcons.Count(); ++i)
+                this.pbAuraIcons[i].Hide();
+
+            aurasCount = 0;
+
+            for (int i = 0; i < this.pbSpellBars.Count(); ++i)
+            {
+                RemoveSpell(i);
+            }
+        }
+
+        #endregion
+
+        private void StartNewGame(int mapIndex)
+        {
+            if (mapIndex == -1)
+            {
+                Map.Instance.GenerateRandomMap();
+            }
+            else
+            {
+                Map.Instance.SetMap(mapIndex);
+            }
+
+            ClearMainMenu();
+
+            this.gameTime.Start();
+            this.playStarted = true;
+            this.gamePaused = false;
+            this.lastTickTime = 0;
+
+            // Remove all old objects and units
+            // Needed when existing game was resetted and started the new one.
+            ObjectContainer.Instance.ClearEnvironment(true);
+
+            Player = new Slug();    // Create new Slug
+            Player.Create();
+            Map.Instance.FillMapWithUnits(); // Add units to map
+            Map.Instance.FillMapWithObjects(); // Add objects
+            ObjectContainer.Instance.StartMotion();
+
+            // Events
+            Player.LocationChanged += new Maze.Classes.Object.PositionHandler(Player_OnLocationChanged);
+            this.systemTimer.Start();
+        }
+
         public void OnEffectApplied(object sender, EffectEventArgs e)
         {
             EffectHolder effectHolder = e.Holder;
@@ -117,11 +367,11 @@ namespace Maze.Forms
             if(effectHolder.EffectInfo.HasAttribute(EffectAttributes.HiddenAura))
                 return;
 
-            AuraIconPB[aurasCount].Tag = effectHolder;
-            AuraIconPB[aurasCount].Image = PictureManager.EffectImages[effectHolder.EffectInfo.ID].Aura;
-            AurasToolTip.SetToolTip(AuraIconPB[aurasCount], effectHolder.EffectInfo.EffectName + "\n"
+            this.pbAuraIcons[aurasCount].Tag = effectHolder;
+            this.pbAuraIcons[aurasCount].Image = PictureManager.EffectImages[effectHolder.EffectInfo.ID].Aura;
+            this.toolTipAuras.SetToolTip(this.pbAuraIcons[aurasCount], effectHolder.EffectInfo.EffectName + "\n"
                 + effectHolder.EffectInfo.Description);
-            AuraIconPB[aurasCount].Show();
+            this.pbAuraIcons[aurasCount].Show();
 
             ++aurasCount;
         }
@@ -132,16 +382,16 @@ namespace Maze.Forms
 
             for (int i = 0; i < aurasCount; ++i)
             {
-                if (AuraIconPB[i].Tag == effectHolder)
+                if (this.pbAuraIcons[i].Tag == effectHolder)
                 {
                     for (int j = i; j < aurasCount; ++j)
                     {
-                        AuraIconPB[j].Tag = AuraIconPB[j + 1].Tag;
-                        AuraIconPB[j].Image = AuraIconPB[j + 1].Image;
-                        AurasToolTip.SetToolTip(AuraIconPB[j], AurasToolTip.GetToolTip(AuraIconPB[j + 1]));
+                        this.pbAuraIcons[j].Tag = this.pbAuraIcons[j + 1].Tag;
+                        this.pbAuraIcons[j].Image = this.pbAuraIcons[j + 1].Image;
+                        this.toolTipAuras.SetToolTip(this.pbAuraIcons[j], this.toolTipAuras.GetToolTip(this.pbAuraIcons[j + 1]));
                     }
                     --aurasCount;
-                    AuraIconPB[aurasCount].Hide();
+                    this.pbAuraIcons[aurasCount].Hide();
                     break;
                 }
             }
@@ -168,11 +418,11 @@ namespace Maze.Forms
                 int firstFree = -1;
                 for (int i = 0; i < MAX_SPELLS_COUNT; ++i)
                 {
-                    if (firstFree == -1 && SpellBarPB[i].RelatedEffect.ID == 0)
+                    if (firstFree == -1 && this.pbSpellBars[i].RelatedEffect.ID == 0)
                         firstFree = i;
 
                     // Can not exist two Permanent/Disposable spells at the same time
-                    if (effectEntry.ID == SpellBarPB[i].RelatedEffect.ID && isPermanent == SpellBarPB[i].IsPermanentSpell)
+                    if (effectEntry.ID == this.pbSpellBars[i].RelatedEffect.ID && isPermanent == this.pbSpellBars[i].IsPermanentSpell)
                     {
                         isExist = true;
                     }
@@ -185,11 +435,11 @@ namespace Maze.Forms
             // and the played do not have this spell already
             if (!isExist && spellSlot != -1)
             {
-                SpellBarPB[spellSlot].RelatedEffect = effectEntry;
-                SpellBarPB[spellSlot].Image = PictureManager.EffectImages[effectEntry.ID].Aura;
-                SpellBarPB[spellSlot].IsPermanentSpell = isPermanent;
-                SpellBarPB[spellSlot].Show();
-                AurasToolTip.SetToolTip(SpellBarPB[spellSlot], effectEntry.EffectName + "\n"
+                this.pbSpellBars[spellSlot].RelatedEffect = effectEntry;
+                this.pbSpellBars[spellSlot].Image = PictureManager.EffectImages[effectEntry.ID].Aura;
+                this.pbSpellBars[spellSlot].IsPermanentSpell = isPermanent;
+                this.pbSpellBars[spellSlot].Show();
+                this.toolTipAuras.SetToolTip(this.pbSpellBars[spellSlot], effectEntry.EffectName + "\n"
                     + effectEntry.Description);
             }
         }
@@ -206,13 +456,13 @@ namespace Maze.Forms
                 return false;
 
             // Effect exists
-            if (SpellBarPB[spellSlot].RelatedEffect.ID == 0)
+            if (this.pbSpellBars[spellSlot].RelatedEffect.ID == 0)
                 return false;
 
             // Reset & Hide the PictureBox
-            SpellBarPB[spellSlot].RelatedEffect = new EffectEntry();
-            SpellBarPB[spellSlot].IsPermanentSpell = false;
-            SpellBarPB[spellSlot].Hide();
+            this.pbSpellBars[spellSlot].RelatedEffect = new EffectEntry();
+            this.pbSpellBars[spellSlot].IsPermanentSpell = false;
+            this.pbSpellBars[spellSlot].Hide();
 
             return true;
         }
@@ -232,184 +482,7 @@ namespace Maze.Forms
 
         void Play_VisibleChanged(object sender, System.EventArgs e)
         {
-            SetInterface(FormInterface.MainMenu);
-        }
-
-        #endregion
-
-        #region Menu / Interface Actions
-
-        void MenuItemClick(object sender, System.EventArgs e)
-        {
-            //PictureBox SenderPB = (PictureBox)sender;
-            if (sender == MenuNewGamePB)
-            {
-                SetInterface(FormInterface.NewGame);
-            }
-            else if (sender == MenuRandomGamePB)
-            {
-                SetInterface(FormInterface.Random);
-            }
-            else if (sender == PauseResumePB)
-            {
-                SetInterface(FormInterface.Play);
-            }
-            else if (sender == PauseMainMenuPB)
-            {
-                SetInterface(FormInterface.MainMenu);
-            }
-            else if (sender == MenuQuitPB)
-            {
-                Application.Exit();
-            }
-        }
-
-
-        private void SetInterface(FormInterface NewInterface)
-        {
-            ChangeInterface(CurrentInterface, false);
-            CurrentInterface = NewInterface;
-            ChangeInterface(NewInterface, true);
-        }
-
-        private void ChangeInterface(FormInterface Interface, bool Show)
-        {
-            switch (Interface)
-            {
-                case FormInterface.MainMenu:
-                    {
-                        this.gameTime.Reset();
-                        if (Show)
-                        {
-                            if (this.playStarted)    // When paused
-                            {
-                                this.playStarted = false;        // Stop the game
-                                this.systemTimer.Stop();
-
-                                // Clean Form Controls
-                                GridMapPB.Invalidate();
-                                RightPanelPB.Invalidate();
-                                LeftPanelPB.Invalidate();
-
-                                ClearPlayerAurasAndSpells();
-                             }
-
-                            MenuNewGamePB.Show();
-                            MenuRandomGamePB.Show();
-                            MenuHighScoresPB.Show();
-                            MenuQuitPB.Show();
-
-                        }
-                        else
-                        {
-                            MenuNewGamePB.Visible = false;
-                            MenuRandomGamePB.Hide();
-                            MenuHighScoresPB.Hide();
-                            MenuQuitPB.Hide();
-                        }
-                        break;
-                    }
-                case FormInterface.NewGame:
-                    {
-                        if (Show)
-                        {
-                            this.gameTime.Start();
-                            // Create Map and units
-                            Map.Instance.SetMap(0);
-
-                            SetInterface(FormInterface.Play);
-                        }
-
-                        break;
-                    }
-                case FormInterface.Random:
-                    {
-                        if (Show)
-                        {
-                            this.gameTime.Start();
-
-                            // Create Map and units
-
-                            Map.Instance.GenerateRandomMap();
-
-                            SetInterface(FormInterface.Play);
-                        }
-                        break;
-                    }
-                case FormInterface.Play:
-                    {
-                        if (!Show)
-                            break;
-                        gameTime.Start();
-                        if (!this.playStarted)                   // Start New Game
-                        {
-                            this.playStarted = true;
-                            this.lastTickTime = 0;
-
-                            // Remove all old objects and units
-                            // Needed when existing game was resetted and started the new one.
-                            ObjectContainer.Instance.ClearEnvironment(true);
-
-                            Player = new Slug();    // Create new Slug
-                            Player.Create();
-                            Map.Instance.FillMapWithUnits(); // Add units to map
-                            Map.Instance.FillMapWithObjects(); // Add objects
-                            ObjectContainer.Instance.StartMotion();
-
-                            // Events
-                            Player.LocationChanged += new Maze.Classes.Object.PositionHandler(Player_OnLocationChanged);
-
-                            this.systemTimer.Start();
-                        }
-                        if (this.playStarted && this.gamePaused)  //Continue Game
-                        {
-                            // Implemented in FormInterface.Pause !show
-                            //GamePaused = false;
-                        }
-                        break;
-                    }
-                case FormInterface.Pause:
-                    {
-                        if (Show)
-                        {
-                            this.gameTime.Stop();
-
-                            this.gamePaused = true;
-                            PausePB.Show();
-                            PauseResumePB.Show();
-                            PauseMainMenuPB.Show();
-
-                            Graphics g;
-                            g = this.PauseResumePB.CreateGraphics();
-                            g.DrawString("Resume", MenuFont, MenuUnselectedBrush, 0, 0);
-
-                            g = this.PauseMainMenuPB.CreateGraphics();
-                            g.DrawString("Main Menu", MenuFont, MenuUnselectedBrush, 0, 0);
-                        }
-                        else
-                        {
-                            this.gamePaused = false;
-                            PausePB.Hide();
-                            PauseResumePB.Hide();
-                            PauseMainMenuPB.Hide();
-                        }
-                        break;
-                    }
-            }
-            MenuRandomGamePB.Invalidate();
-        }
-
-        private void ClearPlayerAurasAndSpells()
-        {
-            for (int i = 0; i < AuraIconPB.Count(); ++i)
-                AuraIconPB[i].Hide();
-
-            aurasCount = 0;
-
-            for (int i = 0; i < SpellBarPB.Count(); ++i)
-            {
-                RemoveSpell(i);
-            }
+            this.gameState = GameStates.MainMenu;
         }
 
         #endregion
@@ -429,13 +502,13 @@ namespace Maze.Forms
             {
                 // Switch Play/Pause game mode
                 case Keys.Escape:
-                    if (CurrentInterface == FormInterface.Play)
+                    if (this.gameState == GameStates.Game)
                     {
-                        SetInterface(FormInterface.Pause);
+                        this.gameState = GameStates.Paused;
                     }
-                    else if (CurrentInterface == FormInterface.Pause)
+                    else if (this.gameState == GameStates.Paused)
                     {
-                        SetInterface(FormInterface.Play);
+                        this.gameState = GameStates.Game;
                     }
                     break;
 
@@ -514,27 +587,27 @@ namespace Maze.Forms
             // in a particular order
 
             // Redraw Game stats panel
-            this.RightPanelPB.Invalidate();
+            this.pbRightPanel.Invalidate();
 
-            this.LeftPanelPB.Invalidate();
+            this.pbLeftPanel.Invalidate();
 
             // Redraw auras PB
             for (int i = 0; i < aurasCount; ++i)
-                AuraIconPB[i].Invalidate();
+                this.pbAuraIcons[i].Invalidate();
 
             // Redraw Form Map
-            GridMapPB.Invalidate();
+            this.pbGridMap.Invalidate();
         }
 
         private void UseSpell(int spellNumber)
         {
-            EffectEntry effectEntry = SpellBarPB[spellNumber - 1].RelatedEffect;
+            EffectEntry effectEntry = this.pbSpellBars[spellNumber - 1].RelatedEffect;
             if (effectEntry.ID == 0)
                 return;
 
             Player.CastEffect(effectEntry.ID, Player);
 
-            if (!SpellBarPB[spellNumber - 1].IsPermanentSpell)
+            if (!this.pbSpellBars[spellNumber - 1].IsPermanentSpell)
                 RemoveSpell(spellNumber - 1);
         }
 

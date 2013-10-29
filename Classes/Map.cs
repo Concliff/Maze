@@ -62,7 +62,7 @@ namespace Maze.Classes
         /// <summary>
         /// Names of all loaded maps.
         /// </summary>
-        private string[] MapNameList;
+        private string[] mapNames;
         private List<GridLocation> StartPoint;
         private List<GridLocation> FinishPoint;
         /// <summary>
@@ -136,17 +136,17 @@ namespace Maze.Classes
         /// </summary>
         private void LoadMapNameList()
         {
-            DirectoryInfo MapDirectory = new DirectoryInfo(GlobalConstants.MAPS_PATH);
-            FileInfo[] MapFiles = MapDirectory.GetFiles();
-            MapNameList = new string[MapFiles.Count()];
+            DirectoryInfo mapDirectory = new DirectoryInfo(GlobalConstants.MAPS_PATH);
+            FileInfo[] mapFiles = mapDirectory.GetFiles();
+            List<string> mapNames = new List<string>();
 
-            for (int i = 0; i < MapFiles.Count(); ++i)
+            foreach (FileInfo fi in mapFiles)
             {
-                string[] MapName = new string[2];
-                MapName = MapFiles[i].Name.Split('.');
-                if (MapName[1].Equals("map"))
-                    MapNameList[i] = MapName[0];
+                if (fi.Extension == ".map")
+                    mapNames.Add(Path.GetFileNameWithoutExtension(fi.FullName));
             }
+
+            this.mapNames = mapNames.ToArray();
         }
 
         /// <summary>
@@ -160,9 +160,8 @@ namespace Maze.Classes
         {
             if (currentMapIndex != mapIndex || this.mapCells == null)
                 LoadMap(mapIndex);
-            else
-                currentMapIndex = mapIndex;
 
+            currentMapIndex = mapIndex;
             CurrentLevel = level;
         }
 
@@ -246,26 +245,18 @@ namespace Maze.Classes
         /// <summary>
         /// Loads Map Cells for specific map.
         /// </summary>
-        private void LoadMap(int MapIndex)
-        {
-            LoadFromFile(MapNameList[MapIndex] + ".map");
-        }
-
-        /// <summary>
-        /// Loads Map cell from the file.
-        /// </summary>
-        /// <param name="MapFileName">The name of the Map file (without path).</param>
-        private void LoadFromFile(string MapFileName)
+        /// <param name="mapIndex">An index in the map names collection</param>
+        private void LoadMap(int mapIndex)
         {
             this.isRandom = false;
             this.mapCells = new Dictionary<GridLocation, Cell>();
             this.mapCellsIds = new Dictionary<int, GridLocation>();
             StartPoint = new List<GridLocation>();
             FinishPoint = new List<GridLocation>();
-            CurrentMapName = MapFileName.Split('.')[0];
+            CurrentMapName = this.mapNames[mapIndex];
             int levelIndicator = 0;
 
-            StreamReader CellStream = File.OpenText(GlobalConstants.MAPS_PATH + MapFileName);
+            StreamReader CellStream = File.OpenText(GlobalConstants.MAPS_PATH + this.mapNames[mapIndex] + ".map");
             string CurrentString;
             while ((CurrentString = CellStream.ReadLine()) != null)
             {
@@ -428,6 +419,16 @@ namespace Maze.Classes
             return result;
         }
 
+        public string[] GetMapNames()
+        {
+            if (this.mapNames == null || this.mapNames.Length == 0)
+                return null;
+
+            string[] result = new string[this.mapNames.Length];
+            Array.Copy(this.mapNames, result, this.mapNames.Length);
+            return result;
+        }
+
         /// <summary>
         /// Determies if the specifed Map name is exists in the list of loaded maps.
         /// </summary>
@@ -435,8 +436,8 @@ namespace Maze.Classes
         /// <returns><c>true</c> if the map file with the specified name was loaded; otherwise, <c>false</c>.</returns>
         private bool IsMapExist(string MapName)
         {
-            for (int i = 0; i < MapNameList.Count(); ++i)
-                if (MapNameList[i].Equals(MapName))
+            for (int i = 0; i < this.mapNames.Count(); ++i)
+                if (this.mapNames[i].Equals(MapName))
                     return true;
 
             return false;

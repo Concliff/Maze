@@ -45,7 +45,7 @@ namespace Maze.Forms
                 RebuildGraphMap(e.Graphics);
         }
 
-        private void AuraIconPB_Paint(object sender, PaintEventArgs e)
+        private void pbAuraIcons_Paint(object sender, PaintEventArgs e)
         {
             EffectHolder holder = (EffectHolder)((PictureBox)sender).Tag;
             int durationInSeconds = holder.Duration / 1000;
@@ -78,26 +78,26 @@ namespace Maze.Forms
             //RebuildGraphMap();
         }
 
-        private void MenuItemMouseEnter(object sender, System.EventArgs e)
+        private void pbMenuItems_MouseEnter(object sender, System.EventArgs e)
         {
             PictureBox SenderPB = (PictureBox)sender;
             Graphics g;
             g = SenderPB.CreateGraphics();
-            g.DrawString(SenderPB.Name, MenuFont, MenuSelectedBrush, 0, 0);
+            g.DrawString(SenderPB.Name, this.fontMenu, this.brushMenuSelected, 0, 0);
         }
 
-        private void MenuItemMouseLeave(object sender, System.EventArgs e)
+        private void pbMenuItems_MouseLeave(object sender, System.EventArgs e)
         {
             PictureBox SenderPB = (PictureBox)sender;
             Graphics g;
             g = SenderPB.CreateGraphics();
-            g.DrawString(SenderPB.Name, MenuFont, MenuUnselectedBrush, 0, 0);
+            g.DrawString(SenderPB.Name, this.fontMenu, this.brushMenuUnselected, 0, 0);
         }
 
-        private void MenuItemPaint(object sender, PaintEventArgs e)
+        private void pbMenuItems_Paint(object sender, PaintEventArgs e)
         {
             PictureBox senderPB = (PictureBox)sender;
-            e.Graphics.DrawString(senderPB.Name, MenuFont, MenuUnselectedBrush, 0, 0);
+            e.Graphics.DrawString(senderPB.Name, this.fontMenu, this.brushMenuUnselected, 0, 0);
         }
 
         /// <summary>
@@ -213,9 +213,9 @@ namespace Maze.Forms
 
                     // Determine object image coords
                     // relative to the object position on Cell and Player (as a center of the GridMap)
-                    int xCoord = GridMapPB.Size.Width / 2 - ((Player.Position.Location.X - objectsOnMap[i].Position.Location.X) *
+                    int xCoord = this.pbGridMap.Size.Width / 2 - ((Player.Position.Location.X - objectsOnMap[i].Position.Location.X) *
                             GlobalConstants.CELL_WIDTH + Player.Position.X - objectsOnMap[i].Position.X) - objectImage.Size.Width / 2;
-                    int yCoord = GridMapPB.Size.Height / 2 - ((Player.Position.Location.Y - objectsOnMap[i].Position.Location.Y) *
+                    int yCoord = this.pbGridMap.Size.Height / 2 - ((Player.Position.Location.Y - objectsOnMap[i].Position.Location.Y) *
                             GlobalConstants.CELL_HEIGHT + Player.Position.Y - objectsOnMap[i].Position.Y) - objectImage.Size.Height / 2;
 
                     gCellBP.DrawImage(objectImage, xCoord, yCoord,

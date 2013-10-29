@@ -37,14 +37,14 @@ namespace Maze.Forms
         {
             this.components = new System.ComponentModel.Container();
             this.systemTimer = new System.Windows.Forms.Timer(this.components);
-            this.TopPanelPB = new System.Windows.Forms.PictureBox();
-            this.BottomPanelPB = new System.Windows.Forms.PictureBox();
-            this.LeftPanelPB = new System.Windows.Forms.PictureBox();
-            this.RightPanelPB = new System.Windows.Forms.PictureBox();
-            ((System.ComponentModel.ISupportInitialize)(this.TopPanelPB)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.BottomPanelPB)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.LeftPanelPB)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.RightPanelPB)).BeginInit();
+            this.pbTopPanel = new System.Windows.Forms.PictureBox();
+            this.pbBottomPanel = new System.Windows.Forms.PictureBox();
+            this.pbLeftPanel = new System.Windows.Forms.PictureBox();
+            this.pbRightPanel = new System.Windows.Forms.PictureBox();
+            ((System.ComponentModel.ISupportInitialize)(this.pbTopPanel)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pbBottomPanel)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pbLeftPanel)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pbRightPanel)).BeginInit();
             this.SuspendLayout();
             // 
             // SystemTimer
@@ -61,10 +61,10 @@ namespace Maze.Forms
             this.Text = "Play";
             this.Load += new System.EventHandler(this.Play_Load);
             this.Paint += new System.Windows.Forms.PaintEventHandler(this.Play_Paint);
-            ((System.ComponentModel.ISupportInitialize)(this.TopPanelPB)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.BottomPanelPB)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.LeftPanelPB)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.RightPanelPB)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pbTopPanel)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pbBottomPanel)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pbLeftPanel)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pbRightPanel)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -73,8 +73,6 @@ namespace Maze.Forms
 
         private void CustomInitialize()
         {
-            this.KeyMgr = new KeyManager();
-
             this.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.KeyMgr.EventKeyPress);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.KeyMgr.EventKeyDown);
             this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.KeyMgr.EventKeyUp);
@@ -90,177 +88,128 @@ namespace Maze.Forms
             //
             // CellPB
             //
-            this.GridMapPB = new System.Windows.Forms.PictureBox();
-            this.GridMapPB.Location = new System.Drawing.Point(150, 90);
-            this.GridMapPB.Name = "CellPB";
-            this.GridMapPB.Size = new System.Drawing.Size(550, 350);
-            this.GridMapPB.Visible = true;
-            this.GridMapPB.Paint += new PaintEventHandler(CellPB_Paint);
+            this.pbGridMap = new System.Windows.Forms.PictureBox();
+            this.pbGridMap.Location = new System.Drawing.Point(150, 90);
+            this.pbGridMap.Name = "CellPB";
+            this.pbGridMap.Size = new System.Drawing.Size(550, 350);
+            this.pbGridMap.Visible = true;
+            this.pbGridMap.Paint += new PaintEventHandler(CellPB_Paint);
 
             //
             // RightPanelPB
             //
-            this.RightPanelPB.Location = new System.Drawing.Point(700, 0);
-            this.RightPanelPB.Name = "Right Panel";
-            this.RightPanelPB.Size = new System.Drawing.Size(150, this.Size.Height);
-            this.RightPanelPB.BackColor = Color.Gray;
-            this.RightPanelPB.TabIndex = 7;
-            this.RightPanelPB.TabStop = false;
-            this.RightPanelPB.Paint += new PaintEventHandler(RightPanelPB_Paint);
+            this.pbRightPanel.Location = new System.Drawing.Point(700, 0);
+            this.pbRightPanel.Name = "Right Panel";
+            this.pbRightPanel.Size = new System.Drawing.Size(150, this.Size.Height);
+            this.pbRightPanel.BackColor = Color.Gray;
+            this.pbRightPanel.TabIndex = 7;
+            this.pbRightPanel.TabStop = false;
+            this.pbRightPanel.Paint += new PaintEventHandler(RightPanelPB_Paint);
             //
             // LeftPanelPB
             //
-            this.LeftPanelPB.Location = new System.Drawing.Point(0, 0);
-            this.LeftPanelPB.Name = "pictureBox3";
-            this.LeftPanelPB.Size = new System.Drawing.Size(150, this.Size.Height);
-            this.LeftPanelPB.BackColor = Color.Gray;
-            this.LeftPanelPB.TabIndex = 6;
-            this.LeftPanelPB.TabStop = false;
-            this.LeftPanelPB.Paint += new PaintEventHandler(LeftPanelPB_Paint);
+            this.pbLeftPanel.Location = new System.Drawing.Point(0, 0);
+            this.pbLeftPanel.Name = "pictureBox3";
+            this.pbLeftPanel.Size = new System.Drawing.Size(150, this.Size.Height);
+            this.pbLeftPanel.BackColor = Color.Gray;
+            this.pbLeftPanel.TabIndex = 6;
+            this.pbLeftPanel.TabStop = false;
+            this.pbLeftPanel.Paint += new PaintEventHandler(LeftPanelPB_Paint);
             //
             // TopPanelPB
             //
-            this.TopPanelPB.Location = new System.Drawing.Point(150, 0);
-            this.TopPanelPB.Name = "pictureBox1";
-            this.TopPanelPB.Size = new System.Drawing.Size(550, 90);
-            this.TopPanelPB.BackColor = Color.Gray;
-            this.TopPanelPB.TabIndex = 4;
-            this.TopPanelPB.TabStop = false;
+            this.pbTopPanel.Location = new System.Drawing.Point(150, 0);
+            this.pbTopPanel.Name = "pictureBox1";
+            this.pbTopPanel.Size = new System.Drawing.Size(550, 90);
+            this.pbTopPanel.BackColor = Color.Gray;
+            this.pbTopPanel.TabIndex = 4;
+            this.pbTopPanel.TabStop = false;
             //
             // BottomPanelPB
             //
-            this.BottomPanelPB.Location = new System.Drawing.Point(150, 440);
-            this.BottomPanelPB.Name = "pictureBox2";
-            this.BottomPanelPB.Size = new System.Drawing.Size(550, 90);
-            this.BottomPanelPB.BackColor = Color.Gray;
-            this.BottomPanelPB.TabIndex = 5;
-            this.BottomPanelPB.TabStop = false;
+            this.pbBottomPanel.Location = new System.Drawing.Point(150, 440);
+            this.pbBottomPanel.Name = "pictureBox2";
+            this.pbBottomPanel.Size = new System.Drawing.Size(550, 90);
+            this.pbBottomPanel.BackColor = Color.Gray;
+            this.pbBottomPanel.TabIndex = 5;
+            this.pbBottomPanel.TabStop = false;
 
-            this.AurasToolTip = new ToolTip();
-            this.AurasToolTip.AutoPopDelay = 20000;
-            this.AurasToolTip.InitialDelay = 50;
-            this.AurasToolTip.ReshowDelay = 500;
+            this.toolTipAuras = new ToolTip();
+            this.toolTipAuras.AutoPopDelay = 20000;
+            this.toolTipAuras.InitialDelay = 50;
+            this.toolTipAuras.ReshowDelay = 500;
 
-            this.AuraIconPB = new PictureBox[5];
+            this.pbAuraIcons = new PictureBox[5];
             for (int i = 0; i < 5; ++i)
             {
-                AuraIconPB[i] = new PictureBox();
-                AuraIconPB[i].Location = new Point(TopPanelPB.Location.X + TopPanelPB.Size.Width - 60 * (i + 1) - 50,
-                    TopPanelPB.Location.Y + 5);
-                AuraIconPB[i].Size = new Size(50, 80);
-                AuraIconPB[i].Paint += new PaintEventHandler(AuraIconPB_Paint);
-                AuraIconPB[i].BackColor = Color.Gray;
-                AuraIconPB[i].Hide();
+                this.pbAuraIcons[i] = new PictureBox();
+                this.pbAuraIcons[i].Location = new Point(this.pbTopPanel.Location.X + this.pbTopPanel.Size.Width - 60 * (i + 1) - 50,
+                    this.pbTopPanel.Location.Y + 5);
+                this.pbAuraIcons[i].Size = new Size(50, 80);
+                this.pbAuraIcons[i].Paint += new PaintEventHandler(pbAuraIcons_Paint);
+                this.pbAuraIcons[i].BackColor = Color.Gray;
+                this.pbAuraIcons[i].Hide();
             }
 
-            this.SpellBarPB = new SpellBarPictureBox[5];
+            this.pbSpellBars = new SpellBarPictureBox[5];
             for (int i = 0; i < MAX_SPELLS_COUNT; ++i)
             {
-                SpellBarPB[i] = new SpellBarPictureBox(i + 1);
-                SpellBarPB[i].Location = new Point(BottomPanelPB.Location.X + 60 * (i + 1),
-                    BottomPanelPB.Location.Y + 10);
-                SpellBarPB[i].Size = new Size(50, 50);
-                SpellBarPB[i].BackColor = Color.Gray;
-                SpellBarPB[i].MouseClick += new MouseEventHandler(SpellBarPB_MouseClick);
-                SpellBarPB[i].Hide();
-                SpellBarPB[i].Paint += new PaintEventHandler(SpellBarPB_Paint);
+                this.pbSpellBars[i] = new SpellBarPictureBox(i + 1);
+                this.pbSpellBars[i].Location = new Point(this.pbBottomPanel.Location.X + 60 * (i + 1),
+                    pbBottomPanel.Location.Y + 10);
+                this.pbSpellBars[i].Size = new Size(50, 50);
+                this.pbSpellBars[i].BackColor = Color.Gray;
+                this.pbSpellBars[i].MouseClick += new MouseEventHandler(SpellBarPB_MouseClick);
+                this.pbSpellBars[i].Hide();
+                this.pbSpellBars[i].Paint += new PaintEventHandler(SpellBarPB_Paint);
             }
 
             ////
             // Menu object PictureBoxes
             ////
-            PausePB = new PictureBox();
+            this.pbPause = new PictureBox();
 
-            MenuNewGamePB = new PictureBox();
-            MenuRandomGamePB = new PictureBox();
-            MenuHighScoresPB = new PictureBox();
-            MenuQuitPB = new PictureBox();
-            PauseResumePB = new PictureBox();
-            PauseMainMenuPB = new PictureBox();
+            this.pbPauseResume = new PictureBox();
+            this.pbPauseMainMenu = new PictureBox();
 
-            MenuNewGamePB.Name = "New Game";
-            MenuRandomGamePB.Name = "Random Map";
-            MenuHighScoresPB.Name = "High Scores";
-            MenuQuitPB.Name = "Quit";
-            PauseResumePB.Name = "Resume";
-            PauseMainMenuPB.Name = "Main Menu";
+            this.pbPauseResume.Name = "Resume";
+            this.pbPauseMainMenu.Name = "Main Menu";
 
-            PausePB.Hide();
-            PausePB.BackColor = MenuNewGamePB.BackColor = MenuRandomGamePB.BackColor = MenuHighScoresPB.BackColor =
-                MenuQuitPB.BackColor = PauseResumePB.BackColor = PauseMainMenuPB.BackColor = Color.Gray;
+            this.pbPause.BackColor = this.pbPauseResume.BackColor = this.pbPauseMainMenu.BackColor = Color.Gray;
             // Hide All Menu (Show only ones that needed)
-            MenuNewGamePB.Hide();
-            PausePB.Hide();
-            MenuRandomGamePB.Hide();
-            MenuHighScoresPB.Hide();
-            MenuQuitPB.Hide();
-            PauseResumePB.Hide();
-            PauseMainMenuPB.Hide();
+            this.pbPause.Hide();
+            this.pbPauseResume.Hide();
+            this.pbPauseMainMenu.Hide();
 
-            MenuNewGamePB.MouseEnter += new System.EventHandler(MenuItemMouseEnter);
-            MenuRandomGamePB.MouseEnter += new System.EventHandler(MenuItemMouseEnter);
-            MenuHighScoresPB.MouseEnter += new System.EventHandler(MenuItemMouseEnter);
-            MenuQuitPB.MouseEnter += new System.EventHandler(MenuItemMouseEnter);
-            PauseResumePB.MouseEnter += new System.EventHandler(MenuItemMouseEnter);
-            PauseMainMenuPB.MouseEnter += new System.EventHandler(MenuItemMouseEnter);
+            this.pbPauseResume.MouseEnter += new System.EventHandler(pbMenuItems_MouseEnter);
+            this.pbPauseMainMenu.MouseEnter += new System.EventHandler(pbMenuItems_MouseEnter);
 
-            MenuNewGamePB.MouseLeave += new System.EventHandler(MenuItemMouseLeave);
-            MenuRandomGamePB.MouseLeave += new System.EventHandler(MenuItemMouseLeave);
-            MenuHighScoresPB.MouseLeave += new System.EventHandler(MenuItemMouseLeave);
-            MenuQuitPB.MouseLeave += new System.EventHandler(MenuItemMouseLeave);
-            PauseResumePB.MouseLeave += new System.EventHandler(MenuItemMouseLeave);
-            PauseMainMenuPB.MouseLeave += new System.EventHandler(MenuItemMouseLeave);
+            this.pbPauseResume.MouseLeave += new System.EventHandler(pbMenuItems_MouseLeave);
+            this.pbPauseMainMenu.MouseLeave += new System.EventHandler(pbMenuItems_MouseLeave);
 
-            MenuNewGamePB.Click += new System.EventHandler(MenuItemClick);
-            MenuRandomGamePB.Click += new System.EventHandler(MenuItemClick);
-            MenuHighScoresPB.Click += new System.EventHandler(MenuItemClick);
-            MenuQuitPB.Click += new System.EventHandler(MenuItemClick);
-            PauseResumePB.Click += new System.EventHandler(MenuItemClick);
-            PauseMainMenuPB.Click += new System.EventHandler(MenuItemClick);
+            this.pbPauseResume.Click += new System.EventHandler(MenuItem_Click);
+            this.pbPauseMainMenu.Click += new System.EventHandler(MenuItem_Click);
 
-            MenuNewGamePB.Paint += new PaintEventHandler(MenuItemPaint);
-            MenuRandomGamePB.Paint += new PaintEventHandler(MenuItemPaint);
-            MenuHighScoresPB.Paint += new PaintEventHandler(MenuItemPaint);
-            MenuQuitPB.Paint += new PaintEventHandler(MenuItemPaint);
-            PauseResumePB.Paint += new PaintEventHandler(MenuItemPaint);
-            PauseMainMenuPB.Paint += new PaintEventHandler(MenuItemPaint);
+            this.pbPauseResume.Paint += new PaintEventHandler(pbMenuItems_Paint);
+            this.pbPauseMainMenu.Paint += new PaintEventHandler(pbMenuItems_Paint);
 
             // Size
-            MenuNewGamePB.Size = MenuRandomGamePB.Size = MenuHighScoresPB.Size = MenuQuitPB.Size =
-                PauseResumePB.Size = PauseMainMenuPB.Size = new Size(150, 30);
-            PausePB.Size = new Size(200, 200);
+            this.pbPauseResume.Size = this.pbPauseMainMenu.Size = new Size(150, 30);
+            this.pbPause.Size = new Size(200, 200);
 
-            PausePB.Location = new Point(GridMapPB.Location.X + GridMapPB.Size.Width / 2 - PausePB.Size.Width / 2,
-                GridMapPB.Location.Y + GridMapPB.Size.Height / 2 - PausePB.Size.Height / 2);
+            this.pbPause.Location = new Point(this.pbGridMap.Location.X + this.pbGridMap.Size.Width / 2 - this.pbPause.Size.Width / 2,
+                this.pbGridMap.Location.Y + this.pbGridMap.Size.Height / 2 - this.pbPause.Size.Height / 2);
 
             // Pause Menu Location
-            PauseResumePB.Location =
-                new Point(GridMapPB.Location.X + GridMapPB.Size.Width / 2 - PauseResumePB.Size.Width / 2, GridMapPB.Location.Y + GridMapPB.Size.Height / 2 - 30);
+            this.pbPauseResume.Location =
+                new Point(pbGridMap.Location.X + this.pbGridMap.Size.Width / 2 - this.pbPauseResume.Size.Width / 2, this.pbGridMap.Location.Y + this.pbGridMap.Size.Height / 2 - 30);
 
-            PauseMainMenuPB.Location =
-                new Point(GridMapPB.Location.X + GridMapPB.Size.Width / 2 - PauseMainMenuPB.Size.Width / 2, GridMapPB.Location.Y + GridMapPB.Size.Height / 2);
+            this.pbPauseMainMenu.Location =
+                new Point(pbGridMap.Location.X + this.pbGridMap.Size.Width / 2 - this.pbPauseMainMenu.Size.Width / 2, this.pbGridMap.Location.Y + this.pbGridMap.Size.Height / 2);
 
-            byte MenuItemIterator;
-            // Main menu Location
-            MenuItemIterator = 1;
-            MenuNewGamePB.Location =
-                new Point(GridMapPB.Location.X + GridMapPB.Size.Width / 2 - MenuNewGamePB.Size.Width / 2, GridMapPB.Location.Y + 40 * MenuItemIterator);
-
-            MenuItemIterator = 2;
-            MenuRandomGamePB.Location =
-                new Point(GridMapPB.Location.X + GridMapPB.Size.Width / 2 - MenuRandomGamePB.Size.Width / 2, GridMapPB.Location.Y + 40 * MenuItemIterator);
-
-            MenuItemIterator = 3;
-            MenuHighScoresPB.Location =
-                new Point(GridMapPB.Location.X + GridMapPB.Size.Width / 2 - MenuHighScoresPB.Size.Width / 2, GridMapPB.Location.Y + 40 * MenuItemIterator);
-
-            MenuItemIterator = 4;
-            MenuQuitPB.Location =
-                new Point(GridMapPB.Location.X + GridMapPB.Size.Width / 2 - MenuQuitPB.Size.Width / 2, GridMapPB.Location.Y + 40 * MenuItemIterator);
-
-            MenuFont = new Font("Arial", 16);
-            MenuUnselectedBrush = new SolidBrush(Color.White);
-            MenuSelectedBrush = new SolidBrush(Color.Red);
+            this.fontMenu = new Font("Arial", 16);
+            this.brushMenuUnselected = new SolidBrush(Color.White);
+            this.brushMenuSelected = new SolidBrush(Color.Red);
 
         }
 
@@ -268,51 +217,43 @@ namespace Maze.Forms
         {
             // Add every control in the specific order
             for (int i = 0; i < 5; ++i)
-                this.Controls.Add(this.SpellBarPB[i]);
+                this.Controls.Add(this.pbSpellBars[i]);
             for (int i = 0; i < 5; ++i)
-                this.Controls.Add(this.AuraIconPB[i]);
-            this.Controls.Add(this.BottomPanelPB);
-            this.Controls.Add(this.TopPanelPB);
-            this.Controls.Add(this.RightPanelPB);
-            this.Controls.Add(this.LeftPanelPB);
+                this.Controls.Add(this.pbAuraIcons[i]);
+            this.Controls.Add(this.pbBottomPanel);
+            this.Controls.Add(this.pbTopPanel);
+            this.Controls.Add(this.pbRightPanel);
+            this.Controls.Add(this.pbLeftPanel);
 
             //Menu
-            this.Controls.Add(this.MenuNewGamePB);
-            this.Controls.Add(this.MenuRandomGamePB);
-            this.Controls.Add(this.MenuHighScoresPB);
-            this.Controls.Add(this.MenuQuitPB);
-            this.Controls.Add(this.PauseResumePB);
-            this.Controls.Add(this.PauseMainMenuPB);
+            this.Controls.Add(this.pbPauseResume);
+            this.Controls.Add(this.pbPauseMainMenu);
 
             // need rework layot reapointing for PausePB
             //this.Controls.Add(this.PausePB);
-            this.Controls.Add(this.GridMapPB);
-
+            this.Controls.Add(this.pbGridMap);
 
         }
 
-        public KeyManager KeyMgr;
-        private System.Windows.Forms.PictureBox GridMapPB;
+        private System.Windows.Forms.PictureBox pbGridMap;
         private System.Windows.Forms.Timer systemTimer;
-        private PictureBox TopPanelPB;
-        private PictureBox BottomPanelPB;
-        private PictureBox LeftPanelPB;
-        private PictureBox RightPanelPB;
+        private PictureBox pbTopPanel;
+        private PictureBox pbBottomPanel;
+        private PictureBox pbLeftPanel;
+        private PictureBox pbRightPanel;
 
-        private PictureBox[] AuraIconPB;
-        private SpellBarPictureBox[] SpellBarPB;
-        private ToolTip AurasToolTip;
+        private PictureBox[] pbAuraIcons;
+        private SpellBarPictureBox[] pbSpellBars;
+        private ToolTip toolTipAuras;
+
+        private PictureBox[] pbMenuItems;
 
         // Menu objects
-        private PictureBox MenuNewGamePB;
-        private PictureBox MenuRandomGamePB;
-        private PictureBox MenuHighScoresPB;
-        private PictureBox MenuQuitPB;
-        private PictureBox PausePB;
-        private PictureBox PauseResumePB;
-        private PictureBox PauseMainMenuPB;
-        private Font MenuFont;
-        private Brush MenuUnselectedBrush;
-        private Brush MenuSelectedBrush;
+        private PictureBox pbPause;
+        private PictureBox pbPauseResume;
+        private PictureBox pbPauseMainMenu;
+        private Font fontMenu;
+        private Brush brushMenuUnselected;
+        private Brush brushMenuSelected;
     }
 }
