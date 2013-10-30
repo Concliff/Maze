@@ -586,7 +586,10 @@ namespace MapEditor.Forms
                 }
                 if ((cell.Type & (uint)Directions.Up) != (neighbourCell.Type & (uint)Directions.Down))
                     neighbourCell.Type ^= (uint)Directions.Down;
-                AddCell(neighbourCell);
+                if (neighbourCell.Type == 0)
+                    RemoveCell(neighbourCell);
+                else
+                    AddCell(neighbourCell);
             }
 
             if ((modifiedDirection & (byte)Directions.Down) != 0)
@@ -601,7 +604,10 @@ namespace MapEditor.Forms
                 }
                 if ((cell.Type & (uint)Directions.Down) != (neighbourCell.Type & (uint)Directions.Up))
                     neighbourCell.Type ^= (uint)Directions.Up;
-                AddCell(neighbourCell);
+                if (neighbourCell.Type == 0)
+                    RemoveCell(neighbourCell);
+                else
+                    AddCell(neighbourCell);
             }
 
             if ((modifiedDirection & (byte)Directions.Left) != 0)
@@ -616,7 +622,10 @@ namespace MapEditor.Forms
                 }
                 if ((cell.Type & (uint)Directions.Left) != (neighbourCell.Type & (uint)Directions.Right))
                     neighbourCell.Type ^= (uint)Directions.Right;
-                AddCell(neighbourCell);
+                if (neighbourCell.Type == 0)
+                    RemoveCell(neighbourCell);
+                else
+                    AddCell(neighbourCell);
             }
 
             if ((modifiedDirection & (byte)Directions.Right) != 0)
@@ -631,13 +640,19 @@ namespace MapEditor.Forms
                 }
                 if ((cell.Type & (uint)Directions.Right) != (neighbourCell.Type & (uint)Directions.Left))
                     neighbourCell.Type ^= (uint)Directions.Left;
-                AddCell(neighbourCell);
+                if (neighbourCell.Type == 0)
+                    RemoveCell(neighbourCell);
+                else
+                    AddCell(neighbourCell);
             }
 
 
             if (cell.ID == -1)
                 cell.ID = NewCellID;
-            AddCell(cell);
+            if (cell.Type == 0)
+                RemoveCell(cell);
+            else
+                AddCell(cell);
             this.pbMap.Refresh();
         }
     }
