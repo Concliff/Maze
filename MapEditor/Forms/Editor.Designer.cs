@@ -55,16 +55,14 @@ namespace MapEditor.Forms
             int rightBarWidth = 250;
 
             this.Size = new System.Drawing.Size
-                ((GlobalConstants.CELL_WIDTH) * 10 + rightBarWidth,
-                (GlobalConstants.CELL_HEIGHT) * 10);
+                ((GlobalConstants.CELL_WIDTH) * 14 + rightBarWidth,
+                (GlobalConstants.CELL_HEIGHT) * 14);
             this.FormClosing += Editor_FormClosing;
             this.Load += Editor_Load;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
             this.SetStyle(ControlStyles.AllPaintingInWmPaint, true);
             this.SetStyle(ControlStyles.UserPaint, true);
-            //this.MaximumSize = Size;
-            //this.MinimumSize = Size;
 
             this.pbMap = new PictureBox();
             this.pbMap.Size = new System.Drawing.Size(this.ClientSize.Width - rightBarWidth, this.ClientSize.Height);/*(this.Size.Width - RightBarWidth - 2 * FormBorderBarSize, this.Size.Height - FormBorderBarSize - FormTitleBarSize)*/;
