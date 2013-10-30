@@ -529,7 +529,7 @@ namespace MapEditor.Forms
 
         private void pbMap_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.KeyCode != Keys.W && e.KeyCode != Keys.A && e.KeyCode != Keys.S && e.KeyCode != Keys.D && e.KeyCode != Keys.Z)
+            if (e.KeyCode != Keys.W && e.KeyCode != Keys.A && e.KeyCode != Keys.S && e.KeyCode != Keys.D && e.KeyCode != Keys.Z && e.KeyCode != Keys.R)
                 return;
 
             // Compute the cursor GPS
@@ -571,6 +571,14 @@ namespace MapEditor.Forms
                     break;
                 case Keys.Z:
                     modifiedDirection += (byte)Directions.Up + (byte)Directions.Left + (byte)Directions.Down + (byte)Directions.Right;
+                    break;
+                case Keys.R:
+                    // Mark the cell with every direction to change
+                    // then change the current cell Type to these direction
+                    // that allows to change all the neighbours and
+                    // remove the cell because it will be marked as 'no way to go'.
+                    modifiedDirection += (byte)Directions.Up + (byte)Directions.Left + (byte)Directions.Down + (byte)Directions.Right;
+                    cell.Type = modifiedDirection;
                     break;
             }
 
