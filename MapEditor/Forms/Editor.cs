@@ -199,6 +199,7 @@ namespace MapEditor.Forms
             // Set the current Level to 0
             // This also changes this.currentLevel field
             this.nudCurrentLevel.Value = 1;
+            this.pbMap.Invalidate();
         }
 
         private void SaveMap()
