@@ -44,7 +44,6 @@ namespace MapEditor.Forms
             this.startLocations = new Dictionary<int, GridLocation>();
             this.finishLocations = new Dictionary<int, GridLocation>();
 
-            this.nudCurrentLevel.Value = 0;
             this.currentMapIndex = -1;
 
             this.pr_isMapSaved = true;
@@ -52,6 +51,8 @@ namespace MapEditor.Forms
             LoadMapNames();
             if (this.mapNames.Length > 0)
                 LoadMap(0);
+
+            this.nudCurrentLevel.Value = 1;
 
             Invalidate();
             this.Focus();
@@ -195,8 +196,9 @@ namespace MapEditor.Forms
                 this.tbxMapName.Focus();
             }
 
-            // Set Level to 0
-            this.currentLevel = 0;
+            // Set the current Level to 0
+            // This also changes this.currentLevel field
+            this.nudCurrentLevel.Value = 1;
         }
 
         private void SaveMap()
@@ -416,12 +418,12 @@ namespace MapEditor.Forms
 
         void nudCurrentLevel_ValueChanged(object sender, System.EventArgs e)
         {
-            if (this.nudCurrentLevel.Value < 0)
-                this.nudCurrentLevel.Value = 0;
-            else if (this.nudCurrentLevel.Value >= this.levelsCount)
-                this.nudCurrentLevel.Value = this.levelsCount - 1;
+            if (this.nudCurrentLevel.Value < 1)
+                this.nudCurrentLevel.Value = 1;
+            else if (this.nudCurrentLevel.Value > this.levelsCount)
+                this.nudCurrentLevel.Value = this.levelsCount;
 
-            this.currentLevel = (int)this.nudCurrentLevel.Value;
+            this.currentLevel = (int)this.nudCurrentLevel.Value - 1;
         }
 
         void cboCurrentMap_SelectedValueChanged(object sender, System.EventArgs e)
@@ -451,7 +453,7 @@ namespace MapEditor.Forms
         private void btnAddLevel_Click(object sender, System.EventArgs e)
         {
             ++this.levelsCount;
-            this.nudCurrentLevel.Value = (int)(this.levelsCount - 1);
+            this.nudCurrentLevel.Value = (int)this.levelsCount;
         }
 
         private void btnRemoveLevel_Click(object sender, System.EventArgs e)
