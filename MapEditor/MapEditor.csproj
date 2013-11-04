@@ -105,7 +105,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\MazeVS2010.csproj">
+    <ProjectReference Include="..\Maze.csproj">
       <Project>{8F921A88-2013-4F16-BDA4-80BAC2BF4FD9}</Project>
       <Name>Maze</Name>
     </ProjectReference>

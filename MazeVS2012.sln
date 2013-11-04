@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MazeVS2010", "MazeVS2010.csproj", "{8F921A88-2013-4F16-BDA4-80BAC2BF4FD9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Maze", "Maze.csproj", "{8F921A88-2013-4F16-BDA4-80BAC2BF4FD9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MapEditorVS2010", "MapEditor\MapEditorVS2010.csproj", "{4F30A208-6261-4B06-A78A-752C62B38F3F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MapEditor", "MapEditor\MapEditor.csproj", "{4F30A208-6261-4B06-A78A-752C62B38F3F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EffectEditor", "EffectEditor\EffectEditor.csproj", "{33D220B9-E4A2-44C7-B1D6-C7F470385236}"
 EndProject
