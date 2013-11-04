@@ -38,10 +38,8 @@ namespace Maze.Classes
             ObjectType = ObjectTypes.Slug;
             this.unitType = UnitTypes.Slug;
             this.unitSide = UnitSides.Good;
-            this.respawnLocation = Map.Instance.GetStartPoint();
 
-            // Set Start Location
-            Position = new GPS(Home, 25, 25);
+            // Home Poisition will be initialized after the Level loading.
 
             this.respawnTimer = 3000;
 
@@ -238,7 +236,7 @@ namespace Maze.Classes
 
         public void LevelChanged()
         {
-            this.respawnLocation = Map.Instance.GetStartPoint();
+            this.respawnLocation = Map.Instance.StartLocation;
             Position = new GPS(Home, 25, 25);
         }
 

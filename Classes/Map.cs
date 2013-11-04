@@ -38,13 +38,16 @@ namespace Maze.Classes
         private Map()
         {
             LoadMapNameList();
+
+            // Undefined level
+            this.pr_CurrentLevel = -1;
         }
 
         #endregion
 
 
         /// <summary>
-        /// Collection of the Cell object on current Map.
+        /// Collection of the Cell objects on current Map.
         /// </summary>
         private Dictionary<GridLocation, Cell> mapCells;
 
@@ -63,17 +66,19 @@ namespace Maze.Classes
         /// Names of all loaded maps.
         /// </summary>
         private string[] mapNames;
-        private List<GridLocation> StartPoint;
-        private List<GridLocation> FinishPoint;
-        /// <summary>
-        /// Name of the current map.
-        /// </summary>
-        private string CurrentMapName;
-        private int currentMapIndex;
+
+        private Dictionary<int, GridLocation> startPoints;
+        private Dictionary<int, GridLocation> finishPoints;
+
         /// <summary>
         /// Indicating whether the current Map is randomly generated.
         /// </summary>
         private bool isRandom;
+
+        /// <summary>
+        /// Levels count on the current Map.
+        /// </summary>
+        private int levelsCount;
 
         /// <summary>
         /// Gets the count of non-collected Ooze drops on current level.
@@ -82,28 +87,16 @@ namespace Maze.Classes
         {
             get
             {
-                return dropsCount[CurrentLevel];
+                return this.dropsCount[CurrentLevel];
             }
         }
 
-        private int pr_CurrentLevel;
         /// <summary>
-        /// Gets the index number of the current level
-        /// </summary>
-        public int CurrentLevel
-        {
-            get { return pr_CurrentLevel; }
-            private set { pr_CurrentLevel = value; }
-        }
-
-        private int pr_LevelCount;
-        /// <summary>
-        /// Gets the number of levels of current map
+        /// Gets the levels count of the current map
         /// </summary>
         public int LevelCount
         {
-            get { return pr_LevelCount; }
-            private set { pr_LevelCount = value; }
+            get { return this.levelsCount; }
         }
 
         /// <summary>
@@ -131,6 +124,86 @@ namespace Maze.Classes
             }
         }
 
+        private int pr_CurrentMap;
+        /// <summary>
+        /// Gets or sets the current map index.
+        /// </summary>
+        public int CurrentMap
+        {
+            get
+            {
+                return this.pr_CurrentMap;
+            }
+            set
+            {
+                this.pr_CurrentMap = value;
+
+                // Random map is loading at CurrentLevel loading.
+                if (this.pr_CurrentMap == -1)
+                    this.isRandom = true;
+                else
+                    LoadMap(this.pr_CurrentMap);
+            }
+        }
+
+        private int pr_CurrentLevel;
+        /// <summary>
+        /// Gets or sets the index of the current level of the map.
+        /// </summary>
+        public int CurrentLevel
+        {
+            get
+            {
+                return this.pr_CurrentLevel;
+            }
+            set
+            {
+                this.pr_CurrentLevel = value;
+
+                LoadLevel();
+            }
+        }
+
+        /// <summary>
+        /// Gets a location of the start point on the current level.
+        /// </summary>
+        public GridLocation StartLocation
+        {
+            get
+            {
+                GridLocation result = new GridLocation();
+
+                // The map was not loaded
+                if (this.mapCells == null)
+                    return result;
+
+                result.Level = CurrentLevel;
+                if (CurrentLevel < LevelCount)
+                    result = this.startPoints[CurrentLevel];
+                return result;
+            }
+        }
+
+        /// <summary>
+        /// Gets a location of the finish point on the current level.
+        /// </summary>
+        public GridLocation FinishLocation
+        {
+            get
+            {
+                GridLocation result = new GridLocation();
+
+                // The map was not loaded
+                if (this.mapCells == null)
+                    return result;
+
+                result.Level = CurrentLevel;
+                if (CurrentLevel < LevelCount)
+                    result = this.finishPoints[CurrentLevel];
+                return result;
+            }
+        }
+
         /// <summary>
         /// Loads Names of maps with scanning for map files in the game directory.
         /// </summary>
@@ -150,29 +223,12 @@ namespace Maze.Classes
         }
 
         /// <summary>
-        /// Returns current Map index.
+        /// Creates random level with <see cref="MazeGenerator"/> and assigns cells attributes for Start/Finish points, Drops, Portals and so on.
         /// </summary>
-        public int GetMap() { return currentMapIndex; }
-
-        public void SetMap(int mapIndex) { SetMap(mapIndex, 0); }
-
-        public void SetMap(int mapIndex, int level)
+        private void GenerateRandomLevel()
         {
-            if (currentMapIndex != mapIndex || this.mapCells == null)
-                LoadMap(mapIndex);
+            // TODO: Vary level size depending on CurrentLevel increase.
 
-            currentMapIndex = mapIndex;
-            CurrentLevel = level;
-        }
-
-        /// <summary>
-        /// Creates random Map with <see cref="MazeGenerator"/> and assigns cells attributes for Start/Finish points, Drops, Portals and so on.
-        /// </summary>
-        public void GenerateRandomMap()
-        {
-            isRandom = true;  // Mark current Map as RandomMap
-            currentMapIndex = 0;
-            CurrentLevel = 0;
             this.mapCells = new Dictionary<GridLocation, Cell>();
             this.mapCellsIds = new Dictionary<int, GridLocation>();
 
@@ -184,13 +240,13 @@ namespace Maze.Classes
                 AddCell(cell);
             }
 
-            StartPoint = new List<GridLocation>();
-            FinishPoint = new List<GridLocation>();
-            StartPoint.Add(generator.StartPoint.Location);
-            FinishPoint.Add(generator.FinishPoint.Location);
+            this.startPoints = new Dictionary<int, GridLocation>();
+            this.finishPoints = new Dictionary<int, GridLocation>();
+            this.startPoints.Add(CurrentLevel, generator.StartPoint.Location);
+            this.finishPoints.Add(CurrentLevel, generator.FinishPoint.Location);
 
-            LevelCount = 1;
-            dropsCount = new int[LevelCount];
+            this.levelsCount = CurrentLevel + 1;
+            this.dropsCount = new int[levelsCount];
             // Generate Drops Count
             // Every 15th block should have a drop
             int dropsCounter = CellsCount / 15;
@@ -248,12 +304,14 @@ namespace Maze.Classes
         /// <param name="mapIndex">An index in the map names collection</param>
         private void LoadMap(int mapIndex)
         {
+            // Remove all the existing objects
+            ObjectContainer.Instance.ClearEnvironment(true);
+
             this.isRandom = false;
             this.mapCells = new Dictionary<GridLocation, Cell>();
             this.mapCellsIds = new Dictionary<int, GridLocation>();
-            StartPoint = new List<GridLocation>();
-            FinishPoint = new List<GridLocation>();
-            CurrentMapName = this.mapNames[mapIndex];
+            this.startPoints = new Dictionary<int, GridLocation>();
+            this.finishPoints = new Dictionary<int,GridLocation>();
             int levelIndicator = 0;
 
             StreamReader CellStream = File.OpenText(GlobalConstants.MAPS_PATH + this.mapNames[mapIndex] + ".map");
@@ -283,14 +341,34 @@ namespace Maze.Classes
                     levelIndicator++;
 
                 if (CellStruct.HasAttribute(CellAttributes.IsStart))
-                    StartPoint.Insert(CellStruct.Location.Level, CellStruct.Location);
+                    this.startPoints.Add(CellStruct.Location.Level, CellStruct.Location);
                 if (CellStruct.HasAttribute(CellAttributes.IsFinish))
-                    FinishPoint.Insert(CellStruct.Location.Level, CellStruct.Location);
+                    this.finishPoints.Add(CellStruct.Location.Level, CellStruct.Location);
             }
             CellStream.Close();
 
-            LevelCount = levelIndicator;
+            this.levelsCount = levelIndicator;
             dropsCount = new int[LevelCount];
+        }
+
+        /// <summary>
+        /// Loads (or reloads) all the objects of the current level.
+        /// </summary>
+        private void LoadLevel()
+        {
+            // Remove all old objects and units of the previous level
+            // Needed when existing game was resetted and started the new one.
+            ObjectContainer.Instance.ClearEnvironment(false);
+
+            // Load the map for random game
+            if (IsRandom)
+                GenerateRandomLevel();
+
+            FillMapWithUnits(); // Add units to map
+            FillMapWithObjects(); // Add objects
+
+            // Change the rewpawn location for the Slug
+            World.PlayForm.Player.LevelChanged();
         }
 
         /// <summary>
@@ -298,19 +376,38 @@ namespace Maze.Classes
         /// </summary>
         public void FillMapWithUnits()
         {
-            foreach (KeyValuePair<GridLocation, Cell> cell in this.mapCells)
+            // Random levels alwways have units
+
+            // No units on the first two levels
+            if (CurrentLevel < 2 && !IsRandom)
+                return;
+
+            foreach (KeyValuePair<GridLocation, Cell> kvp in this.mapCells)
             {
-                if (cell.Value.HasAttribute(CellAttributes.HasDrop))
+                // Current level only
+                if (kvp.Key.Level != CurrentLevel)
+                    continue;
+
+                if (kvp.Value.HasAttribute(CellAttributes.HasDrop))
                 // Create Deimos at Ooze Drop Location
                 {
                     Deimos deimos = new Deimos();
-                    deimos.Create(cell.Key);
+                    deimos.Create(kvp.Key);
+                    deimos.StartMotion();
+                    // Level 2 has only one Deimos
+                    if (CurrentLevel == 2 && !IsRandom)
+                        return;
                 }
             }
 
+            // No Phoboses until level 8
+            if (CurrentLevel < 8 && !IsRandom)
+                return;
+
             // Test-created monsters
             Phobos phobos = new Phobos();
-            phobos.Create(FinishPoint[CurrentLevel]);
+            phobos.Create(this.finishPoints[CurrentLevel]);
+            phobos.StartMotion();
         }
 
         /// <summary>
@@ -318,20 +415,24 @@ namespace Maze.Classes
         /// </summary>
         public void FillMapWithObjects()
         {
-            foreach (KeyValuePair<GridLocation, Cell> cell in this.mapCells)
+            foreach (KeyValuePair<GridLocation, Cell> kvp in this.mapCells)
             {
-                if (cell.Value.HasAttribute(CellAttributes.HasDrop))
+                // Current level only
+                if (kvp.Key.Level != CurrentLevel)
+                    continue;
+
+                if (kvp.Value.HasAttribute(CellAttributes.HasDrop))
                 {
                     OozeDrop drop = new OozeDrop();
-                    drop.Create(new GPS(cell.Key));
-                    ++dropsCount[cell.Key.Level];
+                    drop.Create(new GPS(kvp.Key));
+                    ++dropsCount[kvp.Key.Level];
                 }
 
-                if (cell.Value.HasOption(CellOptions.Portal))
+                if (kvp.Value.HasOption(CellOptions.Portal))
                 {
                     Portal portal = new Portal();
-                    portal.Create(new GPS(cell.Key));
-                    portal.SetDestination(GetCell(cell.Value.OptionValue));
+                    portal.Create(new GPS(kvp.Key));
+                    portal.SetDestination(GetCell(kvp.Value.OptionValue));
                 }
             }
         }
@@ -393,30 +494,6 @@ namespace Maze.Classes
             this.mapCells.Add(newCell.Location, newCell);
             this.mapCellsIds.Add(newCell.ID, newCell.Location);
             return true;
-        }
-
-        /// <summary>
-        /// Returns the Start Point on the current level.
-        /// </summary>
-        public GridLocation GetStartPoint()
-        {
-            GridLocation result = new GridLocation();
-            result.Level = CurrentLevel;
-            if (CurrentLevel < LevelCount)
-                result = StartPoint[CurrentLevel];
-            return result;
-        }
-
-        /// <summary>
-        /// Returns the Finish Point on the current level.
-        /// </summary>
-        public GridLocation GetFinishPoint()
-        {
-            GridLocation result = new GridLocation();
-            result.Level = CurrentLevel;
-            if (CurrentLevel <= FinishPoint.Count)
-                result = FinishPoint[CurrentLevel];
-            return result;
         }
 
         public string[] GetMapNames()

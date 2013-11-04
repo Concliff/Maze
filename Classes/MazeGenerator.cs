@@ -306,6 +306,7 @@ namespace Maze.Classes
                 block.ID = idCounter;
                 block.Location.X = point.X;
                 block.Location.Y = point.Y;
+                block.Location.Level = Map.Instance.CurrentLevel;
 
                 block.Type = 0;
                 // Up

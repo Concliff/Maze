@@ -329,14 +329,16 @@ namespace Maze.Forms
 
         private void StartNewGame(int mapIndex)
         {
-            if (mapIndex == -1)
-            {
-                Map.Instance.GenerateRandomMap();
-            }
-            else
-            {
-                Map.Instance.SetMap(mapIndex);
-            }
+            // Load selected map.
+            Map.Instance.CurrentMap = mapIndex;
+
+            Player = new Slug();
+            Player.Create();
+            // Events
+            Player.LocationChanged += new Maze.Classes.Object.PositionHandler(Player_OnLocationChanged);
+
+            // Load first level
+            Map.Instance.CurrentLevel = 0;
 
             ClearMainMenu();
 
@@ -345,18 +347,6 @@ namespace Maze.Forms
             this.gamePaused = false;
             this.lastTickTime = 0;
 
-            // Remove all old objects and units
-            // Needed when existing game was resetted and started the new one.
-            ObjectContainer.Instance.ClearEnvironment(true);
-
-            Player = new Slug();    // Create new Slug
-            Player.Create();
-            Map.Instance.FillMapWithUnits(); // Add units to map
-            Map.Instance.FillMapWithObjects(); // Add objects
-            ObjectContainer.Instance.StartMotion();
-
-            // Events
-            Player.LocationChanged += new Maze.Classes.Object.PositionHandler(Player_OnLocationChanged);
             this.systemTimer.Start();
         }
 
@@ -544,43 +534,48 @@ namespace Maze.Forms
 
             this.lastTickTime = currentTime;
 
-            // Generate Bonus
-            if (bonusGenerateTimer <= 0)
+            // Bonuses are generated after the 5th level on Classic Map
+            // and on every level on Random Map
+            if (Map.Instance.CurrentLevel >= 3 || Map.Instance.IsRandom)
             {
-                // Define location of the bonus
-                // in 3 Blocks radius range
-                GPS bonusPosition;
-                // Try 10 times to find appropriate point
-                for (int i = 0; i < 10; ++i)
+                // Generate Bonus
+                if (bonusGenerateTimer <= 0)
                 {
-                    bonusPosition = Player.Position;
-                    short xDiff = (short)Random.Int(6);
-                    short yDiff = (short)Random.Int(6);
-                    bonusPosition.Location.X += xDiff - 3;
-                    bonusPosition.Location.Y += yDiff - 3;
+                    // Define location of the bonus
+                    // in 3 Blocks radius range
+                    GPS bonusPosition;
+                    // Try 10 times to find appropriate point
+                    for (int i = 0; i < 10; ++i)
+                    {
+                        bonusPosition = Player.Position;
+                        short xDiff = (short)Random.Int(6);
+                        short yDiff = (short)Random.Int(6);
+                        bonusPosition.Location.X += xDiff - 3;
+                        bonusPosition.Location.Y += yDiff - 3;
 
-                    // If current GPS doesn't have a map block
-                    if (Map.Instance.GetCell(bonusPosition.Location).ID == -1)
-                        continue;
+                        // If current GPS doesn't have a map block
+                        if (Map.Instance.GetCell(bonusPosition.Location).ID == -1)
+                            continue;
 
-                    // else generate Bonus object
-                    bonusPosition.X = Random.Int(30) + 10;
-                    bonusPosition.Y = Random.Int(30) + 10;
+                        // else generate Bonus object
+                        bonusPosition.X = Random.Int(30) + 10;
+                        bonusPosition.Y = Random.Int(30) + 10;
 
-                    // Get Random effect
-                    BonusEffect effect = bonusEffects[Random.Int(bonusEffects.Count())];
+                        // Get Random effect
+                        BonusEffect effect = bonusEffects[Random.Int(bonusEffects.Count())];
 
-                    Bonus newBonus = new Bonus();
-                    newBonus.Create(bonusPosition, effect);
+                        Bonus newBonus = new Bonus();
+                        newBonus.Create(bonusPosition, effect);
 
-                    // leave cycle
-                    break;
+                        // leave cycle
+                        break;
+                    }
+
+                    bonusGenerateTimer = Random.Int(3000, 5000);
                 }
-
-                bonusGenerateTimer = Random.Int(3000, 5000);
+                else
+                    bonusGenerateTimer -= tickTime;
             }
-            else
-                bonusGenerateTimer -= tickTime;
 
             // GRAPHIC PART
             // Repaint display elements of Play form
@@ -628,31 +623,9 @@ namespace Maze.Forms
             if (Map.Instance.DropsRemain == 0 &&
                 Map.Instance.GetCell(Player.Position).HasAttribute(CellAttributes.IsFinish))
             {
-                // Random Map: regenerate level and create objects
-                if (Map.Instance.IsRandom)
-                {
-                    // Regenerate Map and Objects
-                    Map.Instance.GenerateRandomMap();
-
-                    ObjectContainer.Instance.ClearEnvironment(false);
-
-                    Map.Instance.FillMapWithUnits();
-                    Map.Instance.FillMapWithObjects();
-                    ObjectContainer.Instance.StartMotion();
-                }
-                // Normal Game: Set next Map level
-                else
-                {
-                    // TODO: clear objects for past levels
-                    int currentMap = Map.Instance.GetMap();
-                    int currentLevel = Map.Instance.CurrentLevel;
-
-                    if (++currentLevel < Map.Instance.LevelCount)
-                        Map.Instance.SetMap(currentMap, currentLevel);
-                }
-
-                Player.LevelChanged();
                 Player.AddPoints(30);
+                ++Map.Instance.CurrentLevel;
+
                 ClearPlayerAurasAndSpells();
             }
         }

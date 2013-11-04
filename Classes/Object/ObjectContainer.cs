@@ -277,8 +277,6 @@ namespace Maze.Classes
 
                 this.objectsToRemove.Push(objectF);
             }
-
-            RemoveTaggedObjects();
         }
 
         private void OnObjectLocationChanged(object sender, PositionEventArgs e)
