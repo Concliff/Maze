@@ -83,7 +83,7 @@ namespace Maze.Classes
         /// <summary>
         /// Gets the type of a generator.
         /// </summary>
-        public new MovementGeneratorType GeneratorType
+        public MovementGeneratorType GeneratorType
         {
             get
             {
