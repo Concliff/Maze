@@ -5,15 +5,13 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
-using Maze.Classes;
-using Maze.Forms;
 using System.Windows.Forms;
 using System.IO;
-
+using Maze.Classes;
 
 namespace MapEditor.Forms
 {
-    public partial class Editor : MazeForm
+    public partial class Editor : Form
     {
         /// <summary>
         /// Central position of the displayed map.

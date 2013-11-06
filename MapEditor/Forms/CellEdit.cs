@@ -7,11 +7,10 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using Maze.Classes;
-using Maze.Forms;
 
 namespace MapEditor.Forms
 {
-    public partial class CellEdit : MazeForm
+    public partial class CellEdit : Form
     {
         private Cell cell;
 

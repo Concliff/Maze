@@ -11,7 +11,7 @@ using System.Diagnostics;
 
 namespace Maze.Forms
 {
-    public partial class Play : MazeForm
+    public partial class Play : Form
     {
         /// <summary>
         /// Allowed the count of spell on the bottom Spell Panel
@@ -83,9 +83,7 @@ namespace Maze.Forms
 
             KeyMgr = new KeyManager();
 
-            InitializeComponent();
-            CustomInitialize();
-            AddControlsOrder();
+            Initialize();
             this.pbGridMap.BackColor = Color.Gray;
             this.systemTimer.Interval = GlobalConstants.TIMER_TICK_IN_MS;
             

@@ -27,52 +27,23 @@ namespace Maze.Forms
             base.Dispose(disposing);
         }
 
-        #region Windows Form Designer generated code
-
         /// <summary>
-        /// Required method for Designer support - do not modify
-        /// the contents of this method with the code editor.
+        /// Initialize all the Form properties and components.
         /// </summary>
-        private void InitializeComponent()
+        private void Initialize()
         {
             this.components = new System.ComponentModel.Container();
-            this.systemTimer = new System.Windows.Forms.Timer(this.components);
-            this.pbTopPanel = new System.Windows.Forms.PictureBox();
-            this.pbBottomPanel = new System.Windows.Forms.PictureBox();
-            this.pbLeftPanel = new System.Windows.Forms.PictureBox();
-            this.pbRightPanel = new System.Windows.Forms.PictureBox();
-            ((System.ComponentModel.ISupportInitialize)(this.pbTopPanel)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pbBottomPanel)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pbLeftPanel)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pbRightPanel)).BeginInit();
+
             this.SuspendLayout();
-            // 
-            // SystemTimer
-            // 
-            this.systemTimer.Tick += new System.EventHandler(this.SystemTimerTick);
-            // 
-            // Play
-            // 
+
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(850, 530);
             this.DoubleBuffered = true;
-            this.Name = "Play";
-            this.Text = "Play";
+            this.Name = "Maze";
+            this.Text = "Maze";
             this.Load += new System.EventHandler(this.Play_Load);
             this.Paint += new System.Windows.Forms.PaintEventHandler(this.Play_Paint);
-            ((System.ComponentModel.ISupportInitialize)(this.pbTopPanel)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pbBottomPanel)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pbLeftPanel)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pbRightPanel)).EndInit();
-            this.ResumeLayout(false);
-
-        }
-
-        #endregion
-
-        private void CustomInitialize()
-        {
             this.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.KeyMgr.EventKeyPress);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.KeyMgr.EventKeyDown);
             this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.KeyMgr.EventKeyUp);
@@ -84,20 +55,26 @@ namespace Maze.Forms
             this.SetStyle(ControlStyles.AllPaintingInWmPaint, true);
             this.SetStyle(ControlStyles.UserPaint, true);
 
+            //
+            // System Timer
+            //
+            this.systemTimer = new System.Windows.Forms.Timer(this.components);
+            this.systemTimer.Tick += new System.EventHandler(this.SystemTimerTick);
 
             //
-            // CellPB
+            // pbGridMap
             //
             this.pbGridMap = new System.Windows.Forms.PictureBox();
             this.pbGridMap.Location = new System.Drawing.Point(150, 90);
-            this.pbGridMap.Name = "CellPB";
+            this.pbGridMap.Name = "GridMap";
             this.pbGridMap.Size = new System.Drawing.Size(550, 350);
             this.pbGridMap.Visible = true;
             this.pbGridMap.Paint += new PaintEventHandler(CellPB_Paint);
 
             //
-            // RightPanelPB
+            // Right Panel
             //
+            this.pbRightPanel = new System.Windows.Forms.PictureBox();
             this.pbRightPanel.Location = new System.Drawing.Point(700, 0);
             this.pbRightPanel.Name = "Right Panel";
             this.pbRightPanel.Size = new System.Drawing.Size(150, this.Size.Height);
@@ -105,35 +82,44 @@ namespace Maze.Forms
             this.pbRightPanel.TabIndex = 7;
             this.pbRightPanel.TabStop = false;
             this.pbRightPanel.Paint += new PaintEventHandler(RightPanelPB_Paint);
+
             //
-            // LeftPanelPB
+            // Left Panel
             //
+            this.pbLeftPanel = new System.Windows.Forms.PictureBox();
             this.pbLeftPanel.Location = new System.Drawing.Point(0, 0);
-            this.pbLeftPanel.Name = "pictureBox3";
+            this.pbLeftPanel.Name = "Left Panel";
             this.pbLeftPanel.Size = new System.Drawing.Size(150, this.Size.Height);
             this.pbLeftPanel.BackColor = Color.Gray;
             this.pbLeftPanel.TabIndex = 6;
             this.pbLeftPanel.TabStop = false;
             this.pbLeftPanel.Paint += new PaintEventHandler(LeftPanelPB_Paint);
+
             //
-            // TopPanelPB
+            // Top Panel
             //
+            this.pbTopPanel = new System.Windows.Forms.PictureBox();
             this.pbTopPanel.Location = new System.Drawing.Point(150, 0);
-            this.pbTopPanel.Name = "pictureBox1";
+            this.pbTopPanel.Name = "Top Panel";
             this.pbTopPanel.Size = new System.Drawing.Size(550, 90);
             this.pbTopPanel.BackColor = Color.Gray;
             this.pbTopPanel.TabIndex = 4;
             this.pbTopPanel.TabStop = false;
+
             //
-            // BottomPanelPB
+            // Bottom Panel
             //
+            this.pbBottomPanel = new System.Windows.Forms.PictureBox();
             this.pbBottomPanel.Location = new System.Drawing.Point(150, 440);
-            this.pbBottomPanel.Name = "pictureBox2";
+            this.pbBottomPanel.Name = "Bottom Panel";
             this.pbBottomPanel.Size = new System.Drawing.Size(550, 90);
             this.pbBottomPanel.BackColor = Color.Gray;
             this.pbBottomPanel.TabIndex = 5;
             this.pbBottomPanel.TabStop = false;
 
+            //
+            // ToolTips for Auras
+            //
             this.toolTipAuras = new ToolTip();
             this.toolTipAuras.AutoPopDelay = 20000;
             this.toolTipAuras.InitialDelay = 50;
@@ -164,57 +150,49 @@ namespace Maze.Forms
                 this.pbSpellBars[i].Paint += new PaintEventHandler(SpellBarPB_Paint);
             }
 
-            ////
+            //
             // Menu object PictureBoxes
-            ////
+            //
             this.pbPause = new PictureBox();
+            this.pbPause.Size = new Size(200, 200);
+            this.pbPause.BackColor = Color.Gray;
+            this.pbPause.Location = new Point(this.pbGridMap.Location.X + this.pbGridMap.Size.Width / 2 - this.pbPause.Size.Width / 2,
+                this.pbGridMap.Location.Y + this.pbGridMap.Size.Height / 2 - this.pbPause.Size.Height / 2);
 
             this.pbPauseResume = new PictureBox();
-            this.pbPauseMainMenu = new PictureBox();
-
+            this.pbPauseResume.Size = new Size(150, 30);
+            this.pbPauseResume.Location =
+                new Point(pbGridMap.Location.X + this.pbGridMap.Size.Width / 2 - this.pbPauseResume.Size.Width / 2, this.pbGridMap.Location.Y + this.pbGridMap.Size.Height / 2 - 30);
+            this.pbPauseResume.BackColor = Color.Gray;
             this.pbPauseResume.Name = "Resume";
-            this.pbPauseMainMenu.Name = "Main Menu";
+            this.pbPauseResume.MouseEnter += new System.EventHandler(pbMenuItems_MouseEnter);
+            this.pbPauseResume.MouseLeave += new System.EventHandler(pbMenuItems_MouseLeave);
+            this.pbPauseResume.Click += new System.EventHandler(MenuItem_Click);
+            this.pbPauseResume.Paint += new PaintEventHandler(pbMenuItems_Paint);
 
-            this.pbPause.BackColor = this.pbPauseResume.BackColor = this.pbPauseMainMenu.BackColor = Color.Gray;
+
+            this.pbPauseMainMenu = new PictureBox();
+            this.pbPauseMainMenu.Size = new Size(150, 30);
+            this.pbPauseMainMenu.Location =
+                new Point(pbGridMap.Location.X + this.pbGridMap.Size.Width / 2 - this.pbPauseMainMenu.Size.Width / 2, this.pbGridMap.Location.Y + this.pbGridMap.Size.Height / 2);
+            this.pbPauseMainMenu.BackColor = Color.Gray;
+            this.pbPauseMainMenu.Name = "Main Menu";
+            this.pbPauseMainMenu.MouseEnter += new System.EventHandler(pbMenuItems_MouseEnter);
+            this.pbPauseMainMenu.MouseLeave += new System.EventHandler(pbMenuItems_MouseLeave);
+            this.pbPauseMainMenu.Click += new System.EventHandler(MenuItem_Click);
+            this.pbPauseMainMenu.Paint += new PaintEventHandler(pbMenuItems_Paint);
+            
             // Hide All Menu (Show only ones that needed)
             this.pbPause.Hide();
             this.pbPauseResume.Hide();
             this.pbPauseMainMenu.Hide();
 
-            this.pbPauseResume.MouseEnter += new System.EventHandler(pbMenuItems_MouseEnter);
-            this.pbPauseMainMenu.MouseEnter += new System.EventHandler(pbMenuItems_MouseEnter);
-
-            this.pbPauseResume.MouseLeave += new System.EventHandler(pbMenuItems_MouseLeave);
-            this.pbPauseMainMenu.MouseLeave += new System.EventHandler(pbMenuItems_MouseLeave);
-
-            this.pbPauseResume.Click += new System.EventHandler(MenuItem_Click);
-            this.pbPauseMainMenu.Click += new System.EventHandler(MenuItem_Click);
-
-            this.pbPauseResume.Paint += new PaintEventHandler(pbMenuItems_Paint);
-            this.pbPauseMainMenu.Paint += new PaintEventHandler(pbMenuItems_Paint);
-
-            // Size
-            this.pbPauseResume.Size = this.pbPauseMainMenu.Size = new Size(150, 30);
-            this.pbPause.Size = new Size(200, 200);
-
-            this.pbPause.Location = new Point(this.pbGridMap.Location.X + this.pbGridMap.Size.Width / 2 - this.pbPause.Size.Width / 2,
-                this.pbGridMap.Location.Y + this.pbGridMap.Size.Height / 2 - this.pbPause.Size.Height / 2);
-
-            // Pause Menu Location
-            this.pbPauseResume.Location =
-                new Point(pbGridMap.Location.X + this.pbGridMap.Size.Width / 2 - this.pbPauseResume.Size.Width / 2, this.pbGridMap.Location.Y + this.pbGridMap.Size.Height / 2 - 30);
-
-            this.pbPauseMainMenu.Location =
-                new Point(pbGridMap.Location.X + this.pbGridMap.Size.Width / 2 - this.pbPauseMainMenu.Size.Width / 2, this.pbGridMap.Location.Y + this.pbGridMap.Size.Height / 2);
-
+            // Fonts and Brushes
             this.fontMenu = new Font("Arial", 16);
             this.brushMenuUnselected = new SolidBrush(Color.White);
             this.brushMenuSelected = new SolidBrush(Color.Red);
 
-        }
 
-        private void AddControlsOrder()
-        {
             // Add every control in the specific order
             for (int i = 0; i < 5; ++i)
                 this.Controls.Add(this.pbSpellBars[i]);
@@ -225,14 +203,15 @@ namespace Maze.Forms
             this.Controls.Add(this.pbRightPanel);
             this.Controls.Add(this.pbLeftPanel);
 
-            //Menu
+            // Menu
             this.Controls.Add(this.pbPauseResume);
             this.Controls.Add(this.pbPauseMainMenu);
 
-            // need rework layot reapointing for PausePB
+            // need rework layot reapointing for pbPause
             //this.Controls.Add(this.PausePB);
             this.Controls.Add(this.pbGridMap);
 
+            this.ResumeLayout(false);
         }
 
         private System.Windows.Forms.PictureBox pbGridMap;
